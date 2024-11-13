@@ -24,5 +24,3 @@ php artisan key:generate<br>
 php artisan optimize <br>
 php artisan migrate --seed <br>
 php artisan optimize
-
-
