@@ -2,7 +2,7 @@
     <!-- Start::main-sidebar-header -->
     <div class="main-sidebar-header">
         <a href="" class="header-logo">
-            <h5 class="fw-bold text-primary">xBug</h5>
+            <h5 class="fw-bold text-light">xBug</h5>
         </a>
     </div>
     <!-- End::main-sidebar-header -->
@@ -24,7 +24,7 @@
                 <li class="slide">
                     <a href="/admin/dashboard" class="side-menu__item">
                         <i class="bx bx-home side-menu__icon"></i>
-                        <span class="side-menu__label">Dashboard</span>
+                        <span class="side-menu__label m-2">Dashboard</span>
                     </a>
                 </li>
                 <li class="slide has-sub">
@@ -38,7 +38,7 @@
                             <a href="/admin/user" class="side-menu__item">View User</a>
                         </li>
                         <li class="slide">
-                            <a href="./a/a.php" class="side-menu__item">Add User</a>
+                            <a href="/admin/add-user" class="side-menu__item">Add User</a>
                         </li>
                     </ul>
                 </li>

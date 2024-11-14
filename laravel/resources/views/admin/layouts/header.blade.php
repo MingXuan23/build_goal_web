@@ -26,7 +26,7 @@
             <!-- Start::header-element -->
             <div class="header-element header-theme-mode">
                 <!-- Start::header-link|layout-setting -->
-                <a href="javascript:void(0);" class="header-link layout-setting">
+                {{-- <a href="javascript:void(0);" class="header-link layout-setting">
                     <span class="light-layout">
                         <!-- Start::header-link-icon -->
                         <i class="bx bx-moon header-link-icon"></i>
@@ -37,7 +37,16 @@
                         <i class="bx bx-sun header-link-icon"></i>
                         <!-- End::header-link-icon -->
                     </span>
-                </a>
+                </a> --}}
+            </div> <div class="header-element">
+                <div class="d-flex align-items-center ">
+                    <div class="bg-warning-transparent rounded p-2">
+                        <i class="bi bi-shield-fill-exclamation text-warning"></i>
+                        <span class="fw-bold">pending e-kyc</span>
+                        
+                    </div>
+                </div>
+               
             </div>
             <div class="header-element header-fullscreen">
                 <!-- Start::header-link -->
@@ -101,17 +110,17 @@
                                 class="rounded-circle">
                         </div>
                         <div class="d-sm-block d-none">
-                            <p class="fw-semibold mb-0 lh-1">Khairul Adzhar</p>
-                            <span class="op-7 fw-normal d-block fs-11">Admin</span>
+                            <p class="fw-bold mb-0 lh-1">Khairul Adzhar</p>
+                            <span class="op-7 fw-semibold d-block fs-11">Admin</span>
                         </div>
                     </div>
                 </a>
                 <!-- End::header-link|dropdown-toggle -->
                 <ul class="main-header-dropdown dropdown-menu pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end"
                     aria-labelledby="mainHeaderProfile">
-                    <li><a class="dropdown-item d-flex" href="profile.html"><i
+                    <li><a class="dropdown-item d-flex" href="/admin/profile"><i
                                 class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
-                    <li><a class="dropdown-item d-flex" href="sign-in-cover.html"><i
+                    <li><a class="dropdown-item d-flex" href="#"><i
                                 class="ti ti-logout fs-18 me-2 op-7"></i>Log Out</a></li>
                 </ul>
             </div>

@@ -33,4 +33,12 @@ Route::get('/admin/user', function () {
     return view('admin.userManagement.index');
 });
 
+Route::get('/admin/add-user', function () {
+    return view('admin.userManagement.addUser');
+});
+
+Route::get('/admin/profile', function () {
+    return view('admin.profile.index');
+});
+
 

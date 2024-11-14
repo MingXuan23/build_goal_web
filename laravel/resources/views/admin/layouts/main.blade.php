@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-nav-layout="vertical" data-theme-mode="light" data-header-styles="light"
-    data-menu-styles="dark" data-toggled="close">
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-theme-mode="color" data-header-styles="light"
+    data-menu-styles="color" data-toggled="close" style="--primary-rgb: 17,28,67;">
 
 <head>
     <!-- Meta Data -->
@@ -34,6 +34,10 @@
     <!-- Choices Css -->
     <link rel="stylesheet" href="../../assets/libs/choices.js/public/assets/styles/choices.min.css">
     <link rel="stylesheet" href="../../assets/libs/jsvectormap/css/jsvectormap.min.css">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.bootstrap.min.css">
+   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.bootstrap5.min.css">
 </head>
 
 <body>
@@ -171,13 +175,28 @@
     <!-- Date & Time Picker JS -->
     <script src="../../assets/libs/flatpickr/flatpickr.min.js"></script>
     <!-- Sales-Dashboard JS -->
-    <script src="../../assets/js/sales-dashboard.js"></script>
+    {{-- <script src="../../assets/js/sales-dashboard.js"></script> --}}
     <!-- Custom-Switcher JS -->
     <script src="../../assets/js/custom-switcher.min.js"></script>
     <!-- Custom JS -->
     <script src="../../assets/js/custom.js"></script>
 
+    <script src="../../assets/js/jQuery.js"></script>
+    <script src="../assets/js/hrm-dashboard.js"></script>
 
+    <!-- Internal Datatables JS -->
+    <script src="../../assets/js/datatables.js"></script>
+
+        <!-- Datatables Cdn -->
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.6/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 
 
