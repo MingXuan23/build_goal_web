@@ -25,10 +25,10 @@ Open MySQL Workbench in your PC, try the connection using the configuration that
 4. Database Migration and Seeder (execute in exec tab in image node js)
 
 ```
-npx knex migrate:latest --env development
+npx knex migrate:latest --env docker
 ```
 ```
-npx knex seed:run --env development
+npx knex seed:run --env docker
 ```
 
 
