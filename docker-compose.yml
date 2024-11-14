@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # Node.js Application
+  nodejs:
+    build:
+      context: ./nodejs
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./nodejs:/usr/src/app
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - mysql
+    command: npm run start
+    networks:
+      - app-network
+
+  # Laravel PHP-FPM Application
+  laravel-app:
+    build:
+      context: ./laravel
+      dockerfile: docker/app.dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./laravel:/var/www
+      - ./laravel/storage:/var/www/storage
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  # Laravel Web Server (Nginx)
+  laravel-web:
+    build:
+      context: ./laravel
+      dockerfile: ./docker/web.dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./laravel:/var/www
+    depends_on:
+      - "laravel-app"
+    networks:
+      - app-network
+    ports:
+      - "8080:80"
+
+  # Shared MySQL Database
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "${LOCAL_DB_PORT}:3306"
+    environment:
+      MYSQL_DATABASE: ${LOCAL_DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${LOCAL_DB_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${LOCAL_DB_PASSWORD}
+      MYSQL_USER: ${LOCAL_DB_USER}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  # PHPMyAdmin for MySQL Database
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8006:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: ${LOCAL_DB_PORT}
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+# Docker Networks
+networks:
+  app-network:
+    driver: bridge
+
+# Docker Volumes
+volumes:
+  mysql-data:
+

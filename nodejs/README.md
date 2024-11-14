@@ -13,8 +13,7 @@ get the docker at here https://docs.docker.com/get-docker/
    ```
 
 
-   This will start the server, nodejs and laravel
-
+   This will start the server on `http://localhost:3000` with hot-reloading enabled.
 3. If you are facing cannot connect to database using password yes
 
 
@@ -22,7 +21,7 @@ Open MySQL Workbench in your PC, try the connection using the configuration that
 
 
 
-4. Database Migration and Seeder (execute in exec tab in image node js)
+4. Database Migration and Seeder
 
 ```
 npx knex migrate:latest --env development
@@ -31,14 +30,6 @@ npx knex migrate:latest --env development
 npx knex seed:run --env development
 ```
 
-
-5. Laravel Setup (execute in exec tab in image laravel app)
-
-```
-php artisan key:generate
-
-php artisan optimize 
-```
    
 ## In Case need to remove the docker and rebuild it again from the begining
 
