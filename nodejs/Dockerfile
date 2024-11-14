@@ -10,7 +10,7 @@ WORKDIR /usr/src/app
 RUN npm install -g pnpm
 
 # Install nodemon globally
-RUN pnpm add -g nodemon
+RUN pnpm add -g nodemon knex
 
 # Copy package.json and pnpm-lock.yaml (if available)
 COPY package*.json ./

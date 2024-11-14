@@ -25,7 +25,7 @@ module.exports = {
   docker: {
     client: 'mysql2',
     connection: {
-      host: 'build_goal-mysql-1',
+      host: 'build_goal_web-mysql-1',
       port: 3306,
       user: process.env.LOCAL_DB_USER,
       password: process.env.LOCAL_DB_PASSWORD,
