@@ -1,5 +1,5 @@
 {
-    "watch": ["./bin","./public","/views","./"],
+    "watch": ["./bin","./public","./views","./migrations","./"],
     "ext": "js,json,ts"
   }
   
