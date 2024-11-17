@@ -28,60 +28,95 @@
                         </div>
                     </div>
                     <div class="card-body col-md-12">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="row">
+                        <div class="row">                           
+                            <div class="col-md-6">
+                                <p class="fw-semibold mt-2">Personal Details</p>
+                                <hr>
+                                <div class="row gy-2">
                                     
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="floatingInput"
-                                                placeholder="name@example.com">
-                                            <label for="floatingInput">IC Number</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="floatingInput"
-                                                placeholder="name@example.com">
-                                            <label for="floatingInput">Full Name</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="floatingInput"
-                                                placeholder="name@example.com">
-                                            <label for="floatingInput">Email address</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="floatingInput"
-                                                placeholder="name@example.com">
-                                            <label for="floatingInput">Phone Number</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="floatingInput"
-                                                placeholder="name@example.com">
-                                            <label for="floatingInput">Organization Name</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-xl-12">
                                         <div class="form-floating">
-                                            <input type="password" class="form-control" id="floatingPassword"
-                                                placeholder="Password">
-                                            <label for="floatingPassword">Password</label>
+                                            <input type="number" class="form-control" id="floatingInputprimary"
+                                                placeholder="name@example.com">
+                                            <label for="floatingInputprimary">Ic Number</label>
                                         </div>
-
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-xl-6">
                                         <div class="form-floating">
-                                            <input type="password" class="form-control" id="floatingPassword"
-                                                placeholder="Password">
-                                            <label for="floatingPassword">Confirm Password</label>
+                                            <input type="text" class="form-control" id="floatingInputprimary"
+                                                placeholder="name@example.com">
+                                            <label for="floatingInputprimary">Full Name</label>
                                         </div>
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="form-floating">
+                                            <input type="email" class="form-control" id="floatingInputprimary"
+                                                placeholder="name@example.com">
+                                            <label for="floatingInputprimary">Email Address</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12">
+                                        <div class="form-floating">
+                                            <input type="number" class="form-control" id="floatingInputprimary"
+                                                placeholder="name@example.com">
+                                            <label for="floatingInputprimary">Phone Number</label>
+                                        </div>
+                                    </div>
 
+                                    <div class="col-xl-12">
+                                        <div class="form-floating">
+                                            <input type="password" class="form-control" id="floatingInputprimary"
+                                                placeholder="name@example.com">
+                                            <label for="floatingInputprimary">Password</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12">
+                                        <div class="form-floating">
+                                            <input type="password" class="form-control" id="floatingInputprimary"
+                                                placeholder="name@example.com">
+                                            <label for="floatingInputprimary">Confirm Password</label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <p class="fw-semibold mt-2">Organization Details</p>
+                                <hr>
+                                <div class="row gy-2">
+                                    
+                                    <div class="col-xl-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="floatingInputprimary"
+                                                placeholder="name@example.com">
+                                            <label for="floatingInputprimary">Organization Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="floatingInputprimary"
+                                                placeholder="name@example.com">
+                                            <label for="floatingInputprimary">Organization Address</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="floatingInputprimary"
+                                                placeholder="name@example.com">
+                                            <label for="floatingInputprimary">Organization State</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12">
+                                        <div class="form-floating">
+                                            <select class="form-select" id="floatingSelect"
+                                                aria-label="Floating label select example">
+                                                <option selected>- Select -</option>
+                                                <option value="1">Company</option>
+                                                <option value="2">Skill Training Organization</option>
+                                            </select>
+                                            <label for="floatingSelect">Organization Type</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
