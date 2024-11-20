@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -89,7 +89,7 @@ const sendResetPasswordEmail = async (userEmail, userName,newPassword) => {
 const register = async (req, res) => {
   try {
     const validatedData = registerSchema.parse(req.body);
-    const { email, password, name } = validatedData;
+    const { email, password, name, state, address,telno } = validatedData;
 
     const existingUser = await getUserByEmail(email);
     if (existingUser)
@@ -98,7 +98,6 @@ const register = async (req, res) => {
     const uuid = uuidv4();
     const hashedPassword = await bcrypt.hash(password, 10);
     const verificationCode = Math.floor(100000 + Math.random() * 900000);
-
     const role = { type: "mobile-user" };
     const success_acc = "Pending email verification";
     const email_success = "NOT VERIFY";
