@@ -6,7 +6,7 @@ const { registerSchema, loginSchema , forgetPasswordSchema, changePasswordSchema
 const {
   getUserByEmail,
   createUser,
-  updateUsersuccess,
+  updateUserStatus,
   updateVerificationCode,
   updatePassword
 } = require("../models/userModel");
@@ -42,7 +42,7 @@ const sendVerificationEmail = async (userEmail, userName, verificationCode) => {
     await transporter.sendMail(mailOptions);
   } catch (error) {
     res
-      .success(500)
+      .status(500)
       .json({ success : false, message: "Something wrong, Please try again later" });
   }
 };
@@ -80,7 +80,7 @@ const sendResetPasswordEmail = async (userEmail, userName,newPassword) => {
     // console.error("Error sending reset password email:", error);
     // throw new Error("Something went wrong while sending the reset email. Please try again later.");
     res
-    .success(500)
+    .status(500)
     .json({ success : false, message: "Error sending reset password email:", error});
   }
 };
@@ -100,14 +100,14 @@ const register = async (req, res) => {
     const verificationCode = Math.floor(100000 + Math.random() * 900000);
     const role = { type: "mobile-user" };
     const success_acc = "Pending email verification";
-    const email_success = "NOT VERIFY";
+    const email_status = "NOT VERIFY";
     const result = await createUser({
       ...validatedData,
       password: hashedPassword,
       verification_code: verificationCode,
       role: JSON.stringify(role),
       success: success_acc,
-      email_success: email_success,
+      email_status: email_status,
     });
 
     if (result) {
@@ -118,7 +118,7 @@ const register = async (req, res) => {
         email: validatedData.email,
       };
       res
-        .success(201)
+        .status(201)
         .json({ success: true, message: "User registered successfully", data: responseData });
     }
   } catch (error) {
@@ -147,11 +147,11 @@ const verifyCode = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid verification code" });
     }
 
-    if (user.email_success === "VERIFY") {
+    if (user.email_status === "VERIFY") {
       return res.status(401).json({ success: false, message: "Your Account is Active" });
     }
 
-    await updateUsersuccess(email);
+    await updateUserStatus(email);
 
     res.status(200).json({ success: true, message: "Account has successfully activated" });
   } catch (error) {
@@ -169,7 +169,7 @@ const resendVerificationCode = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    if (user.email_success === "VERIFY") {
+    if (user.email_status === "VERIFY") {
       return res.status(401).json({ success: false, message: "Your Account is Already Active" });
     }
 
@@ -200,7 +200,7 @@ const login = async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
-    if (user.email_success === "NOT VERIFY") {
+    if (user.email_status === "NOT VERIFY") {
       return res.status(401).json({ success: false, message: "Your Account is Not Active." });
     }
     if (user.status === "ACTIVE") {
@@ -273,7 +273,7 @@ const changePassword = async (req, res) => {
     const user = await getUserByEmail(email);
 
     if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
-      return res.status(401).json({ success: false, message: "Invalid credentials" });
+      return res.status(401).json({ success: false, message: "Old Password is inccorrect" });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
