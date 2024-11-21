@@ -1,5 +1,6 @@
 {
-    "watch": ["./bin","./public","./views","./migrations","./"],
-    "ext": "js,json,ts"
+    "watch": ["./bin","./public","./views","./migrations","./seeds","./routes","./"],
+    "ext": "js,json,ts",
+    "legacyWatch": true
   }
   
