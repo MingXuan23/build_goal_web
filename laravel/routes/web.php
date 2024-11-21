@@ -44,3 +44,25 @@ Route::get('/admin/profile', function () {
 });
 
 
+
+// Route::get('/admin/content', function () {
+//     return view('admin.contentManagement.index');
+// });
+
+
+// Route::get('/admin/promote-content', function () {
+//     return view('admin.contentManagement.promoteContent');
+// });
+
+
+Route::get('/organization/dashboard', function () {
+    return view('organization.dashboard.index');
+});
+
+Route::get('/organization/promote-content', function () {
+    return view('organization.content.promoteContent');
+});
+
+// Route::get('/admin/test', function () {
+//     return view('admin.dashboard.indexTemplate');
+// });
