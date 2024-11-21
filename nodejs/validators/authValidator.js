@@ -4,9 +4,12 @@ const registerSchema = z.object({
   name: z.string().nonempty('Full name is required'), 
   password: z.string().min(6, 'Password must be at least 6 characters long'),
   telno: z
-    .string()
-    .min(9, 'Phone number must be at least 9 digits long')
-    .regex(/^\d+$/, 'Phone number must contain only numbers'),
+  .string()
+  .nonempty('Phone number is required')
+  .regex(
+    /^\+60\d{9,11}$/,
+    'Phone number must start with +60 and contain 9 to 11 digits'
+  ),
   email: z.string().email('Invalid email format'), 
   // role: z.string().nonempty('Role is required'), 
   state: z.string().nonempty('State is required'), 
@@ -17,6 +20,7 @@ const registerSchema = z.object({
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters long'),
+  device_token: z.string()
 });
 
 

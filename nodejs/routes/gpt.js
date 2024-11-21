@@ -18,7 +18,14 @@ router.post('/fast-response', async (req, res, next) => {
     estimate_word = 10;
   }
 
-  var final_prompt = `${prompt}. Repsonse in ${estimate_word} words.`;
+  let final_prompt = '';
+  if(estimate_word == -1){
+     final_prompt = `${prompt}. Repsonse as short as possible.`;
+
+  }
+  else{
+     final_prompt = `${prompt}. Repsonse in ${estimate_word} words.`;
+  }
 
   try {
     const apiResponse = await axios.post(`${HOST_URL}/api/chat`, {

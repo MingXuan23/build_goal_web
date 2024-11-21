@@ -1,8 +1,17 @@
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const crypto = require('crypto');
+
+
+
 require("dotenv").config();
-const { registerSchema, loginSchema , forgetPasswordSchema, changePasswordSchema} = require("../validators/authValidator");
+
+const knexConfig = require('../knexfile');
+//initialize knex
+const knex = require('knex')(knexConfig['docker'])
+
+const { registerSchema, loginSchema, forgetPasswordSchema, changePasswordSchema } = require("../validators/authValidator");
 const {
   getUserByEmail,
   createUser,
@@ -43,11 +52,11 @@ const sendVerificationEmail = async (userEmail, userName, verificationCode) => {
   } catch (error) {
     res
       .status(500)
-      .json({ success : false, message: "Something wrong, Please try again later" });
+      .json({ success: false, message: "Something wrong, Please try again later" });
   }
 };
 
-const sendResetPasswordEmail = async (userEmail, userName,newPassword) => {
+const sendResetPasswordEmail = async (userEmail, userName, newPassword) => {
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
@@ -80,8 +89,8 @@ const sendResetPasswordEmail = async (userEmail, userName,newPassword) => {
     // console.error("Error sending reset password email:", error);
     // throw new Error("Something went wrong while sending the reset email. Please try again later.");
     res
-    .status(500)
-    .json({ success : false, message: "Error sending reset password email:", error});
+      .status(500)
+      .json({ success: false, message: "Error sending reset password email:", error });
   }
 };
 
@@ -89,11 +98,11 @@ const sendResetPasswordEmail = async (userEmail, userName,newPassword) => {
 const register = async (req, res) => {
   try {
     const validatedData = registerSchema.parse(req.body);
-    const { email, password, name, state, address,telno } = validatedData;
+    const { email, password, name, state, address, telno } = validatedData;
 
     const existingUser = await getUserByEmail(email);
     if (existingUser)
-      return res.status(400).json({ message: "Email already in use" });
+      return res.status(403).json({ message: "Email already in use. Please complete previous registration!" });
 
     const uuid = uuidv4();
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -143,13 +152,15 @@ const verifyCode = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
+    if (user.email_status === "VERIFY") {
+      return res.status(401).json({ success: false, message: "Your Account is Active" });
+    }
+
+
     if (user.verification_code !== code) {
       return res.status(400).json({ success: false, message: "Invalid verification code" });
     }
 
-    if (user.email_status === "VERIFY") {
-      return res.status(401).json({ success: false, message: "Your Account is Active" });
-    }
 
     await updateUserStatus(email);
 
@@ -176,15 +187,15 @@ const resendVerificationCode = async (req, res) => {
     const newVerificationCode = Math.floor(100000 + Math.random() * 900000);
 
     const result = await updateVerificationCode(email, newVerificationCode);
-    if(result){
+    if (result) {
       await sendVerificationEmail(email, user.name, newVerificationCode);
-      res.status(200).json({ 
+      res.status(200).json({
         success: true,
-        message: `Verification code resent successfully to email ${email}` 
+        message: `Verification code resent successfully to email ${email}`
       });
     }
 
-   
+
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error", error });
   }
@@ -193,7 +204,28 @@ const resendVerificationCode = async (req, res) => {
 const login = async (req, res) => {
   try {
     const validatedData = loginSchema.parse(req.body);
-    const { email, password } = validatedData;
+    const { email, password, device_token } = validatedData;
+    const applicationId = req.headers['application-id'];
+
+    if (!applicationId) {
+      res.status(503).json({
+        success: false,
+        message: 'Service Not Available'
+      });
+    }
+
+    const app = await knex('application')
+      .select('*')
+      .where({name:applicationId})
+      .first();
+    
+    if(!app){
+      res.status(503).json({
+        success: false,
+        message: 'Service Not Available'
+      });
+    }
+      
 
     const user = await getUserByEmail(email);
     // console.log(user);
@@ -205,11 +237,46 @@ const login = async (req, res) => {
     }
     if (user.status === "ACTIVE") {
       const token = jwt.sign(
-        { id: user.id, role: user.role, email: user.email},
+        { id: user.id, role: user.role, email: user.email },
         process.env.JWT_SECRET,
         { expiresIn: "1000s" }
       );
-      res.status(200).json({ success: true,token });
+
+      const existingTokenRecord = await knex("user_token").where({ user_id: user.id }).first();
+
+
+      const ipAddress = req.ip; // Get user's IP address
+
+      const rememberToken = crypto.randomBytes(30).toString("hex"); // Generate 40-char random token
+
+      // Generate bcrypt hash of user_id
+      const userIdHash = await bcrypt.hash(user.id.toString(), 10);
+
+      if (!existingTokenRecord) {
+        // If user_id does not exist, create a new record
+        await knex("user_token").insert({
+          user_id: user.id,
+          remember_token: rememberToken,
+          app_id:app.id,
+          device_token: device_token,
+          token: userIdHash.slice(0, 20), // Use only the first 20 chars of the hash
+          ip_address: ipAddress,
+          created_at: knex.fn.now(),
+          
+        });
+      } else {
+        // If user_id exists, update the record
+        await knex("user_token")
+          .where({ user_id: user.id })
+          .update({
+            remember_token: rememberToken,
+            device_token: deviceToken,
+            ip_address: ipAddress,
+        
+          });
+      }
+
+      res.status(200).json({ success: true, token });
     }
   } catch (error) {
     if (error.errors) {
@@ -230,7 +297,7 @@ const forgetPassword = async (req, res) => {
 
     const validatedData = forgetPasswordSchema.parse(req.body);
     const { email } = validatedData;
-    
+
     const user = await getUserByEmail(email);
 
     if (!user) {
@@ -242,17 +309,17 @@ const forgetPassword = async (req, res) => {
 
     const result = await updatePassword(email, hashedPassword);
 
-    if(result){
-    await sendResetPasswordEmail(
-      email,
-      user.name,
-      newPassword
-    );
+    if (result) {
+      await sendResetPasswordEmail(
+        email,
+        user.name,
+        newPassword
+      );
 
-    res.status(200).json({
-      success: true,
-      message: `A new password has been sent to your email: ${email}`,
-    });
+      res.status(200).json({
+        success: true,
+        message: `A new password has been sent to your email: ${email}`,
+      });
     }
   } catch (error) {
     if (error.errors) {
