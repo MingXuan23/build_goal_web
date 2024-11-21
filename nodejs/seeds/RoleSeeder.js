@@ -8,7 +8,7 @@ exports.seed = async function (knex) {
 
   // Inserts new entries
   await knex('roles').insert([
-    { role: 'admin', desc: 'Administrator role' },
+    { role: 'admin', desc: 'Administrator roles' },
     { role: 'staff', desc: 'Staff member role' },
     { role: 'organization', desc: 'organization role' },
     { role: 'content creator', desc: 'Content creator role' },
