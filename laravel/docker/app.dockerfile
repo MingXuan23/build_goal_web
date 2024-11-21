@@ -38,7 +38,7 @@ RUN mkdir -p /var/www/storage/framework/{sessions,cache,testing,views} && \
 
 
 # Run the entrypoint file.
-ENTRYPOINT ["sh","docker/entrypoint.sh" ]
+ENTRYPOINT [ "docker/entrypoint.sh" ]
 
 
 # FROM php:8.2-fpm-alpine as php
