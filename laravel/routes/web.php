@@ -65,4 +65,4 @@ Route::get('/organization/promote-content', function () {
 
 // Route::get('/admin/test', function () {
 //     return view('admin.dashboard.indexTemplate');
-// });
+// }); test 
