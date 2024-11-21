@@ -41,7 +41,7 @@
             </div> <div class="header-element">
                 <div class="d-flex align-items-center ">
                     <div class="bg-warning-transparent rounded p-2">
-                        <i class="bi bi-shield-fill-exclamation text-warning"></i>
+                        <i class="bi bi-bookmark-dash-fill text-warning"></i>
                         <span class="fw-bold">pending e-kyc</span>
                         
                     </div>

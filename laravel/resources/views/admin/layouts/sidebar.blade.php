@@ -24,13 +24,13 @@
                 <li class="slide">
                     <a href="/admin/dashboard" class="side-menu__item">
                         <i class="bx bx-home side-menu__icon"></i>
-                        <span class="side-menu__label m-2">Dashboard</span>
+                        <span class="side-menu__label">Dashboard</span>
                     </a>
                 </li>
                 <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
-                        <i class="bi bi-people fs-5"></i>
-                        <span class="side-menu__label m-2">User Management</span>
+                        <i class="bi bi-people"></i>
+                        <span class="side-menu__label mx-2">User Management</span>
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
