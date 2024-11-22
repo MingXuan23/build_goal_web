@@ -60,6 +60,11 @@ Route::get('/organization/promote-content', function () {
     return view('organization.content.promoteContent');
 });
 
+Route::get('/contentcreator/dashboard', function () {
+    return view('contentcreator.dashboard.index');
+});
+
+
 // Route::get('/admin/test', function () {
 //     return view('admin.dashboard.indexTemplate');
 // }); test 
