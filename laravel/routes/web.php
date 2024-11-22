@@ -57,7 +57,7 @@ Route::get('/organization/dashboard', function () {
 });
 
 Route::get('/organization/promote-content', function () {
-    return view('organization.content.promoteContent');
+    return view('organization.contentManagement.promoteContent');
 });
 
 Route::get('/content-creator/dashboard', function () {
