@@ -111,7 +111,7 @@
                         </div>
                         <div class="d-sm-block d-none">
                             <p class="fw-bold mb-0 lh-1">Khairul Adzhar</p>
-                            <span class="op-7 fw-semibold d-block fs-11">Admin</span>
+                            <span class="op-7 fw-semibold d-block fs-11">Organization</span>
                         </div>
                     </div>
                 </a>

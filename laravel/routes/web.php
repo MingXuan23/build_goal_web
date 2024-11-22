@@ -60,7 +60,7 @@ Route::get('/organization/promote-content', function () {
     return view('organization.content.promoteContent');
 });
 
-Route::get('/contentcreator/dashboard', function () {
+Route::get('/content-creator/dashboard', function () {
     return view('contentcreator.dashboard.index');
 });
 

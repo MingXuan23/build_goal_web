@@ -43,7 +43,7 @@
 <body>
     <!-- Start Switcher -->
 
-    @include('admin.layouts.switcher')
+    @include('staff.layouts.switcher')
     <!-- End Switcher -->
     <!-- Loader -->
     <div id="loader">
@@ -52,18 +52,18 @@
     <!-- Loader -->
     <div class="page">
         <!-- app-header -->
-        @include('admin.layouts.header')
+        @include('staff.layouts.header')
 
         <!-- /app-header -->
         <!-- Start::app-sidebar -->
-        @include('admin.layouts.sidebar')
+        @include('staff.layouts.sidebar')
 
         <!-- End::app-sidebar -->
 
         @yield('container')
 
         <!-- Footer start -->
-        @include('admin.layouts.footer')
+        @include('staff.layouts.footer')
 
         <!-- Footer End -->
     </div>
