@@ -65,6 +65,9 @@ Route::get('/contentcreator/dashboard', function () {
 });
 
 
+Route::get('/staff/dashboard', function () {
+    return view('staff.dashboard.index');
+});
 // Route::get('/admin/test', function () {
 //     return view('admin.dashboard.indexTemplate');
 // }); test 
