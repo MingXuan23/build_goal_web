@@ -71,3 +71,13 @@ Route::get('/staff/dashboard', function () {
 // Route::get('/admin/test', function () {
 //     return view('admin.dashboard.indexTemplate');
 // }); test 
+
+
+
+
+// Load the states list
+$states_list = include base_path('routes/state_list.php');
+
+Route::get('organization/promote-content', function () use ($states_list) {
+    return view('organization.contentManagement.promoteContent', compact('states_list'));
+});
