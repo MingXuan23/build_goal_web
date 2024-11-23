@@ -20,54 +20,82 @@ Route::get('/', function () {
 });
 
 Route::get('/login', [AuthController::class,'viewLogin'])->name('viewLogin');
-Route::get('/register',[AuthController::class,'viewRegister'])->name('viewRegister');
+Route::get('/verify-code', [AuthController::class,'viewVerify'])->name('viewVerify');
+Route::get('/resend-code', [AuthController::class,'resendVerify'])->name('resendVerify');
+Route::get('/organization-register',[AuthController::class,'viewOrganizationRegister'])->name('viewOrganizationRegister');
+Route::get('/content-creator-register',[AuthController::class,'viewContentCreatorRegister'])->name('viewContentCreatorRegister');
+Route::get('/reset-password', [AuthController::class, 'viewResetPassword'])->name('viewResetPassword');
+
+
+
 Route::post('/login',[AuthController::class,'login'])->name('login');
-Route::post('/register',[AuthController::class,'register'])->name('register');
+Route::post('/organization-register',[AuthController::class,'createOrganizationRegister'])->name('createOrganizationRegister');
+Route::post('/content-creator-register',[AuthController::class,'createContentCreatorRegister'])->name('createContentCreatorRegister');
+Route::post('/verify-code', [AuthController::class, 'verifyCode'])->name('verifyCode');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('resetPassword');
+Route::get('/resend-email-reset-password', [AuthController::class, 'resendResetPassword'])->name('resendResetPassword');
 
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard.index');
+
+
+
+
+// Group untuk Admin
+Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard.index');
+    });
+    
+    Route::get('/user', function () {
+        return view('admin.userManagement.index');
+    });
+    
+    Route::get('/add-user', function () {
+        return view('admin.userManagement.addUser');
+    });
+    
+    Route::get('/profile', function () {
+        return view('admin.profile.index');
+    });
+    
+    
+    // Route::get('/content', function () {
+    //     return view('admin.contentManagement.index');
+    // });
+    
+    
+    // Route::get('/promote-content', function () {
+    //     return view('admin.contentManagement.promoteContent');
+    // });
+
+    Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('admin.logout');
 });
 
-Route::get('/admin/user', function () {
-    return view('admin.userManagement.index');
+// Group untuk Staff
+Route::prefix('staff')->middleware(['auth', 'role:2'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('staff.dashboard.index');
+    });
+
+    Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('staff.logout');
 });
 
-Route::get('/admin/add-user', function () {
-    return view('admin.userManagement.addUser');
+Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('contentcreator.dashboard.index');
+    });
+    
+    Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('content-creator.logout');
 });
 
-Route::get('/admin/profile', function () {
-    return view('admin.profile.index');
+// Group untuk Organization
+Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('organization.dashboard.index');
+    });
+    
+    Route::get('/promote-content', function () {
+        return view('organization.contentManagement.promoteContent');
+    });
+
+    Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('organization.logout');
 });
-
-
-
-// Route::get('/admin/content', function () {
-//     return view('admin.contentManagement.index');
-// });
-
-
-// Route::get('/admin/promote-content', function () {
-//     return view('admin.contentManagement.promoteContent');
-// });
-
-
-Route::get('/organization/dashboard', function () {
-    return view('organization.dashboard.index');
-});
-
-Route::get('/organization/promote-content', function () {
-    return view('organization.contentManagement.promoteContent');
-});
-
-Route::get('/content-creator/dashboard', function () {
-    return view('contentcreator.dashboard.index');
-});
-
-
-Route::get('/staff/dashboard', function () {
-    return view('staff.dashboard.index');
-});
-// Route::get('/admin/test', function () {
-//     return view('admin.dashboard.indexTemplate');
-// }); test 

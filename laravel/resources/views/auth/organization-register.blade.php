@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-nav-layout="vertical" data-vertical-style="overlay" data-theme-mode="light"
-    data-header-styles="light" data-menu-styles="light" data-toggled="close">
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-theme-mode="color" data-header-styles="light"
+    data-menu-styles="color" data-toggled="close" style="--primary-rgb: 17,28,67;">
 
 <head>
 
@@ -56,8 +56,8 @@
                 <div class="card custom-card">
                     <div class="card-body">
 
-                        <div class="p-5">
-                            <p class="h5 fw-bold mb-2">Sign Up</p>
+                        <div class="p-3">
+                            <p class="h5 fw-bold mb-2">Sign Up for Organization</p>
                             <p class="mb-4 text-muted op-7 fw-normal ">Welcome & Join us by creating a free account
                                 !</p>
                             <div class="mb-3">
@@ -66,7 +66,7 @@
                                         <img src="../../assets/images/brand-logos/desktop-dark.png" alt="" class="authentication-brand desktop-dark">
                                     </a> --}}
                             </div>
-                            <form action="{{ route('register') }}" method="post">
+                            <form action="{{ route('createOrganizationRegister') }}" method="post">
                                 @csrf
                                 <div class="row">
 
@@ -86,7 +86,7 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-xl-6">
+                                            <div class="col-xl-12">
                                                 <div class="form-floating">
                                                     <input type="text"
                                                         class="form-control @error('fullname') is-invalid @enderror"
@@ -94,18 +94,6 @@
                                                         name="fullname" value="{{ old('fullname') }}">
                                                     <label for="floatingInputprimary">Full Name</label>
                                                     @error('fullname')
-                                                        <span class="mb-1 text-danger">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-6">
-                                                <div class="form-floating">
-                                                    <input type="email"
-                                                        class="form-control @error('email') is-invalid @enderror"
-                                                        id="floatingInputprimary" placeholder="name@example.com"
-                                                        name="email" value="{{ old('email') }}">
-                                                    <label for="floatingInputprimary">Email Address</label>
-                                                    @error('email')
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
@@ -126,7 +114,7 @@
                                             <div class="col-xl-12">
                                                 <div class="form-floating">
                                                     <input type="password"
-                                                        class="form-control @error('password') is-invalid @enderror"
+                                                        class="form-control @error('password') is-invalid @enderror @error('cpassword') is-invalid @enderror"
                                                         id="floatingInputprimary" placeholder="name@example.com"
                                                         name="password">
                                                     <label for="floatingInputprimary">Password</label>
@@ -170,6 +158,18 @@
                                             </div>
                                             <div class="col-xl-12">
                                                 <div class="form-floating">
+                                                    <input type="email"
+                                                        class="form-control @error('email') is-invalid @enderror"
+                                                        id="floatingInputprimary" placeholder="name@example.com"
+                                                        name="email" value="{{ old('email') }}">
+                                                    <label for="floatingInputprimary">Organization Email Address</label>
+                                                    @error('email')
+                                                        <span class="mb-1 text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-12">
+                                                <div class="form-floating">
                                                     <input type="text"
                                                         class="form-control @error('oaddress') is-invalid @enderror"
                                                         id="floatingInputprimary" placeholder="name@example.com"
@@ -182,11 +182,26 @@
                                             </div>
                                             <div class="col-xl-12">
                                                 <div class="form-floating">
-                                                    <input type="text"
-                                                        class="form-control @error('ostate') is-invalid @enderror"
-                                                        id="floatingInputprimary" placeholder="name@example.com"
-                                                        name="ostate" value="{{ old('ostate') }}">
-                                                    <label for="floatingInputprimary">Organization State</label>
+                                                    <select class="form-select @error('ostate') is-invalid @enderror" 
+                                                        id="floatingSelect" 
+                                                        aria-label="Floating label select example" 
+                                                        name="ostate">
+                                                        <option selected>- Select State -</option>
+                                                        <option value="pahang" @selected(old('ostate') == 'pahang')>Pahang</option>
+                                                        <option value="perak" @selected(old('ostate') == 'perak')>Perak</option>
+                                                        <option value="terengganu" @selected(old('ostate') == 'terengganu')>Terangganu</option>
+                                                        <option value="perlis" @selected(old('ostate') == 'perlis')>Perlis</option>
+                                                        <option value="selangor" @selected(old('ostate') == 'selangor')>Selangor</option>
+                                                        <option value="negeri_sembilan" @selected(old('ostate') == 'negeri_sembilan')>Negeri Sembilan</option>
+                                                        <option value="johor" @selected(old('ostate') == 'johor')>Johor</option>
+                                                        <option value="kelantan" @selected(old('ostate') == 'kelantan')>Kelantan</option>
+                                                        <option value="kedah" @selected(old('ostate') == 'kedah')>Kedah</option>
+                                                        <option value="pulau_pinang" @selected(old('ostate') == 'pulau_pinang')>Pulau Pinang</option>
+                                                        <option value="melaka" @selected(old('ostate') == 'melaka')>Melaka</option>
+                                                        <option value="sabah" @selected(old('ostate') == 'sabah')>Sabah</option>
+                                                        <option value="sarawak" @selected(old('ostate') == 'sarawak')>Sarawak</option>
+                                                    </select>
+                                                    <label for="floatingSelect">State</label>
                                                     @error('ostate')
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
                                                     @enderror
@@ -198,10 +213,9 @@
                                                         id="floatingSelect" aria-label="Floating label select example"
                                                         name="otype">
                                                         <option selected>- Select -</option>
-                                                        <option value="1" @selected(old('otype'))>Company
-                                                        </option>
-                                                        <option value="2" @selected(old('otype'))>Content
-                                                            Creater</option>
+                                                        @foreach ($organization_types as $ot)
+                                                            <option value="{{ $ot->id }}" @selected(old('otype') == $ot->id)>{{ $ot->type }}</option>
+                                                        @endforeach
                                                     </select>
                                                     <label for="floatingSelect">Organization Type</label>
                                                     @error('otype')
