@@ -38,15 +38,16 @@
                         <!-- End::header-link-icon -->
                     </span>
                 </a> --}}
-            </div> <div class="header-element">
+            </div>
+            <div class="header-element">
                 <div class="d-flex align-items-center ">
                     <div class="bg-warning-transparent rounded p-2">
                         <i class="bi bi-bookmark-dash-fill text-warning"></i>
                         <span class="fw-bold">pending e-kyc</span>
-                        
+
                     </div>
                 </div>
-               
+
             </div>
             <div class="header-element header-fullscreen">
                 <!-- Start::header-link -->
@@ -120,8 +121,17 @@
                     aria-labelledby="mainHeaderProfile">
                     <li><a class="dropdown-item d-flex" href="/admin/profile"><i
                                 class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
-                    <li><a class="dropdown-item d-flex" href="#"><i
-                                class="ti ti-logout fs-18 me-2 op-7"></i>Log Out</a></li>
+                    <li>
+                        <a class="dropdown-item d-flex" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="ti ti-logout fs-18 me-2 op-7"></i>
+                            LogOut
+                        </a>
+                        
+                        <!-- Form Logout -->
+                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </li>
                 </ul>
             </div>
             <div class="header-element">

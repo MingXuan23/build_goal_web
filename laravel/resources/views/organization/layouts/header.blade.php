@@ -120,8 +120,17 @@
                     aria-labelledby="mainHeaderProfile">
                     <li><a class="dropdown-item d-flex" href="/admin/profile"><i
                                 class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
-                    <li><a class="dropdown-item d-flex" href="#"><i
-                                class="ti ti-logout fs-18 me-2 op-7"></i>Log Out</a></li>
+                    <li>
+                        <a class="dropdown-item d-flex" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="ti ti-logout fs-18 me-2 op-7"></i>
+                            LogOut
+                        </a>
+                        
+                        <!-- Form Logout -->
+                        <form id="logout-form" action="{{ route('organization.logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </li>
                 </ul>
             </div>
             <div class="header-element">
