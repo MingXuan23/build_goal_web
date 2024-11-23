@@ -39,7 +39,7 @@ services:
       dockerfile: ./docker/web.dockerfile
     working_dir: /var/www
     volumes:
-      - ./laravel:/var/www
+      - ./laravel:/var/www:cached
     depends_on:
       - "laravel-app"
     networks:
