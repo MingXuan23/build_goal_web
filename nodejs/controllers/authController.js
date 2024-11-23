@@ -17,7 +17,8 @@ const {
   createUser,
   updateUserStatus,
   updateVerificationCode,
-  updatePassword
+  updatePassword,
+  getStaticToken
 } = require("../models/userModel");
 const { v4: uuidv4 } = require("uuid");
 
@@ -96,6 +97,7 @@ const sendResetPasswordEmail = async (userEmail, userName, newPassword) => {
 
 
 const register = async (req, res) => {
+ 
   try {
     const validatedData = registerSchema.parse(req.body);
     const { email, password, name, state, address, telno } = validatedData;
@@ -202,6 +204,8 @@ const resendVerificationCode = async (req, res) => {
 };
 
 const login = async (req, res) => {
+  
+
   try {
     const validatedData = loginSchema.parse(req.body);
     const { email, password, device_token } = validatedData;
@@ -236,22 +240,19 @@ const login = async (req, res) => {
       return res.status(401).json({ success: false, message: "Your Account is Not Active." });
     }
     if (user.status === "ACTIVE") {
-      const token = jwt.sign(
-        { id: user.id, role: user.role, email: user.email },
-        process.env.JWT_SECRET,
-        { expiresIn: "1000s" }
-      );
+      const token = getStaticToken(user.id, user.created_at);
+    
+      
 
       const existingTokenRecord = await knex("user_token").where({ user_id: user.id }).first();
 
 
-      const ipAddress = req.ip; // Get user's IP address
+      const ipAddress =  req.header('x-forwarded-for') || req.connection.remoteAddress; // Get user's IP address
 
       const rememberToken = crypto.randomBytes(30).toString("hex"); // Generate 40-char random token
 
       // Generate bcrypt hash of user_id
-      const userIdHash = await bcrypt.hash(user.id.toString(), 10);
-
+     
       if (!existingTokenRecord) {
         // If user_id does not exist, create a new record
         await knex("user_token").insert({
@@ -259,7 +260,7 @@ const login = async (req, res) => {
           remember_token: rememberToken,
           app_id:app.id,
           device_token: device_token,
-          token: userIdHash.slice(0, 20), // Use only the first 20 chars of the hash
+          token: token, // Use only the first 20 chars of the hash
           ip_address: ipAddress,
           created_at: knex.fn.now(),
           
@@ -270,13 +271,14 @@ const login = async (req, res) => {
           .where({ user_id: user.id })
           .update({
             remember_token: rememberToken,
-            device_token: deviceToken,
+            device_token: device_token,
             ip_address: ipAddress,
+            token: token,
         
           });
       }
 
-      res.status(200).json({ success: true, token });
+      res.status(200).json({ success: true, token, rememberToken, email: user.email });
     }
   } catch (error) {
     if (error.errors) {

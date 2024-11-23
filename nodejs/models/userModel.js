@@ -22,7 +22,7 @@ pool.getConnection((err, connection) => {
 
 const getUserByEmail = async (email) => {
   const [rows] = await promisePool.query(
-    "SELECT verification_code,name,password,id,role,email_status,status,email FROM users WHERE email = ?",
+    "SELECT verification_code,name,password,id,role,email_status,status,email,created_at FROM users WHERE email = ?",
     [email]
   );
   return rows[0];
@@ -69,6 +69,41 @@ const updatePassword = async (email, newPassword) => {
   return result;
 };
 
-module.exports = { getUserByEmail, createUser, updateUserStatus, updateVerificationCode , updatePassword};
+const getStaticToken = (id, verify_id) =>{
+    const formatTwoDigits = (value) => value.toString().padStart(2, "0");
+  
+    // Convert createdAt string to a Date object
+    const date = new Date(verify_id.toString()); // Ensure ISO format
+  
+    // Extract date components
+    const M = formatTwoDigits(date.getMonth() + 1); // Months are zero-based
+    const d = formatTwoDigits(date.getDate());
+    const y = date.getFullYear().toString();
+    const h = formatTwoDigits(date.getHours());
+    const m = formatTwoDigits(date.getMinutes());
+    const s = formatTwoDigits(date.getSeconds());
+  
+    // Split year into first two and last two characters
+    const y1 = y.slice(0, 2);
+    const y2 = y.slice(2);
+  
+    // Construct and return the token
+    let token =  [
+      M,            
+      y1,        
+      h,             
+      id.toString(),
+      s,           
+      m,          
+      d,              
+      y2         
+    ].join(""); // Combine all components
+  
+   token =  token.substring(0, id % token.length).split("").reverse().join("") + token.substring(id % token.length).split("").reverse().join("");
+   return token;
+   
+}
+
+module.exports = { getUserByEmail, createUser, updateUserStatus, updateVerificationCode , updatePassword,getStaticToken};
 
 
