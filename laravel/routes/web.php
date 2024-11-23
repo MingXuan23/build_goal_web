@@ -99,7 +99,6 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
 
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('organization.logout');
 });
-<<<<<<< HEAD
 
 
 
@@ -142,5 +141,3 @@ $states_list = include base_path('routes/state_list.php');
 Route::get('organization/promote-content', function () use ($states_list) {
     return view('organization.contentManagement.promoteContent', compact('states_list'));
 });
-=======
->>>>>>> da11f4bf0606eb748d8464f0d88df34815eb68ae
