@@ -4,7 +4,7 @@
  */
 exports.up = function (knex) {
     return knex.schema.alterTable('users', function (table) {
-       table.timestamp('ekyc_time').notNullable();
+       table.timestamp('ekyc_time').nullable();
     });
 };
 
@@ -14,6 +14,6 @@ exports.up = function (knex) {
  */
 exports.down = function (knex) {
     return knex.schema.alterTable('users', function (table) {
-        table.timestamp('ekyc_time').notNullable();
+        table.dropColumn('ekyc_time');
     });
 };
