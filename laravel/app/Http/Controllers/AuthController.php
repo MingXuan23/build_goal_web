@@ -157,7 +157,7 @@ class AuthController extends Controller
             DB::commit();
 
 
-            Mail::to($validatedData['email'])->send(new VerificationCodeMail($validatedData['fullname'], $verificationCode));
+            // Mail::to($validatedData['email'])->send(new VerificationCodeMail($validatedData['fullname'], $verificationCode));
 
             return redirect(route('viewVerify'))->with('success', 'Registration successfull. Please check your Inbox or Spam email to get verification code to active your account');
         } catch (\Exception $e) {
@@ -247,7 +247,7 @@ class AuthController extends Controller
             ]);
             Session::put('user_id', $user);
             DB::commit();
-            Mail::to($validatedData['email'])->send(new VerificationCodeMail($validatedData['fullname'], $verificationCode));
+            // Mail::to($validatedData['email'])->send(new VerificationCodeMail($validatedData['fullname'], $verificationCode));
 
             return redirect(route('viewVerify'))->with('success', 'Registration successfull. Please check your Inbox or Spam email to get verification code to active your account');
         } catch (Exception $e) {
