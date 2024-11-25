@@ -31,12 +31,21 @@
                         </div>
                     @endif
                     @if (session()->has('error'))
-                        <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
-                            <i class="bi bi-dash-circle-fill fs-4"></i>
-                            <div class="ms-3 fw-bold"> {{ session('error') }} </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
+                        @php
+                            $errors = is_array(session('error')) ? session('error') : [session('error')];
+                        @endphp
+
+                        @foreach ($errors as $error)
+                            <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                                <i class="bi bi-dash-circle-fill fs-4"></i>
+                                <div class="ms-3 fw-bold"> {{ $error }} </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endforeach
                     @endif
+
+
                     <div class="card custom-card">
                         <div class="card-header">
                             <div class="card-title">List All User </div>
@@ -393,12 +402,41 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <input type="text" class="form-control"
-                                                                id="floatingInputprimary" placeholder="name@example.com"
-                                                                value="{{ $data->org_state }}">
-                                                            <label for="floatingInputprimary">Organization State</label>
+                                                            <select class="form-select" id="floatingSelect"
+                                                                aria-label="Floating label select example" name="ostate">
+                                                                <option value="" selected>- Select State -</option>
+                                                                <option value="pahang" @selected($data->org_state == 'pahang')>Pahang
+                                                                </option>
+                                                                <option value="perak" @selected($data->org_state == 'perak')>Perak
+                                                                </option>
+                                                                <option value="terengganu" @selected($data->org_state == 'terengganu')>
+                                                                    Terengganu</option>
+                                                                <option value="perlis" @selected($data->org_state == 'perlis')>Perlis
+                                                                </option>
+                                                                <option value="selangor" @selected($data->org_state == 'selangor')>
+                                                                    Selangor</option>
+                                                                <option value="negeri_sembilan"
+                                                                    @selected($data->org_state == 'negeri_sembilan')>Negeri Sembilan</option>
+                                                                <option value="johor" @selected($data->org_state == 'johor')>Johor
+                                                                </option>
+                                                                <option value="kelantan" @selected($data->org_state == 'kelantan')>
+                                                                    Kelantan</option>
+                                                                <option value="kedah" @selected($data->org_state == 'kedah')>Kedah
+                                                                </option>
+                                                                <option value="pulau_pinang" @selected($data->org_state == 'pulau_pinang')>
+                                                                    Pulau Pinang</option>
+                                                                <option value="melaka" @selected($data->org_state == 'melaka')>Melaka
+                                                                </option>
+                                                                <option value="sabah" @selected($data->org_state == 'sabah')>Sabah
+                                                                </option>
+                                                                <option value="sarawak" @selected($data->org_state == 'sarawak')>
+                                                                    Sarawak</option>
+                                                            </select>
+                                                            <label for="floatingSelect">State</label>
+
                                                         </div>
                                                     </div>
+
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
                                                             <select class="form-select" id="floatingSelect"
@@ -467,8 +505,14 @@
             @endforeach
 
             @foreach ($datas as $data)
+                @php
+
+                    $roles = explode(',', $data->role_names);
+
+                @endphp
                 <div class="modal fade" id="modalUpdate-{{ $data->id }}">
-                    <div class="modal-dialog modal-dialog-centered text-center modal-xl">
+                    <div
+                        class="modal-dialog modal-dialog-centered text-center {{ in_array('organization', $roles) ? 'modal-xl' : '' }}">
                         <div class="modal-content modal-content-demo">
                             <div class="modal-header">
                                 <h6 class="modal-title">Edit User - {{ $data->name }}</h6><button aria-label="Close"
@@ -517,7 +561,52 @@
                                                         <label for="floatingInputprimary">Phone Number</label>
                                                     </div>
                                                 </div>
+                                                @if (in_array('content creator', $roles) && !in_array('organization', $roles))
+                                                    <div class="col-xl-12">
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control"
+                                                                id="floatingInputprimary" placeholder="name@example.com"
+                                                                value="{{ $data->org_address }}" name="oaddress">
+                                                            <label for="floatingInputprimary">Address</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-12">
+                                                        <div class="form-floating">
+                                                            <select class="form-select" id="floatingSelect"
+                                                                aria-label="Floating label select example" name="ostate">
+                                                                <option value="" selected>- Select State -</option>
+                                                                <option value="pahang" @selected($data->org_state == 'pahang')>Pahang
+                                                                </option>
+                                                                <option value="perak" @selected($data->org_state == 'perak')>Perak
+                                                                </option>
+                                                                <option value="terengganu" @selected($data->org_state == 'terengganu')>
+                                                                    Terengganu</option>
+                                                                <option value="perlis" @selected($data->org_state == 'perlis')>Perlis
+                                                                </option>
+                                                                <option value="selangor" @selected($data->org_state == 'selangor')>
+                                                                    Selangor</option>
+                                                                <option value="negeri_sembilan"
+                                                                    @selected($data->org_state == 'negeri_sembilan')>Negeri Sembilan</option>
+                                                                <option value="johor" @selected($data->org_state == 'johor')>Johor
+                                                                </option>
+                                                                <option value="kelantan" @selected($data->org_state == 'kelantan')>
+                                                                    Kelantan</option>
+                                                                <option value="kedah" @selected($data->org_state == 'kedah')>Kedah
+                                                                </option>
+                                                                <option value="pulau_pinang" @selected($data->org_state == 'pulau_pinang')>
+                                                                    Pulau Pinang</option>
+                                                                <option value="melaka" @selected($data->org_state == 'melaka')>Melaka
+                                                                </option>
+                                                                <option value="sabah" @selected($data->org_state == 'sabah')>Sabah
+                                                                </option>
+                                                                <option value="sarawak" @selected($data->org_state == 'sarawak')>
+                                                                    Sarawak</option>
+                                                            </select>
+                                                            <label for="floatingSelect">State</label>
 
+                                                        </div>
+                                                    </div>
+                                                @endif
                                                 <div class="col-xl-12">
                                                     <div class="form-floating">
                                                         <input type="password" class="form-control"
@@ -578,38 +667,72 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <input type="text" class="form-control"
-                                                                id="floatingInputprimary" placeholder="name@example.com"
-                                                                value="{{ $data->org_state }}" name="ostate">
-                                                            <label for="floatingInputprimary">Organization State</label>
+                                                            <select class="form-select" id="floatingSelect"
+                                                                aria-label="Floating label select example" name="ostate">
+                                                                <option value="" selected>- Select State -</option>
+                                                                <option value="pahang" @selected($data->org_state == 'pahang')>Pahang
+                                                                </option>
+                                                                <option value="perak" @selected($data->org_state == 'perak')>Perak
+                                                                </option>
+                                                                <option value="terengganu" @selected($data->org_state == 'terengganu')>
+                                                                    Terengganu</option>
+                                                                <option value="perlis" @selected($data->org_state == 'perlis')>Perlis
+                                                                </option>
+                                                                <option value="selangor" @selected($data->org_state == 'selangor')>
+                                                                    Selangor</option>
+                                                                <option value="negeri_sembilan"
+                                                                    @selected($data->org_state == 'negeri_sembilan')>Negeri Sembilan</option>
+                                                                <option value="johor" @selected($data->org_state == 'johor')>Johor
+                                                                </option>
+                                                                <option value="kelantan" @selected($data->org_state == 'kelantan')>
+                                                                    Kelantan</option>
+                                                                <option value="kedah" @selected($data->org_state == 'kedah')>Kedah
+                                                                </option>
+                                                                <option value="pulau_pinang" @selected($data->org_state == 'pulau_pinang')>
+                                                                    Pulau Pinang</option>
+                                                                <option value="melaka" @selected($data->org_state == 'melaka')>Melaka
+                                                                </option>
+                                                                <option value="sabah" @selected($data->org_state == 'sabah')>Sabah
+                                                                </option>
+                                                                <option value="sarawak" @selected($data->org_state == 'sarawak')>
+                                                                    Sarawak</option>
+                                                            </select>
+                                                            <label for="floatingSelect">State</label>
+
                                                         </div>
                                                     </div>
+
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
                                                             <select class="form-select" id="floatingSelect"
-                                                                aria-label="Floating label select example" name="ostate">
+                                                                aria-label="Floating label select example" name="otype">
                                                                 <option value="" disabled
                                                                     {{ $data->org_type == null ? 'selected' : '' }}>-
                                                                     Select -
                                                                 </option>
                                                                 <option value="1"
-                                                                    {{ $data->org_type == 1 ? 'selected' : '' }}>Government
+                                                                    {{ $data->org_type === 'Government' ? 'selected' : '' }}>
+                                                                    Government
                                                                 </option>
                                                                 <option value="2"
-                                                                    {{ $data->org_type == 2 ? 'selected' : '' }}>Company
+                                                                    {{ $data->org_type === 'Company' ? 'selected' : '' }}>
+                                                                    Company
                                                                 </option>
                                                                 <option value="3"
-                                                                    {{ $data->org_type == 3 ? 'selected' : '' }}>Skill
+                                                                    {{ $data->org_type === 'Skill Training Vendor' ? 'selected' : '' }}>
+                                                                    Skill
                                                                     Training
                                                                     Vendor</option>
                                                                 <option value="4"
-                                                                    {{ $data->org_type == 4 ? 'selected' : '' }}>NGO
+                                                                    {{ $data->org_type === 'NGO' ? 'selected' : '' }}>NGO
                                                                 </option>
                                                                 <option value="5"
-                                                                    {{ $data->org_type == 5 ? 'selected' : '' }}>Content
+                                                                    {{ $data->org_type === 'Content Creator' ? 'selected' : '' }}>
+                                                                    Content
                                                                     Creator</option>
                                                                 <option value="6"
-                                                                    {{ $data->org_type == 6 ? 'selected' : '' }}>Event
+                                                                    {{ $data->org_type === 'Event Organizer' ? 'selected' : '' }}>
+                                                                    Event
                                                                     Organizer</option>
                                                             </select>
                                                             <label for="floatingSelect">Organization Type</label>
@@ -638,9 +761,9 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
-                                        data-bs-placement="top" title="Delete user Record">Delete</button>
-                                    <button type="button" class="btn btn-primary btn-sm"
+                                    <button type="submit" class="btn btn-primary btn-sm" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Delete user Record">Update</button>
+                                    <button type="button" class="btn btn-danger btn-sm"
                                         data-bs-dismiss="modal">Close</button>
                                 </div>
 

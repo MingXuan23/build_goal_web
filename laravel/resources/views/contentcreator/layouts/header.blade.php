@@ -38,15 +38,26 @@
                         <!-- End::header-link-icon -->
                     </span>
                 </a> --}}
-            </div> <div class="header-element">
-                <div class="d-flex align-items-center ">
-                    <div class="bg-warning-transparent rounded p-2">
-                        <i class="bi bi-bookmark-dash-fill text-warning"></i>
-                        <span class="fw-bold">pending e-kyc</span>
-                        
+            </div>
+            <div class="header-element">
+                @if (Auth::user()->ekyc_status === 0)
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="bg-danger-transparent rounded p-2 d-flex align-items-center">
+                            <i class="bi bi-patch-exclamation-fill text-danger fs-5 me-2"></i>
+                            <span class="fw-bold">pending e-kyc</span>
+
+                        </div>
                     </div>
-                </div>
-               
+                @else
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="bg-success-transparent rounded d-flex align-items-center p-2">
+                            <i class="bi bi-patch-check-fill text-success fs-5 me-2"></i>
+                            <!-- Added margin to separate icon and text -->
+                            <span class="fw-bold">e-kyc Verified</span>
+                        </div>
+                    </div>
+                @endif
+
             </div>
             <div class="header-element header-fullscreen">
                 <!-- Start::header-link -->
@@ -121,13 +132,15 @@
                     <li><a class="dropdown-item d-flex" href="/admin/profile"><i
                                 class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
                     <li>
-                        <a class="dropdown-item d-flex" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <a class="dropdown-item d-flex" href="#"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="ti ti-logout fs-18 me-2 op-7"></i>
                             LogOut
                         </a>
-                        
+
                         <!-- Form Logout -->
-                        <form id="logout-form" action="{{ route('content-creator.logout') }}" method="POST" style="display: none;">
+                        <form id="logout-form" action="{{ route('content-creator.logout') }}" method="POST"
+                            style="display: none;">
                             @csrf
                         </form>
                     </li>

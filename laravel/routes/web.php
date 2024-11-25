@@ -112,30 +112,12 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
 
     Route::get('/content-management', [ContentController::class,'showContent'])->name('showContent');
 
-    // Load the states list
-    $states_list = [
-        "Johor", "Kedah", "Kelantan", "Kuala Lumpur", "Labuan", "Melaka", 
-        "Negeri Sembilan", "Pahang", "Perak", "Perlis", "Penang", "Putrajaya", 
-        "Selangor", "Terengganu",
-        // Sarawak Divisions
-        "Sarawak - Kuching", "Sarawak - Sri Aman", "Sarawak - Sibu", "Sarawak - Miri", 
-        "Sarawak - Limbang", "Sarawak - Sarikei", "Sarawak - Kapit", "Sarawak - Samarahan", 
-        "Sarawak - Bintulu", "Sarawak - Betong", "Sarawak - Mukah", "Sarawak - Serian",
-        // Sabah Divisions
-        "Sabah - Beaufort", "Sabah - Keningau", "Sabah - Kuala Penyu", "Sabah - Membakut", 
-        "Sabah - Nabawan", "Sabah - Sipitang", "Sabah - Tambunan", "Sabah - Tenom", 
-        "Sabah - Kota Marudu", "Sabah - Pitas", "Sabah - Beluran", "Sabah - Kinabatangan", 
-        "Sabah - Sandakan", "Sabah - Telupid", "Sabah - Tongod", "Sabah - Kalabakan", 
-        "Sabah - Kunak", "Sabah - Lahad Datu", "Sabah - Semporna", "Sabah - Tawau", 
-        "Sabah - Kota Belud", "Sabah - Kota Kinabalu", "Sabah - Papar", "Sabah - Penampang", 
-        "Sabah - Putatan", "Sabah - Ranau", "Sabah - Tuaran"
-    ];
+    Route::get('/promote-content/{id}', [ContentController::class, 'showPromoteContent'])->name('promotecontent');
 
     // Route::get('/promote-content', function () use ($states_list) {
     //     return view('organization.contentManagement.promoteContent', compact('states_list'));
     // });
 
-    Route::get('/promote-content/{id}', [ContentController::class, 'showPromoteContent'])->name('promotecontent');
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('organization.logout');
 });
 
