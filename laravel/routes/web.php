@@ -115,6 +115,8 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
     Route::get('organization/promote-content', function () use ($states_list) {
         return view('organization.contentManagement.promoteContent', compact('states_list'));
     });
+
+    Route::get('organization/promote-content/{id}', [ContentController::class, 'showPromoteContent'])->name('promotecontent');
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('organization.logout');
 });
 
