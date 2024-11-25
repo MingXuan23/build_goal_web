@@ -1,11 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-<<<<<<< HEAD
-use App\Http\Controllers\ContentController;
-=======
 use App\Http\Controllers\UserManagementController;
->>>>>>> ac61ac34ab3fb8d2bb16c43bd7663dd60d5c5124
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -122,55 +118,6 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('organization.logout');
 });
 
-<<<<<<< HEAD
-
-
-// Route::get('/admin/content', function () {
-//     return view('admin.contentManagement.index');
-// });
-
-
-// Route::get('/admin/promote-content', function () {
-//     return view('admin.contentManagement.promoteContent');
-// });
-
-
-Route::get('/organization/dashboard', function () {
-    return view('organization.dashboard.index');
-});
-
-Route::get('/organization/promote-content', function () {
-    return view('organization.contentManagement.promoteContent');
-});
-
-Route::get('/content-creator/dashboard', function () {
-    return view('contentcreator.dashboard.index');
-});
-
-
-Route::get('/staff/dashboard', function () {
-    return view('staff.dashboard.index');
-});
-// Route::get('/admin/test', function () {
-//     return view('admin.dashboard.indexTemplate');
-// }); test 
-
-
-
-
-// Load the states list
-$states_list = include base_path('routes/state_list.php');
-
-Route::get('organization/promote-content', function () use ($states_list) {
-    return view('organization.contentManagement.promoteContent', compact('states_list'));
-});
-
-
-
-
-Route::get('organization/promote-content/{id}', [ContentController::class, 'showPromoteContent'])->name('promotecontent');
-=======
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
->>>>>>> ac61ac34ab3fb8d2bb16c43bd7663dd60d5c5124

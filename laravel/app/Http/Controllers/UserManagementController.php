@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
 class UserManagementController extends Controller
@@ -159,6 +160,50 @@ class UserManagementController extends Controller
 
     public function updateUser(Request $request, $id)
     {
+
+        $validatedData = $request->validate([
+            'icno' => 'required|digits:12|unique:users',
+            'fullname' => 'required',
+            'email' => 'required|email|unique:organization',
+            'phoneno' => 'required',
+            'password' => 'required|min:5',
+            'cpassword' => 'required|min:5|same:password',
+            'oname' => 'required',
+            'oaddress' => 'required',
+            'ostate' => [
+                'required',
+                Rule::in([
+                    'pahang',
+                    'perak',
+                    'terengganu',
+                    'perlis',
+                    'selangor',
+                    'negeri_sembilan',
+                    'johor',
+                    'kelantan',
+                    'kedah',
+                    'pulau_pinang',
+                    'melaka',
+                    'sabah',
+                    'sarawak'
+                ]),
+            ],
+            'otype' => 'required|exists:organization_type,id',
+        ], [
+            'otype.in' => 'The selected organization type is invalid. Please choose a valid organization type.',
+            'ostate.in' => 'The selected state is invalid. Please choose a valid state.',
+        ], [
+            'icno' => 'IC Number',
+            'fullname' => 'Full Name',
+            'oemail' => 'Email',
+            'phoneno' => 'Phone Number',
+            'password' => 'Password',
+            'cpassword' => 'Confirm Passowrd',
+            'oname' => 'Organization Name',
+            'oaddress' => 'Organization Address',
+            'ostate' => 'Organization state',
+            'otype' => 'Organization Type',
+        ]);
         $data = DB::table('users')->where('id', $id)->update([
             'name' => $request->name
         ]);
@@ -171,7 +216,7 @@ class UserManagementController extends Controller
         try {
             $request->validate([
                 'roles' => 'required|array',
-                'roles.*' => 'integer|exists:roles,id', 
+                'roles.*' => 'integer|exists:roles,id',
             ]);
 
             $roles = array_map('intval', $request->roles);
@@ -190,7 +235,7 @@ class UserManagementController extends Controller
         }
     }
 
-    
+
     public function updateEkycStatus(Request $request, $id)
     {
         DB::beginTransaction();

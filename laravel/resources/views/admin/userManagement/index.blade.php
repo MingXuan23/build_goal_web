@@ -44,8 +44,10 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
+
                                 <table class="table table-bordered table-hover text-nowrap w-100 data-table">
                                     <thead>
+
                                         <tr>
                                             <th>No.</th>
                                             <th>Ic No</th>
@@ -293,8 +295,8 @@
                         class="modal-dialog modal-dialog-centered text-center {{ in_array('organization', $roles) ? 'modal-xl' : '' }}">
                         <div class="modal-content modal-content-demo">
                             <div class="modal-header">
-                                <h6 class="modal-title">View User - {{ $data->name }}</h6><button aria-label="Close"
-                                    class="btn-close" data-bs-dismiss="modal"></button>
+                                <h6 class="modal-title">View User - {{ $data->name }} ( {{ $data->role_names }} )</h6>
+                                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
 
                             <form action="{{ route('updateUser', $data->id) }}" method="POST">
@@ -337,6 +339,14 @@
                                                             id="floatingInputprimary" placeholder="name@example.com"
                                                             value="{{ $data->telno }}">
                                                         <label for="floatingInputprimary">Phone Number</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xl-12">
+                                                    <div class="form-floating">
+                                                        <input type="text" class="form-control"
+                                                            id="floatingInputprimary" placeholder="name@example.com"
+                                                            value="{{ strtoupper($data->role_names) }}">
+                                                        <label for="floatingInputprimary">Role</label>
                                                     </div>
                                                 </div>
 
@@ -487,7 +497,7 @@
                                                     <div class="form-floating">
                                                         <input type="text" class="form-control"
                                                             id="floatingInputprimary" placeholder="name@example.com"
-                                                            value="{{ $data->name }}" name="name">
+                                                            value="{{ $data->name }}" name="fullname">
                                                         <label for="floatingInputprimary">Full Name</label>
                                                     </div>
                                                 </div>
@@ -503,7 +513,7 @@
                                                     <div class="form-floating">
                                                         <input type="number" class="form-control"
                                                             id="floatingInputprimary" placeholder="name@example.com"
-                                                            value="{{ $data->telno }}" name="telno">
+                                                            value="{{ $data->telno }}" name="phoneno">
                                                         <label for="floatingInputprimary">Phone Number</label>
                                                     </div>
                                                 </div>
