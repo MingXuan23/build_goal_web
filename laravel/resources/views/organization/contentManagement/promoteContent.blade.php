@@ -1,5 +1,6 @@
 @extends('organization.layouts.main')
 @section('container')
+@dd($states_list)
 <!-- Start::app-content -->
 <div class="main-content app-content">
    <div class="container">
@@ -32,9 +33,9 @@
                         <label for="content_id" class="form-label">Choose Content</label>
                         <select class="form-select" id="content_id" name="content_id" required>
                            <option value="" disabled selected>Select Content</option>
-                           @foreach($contents as $content)
+                           {{--@foreach($contents as $content)
                               <option value="{{ $content->id }}">{{ $content->name }}</option>
-                           @endforeach
+                           @endforeach --}}
                         </select>
                      </div>
 
