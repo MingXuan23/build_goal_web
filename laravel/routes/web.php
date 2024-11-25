@@ -110,6 +110,8 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
         return view('organization.dashboard.index');
     });
 
+    Route::get('/content-management', [ContentController::class,'showContent'])->name('showContent');
+
     // Load the states list
     $states_list = [
         "Johor", "Kedah", "Kelantan", "Kuala Lumpur", "Labuan", "Melaka", 

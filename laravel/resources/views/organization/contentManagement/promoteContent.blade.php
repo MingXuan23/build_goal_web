@@ -40,6 +40,7 @@
                                         value="{{ $content->name }}" readonly>
                                 </div>
                                 
+                                
                                 <!-- State Selection (Checkbox) -->
                                 <div class="mb-3">
                                     <label class="form-label">Select States</label>
