@@ -1,6 +1,5 @@
 @extends('organization.layouts.main')
 @section('container')
-    {{-- @dd($stateCities) --}}
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
@@ -40,22 +39,31 @@
                                     <input type="text" class="form-control" id="content_name" name="content_name"
                                         value="{{ $content->name }}" readonly>
                                 </div>
+                                
+                                <!-- State Selection (Checkbox) -->
                                 <div class="mb-3">
-                                    <label for="state" class="form-label">Select State</label>
-                                    <select class="form-select" id="state" name="state">
-                                        <option value="" disabled selected>Select a State</option>
+                                    <label class="form-label">Select States</label>
+                                    <div id="state-container">
                                         @foreach (array_keys($stateCities) as $state)
-                                            <option value="{{ $state }}">{{ $state }}</option>
+                                            <div class="form-check">
+                                                <input class="form-check-input state-checkbox" type="checkbox"
+                                                    name="states[]" value="{{ $state }}" id="state-{{ $state }}">
+                                                <label class="form-check-label" for="state-{{ $state }}">
+                                                    {{ $state }}
+                                                </label>
+                                            </div>
                                         @endforeach
-                                    </select>
+                                    </div>
                                 </div>
 
+                                <!-- City Selection (Checkboxes) -->
                                 <div class="mb-3">
-                                    <label for="city" class="form-label">Select City</label>
-                                    <select class="form-select" id="city" name="city" disabled>
-                                        <option value="" disabled selected>Select a City</option>
-                                    </select>
+                                    <label class="form-label">Select Cities</label>
+                                    <div id="city-container">
+                                        <p class="text-muted">Please select a state to view cities.</p>
+                                    </div>
                                 </div>
+
                                 <!-- Package Selection -->
                                 <div class="mb-3">
                                     <label for="package" class="form-label">Choose Package </label>
@@ -81,28 +89,51 @@
         </div>
     </div>
     <script>
-
         const stateCities = @json($stateCities);
 
-        const stateSelect = document.getElementById('state');
-        const citySelect = document.getElementById('city');
-        stateSelect.addEventListener('change', function() {
-            const selectedState = this.value;
+        const stateCheckboxes = document.querySelectorAll('.state-checkbox');
+        const cityContainer = document.getElementById('city-container');
 
-            citySelect.innerHTML = '<option value="" disabled selected>Select a City</option>';
+        stateCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                cityContainer.innerHTML = '';
 
-            if (selectedState && stateCities[selectedState]) {
-                citySelect.disabled = false; 
+                const selectedStates = Array.from(stateCheckboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
 
-                stateCities[selectedState].forEach(city => {
-                    const option = document.createElement('option');
-                    option.value = city;
-                    option.textContent = city;
-                    citySelect.appendChild(option);
-                });
-            } else {
-                citySelect.disabled = true;
-            }
+                if (selectedStates.length === 0) {
+                    cityContainer.innerHTML = '<p class="text-muted">Please select a state to view cities.</p>';
+                } else {
+                    selectedStates.forEach(state => {
+                        if (stateCities[state]) {
+                            const stateHeading = document.createElement('h5');
+                            stateHeading.textContent = state;
+                            cityContainer.appendChild(stateHeading);
+
+                            stateCities[state].forEach(city => {
+                                const checkboxWrapper = document.createElement('div');
+                                checkboxWrapper.classList.add('form-check');
+
+                                const checkbox = document.createElement('input');
+                                checkbox.type = 'checkbox';
+                                checkbox.className = 'form-check-input';
+                                checkbox.name = 'cities[]'; 
+                                checkbox.value = `${state} - ${city}`; 
+
+                                const label = document.createElement('label');
+                                label.className = 'form-check-label';
+                                label.textContent = city;
+
+                                checkboxWrapper.appendChild(checkbox);
+                                checkboxWrapper.appendChild(label);
+
+                                cityContainer.appendChild(checkboxWrapper);
+                            });
+                        }
+                    });
+                }
+            });
         });
     </script>
 @endsection
