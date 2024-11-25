@@ -4,6 +4,12 @@ FROM node:23-alpine
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 # Set the working directory inside the container
+
+RUN apk update && apk add --no-cache tzdata
+
+# Set the time zone to Asia/Kuala_Lumpur
+ENV TZ=Asia/Kuala_Lumpur
+
 WORKDIR /usr/src/app
 
 # Install pnpm globally

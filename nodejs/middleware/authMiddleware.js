@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
 
+const knexConfig = require('../knexfile');
+const knex = require('knex')(knexConfig[process.env.NODE_ENV])
+
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -13,4 +16,42 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-module.exports = { authenticateToken };
+const authenticateApplication = async (req, res, next) => {
+  try {
+    const applicationId = req.headers['application-id'];
+   
+    // Check if the application ID is provided
+    if (!applicationId) {
+      return res.status(503).json({
+        success: false,
+        message: 'Service Not Available',
+      });
+    }
+
+    // Query the database for the application
+    const app = await knex('application')
+      .select('*')
+      .where({ name: applicationId })
+      .first();
+
+    // Check if the application exists
+    if (!app) {
+      return res.status(503).json({
+        success: false,
+        message: 'Service Not Available',
+      });
+    }
+
+    next(); // Proceed to the next middleware or route handler
+  } catch (error) {
+   
+    return res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+      error:error
+    });
+  }
+};
+
+
+module.exports = { authenticateToken ,authenticateApplication};
