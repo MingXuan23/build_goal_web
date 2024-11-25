@@ -15,7 +15,8 @@ module.exports = {
       port: process.env.LOCAL_DB_PORT,
       user: process.env.LOCAL_DB_USER,
       password: process.env.LOCAL_DB_PASSWORD,
-      database: process.env.LOCAL_DB_NAME
+      database: process.env.LOCAL_DB_NAME,
+
     },
     migrations: {
       directory: './migrations'
@@ -29,7 +30,8 @@ module.exports = {
       port: 3306,
       user: process.env.LOCAL_DB_USER,
       password: process.env.LOCAL_DB_PASSWORD,
-      database: process.env.LOCAL_DB_NAME
+      database: process.env.LOCAL_DB_NAME,
+   
     },
     migrations: {
       directory: './migrations'

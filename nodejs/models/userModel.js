@@ -18,6 +18,8 @@ pool.getConnection((err, connection) => {
   }
 });
 
+const knexConfig = require('../knexfile');
+const knex = require('knex')(knexConfig[process.env.NODE_ENV]);
 
 
 const getUserByEmail = async (email) => {
@@ -26,6 +28,17 @@ const getUserByEmail = async (email) => {
     [email]
   );
   return rows[0];
+};
+
+const getUserByRememberToken = async (token) => {
+  const user  = await knex("user_token as ut")
+  .join("users as u", "ut.user_id", "u.id") // Use aliases for table names
+  .where({ "ut.remember_token": token}) // Use the alias in the condition
+
+  .select("u.*") // Select all fields from both tables using aliases
+  .first();
+
+  return user;
 };
 
 const createUser = async (user) => {
@@ -104,6 +117,6 @@ const getStaticToken = (id, verify_id) =>{
    
 }
 
-module.exports = { getUserByEmail, createUser, updateUserStatus, updateVerificationCode , updatePassword,getStaticToken};
+module.exports = { getUserByEmail, createUser, updateUserStatus, updateVerificationCode , updatePassword,getStaticToken, getUserByRememberToken};
 
 

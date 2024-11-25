@@ -38,7 +38,7 @@
                         <!-- End::header-link-icon -->
                     </span>
                 </a> --}}
-            </div> <div class="header-element">
+            {{-- </div> <div class="header-element">
                 <div class="d-flex align-items-center ">
                     <div class="bg-warning-transparent rounded p-2">
                         <i class="bi bi-bookmark-dash-fill text-warning"></i>
@@ -47,7 +47,7 @@
                     </div>
                 </div>
                
-            </div>
+            </div> --}}
             <div class="header-element header-fullscreen">
                 <!-- Start::header-link -->
                 <a onclick="toggleFullscreen();" href="javascript:void(0);" class="header-link">
