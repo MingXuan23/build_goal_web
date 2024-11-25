@@ -104,6 +104,7 @@
                         border-radius: 4px;
                         margin-top: 4px;
                         max-height: 200px;
+                        
                         overflow-y: auto;
                         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                         z-index: 1000;
