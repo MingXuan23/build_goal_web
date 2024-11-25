@@ -1,6 +1,6 @@
 @extends('organization.layouts.main')
 @section('container')
-@dd($states_list)
+
 <!-- Start::app-content -->
 <div class="main-content app-content">
    <div class="container">
@@ -30,14 +30,14 @@
                      @csrf
                      <!-- Content Details -->
                      <div class="mb-3">
-                        <label for="content_id" class="form-label">Choose Content</label>
-                        <select class="form-select" id="content_id" name="content_id" required>
-                           <option value="" disabled selected>Select Content</option>
-                           {{--@foreach($contents as $content)
-                              <option value="{{ $content->id }}">{{ $content->name }}</option>
-                           @endforeach --}}
-                        </select>
-                     </div>
+    <label for="content_id" class="form-label">Content ID</label>
+    <input type="text" class="form-control" id="content_id" name="content_id" value="{{ $content->id }}" readonly>
+</div>
+
+<div class="mb-3">
+    <label for="content_name" class="form-label">Content Name</label>
+    <input type="text" class="form-control" id="content_name" name="content_name" value="{{ $content->name }}" readonly>
+</div>
 
                      <!-- Package Selection -->
                      <div class="mb-3">
@@ -52,7 +52,7 @@
       
                     
                      <!-- State Selection -->
-                     <style>
+                     <!-- <style>
                         .tags-input {
                         display: flex;
                         flex-wrap: wrap;
@@ -237,10 +237,10 @@
                         
                         // Initialize the tags input with server-provided states
                         document.addEventListener('DOMContentLoaded', () => {
-                           const availableStates = @json($states_list); // Pass the PHP variable to JavaScript
+                           
                            const tagsInput = new TagsInput(document.getElementById('tagsInput'), availableStates);
                         });
-                     </script>
+                     </script> -->
                      <!-- Submit Button -->
                      <div class="d-flex justify-content-end mt-3">
                         <button type="submit" class="btn btn-primary me-2">Pay</button>

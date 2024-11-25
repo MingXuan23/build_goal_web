@@ -16,30 +16,35 @@ class ContentController extends Controller
      */
     public function showPromoteContent($id)
     {
-        $states_list = [
-            "Johor", "Kedah", "Kelantan", "Kuala Lumpur", "Labuan", "Melaka", 
-            "Negeri Sembilan", "Pahang", "Perak", "Perlis", "Penang", "Putrajaya", 
-            "Selangor", "Terengganu",
-            // Sarawak Divisions
-            "Sarawak - Kuching", "Sarawak - Sri Aman", "Sarawak - Sibu", "Sarawak - Miri", 
-            "Sarawak - Limbang", "Sarawak - Sarikei", "Sarawak - Kapit", "Sarawak - Samarahan", 
-            "Sarawak - Bintulu", "Sarawak - Betong", "Sarawak - Mukah", "Sarawak - Serian",
-            // Sabah Divisions
-            "Sabah - Beaufort", "Sabah - Keningau", "Sabah - Kuala Penyu", "Sabah - Membakut", 
-            "Sabah - Nabawan", "Sabah - Sipitang", "Sabah - Tambunan", "Sabah - Tenom", 
-            "Sabah - Kota Marudu", "Sabah - Pitas", "Sabah - Beluran", "Sabah - Kinabatangan", 
-            "Sabah - Sandakan", "Sabah - Telupid", "Sabah - Tongod", "Sabah - Kalabakan", 
-            "Sabah - Kunak", "Sabah - Lahad Datu", "Sabah - Semporna", "Sabah - Tawau", 
-            "Sabah - Kota Belud", "Sabah - Kota Kinabalu", "Sabah - Papar", "Sabah - Penampang", 
-            "Sabah - Putatan", "Sabah - Ranau", "Sabah - Tuaran"
-        ];
+        // $states_list = [
+        //     "Johor", "Kedah", "Kelantan", "Kuala Lumpur", "Labuan", "Melaka", 
+        //     "Negeri Sembilan", "Pahang", "Perak", "Perlis", "Penang", "Putrajaya", 
+        //     "Selangor", "Terengganu",
+        //     // Sarawak Divisions
+        //     "Sarawak - Kuching", "Sarawak - Sri Aman", "Sarawak - Sibu", "Sarawak - Miri", 
+        //     "Sarawak - Limbang", "Sarawak - Sarikei", "Sarawak - Kapit", "Sarawak - Samarahan", 
+        //     "Sarawak - Bintulu", "Sarawak - Betong", "Sarawak - Mukah", "Sarawak - Serian",
+        //     // Sabah Divisions
+        //     "Sabah - Beaufort", "Sabah - Keningau", "Sabah - Kuala Penyu", "Sabah - Membakut", 
+        //     "Sabah - Nabawan", "Sabah - Sipitang", "Sabah - Tambunan", "Sabah - Tenom", 
+        //     "Sabah - Kota Marudu", "Sabah - Pitas", "Sabah - Beluran", "Sabah - Kinabatangan", 
+        //     "Sabah - Sandakan", "Sabah - Telupid", "Sabah - Tongod", "Sabah - Kalabakan", 
+        //     "Sabah - Kunak", "Sabah - Lahad Datu", "Sabah - Semporna", "Sabah - Tawau", 
+        //     "Sabah - Kota Belud", "Sabah - Kota Kinabalu", "Sabah - Papar", "Sabah - Penampang", 
+        //     "Sabah - Putatan", "Sabah - Ranau", "Sabah - Tuaran"
+        // ];
         // Fetch id and name from the table
-    $contents = DB::table('contents')->select('id', 'name')->get();
+     // Fetch the content by ID
+     $content = DB::table('contents')->where('id', $id)->first();
 
-    // Pass the data to the Blade view
-    return view('organization.contentManagement.promoteContent', [
-        'contents' => $contents,
-        'state_list' => $states_list
-    ]);
+     // Check if content exists, otherwise return an error or redirect
+     if (!$content) {
+         return redirect()->back()->with('error', 'Content not found.');
+     }
+
+     // Pass the specific content to the view
+     return view('organization.contentManagement.promoteContent', [
+         'content' => $content,
+     ]);
     }
 }
