@@ -31,12 +31,17 @@ const getUserByEmail = async (email) => {
 };
 
 const getUserByRememberToken = async (token) => {
+
+  
+
   const user  = await knex("user_token as ut")
   .join("users as u", "ut.user_id", "u.id") // Use aliases for table names
   .where({ "ut.remember_token": token}) // Use the alias in the condition
 
   .select("u.*") // Select all fields from both tables using aliases
   .first();
+
+
 
   return user;
 };

@@ -438,28 +438,6 @@ const performForgetPassword = async (req, res) => {
 
 
 
-// Get server's IP address
-const getServerIP = () => {
-  const environment = process.env.NODE_ENV || "docker"; // Default to 'development'
-
-  if (environment !== "production") {
-    const interfaces = os.networkInterfaces();
-    for (const interfaceName in interfaces) {
-      const iface = interfaces[interfaceName];
-      for (const alias of iface) {
-        if (alias.family === "IPv4" && !alias.internal) {
-          // Retrieve the port from environment variables or set a default
-          const port = process.env.PORT || 3000; // Default to 3000 if PORT is not set
-          return `${alias.address}:${port}`;
-        }
-      }
-    }
-    return "localhost:3000"; // Default if no IP found
-  } else {
-    return process.env.APP_URL || "https://xbug.online"; // Use the APP_URL for production
-  }
-};
-
 
 const forgetPassword = async (req, res) => {
   try {
@@ -487,7 +465,7 @@ const forgetPassword = async (req, res) => {
       return;
     }
 
-    const host = getServerIP();
+    const host = `${req.protocol}://${req.get('host')}`;
     const unique_id = crypto.randomBytes(40).toString("hex");
 
     const expirationTime = new Date();
@@ -543,17 +521,17 @@ const changePassword = async (req, res) => {
   try {
     const validatedData = changePasswordSchema.parse(req.body)
     const { oldPassword, newPassword } = validatedData;
-    const { email } = req.user
-    const user = await getUserByEmail(email);
+
+    const user = req.user;
 
     if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
-      return res.status(401).json({ success: false, message: "Old Password is inccorrect" });
+      return res.status(401).json({ success: false, message: "Your old password is inccorrect" });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await updatePassword(email, hashedPassword);
+    await updatePassword(user.email, hashedPassword);
 
-    res.status(200).json({ success: true, message: "Password successfully updated" });
+    res.status(200).json({ success: true, message: "Your password was successfully updated" });
   } catch (error) {
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);

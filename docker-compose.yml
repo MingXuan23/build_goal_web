@@ -7,9 +7,7 @@ services:
       context: ./nodejs
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
-    volumes:
-      - ./nodejs:/usr/src/app
+      - "30000:3000"
     environment:
       - NODE_ENV=docker
       - TZ=Asia/Kuala_Lumpur
@@ -18,6 +16,7 @@ services:
     command: npm run start
     networks:
       - app-network
+    image: mxchuah23/nodejs-app:latest
 
   # Laravel PHP-FPM Application
   laravel-app:
@@ -25,16 +24,13 @@ services:
       context: ./laravel
       dockerfile: docker/app.dockerfile
     working_dir: /var/www
-    volumes:
-      - ./laravel:/var/www:cached
-      - ./laravel/storage:/var/www/storage:cached
-      - ./laravel/docker/php/php.ini:/usr/local/etc/php/php.ini
-    depends_on:
-      - mysql
     environment:
       - TZ=Asia/Kuala_Lumpur
+    depends_on:
+      - mysql
     networks:
       - app-network
+    image: mxchuah23/laravel-app:latest
 
   # Laravel Web Server (Nginx)
   laravel-web:
@@ -42,8 +38,6 @@ services:
       context: ./laravel
       dockerfile: ./docker/web.dockerfile
     working_dir: /var/www
-    volumes:
-      - ./laravel:/var/www:cached
     depends_on:
       - "laravel-app"
     networks:
@@ -52,6 +46,7 @@ services:
       - "8080:80"
     environment:
       - TZ=Asia/Kuala_Lumpur
+    image: mxchuah23/laravel-web:latest
 
   # Shared MySQL Database
   mysql:
@@ -65,28 +60,14 @@ services:
       MYSQL_USER: ${LOCAL_DB_USER}
       TZ: Asia/Kuala_Lumpur
     volumes:
-      - mysql-data:/var/lib/mysql 
+      - mysql-data:/var/lib/mysql
     networks:
       - app-network
 
-  # PHPMyAdmin for MySQL Database (enable if u require it)
-
-  # phpmyadmin:
-  #   image: phpmyadmin/phpmyadmin
-  #   ports:
-  #     - "8006:80"
-  #   environment:
-  #     PMA_HOST: mysql
-  #     PMA_PORT: ${LOCAL_DB_PORT}
-  #   depends_on:
-  #     - mysql
-  #   networks:
-  #     - app-network
-
    # Ollama Service
-  gpt_serivce:
+  gpt_service:
     image: ollama/ollama
-    container_name: gpt_serivce
+    container_name: gpt_service
     ports:
       - "11434:11434" # Default Ollama port
     networks:
@@ -127,3 +108,34 @@ volumes:
   mysql-data:
   ollama-data:
 
+
+# # Node.js App
+# docker build -t mxchuah23/build_goal:nodejs ./nodejs
+
+# # Laravel App
+# docker build -t mxchuah23/build_goal:laravel-app ./laravel --file ./laravel/docker/app.dockerfile
+
+# # Laravel Web (Nginx)
+# docker build -t mxchuah23/build_goal:laravel-web ./laravel --file ./laravel/docker/web.dockerfile
+
+# # Ollama Service
+# docker tag ollama/ollama:latest mxchuah23/build_goal:ollama
+
+# # Qdrant (Vector Database)
+# docker tag qdrant/qdrant:latest mxchuah23/build_goal:qdrant
+
+
+# # Node.js App
+# docker push mxchuah23/build_goal:nodejs
+
+# # Laravel App
+# docker push mxchuah23/build_goal:laravel-app
+
+# # Laravel Web (Nginx)
+# docker push mxchuah23/build_goal:laravel-web
+
+# # Ollama Service
+# docker push mxchuah23/build_goal:ollama
+
+# # Qdrant (Vector Database)
+# docker push mxchuah23/build_goal:qdrant

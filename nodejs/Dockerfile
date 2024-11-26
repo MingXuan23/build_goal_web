@@ -30,7 +30,7 @@ RUN pnpm install
 COPY . .
 
 # Expose the port your app runs on (default is 3000 for Express)
-EXPOSE 3000
+EXPOSE 30000
 
 # Command to run your application
 CMD ["npm", "run", "start"]

@@ -3,17 +3,28 @@ const jwt = require('jsonwebtoken');
 const knexConfig = require('../knexfile');
 const knex = require('knex')(knexConfig[process.env.NODE_ENV])
 
-const authenticateToken = (req, res, next) => {
+const {
+  getUserByRememberToken
+} = require("../models/userModel");
+
+const authenticateToken =  async (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  if (token == null) return res.status(401).json({success : false, message: "Unauthorized access, token not provided"});
+  if (token == null) return res.status(401).json({success : false, message: "Unauthorized access"});
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(401).json({success : false, message: "Forbiden access, token is invalid"});
-    req.user = user;
-    console.log(user);
-    next();
-  });
+  const user = await getUserByRememberToken(token);
+
+  if(!user) return res.status(401).json({success : false, message: "Unauthorized access"});
+
+  req.user = user;
+
+  next(); 
+  // jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  //   if (err) return res.status(401).json({success : false, message: "Forbiden access, token is invalid"});
+  //   req.user = user;
+  //   console.log(user);
+  //   next();
+  // });
 };
 
 const authenticateApplication = async (req, res, next) => {
