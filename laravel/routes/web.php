@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ContentController;
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -64,15 +65,6 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
         return view('admin.profile.index');
     });
 
-    // Route::get('/content', function () {
-    //     return view('admin.contentManagement.index');
-    // });
-
-
-    // Route::get('/promote-content', function () {
-    //     return view('admin.contentManagement.promoteContent');
-    // });
-
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('admin.logout');
 });
 
@@ -96,6 +88,12 @@ Route::prefix('staff')->middleware(['auth', 'role:2'])->group(function () {
 Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function () {
     Route::get('/dashboard', function () {
         return view('contentcreator.dashboard.index');
+
+        Route::middleware(['ekycCheck'])->group(function () {
+ 
+        });
+
+
     });
 
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('content-creator.logout');
@@ -110,9 +108,12 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
         return view('organization.dashboard.index');
     });
 
-    Route::get('/content-management', [ContentController::class,'showContent'])->name('showContent');
+    Route::get('/profile', [UserProfileController::class, 'showOrganizationProfile'])->name('showOrganizationProfile');
 
-    Route::get('/promote-content/{id}', [ContentController::class, 'showPromoteContent'])->name('promotecontent');
+    Route::middleware(['ekycCheck'])->group(function () {
+        Route::get('/content-management', [ContentController::class, 'showContent'])->name('showContent');
+        Route::get('/promote-content/{id}', [ContentController::class, 'showPromoteContent'])->name('promotecontent');
+    });
 
     // Route::get('/promote-content', function () use ($states_list) {
     //     return view('organization.contentManagement.promoteContent', compact('states_list'));

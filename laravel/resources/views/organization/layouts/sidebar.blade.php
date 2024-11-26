@@ -42,6 +42,7 @@
                         </li>
                     </ul>
                 </li> -->
+                @if (Auth::user()->ekyc_status === 1) 
                 <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
                         <i class="bi bi-body-text "></i>
@@ -57,6 +58,7 @@
                         </li> -->
                     </ul>
                 </li>
+                @endif
 
             </ul>
             <div class="slide-right" id="slide-right">
