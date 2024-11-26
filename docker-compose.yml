@@ -69,18 +69,19 @@ services:
     networks:
       - app-network
 
-  # PHPMyAdmin for MySQL Database
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    ports:
-      - "8006:80"
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: ${LOCAL_DB_PORT}
-    depends_on:
-      - mysql
-    networks:
-      - app-network
+  # PHPMyAdmin for MySQL Database (enable if u require it)
+
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   ports:
+  #     - "8006:80"
+  #   environment:
+  #     PMA_HOST: mysql
+  #     PMA_PORT: ${LOCAL_DB_PORT}
+  #   depends_on:
+  #     - mysql
+  #   networks:
+  #     - app-network
 
    # Ollama Service
   gpt_serivce:
