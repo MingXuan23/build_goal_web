@@ -1,6 +1,6 @@
 @extends('admin.layouts.main')
 @section('container')
-
+{{-- @dd($content_data); --}}
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
@@ -18,144 +18,220 @@
             </div>
             <!-- Page Header Close -->
             <!-- Start::row-1 -->
-             <div class="card custom-card">
+            @if (session()->has('status'))
+                <div class="alert alert-success alert-dismissible d-flex align-items-center" role="alert">
+                    <i class="bi bi-check-circle-fill fs-4"></i>
+                    </svg>
+                    <div class="ms-3"> {{ session('status') }} </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            <div class="card custom-card">
                 <div class="card-header">
                     <div class="card-title">Applied Contents</div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table text-nowrap data-table">
-                        <thead class="table-borderless">
-                            <tr>
-                            <th scope="col">No.</th>
-                            <th scope="col">Content Name</th>
-                            <th scope="col">Applied On</th>
-                            <th scope="col">Details</th>
-                            <th scope="col">Organization</th>
-                            <th scope="col">Status</th>
-                            </tr>
-                        </thead>
-                    </table>        
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table class="table text-nowrap data-table">
+                            <thead class="table-borderless">
+                                <tr>
+                                    <th scope="col">No.</th>
+                                    <th scope="col">Content Name</th>
+                                    <th scope="col">Applied On</th>
+                                    <th scope="col">Details</th>
+                                    <th scope="col">Organization</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
-             </div>
+            </div>
             <!--End::row-1 -->
         </div>
     </div>
     @foreach ($content_data as $data)
-        <div class="modal fade" id="modalView-{{ $data->id }}">
-
-            <div class="modal-dialog modal-dialog-centered text-center modal-xl">
+        <div class="modal fade" id="modalView-{{ $data->id }}" ria-labelledby="exampleModalScrollable" data-bs-keyboard="false"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered text-center modal-md modal-dialog-scrollable">
                 <div class="modal-content modal-content-demo">
                     <div class="modal-header">
                         <h6 class="modal-title">View Content - {{ $data->name }} </h6>
                         <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
-                    
-                        @csrf
-                        <div class="modal-body text-start">
-                            <form action="#" method="POST">
-                                @csrf
-                                <!-- Content Details -->
-                                <div class="mb-3">
-                                    <label for="content_id" class="form-label">Content ID</label>
-                                    <input type="text" class="form-control" id="content_id" name="content_id"
-                                        value="{{ $data->id }}" readonly>
-                                </div>
 
-                                <div class="mb-3">
-                                    <label for="content_name" class="form-label">Content Name</label>
-                                    <input type="text" class="form-control" id="content_name" name="content_name"
-                                        value="{{ $data->name }}" readonly>
-                                </div>
+                    @csrf
+                    <div class="modal-body text-start">
+                        <form action="#" method="POST">
+                            @csrf
+                            <!-- Content Details -->
+                            <div class="mb-3">
+                                <label for="content_id" class="form-label">Content ID</label>
+                                <input type="text" class="form-control" id="content_id" name="content_id"
+                                    value="{{ $data->id }}" readonly>
+                            </div>
 
-                                <div class="mb-3">
-                                    <label for="applied_on" class="form-label">Link</label>
-                                    <input type="text" class="form-control" id="link" name="link"
-                                        value="{{ $data->link }}" readonly>
-                                </div>
+                            <div class="mb-3">
+                                <label for="content_name" class="form-label">Content Name</label>
+                                <input type="text" class="form-control" id="content_name" name="content_name"
+                                    value="{{ $data->name }}" readonly>
+                            </div>
 
-                                <div class="mb-3">
-                                    <label for="applied_on" class="form-label">Applied On</label>
-                                    <input type="text" class="form-control" id="created_at" name="created_at"
-                                        value="{{ $data->created_at }}" readonly>
-                                </div>
+                            <div class="mb-3">
+                                <label for="applied_on" class="form-label">Link</label>
+                                <input type="text" class="form-control" id="link" name="link"
+                                    value="{{ $data->link }}" readonly>
+                            </div>
 
-                                <div class="mb-3">
-                                    <label for="enrollment_price" class="form-label">Enrollment Price</label>
-                                    <input type="text" class="form-control" id="enrollment_price" name="enrollment_price"
-                                        value="{{ $data->enrollment_price }}" readonly>
-                                </div>
+                            <div class="mb-3">
+                                <label for="applied_on" class="form-label">Applied On</label>
+                                <input type="text" class="form-control" id="created_at" name="created_at"
+                                    value="{{ $data->created_at }}" readonly>
+                            </div>
 
-                                <div class="mb-3">
-                                    <label for="content_type" class="form-label">Content Type</label>
-                                    <input type="text" class="form-control" value="{{ $data->content_type_name  }}" readonly>
-                                </div>
+                            <div class="mb-3">
+                                <label for="enrollment_price" class="form-label">Enrollment Price</label>
+                                <input type="text" class="form-control" id="enrollment_price" name="enrollment_price"
+                                    value="{{ $data->enrollment_price }}" readonly>
+                            </div>
 
-                                <div class="mb-3">
-                                    <label for="place" class="form-label">Place</label>
-                                    <input type="text" class="form-control" id="place" name="place"
-                                        value="{{ $data->place }}" readonly>
+                            <div class="mb-3">
+                                <label for="content_type" class="form-label">Content Type</label>
+                                <input type="text" class="form-control" value="{{ $data->content_type_name }}" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Select States</label>
+                                <div id="state-container">
+                                    @php
+                                        $userStates = json_decode($data->state) ?? [];
+                                     
+                                    @endphp
+                                    @foreach (array_keys($stateCities) as $state)
+                                        <div class="form-check form-check-lg">
+                                            <input
+                                                class="form-check-input state-checkbox  @error('states') is-invalid @enderror"
+                                                type="checkbox"
+                                                name="states[]"
+                                                value="{{ $state }}"
+                                                id="state-{{ $state }}"
+                                                @if(in_array($state, $userStates)) checked @endif
+                                            >
+                                            <label class="form-check-label" for="state-{{ $state }}">
+                                                {{ $state }}
+                                            </label>
+                                        </div>
+                                    @endforeach
                                 </div>
+                            </div>
+                            
 
-                                <div class="mb-3">
-                                    <label for="participant_limit" class="form-label">Participant Limit</label>
-                                    <input type="text" class="form-control" id="participant_limit" name="participant_limit"
-                                        value="{{ $data->participant_limit }}" readonly>
-                                </div>
-                            </form>
+                            <div class="mb-3">
+                                <label for="place" class="form-label">Place</label>
+                                <input type="text" class="form-control" id="place" name="place"
+                                    value="{{ $data->place }}" readonly>
+                            </div>
 
-                        </div>
+                            <div class="mb-3">
+                                <label for="participant_limit" class="form-label">Participant Limit</label>
+                                <input type="text" class="form-control" id="participant_limit"
+                                    name="participant_limit" value="{{ $data->participant_limit }}" readonly>
+                            </div>
+                        </form>
+
+                    </div>
                     </form>
                 </div>
             </div>
         </div>
 
         <!-- Modal for approval/rejection -->
-<div class="modal fade" id="approveRejectModal-{{ $data->id }}" tabindex="-1" aria-labelledby="approveRejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="approveRejectModalLabel">Do you want to approve or reject this content?</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Form for approval -->
-                <form action="{{ route('approveContent', $data->id) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-success">Approve</button>
-                </form>
-
-                <!-- Form for rejection -->
-                <form action="#" method="POST" id="rejectForm-{{ $data->id }}" data-bs-toggle="modal" data-bs-target="#rejectReasonModal-{{ $data->id }}">
-                    @csrf
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectReasonModal-{{ $data->id }}">Reject</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Rejection Reason Modal -->
-<div class="modal fade" id="rejectReasonModal-{{ $data->id }}" tabindex="-1" aria-labelledby="rejectReasonModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="rejectReasonModalLabel">Provide Reason for Rejection</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="{{ route('rejectContent', $data->id) }}" method="POST">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="rejection_reason" class="form-label">Reason</label>
-                        <textarea class="form-control" id="rejection_reason" name="rejection_reason" required></textarea>
+        <div class="modal fade" id="approveRejectModal-{{ $data->id }}" tabindex="-1"
+            aria-labelledby="approveRejectModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="approveRejectModalLabel">Confrimation Status?</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <button type="submit" class="btn btn-danger">Reject</button>
-                </form>
+                    <div class="modal-body">
+                        <!-- Form for approval -->
+                        <span class="text-muted fw-semibold">Please carefully evaluate the content and select your choice
+                            to either approve or reject it based on your review.</span>
+                        <div class="d-flex justify-content-end ">
+
+                            <form class="me-2" action="{{ route('approveContent', $data->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-success">Approve</button>
+                            </form>
+
+                            <!-- Form for rejection -->
+                            <form action="#" method="POST" id="rejectForm-{{ $data->id }}"
+                                data-bs-toggle="modal" data-bs-target="#rejectReasonModal-{{ $data->id }}">
+                                @csrf
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#rejectReasonModal-{{ $data->id }}">Reject</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+
+        <!-- Rejection Reason Modal -->
+        <div class="modal fade" id="rejectReasonModal-{{ $data->id }}" tabindex="-1"
+            aria-labelledby="rejectReasonModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="rejectReasonModalLabel">Provide Reason for Rejection</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('rejectContent', $data->id) }}" method="POST">
+                            @csrf
+                            <div class="row ">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="rejection_reason" class="form-label">Reason</label>
+                                        <textarea class="form-control" id="rejection_reason" name="rejection_reason" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 d-flex justify-content-end"> <button type="submit"
+                                        class="btn btn-danger">Reject</button></div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="viewRejectModal-{{ $data->id }}" tabindex="-1"
+            aria-labelledby="viewRejectModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="viewRejectModal">Rejection Reason for - {{ $data->name }}</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label for="rejection_reason" class="form-label">Reason</label>
+                                    <textarea class="form-control" id="rejection_reason" name="rejection_reason" required>{{ $data->reject_reason }}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12 d-flex justify-content-end">
+                                <button class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endforeach
 
     <script>
@@ -206,39 +282,39 @@
                 buttons: [{
                         extend: 'copy',
                         text: 'Copy Data',
-                        exportOptions: {
-                            columns: ':not(:last-child)'
-                        }
+                        // exportOptions: {
+                        //     columns: ':not(:last-child)'
+                        // }
                     },
                     {
                         extend: 'csv',
                         text: 'Export CSV',
-                        exportOptions: {
-                            columns: ':not(:last-child)'
-                        }
+                        // exportOptions: {
+                        //     columns: ':not(:last-child)'
+                        // }
                     },
                     {
                         extend: 'excel',
                         text: 'Export Excel',
-                        exportOptions: {
-                            columns: ':not(:last-child)'
-                        }
+                        // exportOptions: {
+                        //     columns: ':not(:last-child)'
+                        // }
                     },
                     {
                         extend: 'pdf',
                         text: 'Export PDF',
-                        exportOptions: {
-                            columns: ':not(:last-child)'
-                        }
+                        // exportOptions: {
+                        //     columns: ':not(:last-child)'
+                        // }
                     },
                     {
                         extend: 'print',
                         text: 'Print Data',
-                        exportOptions: {
-                            columns: ':not(:last-child)'
-                        }
+                        // exportOptions: {
+                        //     columns: ':not(:last-child)'
+                        // }
                     }
-                    
+
                 ]
             });
         })

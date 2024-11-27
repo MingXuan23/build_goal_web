@@ -40,62 +40,6 @@ class ContentController extends Controller
 
  
 
-    public function showContent(Request $request)
-    {
-        $user = Auth::user();
-        $stateCitiesJson = file_get_contents(public_path('assets/json/states-cities.json'));
-        $stateCities = json_decode($stateCitiesJson, true);
-        // $user->id;
-
-        $user_data = DB::table('contents as c')->where('c.user_id',$user->id)->join('content_types as ct','ct.id','c.content_type_id')->get();
-        $packages = DB::table('package')->where('status', true)->get();
-        if($request->ajax()) {
-            $table = DataTables::of($user_data)->addIndexColumn();
-            $table->addColumn('action', function ($row) {
-                if($row->reason_phrase == 'APPROVED'){
-
-                    $button = 
-                    '<div class="d-flex">
-                            <button class="btn  btn-success-light"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalView-' . $row->id . '">
-                             Promote
-                            </button>
-                            </div>';                                                        
-                }
-                else{
-                    $button = 
-                    '<div class="d-flex justify-content-between">
-                        <span class=" text-warning p-2 me-1 fw-bold">
-                             <i class="bi bi-circle-fill"></i> Pending..
-                        </span>
-                    </div>';
-                    
-                }
-                return $button;
-            });
-
-            $table->rawColumns(['action']);
-            return $table->make(true);
-        }
-        
-
-        return view('organization.contentManagement.index', [
-            'content_data' => $user_data,
-            'stateCities' => $stateCities,
-            'packages' => $packages
-        ]);
-
-    }
-
-    public function viewAddContent(Request $request)
-    {
-        $content_types = DB::table('content_types')->where('status', true)->get();
-        $stateCitiesJson = file_get_contents(public_path('assets/json/states-cities.json'));
-        $stateCities = json_decode($stateCitiesJson, true);
-        return view('organization.contentManagement.applyContent', compact('content_types','stateCities'));
-    }
-
     public function addContent(Request $request)
     {
         // dd($request->all());
@@ -136,78 +80,7 @@ class ContentController extends Controller
         return back()->with('success', 'Your Content Is Applied Successfully!');
     }
 
-    public function showContentAdmin(Request $request)
-    {
-        $datas = DB::table('contents')
-            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
-            ->join('organization_user', 'contents.user_id', '=', 'organization_user.user_id')
-            ->join('organization', 'organization_user.organization_id', '=', 'organization.id')
-            ->select(
-                'contents.id',
-                'contents.name',
-                'contents.created_at',
-                'contents.link',
-                'contents.status',
-                'contents.user_id',
-                'contents.enrollment_price',
-                'contents.place',
-                'contents.reason_phrase',
-                'contents.participant_limit',
-                'content_types.type as content_type_name',
-                'organization.name as organization_name'  // This is the organization name we will display
-            )
-            ->get();
-    
-        if ($request->ajax()) {
-            return DataTables::of($datas)
-                ->addIndexColumn()
-                ->addColumn('action', function ($row) {
-                    return '<button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalView-' . $row->id . '">View Details</button>';
-                })
-                ->addColumn('approve', function ($row) {
-                    if($row->reason_phrase == 'APPROVED'){
 
-                        $button = 
-                        '<div class="d-flex justify-content-between">
-                            <span class=" text-success p-2 me-1 fw-bold">
-                                 <i class="bi bi-circle-fill"></i> APPROVED
-                            </span>
-                        </div>';                                                
-                    }
-                    elseif ($row->reason_phrase == 'REJECTED'){
-                        $button = 
-                        
-                        '<div class="d-flex justify-content-between">
-                            <span class=" text-danger p-2 me-1 fw-bold">
-                                 <i class="bi bi-circle-fill"></i> REJECTED
-                            </span>
-                        </div>';   
-                    }
-                    else{
-                        $button = 
-                        
-                        '<div class="d-flex">
-                                <button class="btn  btn-warning-light"
-                                data-bs-toggle="modal"
-                                data-bs-target="#approveRejectModal-' . $row->id . '">
-                                 PENDING
-                                </button>
-                                </div>';         
-                        
-                    }
-                    return $button;
-                })
-                ->addColumn('user_id', function ($row) {
-                    return $row->organization_name;  // Use organization_name instead of user_id
-                })
-                ->rawColumns(['action', 'approve'])
-                ->make(true);
-        }
-    
-        return view('admin.contentManagement.index', [
-            'content_data' => $datas
-        ]);
-    }
     
     
 
@@ -232,7 +105,7 @@ class ContentController extends Controller
             $content->save();
         }
     
-        return redirect()->back()->with('status', 'Content rejected successfully!');
+        return back()->with('status', 'Content rejected successfully!');
     }
     
 

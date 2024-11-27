@@ -784,7 +784,7 @@
                 serverSide: true,
                 responsive: true,
                 pageLength: 50,
-                ajax: "{{ route('viewUser') }}",
+                ajax: "{{ route('showUser') }}",
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',

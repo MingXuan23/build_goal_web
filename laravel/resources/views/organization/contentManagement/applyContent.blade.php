@@ -133,7 +133,7 @@
                            <label class="form-label">Select States</label>
                            <div id="state-container">
                                  @foreach (array_keys($stateCities) as $state)
-                                    <div class="form-check">
+                                    <div class="form-check form-check-lg">
                                        <input class="form-check-input state-checkbox @error('states') is-invalid @enderror" type="checkbox"
                                              name="states[]" value="{{ $state }}"
                                              id="state-{{ $state }}">
