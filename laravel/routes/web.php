@@ -54,6 +54,9 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
 
     Route::get('/user', [UserManagementController::class, 'index'])->name('viewUser');
     Route::get('/add-user', [UserManagementController::class, 'viewAddUser'])->name('viewAddUser');
+    Route::get('/view-content', [ContentController::class, 'showContentAdmin'])->name('showContentAdmin');
+    Route::post('/approve-content/{id}', [ContentController::class, 'approveContent'])->name('approveContent');
+    Route::post('/reject-content/{id}', [ContentController::class, 'rejectContent'])->name('rejectContent');
     Route::post('/update-user/{id}', [UserManagementController::class, 'updateUser'])->name('updateUser');
     Route::post('/update-role/{id}', [UserManagementController::class, 'updateRole'])->name('updateRole');
     Route::post('/update-ekyc-status/{id}', [UserManagementController::class, 'updateEkycStatus'])->name('updateEkycStatus');
@@ -112,7 +115,6 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
 
     // Route::middleware(['ekycCheck'])->group(function () {
         Route::get('/content-management', [ContentController::class, 'showContent'])->name('showContent');
-        Route::get('/promote-content/{id}', [ContentController::class, 'showPromoteContent'])->name('promotecontent');
         Route::get('/apply-content', [ContentController::class, 'viewAddContent'])->name('viewAddContent');
 
         Route::post('/apply-content', [ContentController::class, 'addContent'])->name('addContent');

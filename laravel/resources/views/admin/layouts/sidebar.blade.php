@@ -42,6 +42,21 @@
                         </li>
                     </ul>
                 </li>
+                <li class="slide has-sub">
+                    <a href="javascript:void(0);" class="side-menu__item ">
+                        <i class="bi bi-body-text "></i>
+                        <span class="side-menu__label mx-2">Content Management</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="/admin/view-content" class="side-menu__item">View Applied Content</a>
+                        </li>
+                        <!-- <li class="slide">
+                            <a href="/organization/apply-content" class="side-menu__item">Apply Content</a>
+                        </li> -->
+                    </ul>
+                </li>
 
             </ul>
             <div class="slide-right" id="slide-right">

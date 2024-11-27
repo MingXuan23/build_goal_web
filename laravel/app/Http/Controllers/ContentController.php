@@ -133,7 +133,106 @@ class ContentController extends Controller
         ]);
     
         // Redirect back with success message
-        return back()->with('success', 'Content created successfully!');
+        return back()->with('success', 'Your Content Is Applied Successfully!');
+    }
+
+    public function showContentAdmin(Request $request)
+    {
+        $datas = DB::table('contents')
+            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+            ->join('organization_user', 'contents.user_id', '=', 'organization_user.user_id')
+            ->join('organization', 'organization_user.organization_id', '=', 'organization.id')
+            ->select(
+                'contents.id',
+                'contents.name',
+                'contents.created_at',
+                'contents.link',
+                'contents.status',
+                'contents.user_id',
+                'contents.enrollment_price',
+                'contents.place',
+                'contents.reason_phrase',
+                'contents.participant_limit',
+                'content_types.type as content_type_name',
+                'organization.name as organization_name'  // This is the organization name we will display
+            )
+            ->get();
+    
+        if ($request->ajax()) {
+            return DataTables::of($datas)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    return '<button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalView-' . $row->id . '">View Details</button>';
+                })
+                ->addColumn('approve', function ($row) {
+                    if($row->reason_phrase == 'APPROVED'){
+
+                        $button = 
+                        '<div class="d-flex justify-content-between">
+                            <span class=" text-success p-2 me-1 fw-bold">
+                                 <i class="bi bi-circle-fill"></i> APPROVED
+                            </span>
+                        </div>';                                                
+                    }
+                    elseif ($row->reason_phrase == 'REJECTED'){
+                        $button = 
+                        
+                        '<div class="d-flex justify-content-between">
+                            <span class=" text-danger p-2 me-1 fw-bold">
+                                 <i class="bi bi-circle-fill"></i> REJECTED
+                            </span>
+                        </div>';   
+                    }
+                    else{
+                        $button = 
+                        
+                        '<div class="d-flex">
+                                <button class="btn  btn-warning-light"
+                                data-bs-toggle="modal"
+                                data-bs-target="#approveRejectModal-' . $row->id . '">
+                                 PENDING
+                                </button>
+                                </div>';         
+                        
+                    }
+                    return $button;
+                })
+                ->addColumn('user_id', function ($row) {
+                    return $row->organization_name;  // Use organization_name instead of user_id
+                })
+                ->rawColumns(['action', 'approve'])
+                ->make(true);
+        }
+    
+        return view('admin.contentManagement.index', [
+            'content_data' => $datas
+        ]);
+    }
+    
+    
+
+    public function approveContent($id)
+    {
+        $content = Content::find($id);
+        if ($content) {
+            $content->reason_phrase = 'APPROVED'; // Set content as approved
+            $content->reject_reason = null; // Clear any rejection reason if it was previously set
+            $content->save();
+        }
+    
+        return redirect()->back()->with('status', 'Content approved successfully!');
+    }
+    
+    public function rejectContent(Request $request, $id)
+    {
+        $content = Content::find($id);
+        if ($content) {
+            $content->reason_phrase = 'REJECTED'; // Set content as rejected
+            $content->reject_reason = $request->input('rejection_reason'); // Save rejection reason
+            $content->save();
+        }
+    
+        return redirect()->back()->with('status', 'Content rejected successfully!');
     }
     
 

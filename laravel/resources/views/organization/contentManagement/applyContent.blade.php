@@ -72,7 +72,7 @@
                            </div>
                         </div>
                         <!-- Content Type -->
-                        <div class="col-xl-6">
+                        <div class="col-xl-12">
                            <div class="form-floating">
                               <select class="form-select @error('content_type_id') is-invalid @enderror" id="content_types" name="content_type_id" >
                                  <option value="" disabled selected>Select Content Type</option>
@@ -86,6 +86,11 @@
                               @enderror
                            </div>
                         </div>
+
+                        <!-- Content -->
+                         <div class="col-xl-12">
+                           
+                         </div>
                      </div>
                   </div>
                   <!-- Part 2: Additional Information -->
