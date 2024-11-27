@@ -85,24 +85,17 @@
                                     </div>
                                 </div>
 
-                                <!-- City Selection (Checkboxes) -->
-                                <div class="mb-3">
-                                    <label class="form-label">Select Cities</label>
-                                    <div id="city-container">
-                                        <p class="text-muted">Please select a state to view cities.</p>
-                                    </div>
-                                </div>
+
 
                                 <!-- Package Selection -->
                                 <div class="mb-3">
                                     <label for="package" class="form-label">Choose Package </label>
-                                    <select class="form-select" id="package" name="Package" required>
-                                        <option value="" disabled selected>Choose Package (package will be extracted
-                                            from the database)</option>
-                                        <option value="1">Package A (Target Users: 50 - 100, Price: RM 100)</option>
-                                        <option value="2">Package B (Target Users: 101 - 200, Price: RM 200)</option>
-                                        <option value="3">Package C (Target Users: 201 - 300, Price: RM 300)</option>
-                                    </select>
+                                    <select class="form-select" id="package" name="package" required>
+                                 <option value="" disabled selected>Select Package</option>
+                                 @foreach ($packages as $package)
+                                 <option value="{{ $package->id }}">{{ $package->name }}</option>
+                                 @endforeach
+                              </select>
                                 </div>
 
                                 <!-- Submit Button -->
@@ -113,61 +106,13 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
+                            <button type="submit" class="btn btn-danger " data-bs-toggle="tooltip"
                                 data-bs-placement="top" title="Delete user Record">Delete</button>
-                            <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary " data-bs-dismiss="modal">Close</button>
                         </div>
 
                     </form>
-                    <script>
-                        const stateCities = @json($stateCities);
 
-                        const stateCheckboxes = document.querySelectorAll('.state-checkbox');
-                        const cityContainer = document.getElementById('city-container');
-
-                        stateCheckboxes.forEach(checkbox => {
-                            checkbox.addEventListener('change', function() {
-                                cityContainer.innerHTML = '';
-
-                                const selectedStates = Array.from(stateCheckboxes)
-                                    .filter(cb => cb.checked)
-                                    .map(cb => cb.value);
-
-                                if (selectedStates.length === 0) {
-                                    cityContainer.innerHTML =
-                                        '<p class="text-muted">Please select a state to view cities.</p>';
-                                } else {
-                                    selectedStates.forEach(state => {
-                                        if (stateCities[state]) {
-                                            const stateHeading = document.createElement('h5');
-                                            stateHeading.textContent = state;
-                                            cityContainer.appendChild(stateHeading);
-
-                                            stateCities[state].forEach(city => {
-                                                const checkboxWrapper = document.createElement('div');
-                                                checkboxWrapper.classList.add('form-check');
-
-                                                const checkbox = document.createElement('input');
-                                                checkbox.type = 'checkbox';
-                                                checkbox.className = 'form-check-input';
-                                                checkbox.name = 'cities[]';
-                                                checkbox.value = `${state} - ${city}`;
-
-                                                const label = document.createElement('label');
-                                                label.className = 'form-check-label';
-                                                label.textContent = city;
-
-                                                checkboxWrapper.appendChild(checkbox);
-                                                checkboxWrapper.appendChild(label);
-
-                                                cityContainer.appendChild(checkboxWrapper);
-                                            });
-                                        }
-                                    });
-                                }
-                            });
-                        });
-                    </script>
 
 
                 </div>
@@ -248,6 +193,7 @@
                             columns: ':not(:last-child)'
                         }
                     }
+                    
                 ]
             });
         })

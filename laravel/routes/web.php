@@ -110,10 +110,13 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
 
     Route::get('/profile', [UserProfileController::class, 'showOrganizationProfile'])->name('showOrganizationProfile');
 
-    Route::middleware(['ekycCheck'])->group(function () {
+    // Route::middleware(['ekycCheck'])->group(function () {
         Route::get('/content-management', [ContentController::class, 'showContent'])->name('showContent');
         Route::get('/promote-content/{id}', [ContentController::class, 'showPromoteContent'])->name('promotecontent');
-    });
+        Route::get('/apply-content', [ContentController::class, 'viewAddContent'])->name('viewAddContent');
+
+        Route::post('/apply-content', [ContentController::class, 'addContent'])->name('addContent');
+    // });
 
     // Route::get('/promote-content', function () use ($states_list) {
     //     return view('organization.contentManagement.promoteContent', compact('states_list'));
