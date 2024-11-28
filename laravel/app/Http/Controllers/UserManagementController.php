@@ -154,10 +154,10 @@ class UserManagementController extends Controller
                 ->update(['role' => $roleJson]);
             DB::commit();
 
-            return redirect()->route('viewUser')->with('success', 'Roles Updated Successfully!');
+            return redirect()->route('showUserAdmin')->with('success', 'Roles Updated Successfully!');
         } catch (Exception $th) {
             DB::rollBack();
-            return redirect()->route('viewUser')->with('error', 'Failed to update roles!');
+            return redirect()->route('showUserAdmin')->with('error', 'Failed to update roles!');
         }
     }
 
@@ -174,10 +174,10 @@ class UserManagementController extends Controller
                 ->update(['ekyc_status' => (int)$request->status]);
             DB::commit();
 
-            return redirect()->route('viewUser')->with('success', 'e-kyc Status Updated Successfully!');
+            return redirect()->route('showUserAdmin')->with('success', 'e-kyc Status Updated Successfully!');
         } catch (Exception $th) {
             DB::rollBack();
-            return redirect()->route('viewUser')->with('error', 'Failed to update e-kyc Status!');
+            return redirect()->route('showUserAdmin')->with('error', 'Failed to update e-kyc Status!');
         }
     }
 
@@ -194,10 +194,10 @@ class UserManagementController extends Controller
                 ->update(['email_status' => $status]);
             DB::commit();
 
-            return redirect()->route('viewUser')->with('success', 'Email Status Updated Successfully!');
+            return redirect()->route('showUserAdmin')->with('success', 'Email Status Updated Successfully!');
         } catch (Exception $th) {
             DB::rollBack();
-            return redirect()->route('viewUser')->with('error', 'Failed to update Email Status!');
+            return redirect()->route('showUserAdmin')->with('error', 'Failed to update Email Status!');
         }
     }
 
@@ -213,10 +213,10 @@ class UserManagementController extends Controller
                 ->update(['active' => (int)$request->status]);
             DB::commit();
 
-            return redirect()->route('viewUser')->with('success', 'Account Status Updated Successfully!');
+            return redirect()->route('showUserAdmin')->with('success', 'Account Status Updated Successfully!');
         } catch (Exception $th) {
             DB::rollBack();
-            return redirect()->route('viewUser')->with('error', 'Failed to update Account Status!');
+            return redirect()->route('showUserAdmin')->with('error', 'Failed to update Account Status!');
         }
     }
 }

@@ -18,8 +18,6 @@
             </div>
             <!-- Page Header Close -->
             <!-- Start::row-1 -->
-
-
             <div class="row">
                 <div class="col-xl-12">
                     <div class="card custom-card">
@@ -80,7 +78,7 @@
                                             <label class="form-label">Select States</label>
                                             <div id="state-container">
                                                 @foreach (array_keys($stateCities) as $state)
-                                                    <div class="form-check">
+                                                    <div class="form-check form-check-lg">
                                                         <input class="form-check-input state-checkbox" type="checkbox"
                                                             name="states[]" value="{{ $state }}"
                                                             id="state-{{ $state }}">
@@ -91,9 +89,7 @@
                                                 @endforeach
                                             </div>
                                         </div>
-
-
-
+                                    
                                         <!-- Package Selection -->
                                         <div class="mb-3">
                                             <label for="package" class="form-label">Choose Package </label>

@@ -53,11 +53,11 @@ Route::get('/resend-email-reset-password', [AuthController::class, 'resendResetP
 
 Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
 
-    Route::get('/dashboard', [AdminRouteController::class, 'showDashboard'])->name('showDashboard');
-    Route::get('/user', [AdminRouteController::class, 'showUser'])->name('showUser');
+    Route::get('/dashboard', [AdminRouteController::class, 'showDashboard'])->name('showDashboardAdmin');
+    Route::get('/user', [AdminRouteController::class, 'showUser'])->name('showUserAdmin');
     Route::get('/add-user', [AdminRouteController::class, 'showAddUser'])->name('showAddUser');
     Route::get('/view-content', [AdminRouteController::class, 'showContentAdmin'])->name('showContentAdmin');
-    Route::get('/profile',  [AdminRouteController::class, 'showProfile'])->name('showProfile');
+    Route::get('/profile',  [AdminRouteController::class, 'showProfile'])->name('showProfileAdmin');
 
     Route::post('/approve-content/{id}', [ContentController::class, 'approveContent'])->name('approveContent');
     Route::post('/reject-content/{id}', [ContentController::class, 'rejectContent'])->name('rejectContent');
@@ -79,8 +79,8 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
 
 Route::prefix('staff')->middleware(['auth', 'role:2'])->group(function () {
 
-    Route::get('/dashboard', [StaffRouteController::class, 'showDashboard'])->name('showDashboard');
-    Route::get('/profile',  [StaffRouteController::class, 'showProfile'])->name('showProfile');
+    Route::get('/dashboard', [StaffRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
+    Route::get('/profile',  [StaffRouteController::class, 'showProfile'])->name('showProfileStaff');
 
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('staff.logout');
 });
@@ -90,8 +90,8 @@ Route::prefix('staff')->middleware(['auth', 'role:2'])->group(function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function () {
-    Route::get('/dashboard',[ContentCreatorRouteController::class, 'showDashboard'])->name('showDashboard');
-    Route::get('/profile', [ContentCreatorRouteController::class, 'showProfile'])->name('showProfile');
+    Route::get('/dashboard',[ContentCreatorRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
+    Route::get('/profile', [ContentCreatorRouteController::class, 'showProfile'])->name('showProfileContentCreator');
 
       // Route::middleware(['ekycCheck'])->group(function () {
  
@@ -105,8 +105,8 @@ Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function () {
-    Route::get('/dashboard', [OrganizationRouteController::class, 'showDashboard'])->name('showDashboard');
-    Route::get('/profile', [OrganizationRouteController::class, 'showProfile'])->name('showProfile');
+    Route::get('/dashboard', [OrganizationRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
+    Route::get('/profile', [OrganizationRouteController::class, 'showProfile'])->name('showProfileOrganization');
 
     // Route::middleware(['ekycCheck'])->group(function () {
         Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');

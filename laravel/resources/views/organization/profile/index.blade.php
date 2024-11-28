@@ -142,7 +142,17 @@
                                                          Number</label>
                                                       </div>
                                                    </div>
-                                                   <div class="col-md-6 mb-3">
+                                                   <div class="col-md-3 mb-3">
+                                                      <div class="form-floating mb-3">
+                                                         <input type="text"
+                                                            class="form-control"
+                                                            id="floatingInput"
+                                                            placeholder="Full Name"
+                                                            value="{{ ($datas[0]->active == 1) ? 'Active' : 'Inactive' }}" disabled>
+                                                         <label for="floatingInput">Account Status</label>
+                                                      </div>
+                                                   </div>
+                                                   <div class="col-md-3 mb-3">
                                                       <div class="form-floating mb-3">
                                                          @php
                                                          // Data peran
@@ -306,7 +316,7 @@
                                                             class="form-control"
                                                             id="floatingInput"
                                                             placeholder="Full Name"
-                                                            value="{{ ($datas[0]->org_status == 1) ? 'Active' : 'Inactive' }}" >
+                                                            value="{{ ($datas[0]->org_status == 1) ? 'Active' : 'Inactive' }}" disabled>
                                                          <label for="floatingInput">Organization Status</label>
                                                       </div>
                                                    </div>

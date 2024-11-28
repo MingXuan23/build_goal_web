@@ -116,7 +116,7 @@
                                                 name="states[]"
                                                 value="{{ $state }}"
                                                 id="state-{{ $state }}"
-                                                @if(in_array($state, $userStates)) checked @endif
+                                                @if(in_array($state, $userStates)) checked @endif disabled
                                             >
                                             <label class="form-check-label" for="state-{{ $state }}">
                                                 {{ $state }}

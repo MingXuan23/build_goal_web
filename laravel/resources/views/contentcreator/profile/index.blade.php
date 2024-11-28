@@ -73,7 +73,7 @@
                                           </div>
                                           <div class="flex-fill main-profile-info">
                                              <div class="d-flex align-items-center justify-content-between">
-                                                <h6 class="fw-bold mb-1 text-fixed-white mt-3 p-3">KHAIRUL ADZHAR</h6>
+                                                <h6 class="fw-bold mb-1 text-fixed-white mt-3 p-3">{{ $datas[0]->name }}</h6>
                                              </div>
                                           </div>
                                        </div>
@@ -84,28 +84,28 @@
                                                    <div class="col-md-8">
                                                       <div class="form-floating mb-3">
                                                          <input type="text" class="form-control" id="floatingInput"
-                                                             placeholder="Ic Number" value="010101010101">
+                                                             placeholder="Ic Number" value="{{ $datas[0]->icNo }}">
                                                          <label for="floatingInput">Ic Number</label>
                                                      </div>
                                                    </div>
                                                    <div class="col-md-4 mb-3">
                                                       <div class="form-floating mb-3">
                                                          <input type="text" class="form-control" id="floatingInput"
-                                                             placeholder="Full Name" value="KHAIRUL ADZHAR BIN NORAIDI">
+                                                             placeholder="Full Name" value="{{ $datas[0]->name }}">
                                                          <label for="floatingInput">Full Name</label>
                                                      </div>
                                                    </div>
                                                    <div class="col-md-4 mb-3">
                                                       <div class="form-floating mb-3">
                                                          <input type="email" class="form-control" id="floatingInput"
-                                                             placeholder="Email Address" value="khairuladzhar@gmail.com">
+                                                             placeholder="Email Address" value="{{ $datas[0]->email }}">
                                                          <label for="floatingInput">Email address</label>
                                                      </div>
                                                    </div>
                                                    <div class="col-md-4 mb-3">
                                                       <div class="form-floating mb-3">
                                                          <input type="number" class="form-control" id="floatingInput"
-                                                             placeholder="Phone Number" value="60144333443">
+                                                             placeholder="Phone Number" value="{{ $datas[0]->telno }}">
                                                          <label for="floatingInput">Phone Number</label>
                                                      </div>
                                                    </div>

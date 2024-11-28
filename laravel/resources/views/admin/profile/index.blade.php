@@ -81,22 +81,77 @@
                                                          <label for="floatingInput">Full Name</label>
                                                      </div>
                                                    </div>
-                                                   <div class="col-md-3 mb-3">
+                                                   <div class="col-md-4 mb-3">
                                                       <div class="form-floating mb-3">
                                                          <input type="email" class="form-control" id="floatingInput"
                                                              placeholder="Email Address" value="{{ Auth::user()->email }}" name="email">
                                                          <label for="floatingInput">Email address</label>
                                                      </div>
                                                    </div>
-                                                   <div class="col-md-3 mb-3">
+                                                   
+                                                   <div class="col-md-4 mb-3">
                                                       <div class="form-floating mb-3">
-                                                        
                                                          <input type="number" class="form-control" id="floatingInput"
                                                              placeholder="Phone Number" value="{{ Auth::user()->telno }}" name="telno">
                                                          <label for="floatingInput">Phone Number</label>
                                                      </div>
                                                    </div>
-                                                   <div class="col-md-6 mb-3">
+                                                   <div class="col-md-4 mb-3">
+                                                      <div class="form-floating mb-3">
+                                                         <input type="text"
+                                                            class="form-control"
+                                                            id="floatingInput"
+                                                            placeholder="Full Name"
+                                                            value="{{ (Auth::user()->active == 1) ? 'Active' : 'Inactive' }}" disabled>
+                                                         <label for="floatingInput">Account Status</label>
+                                                      </div>
+                                                   </div>
+                                                   <div class="col-md-4 mb-3">
+                                                      <div class="form-floating mb-3">
+                                                         <input type="text"
+                                                            class="form-control"
+                                                            id="floatingInput"
+                                                            placeholder="Full Name"
+                                                            value="{{ $datas[0]->org_address }}">
+                                                         <label for="floatingInput">Address</label>
+                                                      </div>
+                                                   </div>
+                                                   <div class="col-md-4 mb-3">
+                                                      <div class="form-floating">
+                                                         <select class="form-select" id="floatingSelect"
+                                                            aria-label="Floating label select example" name="ostate">
+                                                            <option value="" selected>- Select State -</option>
+                                                            <option value="pahang" @selected($datas[0]->org_state == 'pahang')>Pahang
+                                                            </option>
+                                                            <option value="perak" @selected($datas[0]->org_state == 'perak')>Perak
+                                                            </option>
+                                                            <option value="terengganu" @selected($datas[0]->org_state == 'terengganu')>
+                                                            Terengganu</option>
+                                                            <option value="perlis" @selected($datas[0]->org_state == 'perlis')>Perlis
+                                                            </option>
+                                                            <option value="selangor" @selected($datas[0]->org_state == 'selangor')>
+                                                            Selangor</option>
+                                                            <option value="negeri_sembilan"
+                                                            @selected($datas[0]->org_state == 'negeri_sembilan')>Negeri Sembilan</option>
+                                                            <option value="johor" @selected($datas[0]->org_state == 'johor')>Johor
+                                                            </option>
+                                                            <option value="kelantan" @selected($datas[0]->org_state == 'kelantan')>
+                                                            Kelantan</option>
+                                                            <option value="kedah" @selected($datas[0]->org_state == 'kedah')>Kedah
+                                                            </option>
+                                                            <option value="pulau_pinang" @selected($datas[0]->org_state == 'pulau_pinang')>
+                                                            Pulau Pinang</option>
+                                                            <option value="melaka" @selected($datas[0]->org_state == 'melaka')>Melaka
+                                                            </option>
+                                                            <option value="sabah" @selected($datas[0]->org_state == 'sabah')>Sabah
+                                                            </option>
+                                                            <option value="sarawak" @selected($datas[0]->org_state == 'sarawak')>
+                                                            Sarawak</option>
+                                                         </select>
+                                                         <label for="floatingSelect">State</label>
+                                                      </div>
+                                                   </div>
+                                                   <div class="col-md-4 mb-3">
                                                       <div class="form-floating mb-3">
                                                          @php
                                                          // Data peran
