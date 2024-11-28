@@ -107,11 +107,13 @@ Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function
 Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function () {
     Route::get('/dashboard', [OrganizationRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
     Route::get('/profile', [OrganizationRouteController::class, 'showProfile'])->name('showProfileOrganization');
+   
+    
 
     // Route::middleware(['ekycCheck'])->group(function () {
         Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');
         Route::get('/apply-content', [OrganizationRouteController::class, 'showAddContent'])->name('showAddContent');
-
+        Route::get('/dashboard', [OrganizationRouteController::class, 'contentDashboard'])->name('contentDashboard');
         Route::post('/apply-content', [ContentController::class, 'addContent'])->name('addContent');
     // });
 
