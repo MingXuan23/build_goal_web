@@ -66,6 +66,8 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::post('/update-ekyc-status/{id}', [UserManagementController::class, 'updateEkycStatus'])->name('updateEkycStatus');
     Route::post('/update-email-status/{id}', [UserManagementController::class, 'updateEmailStatus'])->name('updateEmailStatus');
     Route::post('/update-account-status/{id}', [UserManagementController::class, 'updateAccountStatus'])->name('updateAccountStatus');
+    Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailAdmin'])->name('updateProfilePersonalDetailAdmin');
+    Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordAdmin'])->name('updatePasswordAdmin');
 
 
 
@@ -77,44 +79,36 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 Route::prefix('staff')->middleware(['auth', 'role:2'])->group(function () {
 
     Route::get('/dashboard', [StaffRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
     Route::get('/profile',  [StaffRouteController::class, 'showProfile'])->name('showProfileStaff');
 
+    Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailStaff'])->name('updateProfilePersonalDetailStaff');
+    Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordStaff'])->name('updatePasswordStaff');
+
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('staff.logout');
 });
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function () {
-    Route::get('/dashboard',[ContentCreatorRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
-    Route::get('/profile', [ContentCreatorRouteController::class, 'showProfile'])->name('showProfileContentCreator');
-
-      // Route::middleware(['ekycCheck'])->group(function () {
- 
-        // });
-
-
-    Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('content-creator.logout');
-});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function () {
     Route::get('/dashboard', [OrganizationRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
     Route::get('/profile', [OrganizationRouteController::class, 'showProfile'])->name('showProfileOrganization');
-   
-    
 
     // Route::middleware(['ekycCheck'])->group(function () {
-        Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');
-        Route::get('/apply-content', [OrganizationRouteController::class, 'showAddContent'])->name('showAddContent');
-        Route::get('/dashboard', [OrganizationRouteController::class, 'contentDashboard'])->name('contentDashboard');
-        Route::post('/apply-content', [ContentController::class, 'addContent'])->name('addContent');
+    Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');
+    Route::get('/apply-content', [OrganizationRouteController::class, 'showAddContent'])->name('showAddContent');
+
+    Route::post('/apply-content', [ContentController::class, 'addContent'])->name('addContent');
+    Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailOrganization'])->name('updateProfilePersonalDetailOrganization');
+    Route::post('/profile/update-organization-Detail', [UserProfileController::class, 'updateProfileOrganizationDetail'])->name('updateProfileOrganizationDetail');
+    Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordOrganization'])->name('updatePasswordOrganization');
     // });
 
     // Route::get('/promote-content', function () use ($states_list) {
@@ -123,6 +117,28 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
 
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('organization.logout');
 });
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function () {
+    Route::get('/dashboard', [ContentCreatorRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
+    Route::get('/profile', [ContentCreatorRouteController::class, 'showProfile'])->name('showProfileContentCreator');
+
+    Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailContentCreator'])->name('updateProfilePersonalDetailContentCreator');
+    Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordContentCreator'])->name('updatePasswordContentCreator');
+
+    // Route::middleware(['ekycCheck'])->group(function () {
+
+    // });
+
+
+    Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('content-creator.logout');
+});
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -12,7 +12,19 @@ class OrganizationRouteController extends Controller
     //
     public function showDashboard(Request $request)
     {
-        return view('organization.dashboard.index');
+        $proposedContents = DB::table('contents')->count();
+        $approvedContents = DB::table('contents')
+            ->where('reason_phrase', 'APPROVED')
+            ->count();
+        $rejectedContents = DB::table('contents')
+            ->where('reason_phrase', 'REJECTED')
+            ->count();
+    
+        return view('organization.dashboard.index', [
+            'proposedContents' => $proposedContents,
+            'approvedContents' => $approvedContents,
+            'rejectedContents' => $rejectedContents,
+        ]);
     }
     public function showProfile(Request $request)
     {
@@ -178,20 +190,5 @@ class OrganizationRouteController extends Controller
         return view('organization.contentManagement.applyContent', compact('content_types','stateCities'));
     }
 
-    public function contentDashboard(Request $request)
-    {
-        $proposedContents = DB::table('contents')->count();
-        $approvedContents = DB::table('contents')
-            ->where('reason_phrase', 'APPROVED')
-            ->count();
-        $rejectedContents = DB::table('contents')
-            ->where('reason_phrase', 'REJECTED')
-            ->count();
-    
-        return view('organization.dashboard.index', [
-            'proposedContents' => $proposedContents,
-            'approvedContents' => $approvedContents,
-            'rejectedContents' => $rejectedContents,
-        ]);
-    }
+
 }

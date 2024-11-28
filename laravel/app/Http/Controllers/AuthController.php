@@ -21,7 +21,7 @@ class AuthController extends Controller
     public function maskEmail($email)
     {
         $parts = explode('@', $email);
-        $username = $parts[0]; // Bagian username sebelum '@'
+        $username = $parts[0];
         $maskedUsername = substr($username, 0, 3) . str_repeat('*', strlen($username) - 4);
         return $maskedUsername . '@' . $parts[1];
     }
@@ -118,6 +118,8 @@ class AuthController extends Controller
                 'password' => $validatedData['password'],
                 'telno' => $validatedData['phoneno'],
                 'icNo' => $validatedData['icno'],
+                'address' => $validatedData['oaddress'],
+                'state' => $validatedData['ostate'],
                 'email' => $validatedData['email'],
                 'status' => 'Active',
                 'role' => json_encode([3]),
@@ -218,6 +220,8 @@ class AuthController extends Controller
                 'telno' => $validatedData['phoneno'],
                 'icNo' => $validatedData['icno'],
                 'email' => $validatedData['email'],
+                'address' => $validatedData['oaddress'],
+                'state' => $validatedData['ostate'],
                 'status' => 'Active',
                 'role' => json_encode([4]),
                 'active' => 1,

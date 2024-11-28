@@ -13,10 +13,6 @@ class UserManagementController extends Controller
 {
     //
 
-  
-
-
-
     public function updateUser(Request $request, $id)
 
     {
