@@ -24,7 +24,7 @@ const knex = require('knex')(knexConfig[process.env.NODE_ENV]);
 
 const getUserByEmail = async (email) => {
   const [rows] = await promisePool.query(
-    "SELECT verification_code,name,password,id,role,email_status,status,email,created_at FROM users WHERE email = ?",
+    "SELECT verification_code,name,password,id,role,email_status,status,email,created_at, active FROM users WHERE email = ?",
     [email]
   );
   return rows[0];
@@ -36,9 +36,9 @@ const getUserByRememberToken = async (token) => {
 
   const user  = await knex("user_token as ut")
   .join("users as u", "ut.user_id", "u.id") // Use aliases for table names
-  .where({ "ut.remember_token": token}) // Use the alias in the condition
+  .where({ "ut.remember_token": token ,"u.status":"ACTIVE"}) // Use the alias in the condition
 
-  .select("u.*") // Select all fields from both tables using aliases
+  .select("u.name", "u.telno", "u.address", "u.state", "u.email", "u.status","u.password") // Select all fields from both tables using aliases
   .first();
 
 
@@ -69,7 +69,7 @@ const createUser = async (user) => {
 
 const updateUserStatus = async (email) => {
   console.log(email)
-  await promisePool.query('UPDATE users SET active = true, email_status = "VERIFY", status = "ACTIVE" WHERE email = ?', [email]);
+  await promisePool.query('UPDATE users SET active = true, email_status = "VERIFY", status = "Active" WHERE email = ?', [email]);
 };
 
 const updateVerificationCode = async (email, newVerificationCode) => {

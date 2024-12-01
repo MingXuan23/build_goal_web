@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "30000:3000"
+    volumes:
+      - ./nodejs:/usr/src/app
     environment:
       - NODE_ENV=docker
       - TZ=Asia/Kuala_Lumpur
@@ -26,6 +28,10 @@ services:
     working_dir: /var/www
     environment:
       - TZ=Asia/Kuala_Lumpur
+    volumes:
+      - ./laravel:/var/www:cached
+      - ./laravel/storage:/var/www/storage:cached
+      - ./laravel/docker/php/php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - mysql
     networks:
@@ -38,6 +44,8 @@ services:
       context: ./laravel
       dockerfile: ./docker/web.dockerfile
     working_dir: /var/www
+    volumes:
+      - ./laravel:/var/www:cached
     depends_on:
       - "laravel-app"
     networks:

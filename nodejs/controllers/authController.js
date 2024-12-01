@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
-const os = require("os");
+
 
 
 
@@ -150,7 +150,7 @@ const register = async (req, res) => {
     const uuid = uuidv4();
     const hashedPassword = await bcrypt.hash(password, 10);
     const verificationCode = Math.floor(100000 + Math.random() * 900000);
-    const role = { type: "mobile-user" };
+    const role = [5];
     const success_acc = "Pending email verification";
     const email_status = "NOT VERIFY";
     const result = await createUser({
@@ -160,6 +160,7 @@ const register = async (req, res) => {
       role: JSON.stringify(role),
       success: success_acc,
       email_status: email_status,
+      
     });
 
     if (result) {
@@ -177,7 +178,7 @@ const register = async (req, res) => {
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);
       const message = messages.join(", ");
-      res.status(400).json({ success: false, message: messages });
+      res.status(400).json({ success: false, message: message });
     } else {
       res.status(500).json({ success: false, message: error.message });
     }
@@ -259,10 +260,14 @@ const login = async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
-    if (user.email_status === "NOT VERIFY") {
+    else if (user.email_status === "NOT VERIFY") {
       return res.status(401).json({ success: false, message: "Your Account is Not Active." });
     }
-    if (user.status === "ACTIVE") {
+    else if (!user.active) {
+      console.log(user.active);
+      return res.status(401).json({ success: false, message: "Your Account is Suspended." });
+    }
+    if (user.status === "Active") {
       const token = getStaticToken(user.id, user.created_at);
 
 
@@ -281,7 +286,7 @@ const login = async (req, res) => {
         await knex("user_token").insert({
           user_id: user.id,
           remember_token: rememberToken,
-          app_id: app.id,
+          app_id: req.applicationId.id,
           device_token: device_token,
           token: token, // Use only the first 20 chars of the hash
           ip_address: ipAddress,
@@ -308,7 +313,7 @@ const login = async (req, res) => {
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);
       const message = messages.join(", ");
-      res.status(400).json({ success: false, message: messages });
+      res.status(400).json({ success: false,  message: message });
     } else {
       res.status(400).json({ success: false, message: error.message });
     }
@@ -322,26 +327,6 @@ const validateSession = async (req, res) => {
   try {
     const validatedData = validateSessionSchema.parse(req.body);
     const { email, rememberToken } = validatedData;
-    const applicationId = req.headers['application-id'];
-
-    if (!applicationId) {
-      res.status(503).json({
-        success: false,
-        message: 'Service Not Available'
-      });
-    }
-
-    const app = await knex('application')
-      .select('*')
-      .where({ name: applicationId })
-      .first();
-
-    if (!app) {
-      res.status(503).json({
-        success: false,
-        message: 'Service Not Available'
-      });
-    }
 
 
 
@@ -423,13 +408,13 @@ const performForgetPassword = async (req, res) => {
         updated_at: knex.fn.now(),
   
       });
-      return res.status(200).json(`A new password has been sent to your email: ${data.email}`);
+      return res.send(`A new password has been sent to your email: ${data.email}`);
     }
   } catch (error) {
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);
       const message = messages.join(", ");
-      res.status(400).json({ success: false, message: messages });
+      res.status(400).json({ success: false, message: message });
     } else {
       res.status(500).json({ success: false, message: error.message });
     }
@@ -439,9 +424,10 @@ const performForgetPassword = async (req, res) => {
 
 
 
+
 const forgetPassword = async (req, res) => {
   try {
-
+   
     const validatedData = forgetPasswordSchema.parse(req.body);
     const { email } = validatedData;
 
@@ -466,6 +452,7 @@ const forgetPassword = async (req, res) => {
     }
 
     const host = `${req.protocol}://${req.get('host')}`;
+
     const unique_id = crypto.randomBytes(40).toString("hex");
 
     const expirationTime = new Date();
@@ -479,11 +466,12 @@ const forgetPassword = async (req, res) => {
       user_id: user.id,
       created_at: knex.fn.now(),
       updated_at: knex.fn.now(),
-
+ 
     });
 
     // Prepare the data object
     const data = {
+      
       unique_id: unique_id,
       email: email,
       name: user.name
@@ -505,10 +493,11 @@ const forgetPassword = async (req, res) => {
     });
 
   } catch (error) {
+
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);
       const message = messages.join(", ");
-      res.status(400).json({ success: false, message: messages });
+      res.status(400).json({ success: false, message: message });
     } else {
       res.status(200).json({ success: false, message: error.message, error: error });
 
@@ -519,24 +508,26 @@ const forgetPassword = async (req, res) => {
 
 const changePassword = async (req, res) => {
   try {
+
+   
     const validatedData = changePasswordSchema.parse(req.body)
     const { oldPassword, newPassword } = validatedData;
 
     const user = req.user;
-
+ 
     if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
       return res.status(401).json({ success: false, message: "Your old password is inccorrect" });
     }
-
+   
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await updatePassword(user.email, hashedPassword);
 
+    await updatePassword(user.email, hashedPassword);
     res.status(200).json({ success: true, message: "Your password was successfully updated" });
   } catch (error) {
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);
       const message = messages.join(", ");
-      res.status(400).json({ success: false, message: messages });
+      res.status(400).json({ success: false, message: message });
     } else {
       res.status(500).json({ success: false, message: error.message });
     }

@@ -10,12 +10,14 @@ const authRoutes = require('./routes/authRoutes');
 //adsasa
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var gptRouter =  require('./routes/gpt');
+const gptRouter =  require('./routes/gptRoute');
 
 var app = express();
 
 app.use(express.json());
 app.use('/api/auth', authRoutes);
+app.use('/api/gpt', gptRouter);
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,7 +31,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/gpt', gptRouter);
 
 
 // catch 404 and forward to error handler

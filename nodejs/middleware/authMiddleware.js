@@ -52,7 +52,9 @@ const authenticateApplication = async (req, res, next) => {
         message: 'Service Not Available',
       });
     }
-
+   
+    req.applicationId = app;
+   
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
    
