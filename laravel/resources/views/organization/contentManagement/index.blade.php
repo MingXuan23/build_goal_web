@@ -96,10 +96,17 @@
                                             <select class="form-select" id="package" name="package" required>
                                                 <option value="" disabled selected>Select Package</option>
                                                 @foreach ($packages as $package)
-                                                    <option value="{{ $package->id }}">{{ $package->name }}</option>
+                                                    <option value="{{ $package->id }}"data-base-price="{{ $package->base_price }}" data-base-state="{{ $package->base_state }}">{{ $package->name }} | RM {{ $package->base_price }} | {{ $package->estimate_user }} ppl.</option>
                                                 @endforeach
                                             </select>
                                         </div>
+
+                                         <!-- Final Price Display -->
+                                        <div class="mb-3">
+                                            <label for="final_price" class="form-label">Final Price</label>
+                                            <input type="text" class="form-control" id="final_price" name="final_price" value="RM 0.00" readonly>
+                                        </div>
+
 
                                         <!-- Submit Button -->
                                         <div class="d-flex justify-content-end mt-3">
@@ -232,4 +239,28 @@
             });
         })
     </script>
+<script>
+    $(document).ready(function () {
+    const calculateFinalPrice = () => {
+        // Get selected package
+        const selectedPackage = $('#package option:selected');
+        const basePrice = parseFloat(selectedPackage.data('base-price')) || 0;
+        const baseState = parseInt(selectedPackage.data('base-state')) || 0;
+
+        // Count selected states
+        const selectedStatesCount = $('.state-checkbox:checked').length;
+
+        // Calculate final price
+        const n = selectedStatesCount;
+        const finalPrice = basePrice * (1 + (n - baseState) / 10);
+
+        // Update final price in the input
+        $('#final_price').val(`RM ${finalPrice.toFixed(2)}`);
+    };
+
+    // Event listeners
+    $('#package').on('change', calculateFinalPrice);
+    $('.state-checkbox').on('change', calculateFinalPrice);
+});
+</script>
 @endsection
