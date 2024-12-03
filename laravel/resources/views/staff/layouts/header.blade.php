@@ -38,7 +38,7 @@
                         <!-- End::header-link-icon -->
                     </span>
                 </a> --}}
-            {{-- </div> <div class="header-element">
+                {{-- </div> <div class="header-element">
                 <div class="d-flex align-items-center ">
                     <div class="bg-warning-transparent rounded p-2">
                         <i class="bi bi-bookmark-dash-fill text-warning"></i>
@@ -48,16 +48,92 @@
                 </div>
                
             </div> --}}
-            <div class="header-element header-fullscreen">
-                <!-- Start::header-link -->
-                <a onclick="toggleFullscreen();" href="javascript:void(0);" class="header-link">
-                    <i class="bx bx-fullscreen full-screen-open header-link-icon"></i>
-                    <i class="bx bx-exit-fullscreen full-screen-close header-link-icon d-none"></i>
-                </a>
-                <!-- End::header-link -->
-            </div>
-            <!-- End::header-element -->
-            {{-- <div class="header-element country-selector">
+
+
+                @php
+                    // Data peran
+                    $rolesMap = [
+                        1 => 'admin',
+                        2 => 'staff',
+                        3 => 'organization',
+                        4 => 'content creator',
+                        5 => 'mobile user',
+                    ];
+
+                    $userRoles = is_string(Auth::user()->role)
+                        ? json_decode(Auth::user()->role, true)
+                        : Auth::user()->role;
+
+                    if (!is_array($userRoles)) {
+                        $userRoles = [];
+                    }
+
+                    $roleNames = array_map(fn($role) => $rolesMap[$role] ?? 'unknown', $userRoles);
+
+                    $currentUrl = request()->url();
+                    $selectedRole = null;
+
+                    if (str_contains($currentUrl, '/organization') && in_array(3, $userRoles)) {
+                        $selectedRole = 3;
+                    } elseif (str_contains($currentUrl, '/admin') && in_array(1, $userRoles)) {
+                        $selectedRole = 1;
+                    } elseif (str_contains($currentUrl, '/staff') && in_array(2, $userRoles)) {
+                        $selectedRole = 2;
+                    } elseif (str_contains($currentUrl, '/content-creator') && in_array(4, $userRoles)) {
+                        $selectedRole = 4;
+                    }
+                @endphp
+
+                <div class="form-floating p-0 m-0">
+                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
+                        name="role_select">
+                        @foreach ($userRoles as $role)
+                            <option value="{{ $role }}" {{ $role == $selectedRole ? 'selected' : '' }}>
+                                {{ $rolesMap[$role] ?? 'Unknown' }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <label for="floatingSelect">Role</label>
+                </div>
+
+                <script>
+                    document.getElementById('floatingSelect').addEventListener('change', function() {
+                        const selectedRole = this.value;
+
+                        let redirectUrl = '';
+                        switch (selectedRole) {
+                            case '1': // Admin
+                                redirectUrl = '/admin/dashboard';
+                                break;
+                            case '2': // Staff
+                                redirectUrl = '/staff/dashboard';
+                                break;
+                            case '3': // Organization
+                                redirectUrl = '/organization/dashboard';
+                                break;
+                            case '4': // Content Creator
+                                redirectUrl = '/content-creator/dashboard';
+                                break;
+                            default:
+                                redirectUrl = '/'; 
+                        }
+
+                        // Arahkan pengguna ke URL yang sesuai
+                        window.location.href = redirectUrl;
+                    });
+                </script>
+
+
+                <div class="header-element header-fullscreen">
+                    <!-- Start::header-link -->
+                    <a onclick="toggleFullscreen();" href="javascript:void(0);" class="header-link">
+                        <i class="bx bx-fullscreen full-screen-open header-link-icon"></i>
+                        <i class="bx bx-exit-fullscreen full-screen-close header-link-icon d-none"></i>
+                    </a>
+                    <!-- End::header-link -->
+                </div>
+                <!-- End::header-element -->
+                {{-- <div class="header-element country-selector">
              <!-- Start::header-link|dropdown-toggle -->
              <a href="javascript:void(0);" class="header-link dropdown-toggle"
                 data-bs-auto-close="outside" data-bs-toggle="dropdown">
@@ -100,48 +176,50 @@
              </ul>
           </div> --}}
 
-            <div class="header-element">
-                <!-- Start::header-link|dropdown-toggle -->
-                <a href="javascript:void(0);" class="header-link dropdown-toggle" id="mainHeaderProfile"
-                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                    <div class="d-flex align-items-center">
-                        <div class="me-sm-2 me-0">
-                            <img src="../assets/images/user/avatar-1.jpg" alt="img" width="32" height="32"
-                                class="rounded-circle">
+                <div class="header-element">
+                    <!-- Start::header-link|dropdown-toggle -->
+                    <a href="javascript:void(0);" class="header-link dropdown-toggle" id="mainHeaderProfile"
+                        data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                        <div class="d-flex align-items-center">
+                            <div class="me-sm-2 me-0">
+                                <img src="../assets/images/user/avatar-1.jpg" alt="img" width="32"
+                                    height="32" class="rounded-circle">
+                            </div>
+                            <div class="d-sm-block d-none">
+                                <p class="fw-bold mb-0 lh-1">Khairul Adzhar</p>
+                                <span class="op-7 fw-semibold d-block fs-11">Staff</span>
+                            </div>
                         </div>
-                        <div class="d-sm-block d-none">
-                            <p class="fw-bold mb-0 lh-1">Khairul Adzhar</p>
-                            <span class="op-7 fw-semibold d-block fs-11">Staff</span>
-                        </div>
-                    </div>
-                </a>
-                <!-- End::header-link|dropdown-toggle -->
-                <ul class="main-header-dropdown dropdown-menu pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end"
-                    aria-labelledby="mainHeaderProfile">
-                    <li><a class="dropdown-item d-flex" href="/staff/profile"><i
-                                class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
-                    <li>
-                        <a class="dropdown-item d-flex" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="ti ti-logout fs-18 me-2 op-7"></i>
-                            LogOut
-                        </a>
-                        
-                        <!-- Form Logout -->
-                        <form id="logout-form" action="{{ route('staff.logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    </li>
-                </ul>
-            </div>
-            <div class="header-element">
-                <!-- Start::header-link|switcher-icon -->
-                <a href="javascript:void(0);" class="header-link switcher-icon" data-bs-toggle="offcanvas"
-                    data-bs-target="#switcher-canvas">
-                    <i class="bx bx-cog header-link-icon"></i>
-                </a>
-                <!-- End::header-link|switcher-icon -->
+                    </a>
+                    <!-- End::header-link|dropdown-toggle -->
+                    <ul class="main-header-dropdown dropdown-menu pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end"
+                        aria-labelledby="mainHeaderProfile">
+                        <li><a class="dropdown-item d-flex" href="/staff/profile"><i
+                                    class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
+                        <li>
+                            <a class="dropdown-item d-flex" href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="ti ti-logout fs-18 me-2 op-7"></i>
+                                LogOut
+                            </a>
+
+                            <!-- Form Logout -->
+                            <form id="logout-form" action="{{ route('staff.logout') }}" method="POST"
+                                style="display: none;">
+                                @csrf
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                <div class="header-element">
+                    <!-- Start::header-link|switcher-icon -->
+                    <a href="javascript:void(0);" class="header-link switcher-icon" data-bs-toggle="offcanvas"
+                        data-bs-target="#switcher-canvas">
+                        <i class="bx bx-cog header-link-icon"></i>
+                    </a>
+                    <!-- End::header-link|switcher-icon -->
+                </div>
             </div>
         </div>
-    </div>
-    <!-- End::main-header-container -->
+        <!-- End::main-header-container -->
 </header>

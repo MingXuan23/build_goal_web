@@ -49,6 +49,80 @@
                 </div>
 
             </div> --}}
+            @php
+                // Data peran
+                $rolesMap = [
+                    1 => 'admin',
+                    2 => 'staff',
+                    3 => 'organization',
+                    4 => 'content creator',
+                    5 => 'mobile user',
+                ];
+
+                $userRoles = is_string(Auth::user()->role) ? json_decode(Auth::user()->role, true) : Auth::user()->role;
+
+                if (!is_array($userRoles)) {
+                    $userRoles = [];
+                }
+
+                $roleNames = array_map(fn($role) => $rolesMap[$role] ?? 'unknown', $userRoles);
+
+                $currentUrl = request()->url(); 
+                $selectedRole = null;
+
+                if (str_contains($currentUrl, '/organization') && in_array(3, $userRoles)) {
+                    $selectedRole = 3; 
+                } elseif (str_contains($currentUrl, '/admin') && in_array(1, $userRoles)) {
+                    $selectedRole = 1; 
+                } elseif (str_contains($currentUrl, '/staff') && in_array(2, $userRoles)) {
+                    $selectedRole = 2; 
+                } elseif (str_contains($currentUrl, '/content-creator') && in_array(4, $userRoles)) {
+                    $selectedRole = 4; 
+                }
+            @endphp
+
+            <div class="form-floating p-0 m-0">
+                <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
+                    name="role_select">
+                    @foreach ($userRoles as $role)
+                        <option value="{{ $role }}" {{ $role == $selectedRole ? 'selected' : '' }}>
+                            {{ $rolesMap[$role] ?? 'Unknown' }}
+                        </option>
+                    @endforeach
+                </select>
+                <label for="floatingSelect">Role</label>
+            </div>
+
+            <script>
+          
+                document.getElementById('floatingSelect').addEventListener('change', function() {
+                    const selectedRole = this.value;
+
+  
+                    let redirectUrl = '';
+                    switch (selectedRole) {
+                        case '1': // Admin
+                            redirectUrl = '/admin/dashboard';
+                            break;
+                        case '2': // Staff
+                            redirectUrl = '/staff/dashboard';
+                            break;
+                        case '3': // Organization
+                            redirectUrl = '/organization/dashboard';
+                            break;
+                        case '4': // Content Creator
+                            redirectUrl = '/content-creator/dashboard';
+                            break;
+                        default:
+                            redirectUrl = '/'; 
+                    }
+
+                    // Arahkan pengguna ke URL yang sesuai
+                    window.location.href = redirectUrl;
+                });
+            </script>
+
+
             <div class="header-element header-fullscreen">
                 <!-- Start::header-link -->
                 <a onclick="toggleFullscreen();" href="javascript:void(0);" class="header-link">
@@ -122,13 +196,15 @@
                     <li><a class="dropdown-item d-flex" href="/admin/profile"><i
                                 class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
                     <li>
-                        <a class="dropdown-item d-flex" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <a class="dropdown-item d-flex" href="#"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="ti ti-logout fs-18 me-2 op-7"></i>
                             LogOut
                         </a>
-                        
+
                         <!-- Form Logout -->
-                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST"
+                            style="display: none;">
                             @csrf
                         </form>
                     </li>

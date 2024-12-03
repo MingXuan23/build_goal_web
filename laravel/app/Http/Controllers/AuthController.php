@@ -281,6 +281,7 @@ class AuthController extends Controller
                 return back()->with('error', 'Your account is block, Please Contact us by email to help-center@xbug.online for inform if we mistake');
             }
             // dd($user);
+            Session::put('user_roles', json_encode($user->role));
             if (in_array(1, json_decode($user->role))) {
                 return redirect('/admin/dashboard');
             } elseif (in_array(2, json_decode($user->role))) {
