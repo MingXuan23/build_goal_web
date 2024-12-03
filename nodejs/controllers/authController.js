@@ -268,10 +268,11 @@ const login = async (req, res) => {
       return res.status(401).json({ success: false, message: "Your Account is Suspended." });
     }
 
-    else if(user_status != "ACTIVE"){
+    else if(user.status != "ACTIVE"){
       return res.status(401).json({ success: false, message: "Your Account is Suspended." });
     }
    
+    console.log(req.applicationId);
 
     const token = getStaticToken(user.id, user.created_at);
 
@@ -283,6 +284,7 @@ const login = async (req, res) => {
       const ipAddress = req.header('x-forwarded-for') || req.connection.remoteAddress; // Get user's IP address
 
       const rememberToken = crypto.randomBytes(30).toString("hex"); // Generate 40-char random token
+      console.log(req.applicationId);
 
       // Generate bcrypt hash of user_id
 
@@ -311,9 +313,10 @@ const login = async (req, res) => {
 
           });
       }
+      console.log(req.applicationId);
 
       return res.status(200).json({ success: true, token, rememberToken, email: user.email });
-      
+
   } catch (error) {
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);

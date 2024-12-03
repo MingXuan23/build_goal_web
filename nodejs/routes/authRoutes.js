@@ -4,7 +4,7 @@ const { authenticateToken, authenticateApplication } = require('../middleware/au
 const { register, login, verifyCode, resendVerificationCode,forgetPassword,changePassword ,validateSession, performForgetPassword } = require('../controllers/authController');
 
 router.post('/register', authenticateApplication ,register);
-router.post('/login',  login);
+router.post('/login', authenticateApplication, login);
 router.post('/verify/:email', authenticateApplication, verifyCode);
 router.post('/resend/:email', authenticateApplication ,resendVerificationCode); 
 router.post('/forget-password',authenticateApplication, forgetPassword); 
