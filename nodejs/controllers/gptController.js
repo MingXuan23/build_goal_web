@@ -78,7 +78,7 @@ const fastResponse = async (req, res, next) => {
       });
   
     } catch (error) {
-      console.error('Error in /fast-response:', error.message);
+      console.error('Error in /fast-response:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   
@@ -146,16 +146,32 @@ const slowResponse =async (req, res) => {
             return res.status(404).json('Not Found');
         }
 
-      const apiResponse = await axios.post(`${HOST_URL}/api/pull`, {
-        model: model,
-        stream:false
-      });
+        try{
+          const validateResponse = await axios.post(`${HOST_URL}/api/show`, {
+            model: model,
+          
+          });
+          const statusCode = validateResponse.status;
+          res.status(statusCode).json({
+            message: `Pulled Already`,
+          });
+        }catch{
+          const apiResponse = await axios.post(`${HOST_URL}/api/pull`, {
+            model: model,
+            stream:false
+          });
+    
+          const statusCode = apiResponse.status;
+    
+          res.status(statusCode).json({
+            message: `${apiResponse.toString()}`,
+          });
+        }
+       
 
-      const statusCode = apiResponse.status;
-
-      res.status(statusCode).json({
-        message: `${apiResponse.toString()}`,
-      });
+     
+        
+     
     
     } catch (error) {
       console.error('Error in load Model:', error.message);

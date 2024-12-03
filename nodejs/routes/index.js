@@ -6,7 +6,7 @@ const knex = require('knex')(knexConfig[process.env.NODE_ENV])
 /* GET home page. */
 router.get('/', function(req, res, next) {
   
-  res.send(`You : ${fullUrl}`);
+  res.status(200).json('hello');
   //res.json("Hello dzsdcasd" + new Date());
 });
 
