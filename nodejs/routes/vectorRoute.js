@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getContentCollection ,addPointContentCollection, addPointUserCollection,calVectorByLabel} = require('../controllers/vectorController');
+const { getContentCollection ,addPointContentCollection, addPointUserCollection,calVectorByLabel,saveUserVectorTest} = require('../controllers/vectorController');
 const { authenticateToken, authenticateApplication } = require('../middleware/authMiddleware');
 
 // router.post('/register', authenticateApplication ,register);
@@ -18,8 +18,6 @@ router.get('/getVectorValue', calVectorByLabel);
 
 router.post('/user_collection/save/:id', authenticateApplication, addPointUserCollection);
 router.post('/content_collection/save/:id', authenticateApplication, addPointContentCollection);
-
-
-
+router.post('/submit-vector-test', authenticateApplication,authenticateToken, saveUserVectorTest);
 
 module.exports = router;

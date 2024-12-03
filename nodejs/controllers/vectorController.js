@@ -80,6 +80,74 @@ const getContentCollection = async (req, res) => {
     }
 };
 
+const saveUserVectorTest = async (req, res) => {
+    const { like_content_ids, dislike_content_ids } = req.body;
+
+    try {
+        // Validate if the arrays are provided
+        if (!Array.isArray(like_content_ids) || !Array.isArray(dislike_content_ids)) {
+            return res.status(400).json({ error: 'Invalid input, arrays are required' });
+        }
+
+        const user = req.user;
+        const user_vector = await knex('user_vector').select('*').where({ 'user_id': user.id }).first();
+
+        if (user_vector) {
+            return res.status(403).json({ error: 'Test Submitted' });
+
+        }
+
+        // Call the Qdrant API with the like and dislike content IDs
+        const response = await axios.post(
+            `${HOST_URL}/collections/content_collection/points/recommend`,
+            {
+
+                positive: like_content_ids,
+                negative: dislike_content_ids,
+                limit: 1,
+                with_vector:true
+            },
+            {
+                headers: {
+                    'api-key': API_KEY,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+
+        // Extract the vector from the response
+        const vector = response.data.result[0].vector;
+        console.log( response.data.result);
+
+        console.log(vector);
+        var result =  await knex('user_vector').insert({
+            user_id: user.id,
+            values: JSON.stringify(vector),
+            created_at: knex.fn.now(),
+            updated_at: knex.fn.now(),
+        });
+
+        // Send the vector as the response
+        res.status(200).json({ success:result, message:"success", vector: vector });
+    } catch (error) {
+        if (error.response) {
+            console.error('API Error:', error.response.data);
+            return res.status(error.response.status).json({
+                error: 'Error',
+                details: error.response.data
+            });
+        } else if (error.request) {
+            console.error('No response from API:', error.request);
+            return res.status(500).json('No response from API');
+        } else {
+            console.error('Unexpected Error:', error.message);
+            return res.status(500).json('Unexpected error: ' + error.message);
+        }
+    }
+
+
+}
 
 // Function to calculate the sum of two arrays element-wise
 const getSum = (targetValues, sourceValues) => {
@@ -154,13 +222,13 @@ const calVectorByLabel = async (req, res) => {
     return res.status(200).json({
         weight: `[${finalLabel.map((v) => v.toFixed(3)).join(",")}]`,
         reference: `0.Education and Self Improvement ` +
-                   `1.Entertainment and Health Fitness ` +
-                   `2.Financial and business ` +
-                   `3.Technology and digital ` +
-                   `4.fashion and art ` +
-                   `5.production and construction ` +
-                   `6.transportationa and logistics ` +
-                   `7.social and personal services`
+            `1.Entertainment and Health Fitness ` +
+            `2.Financial and business ` +
+            `3.Technology and digital ` +
+            `4.fashion and art ` +
+            `5.production and construction ` +
+            `6.transportationa and logistics ` +
+            `7.social and personal services`
     });
 
 }
@@ -389,5 +457,6 @@ module.exports = {
     addPointContentCollection,
     addPointUserCollection,
     fetchVectorContent,
-    calVectorByLabel
+    calVectorByLabel,
+    saveUserVectorTest
 };

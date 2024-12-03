@@ -267,8 +267,13 @@ const login = async (req, res) => {
       console.log(user.active);
       return res.status(401).json({ success: false, message: "Your Account is Suspended." });
     }
-    if (user.status === "Active") {
-      const token = getStaticToken(user.id, user.created_at);
+
+    else if(user_status != "ACTIVE"){
+      return res.status(401).json({ success: false, message: "Your Account is Suspended." });
+    }
+   
+
+    const token = getStaticToken(user.id, user.created_at);
 
 
 
@@ -307,8 +312,8 @@ const login = async (req, res) => {
           });
       }
 
-      res.status(200).json({ success: true, token, rememberToken, email: user.email });
-    }
+      return res.status(200).json({ success: true, token, rememberToken, email: user.email });
+      
   } catch (error) {
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);

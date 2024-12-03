@@ -71,7 +71,7 @@ const createUser = async (user) => {
 
 const updateUserStatus = async (email) => {
   console.log(email)
-  await promisePool.query('UPDATE users SET active = true, email_status = "VERIFY", status = "Active" WHERE email = ?', [email]);
+  await promisePool.query('UPDATE users SET active = true, email_status = "VERIFY", status = "ACTIVE" WHERE email = ?', [email]);
 };
 
 const updateVerificationCode = async (email, newVerificationCode) => {
