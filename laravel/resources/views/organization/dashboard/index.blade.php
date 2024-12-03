@@ -17,6 +17,14 @@
             </div>
             <!-- Page Header Close -->
             <!-- Start::row-1 -->
+            @if (session()->has('success'))
+                <div class="alert alert-success alert-dismissible d-flex align-items-center" role="alert">
+                    <i class="bi bi-check-circle-fill fs-4"></i>
+                    </svg>
+                    <div class="ms-3"> {{ session('success') }} </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             @if (session()->has('errorEkyc'))
                 <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
                     <i class="bi bi-dash-circle-fill fs-4"></i>
@@ -24,7 +32,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-
+            @if (session()->has('error'))
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                    <i class="bi bi-dash-circle-fill fs-4"></i>
+                    <div class="ms-3"> {{ session('error') }} </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             @if (Auth::user()->ekyc_status === 0)
                 <div class="row" id="tasks-container">
                     <div class="col-xl-12 task-card">
@@ -76,7 +90,7 @@
                                                                             </div>
                                                                             <div class="text-end col-md-2">
                                                                                 <div class="ms-auto mt-4">
-                                                                                    <button type="button"
+                                                                                    <button type="button" id="startButton"
                                                                                         class="btn btn-success btn-wave">Start</button>
                                                                                 </div>
                                                                             </div>
@@ -154,4 +168,9 @@
             <!--End::row-1 -->
         </div>
     </div>
+    <script>
+        document.getElementById('startButton').addEventListener('click', function() {
+            window.location.href = "/organization/card-verification"; 
+        });
+    </script>
 @endsection

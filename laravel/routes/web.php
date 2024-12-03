@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\ContentCreatorRouteController;
+use App\Http\Controllers\EkycController;
 use App\Http\Controllers\OrganizationRouteController;
 use App\Http\Controllers\StaffRouteController;
 use App\Http\Controllers\UserProfileController;
@@ -102,6 +103,10 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
     Route::get('/dashboard', [OrganizationRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
     Route::get('/profile', [OrganizationRouteController::class, 'showProfile'])->name('showProfileOrganization');
 
+    Route::get('/card-verification', [EkycController::class, 'CardVerification'])->name('CardVerification');
+    Route::get('/face-verification', [EkycController::class, 'FaceVerification'])->name('FaceVerification');
+    Route::get('/verification-process', [EkycController::class, 'VerificationSuccess'])->name('VerificationSuccess');
+
     // Route::middleware(['ekycCheck'])->group(function () {
     Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');
     Route::get('/apply-content', [OrganizationRouteController::class, 'showAddContent'])->name('showAddContent');
@@ -128,6 +133,10 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
 Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function () {
     Route::get('/dashboard', [ContentCreatorRouteController::class, 'showDashboard'])->name('showDashboardContentCreator');
     Route::get('/profile', [ContentCreatorRouteController::class, 'showProfile'])->name('showProfileContentCreator');
+
+    Route::get('/card-verification', [EkycController::class, 'CardVerification'])->name('CardVerification');
+    Route::get('/face-verification', [EkycController::class, 'FaceVerification'])->name('FaceVerification');
+    Route::get('/verification-process', [EkycController::class, 'VerificationSuccess'])->name('VerificationSuccess');
 
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailContentCreator'])->name('updateProfilePersonalDetailContentCreator');
     Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordContentCreator'])->name('updatePasswordContentCreator');

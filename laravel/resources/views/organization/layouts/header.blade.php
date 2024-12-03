@@ -40,26 +40,28 @@
                 </a> --}}
             </div>
             <div class="header-element">
-                @if (Auth::user()->ekyc_status === 0)
-                    <div class="d-flex align-items-center justify-content-center">
-                        <div class="bg-danger-transparent rounded p-2 d-flex align-items-center">
-                            <i class="bi bi-patch-exclamation-fill text-danger fs-5 me-2"></i>
-                            <span class="fw-bold">pending e-kyc</span>
+                <a href="javascript:void(0);" class="header-link dropdown-toggle">
+                    @if (Auth::user()->ekyc_status === 0)
+                        <div class="d-flex align-items-center justify-content-center">
+                            <div class="bg-danger-transparent rounded p-2 d-flex align-items-center">
+                                <i class="bi bi-patch-exclamation-fill text-danger fs-5 me-2"></i>
+                                <span class="fw-bold">pending e-KYC</span>
 
+                            </div>
                         </div>
-                    </div>
-                @else
-                    <div class="d-flex align-items-center justify-content-center">
-                        <div class="bg-success-transparent rounded d-flex align-items-center p-2">
-                            <i class="bi bi-patch-check-fill text-success fs-5 me-2"></i>
-                            <!-- Added margin to separate icon and text -->
-                            <span class="fw-bold">e-kyc Verified</span>
+                    @else
+                        <div class="d-flex align-items-center justify-content-center">
+                            <div class="bg-success-transparent rounded d-flex align-items-center p-2">
+                                <i class="bi bi-patch-check-fill text-success fs-5 me-2"></i>
+                                <!-- Added margin to separate icon and text -->
+                                <span class="fw-bold">e-KYC Verified</span>
+                            </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
+                </a>
 
             </div>
-            @php
+            {{-- @php
                 // Data peran
                 $rolesMap = [
                     1 => 'admin',
@@ -77,21 +79,21 @@
 
                 $roleNames = array_map(fn($role) => $rolesMap[$role] ?? 'unknown', $userRoles);
 
-                $currentUrl = request()->url(); 
+                $currentUrl = request()->url();
                 $selectedRole = null;
 
                 if (str_contains($currentUrl, '/organization') && in_array(3, $userRoles)) {
-                    $selectedRole = 3; 
+                    $selectedRole = 3;
                 } elseif (str_contains($currentUrl, '/admin') && in_array(1, $userRoles)) {
-                    $selectedRole = 1; 
+                    $selectedRole = 1;
                 } elseif (str_contains($currentUrl, '/staff') && in_array(2, $userRoles)) {
-                    $selectedRole = 2; 
+                    $selectedRole = 2;
                 } elseif (str_contains($currentUrl, '/content-creator') && in_array(4, $userRoles)) {
-                    $selectedRole = 4; 
+                    $selectedRole = 4;
                 }
             @endphp
 
-            <div class="form-floating p-0 m-0">
+            <div class="form-floating p-0 m-0 ms-3">
                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
                     name="role_select">
                     @foreach ($userRoles as $role)
@@ -123,14 +125,122 @@
                             redirectUrl = '/content-creator/dashboard';
                             break;
                         default:
-                            redirectUrl = '/'; 
+                            redirectUrl = '/';
                     }
 
                     // Arahkan pengguna ke URL yang sesuai
                     window.location.href = redirectUrl;
                 });
-            </script>
+            </script> --}}
 
+            @php
+                // Data peran
+                $rolesMap = [
+                    1 => 'admin',
+                    2 => 'staff',
+                    3 => 'organization',
+                    4 => 'content-creator',
+                    5 => 'mobile user',
+                ];
+
+                $userRoles = is_string(Auth::user()->role) ? json_decode(Auth::user()->role, true) : Auth::user()->role;
+
+                if (!is_array($userRoles)) {
+                    $userRoles = [];
+                }
+
+                $roleNames = array_map(fn($role) => $rolesMap[$role] ?? 'unknown', $userRoles);
+
+                $currentUrl = request()->url();
+                $selectedRole = null;
+
+                if (str_contains($currentUrl, '/organization') && in_array(3, $userRoles)) {
+                    $selectedRole = 3;
+                } elseif (str_contains($currentUrl, '/admin') && in_array(1, $userRoles)) {
+                    $selectedRole = 1;
+                } elseif (str_contains($currentUrl, '/staff') && in_array(2, $userRoles)) {
+                    $selectedRole = 2;
+                } elseif (str_contains($currentUrl, '/content-creator') && in_array(4, $userRoles)) {
+                    $selectedRole = 4;
+                }
+            @endphp
+
+            <div class="header-element">
+                <!-- Start::header-link|dropdown-toggle -->
+                <a href="javascript:void(0);" class="header-link dropdown-toggle" data-bs-toggle="dropdown"
+                    data-bs-auto-close="outside" aria-expanded="false">
+                    <div class="d-flex align-items-center">
+                        <i class="ms-2 bx bx-grid-alt header-link-icon"></i>
+                    </div>
+                </a>
+                <!-- End::header-link|dropdown-toggle -->
+                <div class="main-header-dropdown dropdown-menu dropdown-menu-end" data-popper-placement="none">
+                    <div class="p-3 d-flex">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <p class="mb-0 fs-17 fw-semibold">Your Role</p>
+                        </div>
+                    </div>
+                    <div>
+                        <hr class="dropdown-divider">
+                    </div>
+
+                    <ul class="list-unstyled mb-0" id="header-notification-scroll">
+                        @foreach ($userRoles as $role)
+                            @php
+                                $roleClass = '';
+                                switch ($role) {
+                                    case 1:
+                                        $roleClass = 'bg-danger-transparent'; // Admin
+                                        break;
+                                    case 2:
+                                        $roleClass = 'bg-warning-transparent'; // Staff
+                                        break;
+                                    case 3:
+                                        $roleClass = 'bg-info-transparent'; // Organization
+                                        break;
+                                    case 4:
+                                        $roleClass = 'bg-success-transparent'; // Content Creator
+                                        break;
+                                }
+                            @endphp
+                            <li class="dropdown-item">
+                                <div class="d-flex align-items-center">
+                                    <div class="pe-2">
+                                        <span class="avatar avatar-md {{ $roleClass }} avatar-rounded">
+                                            <i class="bx bxs-user-circle fs-34"></i>
+
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 d-flex align-items-center justify-content-between p-2">
+                                        <div>
+                                            <span class="mb-0 fw-semibold p-2">
+                                                <a
+                                                    href="{{ url('/' . $rolesMap[$role] . '/dashboard') }}">{{ $rolesMap[$role] }}</a>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <a href="{{ url('/' . $rolesMap[$role] . '/dashboard') }}"
+                                                class="min-w-fit-content text-muted me-1 dropdown-item-close1">
+                                                <i class="bx bx-right-arrow-alt fs-22"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    <div class="p-2 empty-header-item border-top"></div>
+                </div>
+            </div>
+
+            {{-- <script>
+                document.querySelectorAll('.dropdown-item a').forEach(function(item) {
+                    item.addEventListener('click', function() {
+                        window.location.href = this.href; // Navigate to the selected role's dashboard
+                    });
+                });
+            </script> --}}
 
 
             <div class="header-element header-fullscreen">
@@ -185,6 +295,7 @@
              </ul>
           </div> --}}
 
+
             <div class="header-element">
                 <!-- Start::header-link|dropdown-toggle -->
                 <a href="javascript:void(0);" class="header-link dropdown-toggle" id="mainHeaderProfile"
@@ -220,14 +331,14 @@
                     </li>
                 </ul>
             </div>
-            <div class="header-element">
+            {{-- <div class="header-element">
                 <!-- Start::header-link|switcher-icon -->
                 <a href="javascript:void(0);" class="header-link switcher-icon" data-bs-toggle="offcanvas"
                     data-bs-target="#switcher-canvas">
                     <i class="bx bx-cog header-link-icon"></i>
                 </a>
                 <!-- End::header-link|switcher-icon -->
-            </div>
+            </div> --}}
         </div>
     </div>
     <!-- End::main-header-container -->

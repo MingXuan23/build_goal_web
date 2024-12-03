@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class OrganizationRouteController extends Controller
 {
@@ -19,7 +21,7 @@ class OrganizationRouteController extends Controller
         $rejectedContents = DB::table('contents')
             ->where('reason_phrase', 'REJECTED')
             ->count();
-    
+
         return view('organization.dashboard.index', [
             'proposedContents' => $proposedContents,
             'approvedContents' => $approvedContents,
@@ -29,7 +31,7 @@ class OrganizationRouteController extends Controller
     public function showProfile(Request $request)
     {
         $data = DB::table('users as u')
-        ->where('u.id', Auth::user()->id)
+            ->where('u.id', Auth::user()->id)
             ->join('roles as r', function ($join) {
                 $join->whereRaw('JSON_CONTAINS(u.role, JSON_ARRAY(r.id))');
             })
@@ -75,7 +77,7 @@ class OrganizationRouteController extends Controller
             )
             ->orderby('u.created_at', 'asc')
             ->get();
-        return view('organization.profile.index',[
+        return view('organization.profile.index', [
             'datas' => $data
         ]);
     }
@@ -88,79 +90,73 @@ class OrganizationRouteController extends Controller
         // $user->id;
 
         $user_data = DB::table('contents as contents')->where('contents.user_id', $user->id)
-        ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
-        ->select(
-            'contents.id',
-            'contents.name',
-            'contents.created_at',
-            'contents.link',
-            'contents.status',
-            'contents.user_id',
-            'contents.enrollment_price',
-            'contents.place',
-            'contents.reason_phrase',
-            'contents.reject_reason',
-            'contents.participant_limit',
-            'content_types.type', // This is the organization name we will display
-        )
-        ->get();
+            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+            ->select(
+                'contents.id',
+                'contents.name',
+                'contents.created_at',
+                'contents.link',
+                'contents.status',
+                'contents.user_id',
+                'contents.enrollment_price',
+                'contents.place',
+                'contents.reason_phrase',
+                'contents.reject_reason',
+                'contents.participant_limit',
+                'content_types.type', // This is the organization name we will display
+            )
+            ->get();
         $packages = DB::table('package')->where('status', true)->get();
-        if($request->ajax()) {
+        if ($request->ajax()) {
             $table = DataTables::of($user_data)->addIndexColumn();
-            
-            $table->addColumn('action', function ($row) {
-                if($row->reason_phrase == 'APPROVED'){
 
-                    $button = 
-                    '<div class="d-flex">
+            $table->addColumn('action', function ($row) {
+                if ($row->reason_phrase == 'APPROVED') {
+
+                    $button =
+                        '<div class="d-flex">
                         <button class="btn btn-icon btn-sm btn-success-transparent rounded-pill me-2" data-bs-toggle="modal" data-bs-target="#modalView-' . $row->id . '">
                                        <i class="bi bi-arrow-right-circle-fill"></i>
                         </button>
-                    </div>';                                                        
-                }
-                elseif($row->reason_phrase == 'PENDING'){
-                    $button = 
-                    '<div class="d-flex justify-content-between">
+                    </div>';
+                } elseif ($row->reason_phrase == 'PENDING') {
+                    $button =
+                        '<div class="d-flex justify-content-between">
                         <span class=" text-warning p-2 me-1 fw-bold">
                              <i class="bi bi-circle-fill"></i> PENDING
                         </span>
                     </div>';
-                    
-                }
-                else{
-                    $button = 
-                    '<div class="d-flex">
+                } else {
+                    $button =
+                        '<div class="d-flex">
                         <button class="btn btn-icon btn-sm btn-danger-transparent rounded-pill me-2"
                                         data-bs-toggle="modal" data-bs-target="#reject-' . $row->id . '">
                                         <i class="ri-eye-line fw-bold"></i>
                         </button>
-                    </div>'; 
+                    </div>';
                 }
                 return $button;
             });
 
             $table->addColumn('status', function ($row) {
-                if($row->reason_phrase == 'APPROVED'){
+                if ($row->reason_phrase == 'APPROVED') {
 
-                    $button = 
-                    '<div class="d-flex">
+                    $button =
+                        '<div class="d-flex">
                         <span class=" text-success p-2 me-1 fw-bold">
                              <i class="bi bi-circle-fill"></i> APPROVED
                         </span>
-                    </div>';                                                        
-                }
-                elseif($row->reason_phrase == 'PENDING'){
-                    $button = 
-                    '<div class="d-flex">
+                    </div>';
+                } elseif ($row->reason_phrase == 'PENDING') {
+                    $button =
+                        '<div class="d-flex">
                          <span class=" text-warning p-2 me-1 fw-bold">
                              <i class="bi bi-circle-fill"></i> IN REVIEW
                         </span>
                     </div>';
-                    
-                }
-                else{
-                    $button = 
-                    '<div class="d-flex">
+                } else {
+                    $button =
+                        '<div class="d-flex">
                           <span class=" text-danger p-2 me-1 fw-bold">
                              <i class="bi bi-circle-fill"></i> REJECTED
                         </span>
@@ -169,17 +165,16 @@ class OrganizationRouteController extends Controller
                 return $button;
             });
 
-            $table->rawColumns(['status','action']);
+            $table->rawColumns(['status', 'action']);
             return $table->make(true);
         }
-        
+
 
         return view('organization.contentManagement.index', [
             'content_data' => $user_data,
             'stateCities' => $stateCities,
             'packages' => $packages
         ]);
-
     }
 
     public function showAddContent(Request $request)
@@ -187,7 +182,7 @@ class OrganizationRouteController extends Controller
         $content_types = DB::table('content_types')->where('status', true)->get();
         $stateCitiesJson = file_get_contents(public_path('assets/json/states-cities.json'));
         $stateCities = json_decode($stateCitiesJson, true);
-        return view('organization.contentManagement.applyContent', compact('content_types','stateCities'));
+        return view('organization.contentManagement.applyContent', compact('content_types', 'stateCities'));
     }
 
 

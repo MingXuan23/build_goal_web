@@ -19,6 +19,21 @@
 
 
             <!-- Start::row-1 -->
+            @if (session()->has('success'))
+                <div class="alert alert-success alert-dismissible d-flex align-items-center" role="alert">
+                    <i class="bi bi-check-circle-fill fs-4"></i>
+                    </svg>
+                    <div class="ms-3"> {{ session('success') }} </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if (session()->has('error'))
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                    <i class="bi bi-dash-circle-fill fs-4"></i>
+                    <div class="ms-3"> {{ session('error') }} </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             @if (Auth::user()->ekyc_status === 0)
                 <div class="row" id="tasks-container">
                     <div class="col-xl-12 task-card">
@@ -47,16 +62,19 @@
                                                                             <div class="col-md-10">
                                                                                 <div class="mt-sm-0 mt-2">
                                                                                     <p class="mb-0 fs-14 fw-semibold">
-                                                                                        {{Auth::user()->name}}</p>
-                                                                                    <p class="mb-0 text-muted">Before you continue, we
+                                                                                        {{ Auth::user()->name }}</p>
+                                                                                    <p class="mb-0 text-muted">Before you
+                                                                                        continue, we
                                                                                         require users to complete eKYC
                                                                                         (Electronic Know Your Customer)
                                                                                         verification. This process involves
                                                                                         a
                                                                                         quick and easy upload of your
                                                                                         identification documents and facial
-                                                                                        recognition to verify your identity. This is for ensure a
-                                                                                        secure and seamless experience in our system. 
+                                                                                        recognition to verify your identity.
+                                                                                        This is for ensure a
+                                                                                        secure and seamless experience in
+                                                                                        our system.
                                                                                         Click start button to get started
                                                                                         and
                                                                                         enhance your security.</p>
@@ -67,7 +85,7 @@
                                                                             </div>
                                                                             <div class="text-end col-md-2">
                                                                                 <div class="ms-auto mt-4">
-                                                                                    <button type="button"
+                                                                                    <button type="button" id="startButton"
                                                                                         class="btn btn-success btn-wave">Start</button>
                                                                                 </div>
                                                                             </div>
@@ -87,15 +105,12 @@
                     </div>
                 </div>
             @else
-
             @endif
-
-            <!--End::row-1 -->
-
-            <!-- Start::row-2 -->
-
-            <!--End::row-1 -->
-
         </div>
     </div>
+    <script>
+        document.getElementById('startButton').addEventListener('click', function() {
+            window.location.href = "/content-creator/card-verification";
+        });
+    </script>
 @endsection

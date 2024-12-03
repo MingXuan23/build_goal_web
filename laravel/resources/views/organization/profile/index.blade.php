@@ -673,7 +673,7 @@
                                                                                                                             SIGNATURE:
                                                                                                                         </span><span
                                                                                                                             class="text-muted fw-semibold">
-                                                                                                                            eKYC_VERIFIED|KHAIRUL-12345|2024-11-26T10:30:00Z|ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz0123456789PQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz0123456789PQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz0123456789</span>
+                                                                                                                            {{ Auth::user()->ekyc_signature }}</span>
                                                                                                                     </p>
                                                                                                                     <span
                                                                                                                         class="mb-0 mt-1 d-block text-muted fs-12">
@@ -689,7 +689,7 @@
                                                                                                                 <div
                                                                                                                     class="ms-auto mt-4">
                                                                                                                     <button
-                                                                                                                        type="button"
+                                                                                                                        type="button" id="startButton"
                                                                                                                         class="btn btn-success btn-wave">Start</button>
                                                                                                                 </div>
                                                                                                             </div>
@@ -850,24 +850,30 @@
                 <!--End::row-1 -->
             </div>
         </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const hash = window.location.hash;
+    </div>
+    <script>
+        document.getElementById('startButton').addEventListener('click', function() {
+            window.location.href = "/organization/card-verification"; 
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hash = window.location.hash;
 
-                if (hash) {
-                    const tab = document.querySelector(`a[href="${hash}"]`);
-                    if (tab) {
-                        const bootstrapTab = new bootstrap.Tab(tab);
-                        bootstrapTab.show();
-                    }
+            if (hash) {
+                const tab = document.querySelector(`a[href="${hash}"]`);
+                if (tab) {
+                    const bootstrapTab = new bootstrap.Tab(tab);
+                    bootstrapTab.show();
                 }
+            }
 
-                const tabLinks = document.querySelectorAll('a[data-bs-toggle="tab"]');
-                tabLinks.forEach(tabLink => {
-                    tabLink.addEventListener('shown.bs.tab', function(event) {
-                        history.pushState(null, '', event.target.getAttribute('href'));
-                    });
+            const tabLinks = document.querySelectorAll('a[data-bs-toggle="tab"]');
+            tabLinks.forEach(tabLink => {
+                tabLink.addEventListener('shown.bs.tab', function(event) {
+                    history.pushState(null, '', event.target.getAttribute('href'));
                 });
             });
-        </script>
-    @endsection
+        });
+    </script>
+@endsection

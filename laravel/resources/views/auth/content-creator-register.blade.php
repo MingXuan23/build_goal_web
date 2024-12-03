@@ -57,7 +57,8 @@
                     <div class="card-body">
 
                         <div class="p-3">
-                            <p class="h5 fw-bold mb-2">Sign Up for Content Creator</p>
+                            <a href="/" class="text-decoration-underline fw-bold "><i class="bi bi-arrow-left fw-bold"></i> Back</a>
+                            <p class="h5 fw-bold mb-2 mt-2">Sign Up for Content Creator</p>
                             <p class="mb-4 text-muted op-7 fw-normal ">Welcome & Join us by creating a free account
                                 !</p>
                             <div class="mb-4">

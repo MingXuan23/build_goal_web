@@ -45,10 +45,15 @@
                                                     <ul class="nav nav-tabs nav-tabs-header mb-0 d-sm-flex d-block d-flex p-2 align-items-center justify-content-start"
                                                         role="tablist">
                                                         <li class="nav-item m-1">
-                                                         <a class="nav-link active" id="your-tab" data-bs-toggle="tab" href="#your" role="tab" aria-controls="your" aria-selected="true">Personal Details</a>
+                                                            <a class="nav-link active" id="your-tab" data-bs-toggle="tab"
+                                                                href="#your" role="tab" aria-controls="your"
+                                                                aria-selected="true">Personal Details</a>
                                                         </li>
                                                         <li class="nav-item m-1">
-                                                         <a class="nav-link" id="change-password-tab" data-bs-toggle="tab" href="#change-password" role="tab" aria-controls="change-password" aria-selected="false">Change Password</a>
+                                                            <a class="nav-link" id="change-password-tab"
+                                                                data-bs-toggle="tab" href="#change-password" role="tab"
+                                                                aria-controls="change-password" aria-selected="false">Change
+                                                                Password</a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -58,7 +63,8 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="tab-content task-tabs-container">
-                                       <div class="tab-pane fade show active" id="your" role="tabpanel" aria-labelledby="your-tab">
+                                        <div class="tab-pane fade show active" id="your" role="tabpanel"
+                                            aria-labelledby="your-tab">
                                             <form action="{{ route('updateProfilePersonalDetailStaff') }}" method="post">
                                                 @csrf
                                                 <div class="row">
@@ -335,7 +341,8 @@
                                                 </div>
                                             </form>
                                         </div>
-                                        <div class="tab-pane fade" id="change-password" role="tabpanel" aria-labelledby="change-password-tab">
+                                        <div class="tab-pane fade" id="change-password" role="tabpanel"
+                                            aria-labelledby="change-password-tab">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="card custom-card overflow-hidden">
@@ -492,6 +499,4 @@
             });
         });
     </script>
-    
-
 @endsection

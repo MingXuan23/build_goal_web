@@ -17,6 +17,7 @@ class UserManagementController extends Controller
 
     {
         // dd($request->all());
+        DB::beginTransaction();
         try {
 
             $user = DB::table('users')->where('id', $id)->first();
@@ -124,9 +125,10 @@ class UserManagementController extends Controller
                 'org_type' => $org_type_data ? $org_type_data->type : null, // If no type is found, set to null
                 'updated_at' => now(),
             ]);
-
+            DB::commit();
             return back()->with('success', 'User updated successfully!');
         } catch (Exception $e) {
+            DB::rollBack();
             return back()->with('error', 'ERROR: ' . $e->getLine() . ' : ' . $e->getMessage());
         }
     }

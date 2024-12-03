@@ -121,7 +121,8 @@
                                 <img src="../../assets/images/brand-logos/desktop-dark.png" alt="" class="authentication-brand desktop-dark">
                             </a> --}}
                             </div>
-                            <p class="h5 fw-semibold mb-2">Sign In</p>
+                            <a href="/" class="text-decoration-underline fw-bold "><i class="bi bi-arrow-left fw-bold"></i> Back</a>
+                            <p class="h5 fw-semibold mb-2 mt-2">Sign In</p>
                             <p class="mb-4 text-muted op-7 fw-normal ">Hii, Welcome back !</p>
                             <form action="{{ route('login') }}" method="post">
                                 @csrf
@@ -167,6 +168,7 @@
                                             name="register" value="Sign In">
                                         </input>
                                     </div>
+                          
                                 </div>
                             </form>
 
