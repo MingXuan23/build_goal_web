@@ -10,6 +10,7 @@ const {
 const authenticateToken =  async (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
+
   if (token == null) return res.status(401).json({success : false, message: "Unauthorized access"});
 
   const user = await getUserByRememberToken(token);
@@ -17,6 +18,7 @@ const authenticateToken =  async (req, res, next) => {
   if(!user) return res.status(401).json({success : false, message: "Unauthorized access"});
 
   req.user = user;
+
 
   next(); 
   // jwt.verify(token, process.env.JWT_SECRET, (err, user) => {

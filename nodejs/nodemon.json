@@ -1,5 +1,5 @@
 {
   "watch": ["./bin","./public","./views","./migrations","./seeds","./routes","./controllers", "./middleware", "./models","./"],
-  "ext": "js,json,ts",
+  "ext": "js,json,ts,xlsx",
   "legacyWatch": true
 }

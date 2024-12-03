@@ -82,7 +82,7 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
 
 Route::prefix('staff')->middleware(['auth', 'role:2'])->group(function () {
 
-    Route::get('/dashboard', [StaffRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
+    Route::get('/dashboard', [StaffRouteController::class, 'showDashboard'])->name('showDashboardStaff');
     Route::get('/profile',  [StaffRouteController::class, 'showProfile'])->name('showProfileStaff');
 
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailStaff'])->name('updateProfilePersonalDetailStaff');
@@ -125,7 +125,7 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
 
 
 Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function () {
-    Route::get('/dashboard', [ContentCreatorRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
+    Route::get('/dashboard', [ContentCreatorRouteController::class, 'showDashboard'])->name('showDashboardContentCreator');
     Route::get('/profile', [ContentCreatorRouteController::class, 'showProfile'])->name('showProfileContentCreator');
 
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailContentCreator'])->name('updateProfilePersonalDetailContentCreator');

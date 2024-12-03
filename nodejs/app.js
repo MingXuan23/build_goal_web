@@ -11,12 +11,21 @@ const authRoutes = require('./routes/authRoutes');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const gptRouter =  require('./routes/gptRoute');
+const contentRouter =  require('./routes/contentRoute');
+
+
+const vectorRouter =  require('./routes/vectorRoute');
+
 
 var app = express();
 
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/gpt', gptRouter);
+app.use('/api/vector', vectorRouter);
+app.use('/api/content', contentRouter);
+
+
 
 
 // view engine setup

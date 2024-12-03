@@ -6,6 +6,8 @@ if [ ! -f "vendor/autoload.php" ]; then
     composer dump-autoload
 fi
 set -e
+composer install --no-dev --optimize-autoloader
+composer dump-autoload
 
 php artisan optimize:clear
 

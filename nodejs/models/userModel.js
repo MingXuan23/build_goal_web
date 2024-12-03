@@ -38,8 +38,10 @@ const getUserByRememberToken = async (token) => {
   .join("users as u", "ut.user_id", "u.id") // Use aliases for table names
   .where({ "ut.remember_token": token ,"u.status":"ACTIVE"}) // Use the alias in the condition
 
-  .select("u.name", "u.telno", "u.address", "u.state", "u.email", "u.status","u.password") // Select all fields from both tables using aliases
+  .select("u.id","u.name", "u.telno", "u.address", "u.state", "u.email", "u.status","u.password") // Select all fields from both tables using aliases
   .first();
+
+ 
 
 
 

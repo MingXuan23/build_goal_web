@@ -34,6 +34,11 @@ RUN mkdir -p /var/www/storage/framework/{sessions,cache,testing,views} && \
 # Run the entrypoint file.
 
 RUN composer install --no-dev --optimize-autoloader
+
+# Run Laravel setup
+RUN php artisan config:cache && \
+    php artisan route:cache
+    
 ENTRYPOINT ["sh","docker/entrypoint.sh" ]
 
 

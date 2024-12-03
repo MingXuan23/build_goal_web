@@ -80,13 +80,11 @@ services:
       - "11434:11434" # Default Ollama port
     networks:
       - app-network
-    restart: unless-stopped
     volumes:
       - ollama-data:/ollama/data
 
   qdrant:
     image: qdrant/qdrant:latest
-    restart: always
     container_name: vector_db
     ports:
       - 6333:6333
@@ -98,6 +96,8 @@ services:
     configs:
       - source: qdrant_config
         target: /qdrant/config/production.yaml
+    networks:
+      - app-network
     volumes:
       - ./qdrant_data:/qdrant/storage
 
