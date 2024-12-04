@@ -66,7 +66,7 @@ const getContentByVector = async (values) => {
         }
     });
 
-    console.log(response.data.result);
+
     response.data?.result?.forEach(list => {
         list.forEach(item =>{
             if (item.id) {
@@ -76,7 +76,7 @@ const getContentByVector = async (values) => {
         
     });
 
-    console.log(content_ids);
+
     const list =  Array.from(content_ids).slice(0, 10);
 
  
@@ -93,9 +93,13 @@ const getContents = async (req, res) => {
         const user_vector = await knex('user_vector').select('*').where({ 'user_id': user.id }).first();
 
         const content_ids = await getContentByVector(user_vector.values);
-        console.log(content_ids);
+
 
         const contentList = await knex('contents').whereIn('id', content_ids);
+
+         
+        contentList.forEach((content) =>  content.link = content.link || 'https://xbug.online/');
+                          
 
         return res.status(200).json(contentList.sort(() => Math.random() - 0.5));
 

@@ -6,6 +6,7 @@ const knex = require('knex')(knexConfig[process.env.NODE_ENV])
 const axios = require('axios');
 
 const { getContents } = require('../controllers/contentController');
+const { configDotenv } = require("dotenv");
 
 
 /**
@@ -86,42 +87,79 @@ const saveUserVectorTest = async (req, res) => {
     try {
         // Validate if the arrays are provided
         if (!Array.isArray(like_content_ids) || !Array.isArray(dislike_content_ids)) {
-            return res.status(400).json({ error: 'Invalid input, arrays are required' });
+            return res.status(400).json({ message: 'Invalid input, arrays are required' });
         }
 
         const user = req.user;
         const user_vector = await knex('user_vector').select('*').where({ 'user_id': user.id }).first();
 
         if (user_vector) {
-            return res.status(403).json({ error: 'Test Submitted' });
+            return res.status(403).json({ message: 'Test Submitted' });
 
         }
 
-        // Call the Qdrant API with the like and dislike content IDs
-        const response = await axios.post(
-            `${HOST_URL}/collections/content_collection/points/recommend`,
-            {
+        const initialValues = Array(8).fill(0);
 
-                positive: like_content_ids,
-                negative: dislike_content_ids,
-                limit: 1,
-                with_vector:true
-            },
-            {
-                headers: {
-                    'api-key': API_KEY,
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
+        let like_list = await Promise.all(
+            like_content_ids.map(async (x) => {
+              const result = await knex('contents').select('category_weight').where('id', x).first();
+              return result ? result.category_weight : null; // Ensure you get only the category_weight
+            })
+          );
 
+          let dislike_list = await Promise.all(
+            dislike_content_ids.map(async (x) => {
+              const result = await knex('contents').select('category_weight').where('id', x).first();
+              return result ? result.category_weight : null; // Ensure you get only the category_weight
+            })
+          );
+          
+         like_list = like_list.filter(z => z !== null);
+         dislike_list = dislike_list.filter(z => z !== null);
+         
+        let vector =initialValues;
 
-        // Extract the vector from the response
-        const vector = response.data.result[0].vector;
-        console.log( response.data.result);
+        dislike_list = dislike_list.map(item => item.map(value => 1 - value) );
+       
 
+        vector = calUserVector(vector,like_list,1,2);
         console.log(vector);
-        var result =  await knex('user_vector').insert({
+
+        vector = calUserVector(vector,dislike_list, 0.2 ,2);
+      
+      
+        vector = Array.from(vector);
+
+        if(vector.length == 0){
+            res.status(400).json({ success: false, message: "Vector Value wrong", vector: vector });
+        }
+
+       
+        // Call the Qdrant API with the like and dislike content IDs
+        // const response = await axios.post(
+        //     `${HOST_URL}/collections/content_collection/points/recommend`,
+        //     {
+
+        //         positive: like_content_ids,
+        //         negative: dislike_content_ids,
+        //         limit: 1,
+        //         with_vector: true
+        //     },
+        //     {
+        //         headers: {
+        //             'api-key': API_KEY,
+        //             'Content-Type': 'application/json'
+        //         }
+        //     }
+        // );
+
+        // console.log('hello',response.data);
+        // // Extract the vector from the response
+        // const vector = response.data.result[0].vector;
+        
+
+        //console.log(vector);
+        var result = await knex('user_vector').insert({
             user_id: user.id,
             values: JSON.stringify(vector),
             created_at: knex.fn.now(),
@@ -129,20 +167,22 @@ const saveUserVectorTest = async (req, res) => {
         });
 
         // Send the vector as the response
-        res.status(200).json({ success:result, message:"success", vector: vector });
+        await addPointToCollection('user_collection', user.id, res);
+
     } catch (error) {
+        console.error(error);
         if (error.response) {
             console.error('API Error:', error.response.data);
             return res.status(error.response.status).json({
-                error: 'Error',
+                message: 'Error',
                 details: error.response.data
             });
         } else if (error.request) {
             console.error('No response from API:', error.request);
-            return res.status(500).json('No response from API');
+            return res.status(500).json({message: 'No response from API'});
         } else {
             console.error('Unexpected Error:', error.message);
-            return res.status(500).json('Unexpected error: ' + error.message);
+            return res.status(500).json({message:'Unexpected error: ' + error.message});
         }
     }
 
@@ -173,9 +213,29 @@ const flattenValues = (values, weight) => {
             val *= 0.8;
         }
 
-        return Math.min(val, 0.999);
+        return parseFloat(Math.max(Math.min(val, 0.999), 0).toFixed(3));
     });
 };
+
+const calUserVector =  (origin, contents, learning_rate, weight) => {
+
+    let newValue = origin
+
+    if(contents.length == 0){
+        return origin;
+    }
+    contents.forEach(c => {
+        newValue = getSum(newValue,c);
+    });
+
+    newValue = flattenValues(newValue, learning_rate);
+   
+    origin = getSum(origin,newValue)
+    origin = flattenValues(origin,weight);
+   
+    return Array.from(origin);
+
+}
 
 
 const calVectorByLabel = async (req, res) => {
@@ -198,14 +258,14 @@ const calVectorByLabel = async (req, res) => {
 
 
     for (let i = 0; i < firstIndex; i++) {
-        console.log(i);
+
 
         firstLabel = getSum(firstLabel, selectedList[i].values);
 
     }
 
     for (let i = firstIndex; i < selectedList.length; i++) {
-        console.log(i);
+
 
         secondLabel = getSum(secondLabel, selectedList[i].values);
     }
@@ -246,10 +306,9 @@ const fetchVectorContent = async (req, res, next) => {
                 .fill(0)
                 .map(() => parseFloat((Math.random() * (0.8 - 0.3) + 0.3).toFixed(2))); // Limit to 2 decimal places
 
-            console.log(random_vector);
             const response = await axios.post(`${HOST_URL}/collections/content_collection/points/search`, {
                 vector: random_vector,
-                limit: 5
+                limit: 20
             },
                 {
                     headers: {
@@ -257,9 +316,29 @@ const fetchVectorContent = async (req, res, next) => {
                         'Content-Type': 'application/json'
                     }
                 });
+            let contents = [];
+ 
+            if (response.data?.result) {
+                for (const item of response.data.result) {
+                  
+                    if (contents.length >= 7) break; // Stop if we already have 5 contents
+                    if (item.id) {
+                        const content = await knex('contents')
+                            .select('id', 'name', 'desc', 'link', 'image')
+                            .where({ id: item.id, status: 1 })
+                            .first();
+                        if (content) {
+                            // Use fallback image if content.image is null
+                           // content.image = content.image || 'https://xbug.online/assets/images/landing-page/3.png';
+                            // Use fallback link if content.link is null
+                            content.link = content.link || 'https://xbug.online/';
+                            contents.push(content);
+                        }
+                    }
+                }
+            }
 
-            return res.status(201).json(response.data);
-
+            return res.status(201).json(contents);
 
         } else {
             next();
@@ -291,7 +370,7 @@ const addPointUserCollection = async (req, res) => {
 const addPointContentCollection = async (req, res) => {
     const { id } = req.params;
     await deletePointFromCollection('content_collection', id);
-    console.log('adding');
+
     await addPointToCollection('content_collection', id, res);
 }
 
@@ -369,7 +448,7 @@ const addPointToCollection = async (collectionName, id, res) => {
             .first();
 
         if (!user) {
-            return res.status(400).json('Id not found');
+            return res.status(400).json({message:'Id not found'});
         }
 
         pointData = {
@@ -381,10 +460,13 @@ const addPointToCollection = async (collectionName, id, res) => {
         };
 
     } else {
-        var content = await knex('contents as c')
-            //.join("users as u","uv.user_id","u.id")
-            .where('c.id', id)
+        const content = await knex('contents as c')
+            .where({ 'c.id': id, 'c.status': 1 })
+            .whereNotNull('c.image')
+            .whereNotNull('c.link')
+            .whereNotNull('c.category_weight')
             .first();
+
 
 
         var content_promotion = await knex('content_promotion as c')
@@ -400,7 +482,7 @@ const addPointToCollection = async (collectionName, id, res) => {
         }
 
         if (!content) {
-            return res.status(400).json('Id not found');
+            return res.status(400).json({message:'Id not found or Content Missing Crucial Information'});
         }
 
         pointData = {
@@ -427,7 +509,7 @@ const addPointToCollection = async (collectionName, id, res) => {
             }
         });
 
-        return res.status(200).json(response.data)
+        return res.status(200).json({message:"Submit Successfully"})
         //console.log('Point added successfully:', response.data);
     } catch (error) {
 
@@ -435,15 +517,15 @@ const addPointToCollection = async (collectionName, id, res) => {
         if (error.response) {
             console.error('API Error:', error.response.data); // Log the response
             return res.status(error.response.status).json({
-                error: 'Error adding point to collection',
+                message: 'Error adding point to collection',
                 details: error.response.data, // Include detailed server response
             });
         } else if (error.request) {
             console.error('No response from API:', error.request);
-            return res.status(500).json('No response from API');
+            return res.status(500).json({message:'No response from API'});
         } else {
             console.error('Unexpected Error:', error.message);
-            return res.status(500).json('Unexpected error: ' + error.message);
+            return res.status(500).json({message:'Unexpected error: ' + error.message});
         }
 
     }

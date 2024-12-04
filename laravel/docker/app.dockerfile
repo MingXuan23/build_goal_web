@@ -35,6 +35,8 @@ RUN mkdir -p /var/www/storage/framework/{sessions,cache,testing,views} && \
 
 RUN composer install --no-dev --optimize-autoloader
 
+RUN composer dump-autoload
+
 # Run Laravel setup
 RUN php artisan config:cache && \
     php artisan route:cache
