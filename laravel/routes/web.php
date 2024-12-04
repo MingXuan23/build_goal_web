@@ -10,6 +10,8 @@ use App\Http\Controllers\OrganizationRouteController;
 use App\Http\Controllers\StaffRouteController;
 use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,13 +42,18 @@ Route::get('/content-creator-register', [AuthController::class, 'viewContentCrea
 Route::get('/reset-password', [AuthController::class, 'viewResetPassword'])->name('viewResetPassword');
 
 
-
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/organization-register', [AuthController::class, 'createOrganizationRegister'])->name('createOrganizationRegister');
 Route::post('/content-creator-register', [AuthController::class, 'createContentCreatorRegister'])->name('createContentCreatorRegister');
 Route::post('/verify-code', [AuthController::class, 'verifyCode'])->name('verifyCode');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('resetPassword');
 Route::get('/resend-email-reset-password', [AuthController::class, 'resendResetPassword'])->name('resendResetPassword');
+
+Route::get('/check-mobile', [EkycController::class, 'CheckMobile'])->name('CheckMobile');
+Route::get('/card-verification/{data}', [EkycController::class, 'CardVerification'])->name('CardVerification');
+Route::get('/face-verification', [EkycController::class, 'FaceVerification'])->name('FaceVerification');
+Route::get('/verification-process', [EkycController::class, 'VerificationSuccess'])->name('VerificationSuccess');
+Route::get('/generate-qrcode', [EkycController::class, 'GenerateQrCode'])->name('GenerateQrCode');
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +76,7 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::post('/update-account-status/{id}', [UserManagementController::class, 'updateAccountStatus'])->name('updateAccountStatus');
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailAdmin'])->name('updateProfilePersonalDetailAdmin');
     Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordAdmin'])->name('updatePasswordAdmin');
-    
+
 
 
 
@@ -102,10 +109,6 @@ Route::prefix('staff')->middleware(['auth', 'role:2'])->group(function () {
 Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function () {
     Route::get('/dashboard', [OrganizationRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
     Route::get('/profile', [OrganizationRouteController::class, 'showProfile'])->name('showProfileOrganization');
-
-    Route::get('/card-verification', [EkycController::class, 'CardVerification'])->name('CardVerification');
-    Route::get('/face-verification', [EkycController::class, 'FaceVerification'])->name('FaceVerification');
-    Route::get('/verification-process', [EkycController::class, 'VerificationSuccess'])->name('VerificationSuccess');
 
     // Route::middleware(['ekycCheck'])->group(function () {
     Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');

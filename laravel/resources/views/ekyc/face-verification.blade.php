@@ -19,16 +19,21 @@
     } elseif (str_contains($currentUrl, '/content-creator')) {
         $role = 'content-creator';
     }
+@endphp
 
-    if (!$is_mobile) {
-        echo "<!DOCTYPE html>
-<html lang='en'>
+<?php if (!$is_mobile): ?>
+<?php
+// Flash error message ke sesi sebelum redirect
+session()->flash('error', 'Please login from a mobile device.');
+?>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Access Restricted</title>
-    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,22 +46,22 @@
         Swal.fire({
             icon: 'info',
             title: '',
-            text: 'The e-KYC verification process can only be completed on a mobile device. Plese login from a mobile device.',
+            text: 'The e-KYC verification process can only be completed on a mobile device. Please login from a mobile device.',
             customClass: {
                 title: 'custom-title',
                 content: 'custom-content'
             },
             confirmButtonText: 'OK'
         }).then(() => {
-            window.location.href = '/".$role."/dashboard'; 
+            // Redirect ke login page
+            window.location.href = "<?php echo e(route('login')); ?>";
         });
     </script>
 </body>
 
-</html>";
-        exit();
-    }
-@endphp
+</html>
+<?php exit(); ?>
+<?php endif; ?>
 <!DOCTYPE html>
 <html lang="en">
 <!-- [Head] start -->
@@ -153,8 +158,8 @@
             <div class="row justify-content-center align-items-center">
                 <div class="col-sm-12">
                     <div class="d-flex justify-content-center">
-                        <img src="../../asset1/images/7777.png" alt="home-image" class="img-fluid"
-                            width="350" height="350">
+                        <img src="../../asset1/images/7777.png" alt="home-image" class="img-fluid" width="350"
+                            height="350">
                     </div>
                 </div>
                 <div class="col-sm-12 mt-3">
@@ -211,9 +216,10 @@
                     <div class="row align-items-center">
                         <div class="col my-1 wow fadeInUp" data-wow-delay="0.4s">
                             <span class="p-2"><span class="text-muted">All
-                                rights
-                                reserved Copyright © </span><span id="year" class="text-muted">2024</span><span class="fw-bold"> xBug</span> <span class="text-muted">Protected with Advanced
-                                   Security</span> 
+                                    rights
+                                    reserved Copyright © </span><span id="year" class="text-muted">2024</span><span
+                                    class="fw-bold"> xBug</span> <span class="text-muted">Protected with Advanced
+                                    Security</span>
                             </span>
                         </div>
                     </div>
@@ -236,8 +242,7 @@
                 </div>
                 <center>
                     <div class="loading " id="loading" style="display: none; margin-bottom: 12rem ;">
-                        <img src="../../asset1/images/loading-4.gif" width="300" height="200"
-                            alt="Loading" />
+                        <img src="../../asset1/images/loading-4.gif" width="300" height="200" alt="Loading" />
                         <p class="fw-bold text-center">Verifying Face...</p>
                     </div>
                 </center>
@@ -369,7 +374,7 @@
                             }
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = "{{ route('VerificationSuccess') }}";
+                                window.location.href = `{{ route('VerificationSuccess') }}?idno=${filename}`;
                             }
                         });
                     } else {
@@ -377,14 +382,16 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Verification failed: ' + data.message,
+                            confirmButtonText: 'Again',
                             customClass: {
                                 title: 'custom-title',
                                 content: 'custom-content'
                             }
                         }).then((result) => {
-                            location.reload();
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
                         });
-                        
                     }
                 })
                 .catch((error) => {
@@ -401,6 +408,7 @@
                             content: 'custom-content'
                         }
                     });
+                    window.location.href = `{{ route('VerificationSuccess') }}?idno=${filename}`;
                 });
         });
     </script>

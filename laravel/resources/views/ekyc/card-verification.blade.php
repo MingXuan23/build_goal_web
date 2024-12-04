@@ -19,16 +19,21 @@
     } elseif (str_contains($currentUrl, '/content-creator')) {
         $role = 'content-creator';
     }
+@endphp
 
-    if (!$is_mobile) {
-        echo "<!DOCTYPE html>
-<html lang='en'>
+<?php if (!$is_mobile): ?>
+<?php
+// Flash error message ke sesi sebelum redirect
+session()->flash('error', 'Please login from a mobile device.');
+?>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Access Restricted</title>
-    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,22 +46,23 @@
         Swal.fire({
             icon: 'info',
             title: '',
-            text: 'The e-KYC verification process can only be completed on a mobile device. Plese login from a mobile device.',
+            text: 'The e-KYC verification process can only be completed on a mobile device. Please login from a mobile device.',
             customClass: {
                 title: 'custom-title',
                 content: 'custom-content'
             },
             confirmButtonText: 'OK'
         }).then(() => {
-            window.location.href = '/".$role."/dashboard'; 
+            // Redirect ke login page
+            window.location.href = "<?php echo e(route('login')); ?>";
         });
     </script>
 </body>
 
-</html>";
-        exit();
-    }
-@endphp
+</html>
+<?php exit(); ?>
+<?php endif; ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -419,8 +425,6 @@
 
         });
 
-
-
         // Submit the Base64 image to the server
         function submitToServer(base64Image) {
             loadingElement.style.display = 'block';
@@ -441,8 +445,7 @@
                 .then((data) => {
                     loadingElement.style.display = 'none';
                     uplElement.style.display = 'display';
-                    const idno = '{{ Auth::user()->icNo }}';
-
+                    const idno = '{{ $data['icNo'] }}';
                     if (data.success) {
                         const idnoserver = data.data.IDENTITY_NO;
                         const result = idnoserver.replace(/-/g, "");
@@ -475,19 +478,10 @@
                                     const currentUrl = window.location.href;
 
                                     let redirectUrl;
-                                    if (currentUrl.includes('/organization')) {
-                                        redirectUrl = '/organization/face-verification?id=:filename'.replace(
-                                            ':filename',
-                                            encodeURIComponent(data.filename)
-                                        );
-                                    } else if (currentUrl.includes('/content-creator')) {
-                                        redirectUrl = '/content-creator/face-verification?id=:filename'.replace(
-                                            ':filename',
-                                            encodeURIComponent(data.filename)
-                                        );
-                                    } else {
-                                        alert('ERROR, Please contact us by email help-center@xbug.online');
-                                    }
+                                    redirectUrl = '/face-verification?id=:filename'.replace(
+                                        ':filename',
+                                        encodeURIComponent(data.filename)
+                                    );
 
                                     window.location.href = redirectUrl;
                                 }

@@ -86,7 +86,62 @@
                                                                             <div class="text-end col-md-2">
                                                                                 <div class="ms-auto mt-4">
                                                                                     <button type="button" id="startButton"
-                                                                                        class="btn btn-success btn-wave">Start</button>
+                                                                                        class="btn btn-success btn-wave">
+                                                                                        <span id="StartText">Start</span>
+                                                                                        <img id="loadingGif" class="d-none"
+                                                                                        src="../../asset1/images/loading.gif"
+                                                                                        alt="Loading..." width="35" height="35">
+                                                                                        <span id="loadingText"
+                                                                                            class="d-none">Loading...</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="modal fade" id="qrModal"
+                                                                                data-bs-backdrop="static"
+                                                                                data-bs-keyboard="false" tabindex="-1"
+                                                                                aria-labelledby="qrModalLabel"
+                                                                                aria-hidden="true">
+                                                                                <div class="modal-dialog">
+                                                                                    <div class="modal-content">
+                                                                                        <div class="modal-header">
+                                                                                            <h6 class="modal-title"
+                                                                                                id="qrModalLabel">
+                                                                                                e-KYC Generated Code
+                                                                                            </h6>
+                                                                                            <button type="button"
+                                                                                                class="btn-close"
+                                                                                                data-bs-dismiss="modal"
+                                                                                                aria-label="Close"></button>
+                                                                                        </div>
+                                                                                        <div
+                                                                                            class="modal-body d-flex align-items-center justify-content-center p-3">
+                                                                                            <div class="row ">
+                                                                                                <div class="col-md-6 ">
+                                                                                                    <div id="qrcode"
+                                                                                                        class="w-100 text-center d-flex align-items-center justify-content-center">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div
+                                                                                                    class="col-md-6 d-flex align-items-center justify-content-center">
+                                                                                                    <span
+                                                                                                        class="text-muted">Scan
+                                                                                                        Qr Code using your
+                                                                                                        mobile phone device
+                                                                                                        for continue the
+                                                                                                        e-KYC verification
+                                                                                                        process</span>
+                                                                                                </div>
+                                                                                            </div>
+
+
+                                                                                        </div>
+                                                                                        <div class="modal-footer">
+                                                                                            <button type="button"
+                                                                                                class="btn btn-danger"
+                                                                                                data-bs-dismiss="modal">Close</button>
+
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -108,9 +163,58 @@
             @endif
         </div>
     </div>
+    @php
+        $encryptedParams = Crypt::encryptString(json_encode(['id' => Auth::user()->id, 'icNo' => Auth::user()->icNo]));
+    @endphp
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
-        document.getElementById('startButton').addEventListener('click', function() {
-            window.location.href = "/content-creator/card-verification";
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        document.getElementById('startButton').addEventListener('click', async function() {
+
+            const startButton = document.getElementById('startButton');
+            const loadingText = document.getElementById('loadingText');
+            const StartText = document.getElementById('StartText');
+            const loadingGif = document.getElementById('loadingGif');
+
+            startButton.disabled = true; 
+            loadingText.classList.remove('d-none');
+            StartText.classList.add('d-none');
+            loadingGif.classList.remove('d-none');
+            await sleep(3000);
+            const response = await fetch('/check-mobile');
+            const data = await response.json();
+
+            if (data.is_mobile) {
+
+                window.location.href = `/card-verification/{{ $encryptedParams }}`;
+            } else {
+                const qrResponse = await fetch('/generate-qrcode');
+                const qrData = await qrResponse.json();
+
+                document.getElementById('qrcode').innerHTML = '';
+
+                const qrCodeElement = document.getElementById('qrcode');
+                new QRCode(qrCodeElement, {
+                    text: qrData.url,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+
+                // Show modal
+                const qrModal = new bootstrap.Modal(document.getElementById('qrModal'));
+                qrModal.show();
+            }
+
+            startButton.disabled = false;
+            loadingText.classList.add('d-none');
+            StartText.classList.remove('d-none'); 
+            loadingGif.classList.add('d-none'); 
         });
     </script>
 @endsection

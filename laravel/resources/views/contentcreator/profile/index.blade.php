@@ -389,7 +389,7 @@
                                                                                                     class="d-flex align-items-center">
                                                                                                     <div class="row">
                                                                                                         <div
-                                                                                                            class="col-md-10">
+                                                                                                            class="col-md-12 ">
                                                                                                             @if (Auth::user()->ekyc_status === 0)
                                                                                                                 <div
                                                                                                                     class="mt-sm-0 mt-2">
@@ -438,7 +438,7 @@
                                                                                                                         identity.
                                                                                                                         Click
                                                                                                                         start
-                                                                                                                        button
+                                                                                                                        button at Dashbaord Page
                                                                                                                         to
                                                                                                                         get
                                                                                                                         started
@@ -448,7 +448,7 @@
                                                                                                                         security.
                                                                                                                     </p>
                                                                                                                     <span
-                                                                                                                        class="mb-0 d-block text-muted fs-12">
+                                                                                                                        class="mb-0 d-block text-muted fs-12 mt-2">
                                                                                                                         <span
                                                                                                                             class="badge bg-danger-transparent fw-semibold fs-12">Pending...</span>
                                                                                                                     </span>
@@ -487,8 +487,8 @@
                                                                                                                             class="fw-bold text-success">eKYC
                                                                                                                             SIGNATURE:
                                                                                                                         </span><span
-                                                                                                                            class="text-muted fw-semibold">
-                                                                                                                            {{ Auth::user()->ekyc_signature }}</span>
+                                                                                                                        class="text-muted fw-semibold"><br>
+                                                                                                                        {!! nl2br(e(Auth::user()->ekyc_signature)) !!}</span>
                                                                                                                     </p>
                                                                                                                     <span
                                                                                                                         class="mb-0 mt-1 d-block text-muted fs-12">
@@ -499,18 +499,7 @@
                                                                                                             @endif
 
                                                                                                         </div>
-                                                                                                        @if (Auth::user()->ekyc_status === 0)
-                                                                                                            <div
-                                                                                                                class="text-end col-md-2">
-                                                                                                                <div
-                                                                                                                    class="ms-auto mt-4">
-                                                                                                                    <button
-                                                                                                                        type="button" id="startButton"
-                                                                                                                        class="btn btn-success btn-wave">Start</button>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        @else
-                                                                                                        @endif
+                                                                                                        
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -668,11 +657,6 @@
             </div>
         </div>
     </div>
-    <script>
-        document.getElementById('startButton').addEventListener('click', function() {
-            window.location.href = "/content-creator/card-verification"; 
-        });
-    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const hash = window.location.hash;
