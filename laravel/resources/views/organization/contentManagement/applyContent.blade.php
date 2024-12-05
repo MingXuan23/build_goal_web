@@ -131,22 +131,29 @@
                         <!-- State -->
                         <div class="col-xl-12">
                            <label class="form-label">Select States</label>
-                           <div id="state-container">
-                                 @foreach (array_keys($stateCities) as $state)
-                                    <div class="form-check form-check-lg">
-                                       <input class="form-check-input state-checkbox @error('states') is-invalid @enderror" type="checkbox"
-                                             name="states[]" value="{{ $state }}"
-                                             id="state-{{ $state }}">
-                                       <label class="form-check-label" for="state-{{ $state }}">
-                                             {{ $state }}
+                           <span class="text-muted"> - scroll down </span>
+                           <div id="state-container" style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                               @foreach ($states as $state)
+                                   <div class="form-check form-check-lg">
+                                       <input class="form-check-input state-checkbox @error('states') is-invalid @enderror" 
+                                              type="checkbox" 
+                                              name="states[]" 
+                                              value="{{ $state->name }}" 
+                                              id="state-{{ $state->name }}" 
+                                              @checked(is_array(old('states')) && in_array($state->name, old('states')))>
+                                       <label class="form-check-label" for="state-{{ $state->name }}">
+                                           {{ $state->name }}
                                        </label>
+                                       
                                        @error('states')
-                                          <span class="mb-1 text-danger">{{ $message }}</span>
+                                           <span class="mb-1 text-danger">{{ $message }}</span>
                                        @enderror
-                                    </div>
-                                 @endforeach
+                                   </div>
+                               @endforeach
                            </div>
-                        </div>
+                       </div>
+                       
+                       
 
 
                                 

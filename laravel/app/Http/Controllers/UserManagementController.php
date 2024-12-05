@@ -14,16 +14,16 @@ class UserManagementController extends Controller
     //
 
     public function updateUser(Request $request, $id)
-
     {
-        // dd($request->all());
+        
+        // dd($id);
         DB::beginTransaction();
         try {
 
             $user = DB::table('users')->where('id', $id)->first();
 
             if (!$user) {
-                return back()->with('User not found. Please make sure your user ID is correct.');
+                return back()->with('error','User not found. Please make sure your user ID is correct.');
             }
 
 
@@ -46,7 +46,7 @@ class UserManagementController extends Controller
                 return back()->with('error', 'The Email already exists.');
             }
 
-
+           
             $validatedData = $request->validate([
                 'icno' => 'required|digits:12',
                 'fullname' => 'required',
@@ -56,24 +56,7 @@ class UserManagementController extends Controller
                 'cpassword' => 'same:password|nullable',
                 'oname' => 'nullable',
                 'oaddress' => 'nullable',
-                'ostate' => [
-                    'nullable',
-                    Rule::in([
-                        'pahang',
-                        'perak',
-                        'terengganu',
-                        'perlis',
-                        'selangor',
-                        'negeri_sembilan',
-                        'johor',
-                        'kelantan',
-                        'kedah',
-                        'pulau_pinang',
-                        'melaka',
-                        'sabah',
-                        'sarawak'
-                    ]),
-                ],
+                'ostate' => 'nullable|exists:states,name',
                 'otype' => 'nullable|exists:organization_type,id',
             ], [
                 'otype.in' => 'The selected organization type is invalid. Please choose a valid organization type.',
@@ -90,23 +73,27 @@ class UserManagementController extends Controller
                 'ostate' => 'Organization State',
                 'otype' => 'Organization Type',
             ]);
-
-
+        
+            
+            
             $newPassword = $user->password;
             if (!empty($request->password)) {
                 $newPassword = bcrypt(($validatedData['password']));;
             }
-
+            
             DB::table('users')->where('id', $id)->update([
-                'icno' => $validatedData['icno'],
+                'icNo' => $validatedData['icno'],
                 'name' => $validatedData['fullname'],
                 'email' => $validatedData['email'],
                 'telno' => $validatedData['phoneno'],
+                'address' => $validatedData['oaddress'],
+                'state' => $validatedData['ostate'],
                 'password' => $newPassword,
                 'updated_at' => now(),
             ]);
-
+            
             $orgType = $validatedData['otype'] ?? null;
+
 
             $org_type_data = null;
             if ($orgType) {
@@ -115,16 +102,24 @@ class UserManagementController extends Controller
                     ->select('type')
                     ->first();
             }
+
             $name = $validatedData['oname'] ?? $validatedData['fullname'];
-            // Update organization information
-            DB::table('organization')->where('id', $id)->update([
-                'name' => $name,
-                'address' => $validatedData['oaddress'],
-                'state' => $validatedData['ostate'],
-                'email' => $validatedData['email'],
-                'org_type' => $org_type_data ? $org_type_data->type : null, // If no type is found, set to null
-                'updated_at' => now(),
-            ]);
+            $getOrganizationUser = DB::table('organization_user')->where('user_id', $id)->select('organization_id')->first();
+            
+            if ($getOrganizationUser) {
+               ;
+                DB::table('organization')->where('id', $getOrganizationUser->organization_id)->update([
+                    'name' => $name,
+                    'address' => $validatedData['oaddress'],
+                    'state' => $validatedData['ostate'],
+                    'email' => $validatedData['email'],
+                    'org_type' => $org_type_data ? $org_type_data->type : null, // If no type is found, set to null
+                    'updated_at' => now(),
+                ]);
+              ;
+            }
+            
+           
             DB::commit();
             return back()->with('success', 'User updated successfully!');
         } catch (Exception $e) {

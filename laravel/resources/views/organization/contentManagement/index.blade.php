@@ -37,7 +37,7 @@
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
-    
+
                                 </table>
                             </div>
                         </div>
@@ -61,56 +61,91 @@
                                         @csrf
                                         <!-- Content Details -->
                                         <div class="mb-3">
-                                            <label for="content_id" class="form-label">Content ID</label>
-                                            <input type="text" class="form-control" id="content_id" name="content_id"
-                                                value="{{ $data->id }}" readonly>
+                                            <div class="col-xl-12">
+                                                <div class="form-floating">
+                                                    <input type="text" class="form-control" name="content_id"
+                                                        value="{{ $data->id }}" readonly>
+                                                    <label for="contentName">Content ID</label>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="content_name" class="form-label">Content Name</label>
-                                            <input type="text" class="form-control" id="content_name" name="content_name"
-                                                value="{{ $data->name }}" readonly>
+                                                <div class="col-xl-12">
+                                                    <div class="form-floating">
+                                                        <input type="text" class="form-control" name="content_name"
+                                                            value="{{ $data->name }}" readonly>
+                                                        <label for="contentName">Content ID</label>
+                                                    </div>
+                                                </div>
                                         </div>
 
 
                                         <!-- State Selection (Checkbox) -->
                                         <div class="mb-3">
-                                            <label class="form-label">Select States</label>
-                                            <div id="state-container">
-                                                @foreach (array_keys($stateCities) as $state)
-                                                    <div class="form-check form-check-lg">
-                                                        <input class="form-check-input state-checkbox" type="checkbox"
-                                                            name="states[]" value="{{ $state }}"
-                                                            id="state-{{ $state }}">
-                                                        <label class="form-check-label" for="state-{{ $state }}">
-                                                            {{ $state }}
-                                                        </label>
-                                                    </div>
-                                                @endforeach
+                                            <div class="col-xl-12">
+                                                <label class="form-label">Select States</label>
+                                                <span class="text-muted"> - scroll down </span>
+                                                <div id="state-container"
+                                                    style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                                                    @foreach ($states as $state)
+                                                        <div class="form-check form-check-lg">
+                                                            <input
+                                                                class="form-check-input state-checkbox @error('states') is-invalid @enderror"
+                                                                type="checkbox" name="states[]" value="{{ $state->name }}"
+                                                                id="state-{{ $state->name }}" @checked(is_array(old('states')) && in_array($state->name, old('states')))>
+                                                            <label class="form-check-label" for="state-{{ $state->name }}">
+                                                                {{ $state->name }}
+                                                            </label>
+
+                                                            @error('states')
+                                                                <span class="mb-1 text-danger">{{ $message }}</span>
+                                                            @enderror
+                                                        </div>
+                                                    @endforeach
+                                                </div>
                                             </div>
-                                        </div>
-                                    
-                                        <!-- Package Selection -->
-                                        <div class="mb-3">
-                                            <label for="package" class="form-label">Choose Package </label>
-                                            <select class="form-select" id="package" name="package" required>
-                                                <option value="" disabled selected>Select Package</option>
-                                                @foreach ($packages as $package)
-                                                    <option value="{{ $package->id }}"data-base-price="{{ $package->base_price }}" data-base-state="{{ $package->base_state }}">{{ $package->name }} | RM {{ $package->base_price }} | {{ $package->estimate_user }} ppl.</option>
-                                                @endforeach
-                                            </select>
+                                            
                                         </div>
 
-                                         <!-- Final Price Display -->
+                                        <!-- Package Selection -->
                                         <div class="mb-3">
-                                            <label for="final_price" class="form-label">Final Price</label>
-                                            <input type="text" class="form-control" id="final_price" name="final_price" value="RM 0.00" readonly>
+                                            <div class="form-floating">
+                                                <select class="form-select"
+                                                        id="floatingSelect" 
+                                                        aria-label="Floating label select example" 
+                                                        name="package">
+                                                        <option value="" disabled selected> - Select Package - </option>
+                                                    @foreach ($packages as $package)
+                                                    <option
+                                                        value="{{ $package->id }}"data-base-price="{{ $package->base_price }}"
+                                                        data-base-state="{{ $package->base_state }}">{{ $package->name }}
+                                                        | RM {{ $package->base_price }} | {{ $package->estimate_user }}
+                                                        ppl.</option>
+                                                @endforeach
+                                                </select>
+                                                <label for="floatingSelect">Choose Package</label>
+                                                @error('ostate')
+                                                    <span class="mb-1 text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <!-- Final Price Display -->
+                                        <div class="mb-3">
+                                                <div class="col-xl-12">
+                                                    <div class="form-floating">
+                                                        <input type="text" class="form-control" name="final_price"
+                                                            value="RM 0.00" readonly>
+                                                        <label for="contentName">Final Price</label>
+                                                    </div>
+                                                </div>
                                         </div>
 
 
                                         <!-- Submit Button -->
                                         <div class="d-flex justify-content-end mt-3">
-                                            <button type="submit" class="btn btn-primary me-2">Pay</button>
+                                            <button type="submit" class="btn btn-primary me-2 px-5">Pay</button>
                                         </div>
                                     </form>
 
@@ -118,7 +153,7 @@
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-danger " data-bs-toggle="tooltip"
                                         data-bs-placement="top" title="Delete user Record">Delete</button>
-                                    <button type="button" class="btn btn-primary " data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-warning " data-bs-dismiss="modal">Close</button>
                                 </div>
 
                             </form>
@@ -239,28 +274,28 @@
             });
         })
     </script>
-<script>
-    $(document).ready(function () {
-    const calculateFinalPrice = () => {
-        // Get selected package
-        const selectedPackage = $('#package option:selected');
-        const basePrice = parseFloat(selectedPackage.data('base-price')) || 0;
-        const baseState = parseInt(selectedPackage.data('base-state')) || 0;
+    <script>
+        $(document).ready(function() {
+            const calculateFinalPrice = () => {
+                // Get selected package
+                const selectedPackage = $('#package option:selected');
+                const basePrice = parseFloat(selectedPackage.data('base-price')) || 0;
+                const baseState = parseInt(selectedPackage.data('base-state')) || 0;
 
-        // Count selected states
-        const selectedStatesCount = $('.state-checkbox:checked').length;
+                // Count selected states
+                const selectedStatesCount = $('.state-checkbox:checked').length;
 
-        // Calculate final price
-        const n = selectedStatesCount;
-        const finalPrice = basePrice * (1 + (n - baseState) / 10);
+                // Calculate final price
+                const n = selectedStatesCount;
+                const finalPrice = basePrice * (1 + (n - baseState) / 10);
 
-        // Update final price in the input
-        $('#final_price').val(`RM ${finalPrice.toFixed(2)}`);
-    };
+                // Update final price in the input
+                $('#final_price').val(`RM ${finalPrice.toFixed(2)}`);
+            };
 
-    // Event listeners
-    $('#package').on('change', calculateFinalPrice);
-    $('.state-checkbox').on('change', calculateFinalPrice);
-});
-</script>
+            // Event listeners
+            $('#package').on('change', calculateFinalPrice);
+            $('.state-checkbox').on('change', calculateFinalPrice);
+        });
+    </script>
 @endsection

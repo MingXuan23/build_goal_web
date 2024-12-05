@@ -137,29 +137,20 @@
                                             <div class="col-xl-12">
                                                 <div class="form-floating">
                                                     <select class="form-select @error('state') is-invalid @enderror" 
-                                                        id="floatingSelect" 
-                                                        aria-label="Floating label select example" 
-                                                        name="state">
+                                                            id="floatingSelect" 
+                                                            aria-label="Floating label select example" 
+                                                            name="state">
                                                         <option selected>- Select State -</option>
-                                                        <option value="pahang" @selected(old('state') == 'pahang')>Pahang</option>
-                                                        <option value="perak" @selected(old('state') == 'perak')>Perak</option>
-                                                        <option value="terengganu" @selected(old('state') == 'terengganu')>Terangganu</option>
-                                                        <option value="perlis" @selected(old('state') == 'perlis')>Perlis</option>
-                                                        <option value="selangor" @selected(old('state') == 'selangor')>Selangor</option>
-                                                        <option value="negeri_sembilan" @selected(old('state') == 'negeri_sembilan')>Negeri Sembilan</option>
-                                                        <option value="johor" @selected(old('state') == 'johor')>Johor</option>
-                                                        <option value="kelantan" @selected(old('state') == 'kelantan')>Kelantan</option>
-                                                        <option value="kedah" @selected(old('state') == 'kedah')>Kedah</option>
-                                                        <option value="pulau_pinang" @selected(old('state') == 'pulau_pinang')>Pulau Pinang</option>
-                                                        <option value="melaka" @selected(old('state') == 'melaka')>Melaka</option>
-                                                        <option value="sabah" @selected(old('state') == 'sabah')>Sabah</option>
-                                                        <option value="sarawak" @selected(old('state') == 'sarawak')>Sarawak</option>
+                                                        @foreach($states as $state)
+                                                            <option value="{{ $state->name }}" @selected(old('state') == $state->name)>{{ $state->name }}</option>
+                                                        @endforeach
                                                     </select>
                                                     <label for="floatingSelect">State</label>
                                                     @error('state')
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
+                                                
                                             </div>
                                             <div class="col-xl-6">
                                                 <div class="form-floating">

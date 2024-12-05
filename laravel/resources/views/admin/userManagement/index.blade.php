@@ -1,6 +1,6 @@
 @extends('admin.layouts.main')
 @section('container')
-    {{-- @dd($datas); --}}
+   
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
@@ -17,7 +17,7 @@
                 </div>
             </div>
             <!-- Page Header Close -->
-            {{-- @dd(Auth::user()); --}}
+            
 
             <!-- Start::row-1 -->
             <div class="row">
@@ -155,9 +155,8 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary ">Update</button>
+                                    <button type="button" class="btn btn-danger " data-bs-dismiss="modal">Close</button>
                                 </div>
                             </form>
                         </div>
@@ -194,9 +193,8 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary ">Update</button>
+                                    <button type="button" class="btn btn-danger " data-bs-dismiss="modal">Close</button>
                                 </div>
 
                             </form>
@@ -234,9 +232,8 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary ">Update</button>
+                                    <button type="button" class="btn btn-danger " data-bs-dismiss="modal">Close</button>
                                 </div>
 
                             </form>
@@ -274,9 +271,8 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                                 </div>
 
                             </form>
@@ -295,7 +291,7 @@
                             'admin' => 'Admin',
                             'staff' => 'Staff',
                             'organization' => 'Organization',
-                            'content creator' => 'Content Creator',
+                            'content-creator' => 'Content Creator',
                             'mobile-user' => 'Mobile User',
                         ];
 
@@ -320,7 +316,7 @@
 
                                                 <div class="col-xl-12">
                                                     <div class="form-floating">
-                                                        <input type="number" class="form-control"
+                                                        <input disabled type="number" class="form-control"
                                                             id="floatingInputprimary" placeholder="name@example.com"
                                                             value="{{ $data->icNo }}">
                                                         <label for="floatingInputprimary">Ic Number</label>
@@ -328,7 +324,7 @@
                                                 </div>
                                                 <div class="col-xl-6">
                                                     <div class="form-floating">
-                                                        <input type="text" class="form-control"
+                                                        <input disabled type="text" class="form-control"
                                                             id="floatingInputprimary" placeholder="name@example.com"
                                                             value="{{ $data->name }}">
                                                         <label for="floatingInputprimary">Full Name</label>
@@ -336,7 +332,7 @@
                                                 </div>
                                                 <div class="col-xl-6">
                                                     <div class="form-floating">
-                                                        <input type="email" class="form-control"
+                                                        <input disabled type="email" class="form-control"
                                                             id="floatingInputprimary" placeholder="name@example.com"
                                                             value="{{ $data->email }}">
                                                         <label for="floatingInputprimary">Email Address</label>
@@ -344,7 +340,7 @@
                                                 </div>
                                                 <div class="col-xl-12">
                                                     <div class="form-floating">
-                                                        <input type="number" class="form-control"
+                                                        <input disabled type="number" class="form-control"
                                                             id="floatingInputprimary" placeholder="name@example.com"
                                                             value="{{ $data->telno }}">
                                                         <label for="floatingInputprimary">Phone Number</label>
@@ -352,7 +348,7 @@
                                                 </div>
                                                 <div class="col-xl-12">
                                                     <div class="form-floating">
-                                                        <input type="text" class="form-control"
+                                                        <input disabled type="text" class="form-control"
                                                             id="floatingInputprimary" placeholder="name@example.com"
                                                             value="{{ strtoupper($data->role_names) }}">
                                                         <label for="floatingInputprimary">Role</label>
@@ -386,7 +382,7 @@
 
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <input type="text" class="form-control"
+                                                            <input disabled type="text" class="form-control"
                                                                 id="floatingInputprimary" placeholder="name@example.com"
                                                                 value="{{ $data->org_name }}">
                                                             <label for="floatingInputprimary">Organization Name</label>
@@ -394,7 +390,7 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <input type="text" class="form-control"
+                                                            <input disabled type="text" class="form-control"
                                                                 id="floatingInputprimary" placeholder="name@example.com"
                                                                 value="{{ $data->org_address }}">
                                                             <label for="floatingInputprimary">Organization Address</label>
@@ -402,67 +398,53 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <select class="form-select" id="floatingSelect"
+                                                            <select disabled
+                                                                class="form-select"
+                                                                id="floatingSelect"
                                                                 aria-label="Floating label select example" name="ostate">
-                                                                <option value="" selected>- Select State -</option>
-                                                                <option value="pahang" @selected($data->org_state == 'pahang')>Pahang
-                                                                </option>
-                                                                <option value="perak" @selected($data->org_state == 'perak')>Perak
-                                                                </option>
-                                                                <option value="terengganu" @selected($data->org_state == 'terengganu')>
-                                                                    Terengganu</option>
-                                                                <option value="perlis" @selected($data->org_state == 'perlis')>Perlis
-                                                                </option>
-                                                                <option value="selangor" @selected($data->org_state == 'selangor')>
-                                                                    Selangor</option>
-                                                                <option value="negeri_sembilan"
-                                                                    @selected($data->org_state == 'negeri_sembilan')>Negeri Sembilan</option>
-                                                                <option value="johor" @selected($data->org_state == 'johor')>Johor
-                                                                </option>
-                                                                <option value="kelantan" @selected($data->org_state == 'kelantan')>
-                                                                    Kelantan</option>
-                                                                <option value="kedah" @selected($data->org_state == 'kedah')>Kedah
-                                                                </option>
-                                                                <option value="pulau_pinang" @selected($data->org_state == 'pulau_pinang')>
-                                                                    Pulau Pinang</option>
-                                                                <option value="melaka" @selected($data->org_state == 'melaka')>Melaka
-                                                                </option>
-                                                                <option value="sabah" @selected($data->org_state == 'sabah')>Sabah
-                                                                </option>
-                                                                <option value="sarawak" @selected($data->org_state == 'sarawak')>
-                                                                    Sarawak</option>
+                                                                <option selected>- Select State -</option>
+                                                                @foreach ($states as $state)
+                                                                    <option value="{{ $state->name }}"
+                                                                        @selected(old('ostate', $data->org_state) == $state->name)>
+                                                                        {{ $state->name }}
+                                                                    </option>
+                                                                @endforeach
                                                             </select>
                                                             <label for="floatingSelect">State</label>
-
                                                         </div>
                                                     </div>
 
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <select class="form-select" id="floatingSelect"
-                                                                aria-label="Floating label select example">
+                                                            <select class="form-select" disabled id="floatingSelect"
+                                                                aria-label="Floating label select example" name="otype">
                                                                 <option value="" disabled
                                                                     {{ $data->org_type == null ? 'selected' : '' }}>-
                                                                     Select -
                                                                 </option>
                                                                 <option value="1"
-                                                                    {{ $data->org_type == 1 ? 'selected' : '' }}>Government
+                                                                    {{ $data->org_type === 'Government' ? 'selected' : '' }}>
+                                                                    Government
                                                                 </option>
                                                                 <option value="2"
-                                                                    {{ $data->org_type == 2 ? 'selected' : '' }}>Company
+                                                                    {{ $data->org_type === 'Company' ? 'selected' : '' }}>
+                                                                    Company
                                                                 </option>
                                                                 <option value="3"
-                                                                    {{ $data->org_type == 3 ? 'selected' : '' }}>Skill
+                                                                    {{ $data->org_type === 'Skill Training Vendor' ? 'selected' : '' }}>
+                                                                    Skill
                                                                     Training
                                                                     Vendor</option>
                                                                 <option value="4"
-                                                                    {{ $data->org_type == 4 ? 'selected' : '' }}>NGO
+                                                                    {{ $data->org_type === 'NGO' ? 'selected' : '' }}>NGO
                                                                 </option>
                                                                 <option value="5"
-                                                                    {{ $data->org_type == 5 ? 'selected' : '' }}>Content
+                                                                    {{ $data->org_type === 'Content Creator' ? 'selected' : '' }}>
+                                                                    Content
                                                                     Creator</option>
                                                                 <option value="6"
-                                                                    {{ $data->org_type == 6 ? 'selected' : '' }}>Event
+                                                                    {{ $data->org_type === 'Event Organizer' ? 'selected' : '' }}>
+                                                                    Event
                                                                     Organizer</option>
                                                             </select>
                                                             <label for="floatingSelect">Organization Type</label>
@@ -472,11 +454,34 @@
                                             </div>
                                         @endif
 
-                                        @if (in_array('content creator', $roles))
-                                            {{-- <div class="col-md-6">
-                                                <p class="fw-bold mt-2">This user role in
-                                                    {{ $availableRoles['content creator'] }}</p>
-                                            </div> --}}
+                                        @if (in_array('content-creator', $roles) && !in_array('organization', $roles))
+                                            <div class="col-xl-12 mt-2">
+                                                <div class="form-floating">
+                                                    <input disabled type="text" class="form-control"
+                                                        id="floatingInputprimary" placeholder="name@example.com"
+                                                        value="{{ $data->org_address }}" name="oaddress">
+                                                    <label for="floatingInputprimary">Address</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-12 mt-2">
+                                                <div class="form-floating">
+                                                    <div class="form-floating">
+                                                        <select disabled
+                                                            class="form-select "
+                                                            id="floatingSelect" aria-label="Floating label select example"
+                                                            name="ostate">
+                                                            <option selected>- Select State -</option>
+                                                            @foreach ($states as $state)
+                                                                <option value="{{ $state->name }}"
+                                                                    @selected(old('ostate', $data->org_state) == $state->name)>
+                                                                    {{ $state->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                        <label for="floatingSelect">State</label>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @endif
 
                                         @if (in_array('mobile-user', $roles))
@@ -491,10 +496,8 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
-                                        data-bs-placement="top" title="Delete user Record">Delete</button>
-                                    <button type="button" class="btn btn-primary btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+
+                                    <button type="button" class="btn btn-danger " data-bs-dismiss="modal">Close</button>
                                 </div>
 
                             </form>
@@ -515,7 +518,7 @@
                         class="modal-dialog modal-dialog-centered text-center {{ in_array('organization', $roles) ? 'modal-xl' : '' }}">
                         <div class="modal-content modal-content-demo">
                             <div class="modal-header">
-                                <h6 class="modal-title">Edit User - {{ $data->name }}</h6><button aria-label="Close"
+                                <h6 class="modal-title">Edit User- {{ $data->name }}</h6><button aria-label="Close"
                                     class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
 
@@ -561,7 +564,7 @@
                                                         <label for="floatingInputprimary">Phone Number</label>
                                                     </div>
                                                 </div>
-                                                @if (in_array('content creator', $roles) && !in_array('organization', $roles))
+                                                @if (!in_array('organization', $roles))
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
                                                             <input type="text" class="form-control"
@@ -572,36 +575,19 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <select class="form-select" id="floatingSelect"
+                                                            <select
+                                                                class="form-select"
+                                                                id="floatingSelect"
                                                                 aria-label="Floating label select example" name="ostate">
-                                                                <option value="" selected>- Select State -</option>
-                                                                <option value="pahang" @selected($data->org_state == 'pahang')>Pahang
-                                                                </option>
-                                                                <option value="perak" @selected($data->org_state == 'perak')>Perak
-                                                                </option>
-                                                                <option value="terengganu" @selected($data->org_state == 'terengganu')>
-                                                                    Terengganu</option>
-                                                                <option value="perlis" @selected($data->org_state == 'perlis')>Perlis
-                                                                </option>
-                                                                <option value="selangor" @selected($data->org_state == 'selangor')>
-                                                                    Selangor</option>
-                                                                <option value="negeri_sembilan"
-                                                                    @selected($data->org_state == 'negeri_sembilan')>Negeri Sembilan</option>
-                                                                <option value="johor" @selected($data->org_state == 'johor')>Johor
-                                                                </option>
-                                                                <option value="kelantan" @selected($data->org_state == 'kelantan')>
-                                                                    Kelantan</option>
-                                                                <option value="kedah" @selected($data->org_state == 'kedah')>Kedah
-                                                                </option>
-                                                                <option value="pulau_pinang" @selected($data->org_state == 'pulau_pinang')>
-                                                                    Pulau Pinang</option>
-                                                                <option value="melaka" @selected($data->org_state == 'melaka')>Melaka
-                                                                </option>
-                                                                <option value="sabah" @selected($data->org_state == 'sabah')>Sabah
-                                                                </option>
-                                                                <option value="sarawak" @selected($data->org_state == 'sarawak')>
-                                                                    Sarawak</option>
+                                                               
+                                                                @foreach ($states as $state)
+                                                                    <option value="{{ $state->name }}"
+                                                                        @selected(old('ostate', $data->org_state) == $state->name)>
+                                                                        {{ $state->name }}
+                                                                    </option>
+                                                                @endforeach
                                                             </select>
+
                                                             <label for="floatingSelect">State</label>
 
                                                         </div>
@@ -667,36 +653,19 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <select class="form-select" id="floatingSelect"
+                                                            <select
+                                                                class="form-select "
+                                                                id="floatingSelect"
                                                                 aria-label="Floating label select example" name="ostate">
-                                                                <option value="" selected>- Select State -</option>
-                                                                <option value="pahang" @selected($data->org_state == 'pahang')>Pahang
-                                                                </option>
-                                                                <option value="perak" @selected($data->org_state == 'perak')>Perak
-                                                                </option>
-                                                                <option value="terengganu" @selected($data->org_state == 'terengganu')>
-                                                                    Terengganu</option>
-                                                                <option value="perlis" @selected($data->org_state == 'perlis')>Perlis
-                                                                </option>
-                                                                <option value="selangor" @selected($data->org_state == 'selangor')>
-                                                                    Selangor</option>
-                                                                <option value="negeri_sembilan"
-                                                                    @selected($data->org_state == 'negeri_sembilan')>Negeri Sembilan</option>
-                                                                <option value="johor" @selected($data->org_state == 'johor')>Johor
-                                                                </option>
-                                                                <option value="kelantan" @selected($data->org_state == 'kelantan')>
-                                                                    Kelantan</option>
-                                                                <option value="kedah" @selected($data->org_state == 'kedah')>Kedah
-                                                                </option>
-                                                                <option value="pulau_pinang" @selected($data->org_state == 'pulau_pinang')>
-                                                                    Pulau Pinang</option>
-                                                                <option value="melaka" @selected($data->org_state == 'melaka')>Melaka
-                                                                </option>
-                                                                <option value="sabah" @selected($data->org_state == 'sabah')>Sabah
-                                                                </option>
-                                                                <option value="sarawak" @selected($data->org_state == 'sarawak')>
-                                                                    Sarawak</option>
+                                                              
+                                                                @foreach ($states as $state)
+                                                                    <option value="{{ $state->name }}"
+                                                                        @selected(old('ostate', $data->org_state) == $state->name)>
+                                                                        {{ $state->name }}
+                                                                    </option>
+                                                                @endforeach
                                                             </select>
+
                                                             <label for="floatingSelect">State</label>
 
                                                         </div>
@@ -706,10 +675,7 @@
                                                         <div class="form-floating">
                                                             <select class="form-select" id="floatingSelect"
                                                                 aria-label="Floating label select example" name="otype">
-                                                                <option value="" disabled
-                                                                    {{ $data->org_type == null ? 'selected' : '' }}>-
-                                                                    Select -
-                                                                </option>
+       
                                                                 <option value="1"
                                                                     {{ $data->org_type === 'Government' ? 'selected' : '' }}>
                                                                     Government
@@ -761,10 +727,9 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary btn-sm" data-bs-toggle="tooltip"
+                                    <button type="submit" class="btn btn-primary " data-bs-toggle="tooltip"
                                         data-bs-placement="top" title="Delete user Record">Update</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-danger " data-bs-dismiss="modal">Close</button>
                                 </div>
 
                             </form>

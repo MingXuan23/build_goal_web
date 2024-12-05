@@ -33,8 +33,10 @@ class AuthController extends Controller
     public function viewOrganizationRegister()
     {
         $organization_type = DB::table('organization_type')->select('id', 'type')->get();
+        $state = DB::table('states')->select('id', 'name')->get();
         return view('auth.organization-register', [
-            'organization_types' => $organization_type
+            'organization_types' => $organization_type,
+            'states' => $state
         ]);
     }
 
@@ -50,13 +52,13 @@ class AuthController extends Controller
     }
 
 
-
-
     public function viewContentCreatorRegister()
     {
         $organization_type = DB::table('organization_type')->select('id', 'type')->get();
+        $state = DB::table('states')->select('id', 'name')->get();
         return view('auth.content-creator-register', [
-            'organization_types' => $organization_type
+            'organization_types' => $organization_type,
+            'states' => $state
         ]);
     }
 
@@ -71,24 +73,7 @@ class AuthController extends Controller
             'cpassword' => 'required|min:5|same:password',
             'oname' => 'required',
             'oaddress' => 'required',
-            'ostate' => [
-                'required',
-                Rule::in([
-                    'pahang',
-                    'perak',
-                    'terengganu',
-                    'perlis',
-                    'selangor',
-                    'negeri_sembilan',
-                    'johor',
-                    'kelantan',
-                    'kedah',
-                    'pulau_pinang',
-                    'melaka',
-                    'sabah',
-                    'sarawak'
-                ]),
-            ],
+            'ostate' => 'required|exists:states,name',
             'otype' => 'required|exists:organization_type,id',
         ], [
             'otype.in' => 'The selected organization type is invalid. Please choose a valid organization type.',
@@ -179,24 +164,7 @@ class AuthController extends Controller
             'password' => 'required|min:5',
             'cpassword' => 'required|min:5|same:password',
             'address' => 'required',
-            'state' => [
-                'required',
-                Rule::in([
-                    'pahang',
-                    'perak',
-                    'terengganu',
-                    'perlis',
-                    'selangor',
-                    'negeri_sembilan',
-                    'johor',
-                    'kelantan',
-                    'kedah',
-                    'pulau_pinang',
-                    'melaka',
-                    'sabah',
-                    'sarawak'
-                ]),
-            ]
+            'state' => 'required|exists:states,name',
 
         ], [], [
             'icno' => 'IC Number',

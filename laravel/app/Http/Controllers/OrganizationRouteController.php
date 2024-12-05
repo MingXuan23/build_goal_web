@@ -14,11 +14,14 @@ class OrganizationRouteController extends Controller
     //
     public function showDashboard(Request $request)
     {
-        $proposedContents = DB::table('contents')->count();
+        $proposedContents = DB::table('contents')
+        ->where('user_id', Auth::user()->id)->count();
         $approvedContents = DB::table('contents')
+            ->where('user_id', Auth::user()->id)
             ->where('reason_phrase', 'APPROVED')
             ->count();
         $rejectedContents = DB::table('contents')
+            ->where('user_id', Auth::user()->id)
             ->where('reason_phrase', 'REJECTED')
             ->count();
 
@@ -67,6 +70,7 @@ class OrganizationRouteController extends Controller
                 'u.remember_token',
                 'u.ekyc_status',
                 'u.ekyc_time',
+                'u.ekyc_signature',
                 'o.name',
                 'o.desc',
                 'o.status',
@@ -169,11 +173,12 @@ class OrganizationRouteController extends Controller
             return $table->make(true);
         }
 
-
+        $states = DB::table('states')->select('id', 'name')->get();
         return view('organization.contentManagement.index', [
             'content_data' => $user_data,
             'stateCities' => $stateCities,
-            'packages' => $packages
+            'packages' => $packages,
+            'states' => $states
         ]);
     }
 
@@ -182,7 +187,8 @@ class OrganizationRouteController extends Controller
         $content_types = DB::table('content_types')->where('status', true)->get();
         $stateCitiesJson = file_get_contents(public_path('assets/json/states-cities.json'));
         $stateCities = json_decode($stateCitiesJson, true);
-        return view('organization.contentManagement.applyContent', compact('content_types', 'stateCities'));
+        $states = DB::table('states')->select('id', 'name')->get();
+        return view('organization.contentManagement.applyContent', compact('content_types', 'stateCities','states'));
     }
 
 

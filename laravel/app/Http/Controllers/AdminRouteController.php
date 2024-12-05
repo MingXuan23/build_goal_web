@@ -51,6 +51,7 @@ class AdminRouteController extends Controller
                 'u.remember_token',
                 'u.ekyc_status',
                 'u.ekyc_time',
+                'u.ekyc_signature',
                 'o.name',
                 'o.desc',
                 'o.status',
@@ -145,10 +146,12 @@ class AdminRouteController extends Controller
             return $table->make(true);
         }
         $role = DB::table('roles')->get();
+        $state = DB::table('states')->select('id', 'name')->get();
 
         return view('admin.userManagement.index', [
             'roles' => $role,
-            'datas' => $data
+            'datas' => $data,
+            'states' => $state
         ]);
     }
 
@@ -200,6 +203,7 @@ class AdminRouteController extends Controller
             'u.icNo',
             'u.remember_token',
             'u.ekyc_status',
+            'u.ekyc_signature',
             'u.ekyc_time',
             'o.name',
             'o.desc',
@@ -290,10 +294,11 @@ class AdminRouteController extends Controller
                 ->rawColumns(['action', 'approve'])
                 ->make(true);
         }
-
+        $states = DB::table('states')->select('id', 'name')->get();
         return view('admin.contentManagement.index', [
             'content_data' => $datas,
-            'stateCities' => $stateCities
+            'stateCities' => $stateCities,
+            'states' => $states
         ]);
     }
 }

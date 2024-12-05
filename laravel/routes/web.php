@@ -137,10 +137,6 @@ Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function
     Route::get('/dashboard', [ContentCreatorRouteController::class, 'showDashboard'])->name('showDashboardContentCreator');
     Route::get('/profile', [ContentCreatorRouteController::class, 'showProfile'])->name('showProfileContentCreator');
 
-    Route::get('/card-verification', [EkycController::class, 'CardVerification'])->name('CardVerification');
-    Route::get('/face-verification', [EkycController::class, 'FaceVerification'])->name('FaceVerification');
-    Route::get('/verification-process', [EkycController::class, 'VerificationSuccess'])->name('VerificationSuccess');
-
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailContentCreator'])->name('updateProfilePersonalDetailContentCreator');
     Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordContentCreator'])->name('updatePasswordContentCreator');
 

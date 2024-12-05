@@ -1,6 +1,6 @@
 @extends('admin.layouts.main')
 @section('container')
-{{-- @dd($content_data); --}}
+    {{-- @dd($content_data); --}}
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
@@ -52,12 +52,12 @@
         </div>
     </div>
     @foreach ($content_data as $data)
-        <div class="modal fade" id="modalView-{{ $data->id }}" ria-labelledby="exampleModalScrollable" data-bs-keyboard="false"
-            aria-hidden="true">
+        <div class="modal fade" id="modalView-{{ $data->id }}" ria-labelledby="exampleModalScrollable"
+            data-bs-keyboard="false" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered text-center modal-md modal-dialog-scrollable">
                 <div class="modal-content modal-content-demo">
                     <div class="modal-header">
-                        <h6 class="modal-title">View Content - {{ $data->name }} </h6>
+                        <h6 class="modal-title">CONTENT DETAIL - {{ $data->name }} </h6>
                         <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
@@ -67,57 +67,70 @@
                         <form action="#" method="POST">
                             @csrf
                             <!-- Content Details -->
-                            <div class="mb-3">
-                                <label for="content_id" class="form-label">Content ID</label>
-                                <input type="text" class="form-control" id="content_id" name="content_id"
-                                    value="{{ $data->id }}" readonly>
+                            <div class="mb-2">
+                                <div class="col-xl-12">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" placeholder="Enter Content Name"
+                                            value="{{ $data->name }}" readonly>
+                                        <label for="contentName">Content Name</label>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="content_name" class="form-label">Content Name</label>
-                                <input type="text" class="form-control" id="content_name" name="content_name"
-                                    value="{{ $data->name }}" readonly>
+                            <div class="mb-2">
+                                <div class="col-xl-12">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" placeholder="Enter Content Name"
+                                            value="{{ $data->link }}" readonly>
+                                        <label for="contentName">Content Link</label>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="applied_on" class="form-label">Link</label>
-                                <input type="text" class="form-control" id="link" name="link"
-                                    value="{{ $data->link }}" readonly>
+                            <div class="mb-2">
+                                <div class="col-xl-12">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" placeholder="Enter Content Name"
+                                            value="{{ $data->created_at }}" readonly>
+                                        <label for="contentName">Content Link</label>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="applied_on" class="form-label">Applied On</label>
-                                <input type="text" class="form-control" id="created_at" name="created_at"
-                                    value="{{ $data->created_at }}" readonly>
+                            <div class="mb-2">
+                                <div class="col-xl-12">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" placeholder="Enter Content Name"
+                                            value="{{ $data->enrollment_price }}" readonly>
+                                        <label for="contentName">Content Link</label>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="enrollment_price" class="form-label">Enrollment Price</label>
-                                <input type="text" class="form-control" id="enrollment_price" name="enrollment_price"
-                                    value="{{ $data->enrollment_price }}" readonly>
+                            <div class="mb-2">
+                                <div class="col-xl-12">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" placeholder="Enter Content Name"
+                                            value="{{ $data->content_type_name }}" readonly>
+                                        <label for="contentName">Content Type</label>
+                                    </div>
+                                </div>
+                                
                             </div>
-
-                            <div class="mb-3">
-                                <label for="content_type" class="form-label">Content Type</label>
-                                <input type="text" class="form-control" value="{{ $data->content_type_name }}" readonly>
-                            </div>
-                            <div class="mb-3">
+                            <div class="mb-2">
                                 <label class="form-label">Select States</label>
-                                <div id="state-container">
+                                <div id="state-container"
+                                    style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
                                     @php
                                         $userStates = json_decode($data->state) ?? [];
-                                     
                                     @endphp
                                     @foreach (array_keys($stateCities) as $state)
                                         <div class="form-check form-check-lg">
                                             <input
-                                                class="form-check-input state-checkbox  @error('states') is-invalid @enderror"
-                                                type="checkbox"
-                                                name="states[]"
-                                                value="{{ $state }}"
+                                                class="form-check-input state-checkbox @error('states') is-invalid @enderror"
+                                                type="checkbox" name="states[]" value="{{ $state }}"
                                                 id="state-{{ $state }}"
-                                                @if(in_array($state, $userStates)) checked @endif disabled
-                                            >
+                                                @if (in_array($state, $userStates)) checked @endif disabled>
                                             <label class="form-check-label" for="state-{{ $state }}">
                                                 {{ $state }}
                                             </label>
@@ -125,18 +138,27 @@
                                     @endforeach
                                 </div>
                             </div>
-                            
 
-                            <div class="mb-3">
-                                <label for="place" class="form-label">Place</label>
-                                <input type="text" class="form-control" id="place" name="place"
-                                    value="{{ $data->place }}" readonly>
+
+                            <div class="mb-2">
+                                    <div class="col-xl-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" placeholder="Enter Content Name"
+                                                value="{{ $data->place }}" readonly>
+                                            <label for="contentName">Content Place</label>
+                                        </div>
+                                    </div>
+                                    
                             </div>
 
-                            <div class="mb-3">
-                                <label for="participant_limit" class="form-label">Participant Limit</label>
-                                <input type="text" class="form-control" id="participant_limit"
-                                    name="participant_limit" value="{{ $data->participant_limit }}" readonly>
+                            <div class="mb-2">
+                                    <div class="col-xl-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" placeholder="Enter Content Name"
+                                                value="{{ $data->participant_limit }}" readonly>
+                                            <label for="contentName">Content Participant Limit</label>
+                                        </div>
+                                    </div>
                             </div>
                         </form>
 

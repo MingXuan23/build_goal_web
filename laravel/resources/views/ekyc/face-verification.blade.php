@@ -11,14 +11,6 @@
             substr($useragent, 0, 4),
         );
 
-    $currentUrl = request()->url();
-    $role = '';
-
-    if (str_contains($currentUrl, '/organization')) {
-        $role = 'organization';
-    } elseif (str_contains($currentUrl, '/content-creator')) {
-        $role = 'content-creator';
-    }
 @endphp
 
 <?php if (!$is_mobile): ?>
@@ -54,7 +46,7 @@ session()->flash('error', 'Please login from a mobile device.');
             confirmButtonText: 'OK'
         }).then(() => {
             // Redirect ke login page
-            window.location.href = "<?php echo e(route('login')); ?>";
+            window.location.href = "<?php echo e(route('login')); ?>?error=XxXxXxXxXxXx";
         });
     </script>
 </body>
@@ -78,15 +70,15 @@ session()->flash('error', 'Please login from a mobile device.');
     <!-- [Font] Family -->
     <link rel="stylesheet" href="../../asset1/fonts/inter/inter.css" id="main-font-link" />
     <!-- [phosphor Icons] https://phosphoricons.com/ -->
-    <link rel="stylesheet" href="../../asset1/fonts/phosphor/duotone/style.css" />
+    {{-- <link rel="stylesheet" href="../../asset1/fonts/phosphor/duotone/style.css" /> --}}
     <!-- [Tabler Icons] https://tablericons.com -->
-    <link rel="stylesheet" href="../../asset1/fonts/tabler-icons.min.css" />
+    {{-- <link rel="stylesheet" href="../../asset1/fonts/tabler-icons.min.css" /> --}}
     <!-- [Feather Icons] https://feathericons.com -->
     <link rel="stylesheet" href="../../asset1/fonts/feather.css" />
     <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
     <link rel="stylesheet" href="../../asset1/fonts/fontawesome.css" />
     <!-- [Material Icons] https://fonts.google.com/icons -->
-    <link rel="stylesheet" href="../../asset1/fonts/material.css" />
+    {{-- <link rel="stylesheet" href="../../asset1/fonts/material.css" /> --}}
     <!-- [Template CSS Files] -->
     <link rel="stylesheet" href="../../asset1/css/style.css" id="main-style-link" />
     <link rel="stylesheet" href="../../asset1/css/style-preset.css" />
@@ -366,7 +358,7 @@ session()->flash('error', 'Please login from a mobile device.');
                         // Redirect or handle success case
                         Swal.fire({
                             icon: 'success',
-                            title: 'Your verification is completed successfully',
+                            title: 'VERIFICATION SUCCESS:',
                             confirmButtonText: 'Finish',
                             customClass: {
                                 title: 'custom-title',
@@ -381,7 +373,7 @@ session()->flash('error', 'Please login from a mobile device.');
                         // Handle failure case
                         Swal.fire({
                             icon: 'error',
-                            title: 'Verification failed: ' + data.message,
+                            title: 'VERIFICATION FAILED: ' + data.message,
                             confirmButtonText: 'Again',
                             customClass: {
                                 title: 'custom-title',
@@ -402,7 +394,7 @@ session()->flash('error', 'Please login from a mobile device.');
                     container.style.display = "block";
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error sending image to server.',
+                        title: 'ERROR SENDING IMAGE TO SERVER. CONTACT US BY EMAIL AT [help-center@xbug.online] FOR INFORMATION OR REPORT',
                         customClass: {
                             title: 'custom-title',
                             content: 'custom-content'

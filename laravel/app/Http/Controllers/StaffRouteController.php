@@ -52,6 +52,7 @@ class StaffRouteController extends Controller
                 'u.remember_token',
                 'u.ekyc_status',
                 'u.ekyc_time',
+                'u.ekyc_signature',
                 'o.name',
                 'o.desc',
                 'o.status',
