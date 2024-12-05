@@ -31,6 +31,11 @@ npx knex migrate:latest --env docker
 npx knex seed:run --env docker
 ```
 
+For adding new migration 
+```
+knex migrate:make migration_name
+```
+
 
 5. Laravel Setup (execute in exec tab in image laravel app)
 
