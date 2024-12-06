@@ -75,6 +75,18 @@
                         </li> -->
                     </ul>
                 </li>
+                <li class="slide has-sub">
+                    <a href="javascript:void(0);" class="side-menu__item ">
+                        <i class="bx bx-mail-send side-menu__icon"></i>
+                        <span class="side-menu__label ">Email Logs</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="/admin/email-logs" class="side-menu__item">email logs</a>
+                        </li>
+                    </ul>
+                </li>
 
             </ul>
             <div class="slide-right" id="slide-right">

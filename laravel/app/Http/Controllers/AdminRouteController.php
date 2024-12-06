@@ -301,4 +301,33 @@ class AdminRouteController extends Controller
             'states' => $states
         ]);
     }
+
+    public function showEmailLogs(Request $request){
+        $logs = DB::table('email_logs')->select([
+            'id',
+            'email_type',
+            'recipient_email',
+            'from_email',
+            'name',
+            'status',
+            'response_data',
+            'created_at'
+        ]);
+        if ($request->ajax()) {
+
+            return DataTables::of($logs)
+                ->addIndexColumn()
+                ->editColumn('status', function ($log) {
+                    $statusClass = $log->status === 'SUCCESS' ? 'success' : 'danger';
+                    return '<span class="badge bg-' . $statusClass . ' p-2">' . $log->status . '</span>';
+                })
+                // ->editColumn('created_at', function ($log) {
+                //     return date('d-m-Y H:i:s', strtotime($log->created_at));
+                // })
+                ->rawColumns(['status'])
+                ->make(true);
+        }
+
+        return view('admin.emailLogs.index');
+    }
 }

@@ -212,4 +212,24 @@ class UserManagementController extends Controller
             return redirect()->route('showUserAdmin')->with('error', 'Failed to update Account Status!');
         }
     }
+
+    public function userDeleteAdmin(Request $request,$id){
+        DB::beginTransaction();
+        try {
+      
+            $user = DB::table('users')->where('id', $id)->first();
+
+            if (!$user) {
+                return back()->with('error', 'User not found,');
+            }
+
+            DB::table('users')->where('id', $id)->delete();
+            DB::commit();
+
+            return back()->with('success', 'User has been deleted successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
 }

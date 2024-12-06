@@ -1,6 +1,6 @@
 @extends('admin.layouts.main')
 @section('container')
-   
+
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
@@ -17,7 +17,7 @@
                 </div>
             </div>
             <!-- Page Header Close -->
-            
+
 
             <!-- Start::row-1 -->
             <div class="row">
@@ -69,53 +69,7 @@
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    {{-- <tbody>
-                                        <tr>
-                                            <td>Tiger Nixon</td>
-                                            <td>System Architect</td>
-                                            <td>Edinburgh</td>
-                                            <td>61</td>
-                                            <td><span class="badge bg-danger-transparent">Not Verify</span></td>
-                                            <td>
-                                                <button class="btn btn-icon btn-sm btn-info-transparent rounded-pill"
-                                                    data-bs-toggle="modal" data-bs-target="#modalView-1">
-                                                    <i class="ri-eye-line"></i>
-                                                </button>
-                                                <button class="btn btn-icon btn-sm btn-warning-transparent rounded-pill"
-                                                    data-bs-toggle="modal" data-bs-target="#modalUpdate-1">
-                                                    <i class="ri-edit-line"></i>
-                                                </button>
 
-                                                <button class="btn btn-icon btn-sm btn-danger-transparent rounded-pill"
-                                                    id="alert-confirm-1">
-                                                    <i class="ri-delete-bin-line"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Tiger Nixon</td>
-                                            <td>System Architect</td>
-                                            <td>Edinburgh</td>
-                                            <td>61</td>
-                                            <td><span class="badge bg-success-transparent">Verify</span></td>
-                                            <td>
-                                                <button class="btn btn-icon btn-sm btn-info-transparent rounded-pill"
-                                                    data-bs-toggle="modal" data-bs-target="#modalView-2">
-                                                    <i class="ri-eye-line"></i>
-                                                </button>
-                                                <button class="btn btn-icon btn-sm btn-warning-transparent rounded-pill"
-                                                    data-bs-toggle="modal" data-bs-target="#modalUpdate-2">
-                                                    <i class="ri-edit-line"></i>
-                                                </button>
-
-                                                <button class="btn btn-icon btn-sm btn-danger-transparent rounded-pill"
-                                                    id="alert-confirm-2">
-                                                    <i class="ri-delete-bin-line"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-
-                                    </tbody> --}}
                                 </table>
                             </div>
                         </div>
@@ -398,9 +352,7 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <select disabled
-                                                                class="form-select"
-                                                                id="floatingSelect"
+                                                            <select disabled class="form-select" id="floatingSelect"
                                                                 aria-label="Floating label select example" name="ostate">
                                                                 <option selected>- Select State -</option>
                                                                 @foreach ($states as $state)
@@ -466,10 +418,8 @@
                                             <div class="col-xl-12 mt-2">
                                                 <div class="form-floating">
                                                     <div class="form-floating">
-                                                        <select disabled
-                                                            class="form-select "
-                                                            id="floatingSelect" aria-label="Floating label select example"
-                                                            name="ostate">
+                                                        <select disabled class="form-select " id="floatingSelect"
+                                                            aria-label="Floating label select example" name="ostate">
                                                             <option selected>- Select State -</option>
                                                             @foreach ($states as $state)
                                                                 <option value="{{ $state->name }}"
@@ -497,10 +447,16 @@
                                 </div>
                                 <div class="modal-footer">
 
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#delete{{ $data->id }}">
+                                        Delete
+                                    </button>
                                     <button type="button" class="btn btn-danger " data-bs-dismiss="modal">Close</button>
                                 </div>
 
                             </form>
+
+
 
                         </div>
                     </div>
@@ -575,11 +531,9 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <select
-                                                                class="form-select"
-                                                                id="floatingSelect"
+                                                            <select class="form-select" id="floatingSelect"
                                                                 aria-label="Floating label select example" name="ostate">
-                                                               
+
                                                                 @foreach ($states as $state)
                                                                     <option value="{{ $state->name }}"
                                                                         @selected(old('ostate', $data->org_state) == $state->name)>
@@ -653,11 +607,9 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <select
-                                                                class="form-select "
-                                                                id="floatingSelect"
+                                                            <select class="form-select " id="floatingSelect"
                                                                 aria-label="Floating label select example" name="ostate">
-                                                              
+
                                                                 @foreach ($states as $state)
                                                                     <option value="{{ $state->name }}"
                                                                         @selected(old('ostate', $data->org_state) == $state->name)>
@@ -675,7 +627,7 @@
                                                         <div class="form-floating">
                                                             <select class="form-select" id="floatingSelect"
                                                                 aria-label="Floating label select example" name="otype">
-       
+
                                                                 <option value="1"
                                                                     {{ $data->org_type === 'Government' ? 'selected' : '' }}>
                                                                     Government
@@ -737,6 +689,34 @@
                         </div>
                     </div>
                 </div>
+            @endforeach
+
+            @foreach ($datas as $data)
+                <form action="{{ route('userDeleteAdmin', $data->id) }}" method="post">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal fade" id="delete{{ $data->id }}" data-bs-backdrop="static"
+                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title" id="deleteLabel">Delete Confirmation
+                                    </h6>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="fw-bold text-muted">Are Sure to Delete Account for {{ $data->name }} with
+                                        role {{ $data->role_names }} ? This action can't be undo !</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Confirm</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             @endforeach
 
         </div>

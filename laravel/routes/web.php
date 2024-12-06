@@ -41,7 +41,6 @@ Route::get('/organization-register', [AuthController::class, 'viewOrganizationRe
 Route::get('/content-creator-register', [AuthController::class, 'viewContentCreatorRegister'])->name('viewContentCreatorRegister');
 Route::get('/reset-password', [AuthController::class, 'viewResetPassword'])->name('viewResetPassword');
 
-
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/organization-register', [AuthController::class, 'createOrganizationRegister'])->name('createOrganizationRegister');
 Route::post('/content-creator-register', [AuthController::class, 'createContentCreatorRegister'])->name('createContentCreatorRegister');
@@ -66,24 +65,21 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::get('/add-user', [AdminRouteController::class, 'showAddUser'])->name('showAddUser');
     Route::get('/view-content', [AdminRouteController::class, 'showContentAdmin'])->name('showContentAdmin');
     Route::get('/profile',  [AdminRouteController::class, 'showProfile'])->name('showProfileAdmin');
-
+    Route::get('/email-logs',  [AdminRouteController::class, 'showEmailLogs'])->name('showEmailLogs');
 
     Route::get('/card-logs', [EkycController::class, 'showCardLogs'])->name('showCardLogs');
     Route::get('/face-logs', [EkycController::class, 'showFaceLogs'])->name('showFaceLogs');
     
-
     Route::post('/approve-content/{id}', [ContentController::class, 'approveContent'])->name('approveContent');
     Route::post('/reject-content/{id}', [ContentController::class, 'rejectContent'])->name('rejectContent');
     Route::post('/update-user/{id}', [UserManagementController::class, 'updateUser'])->name('updateUser');
     Route::post('/update-role/{id}', [UserManagementController::class, 'updateRole'])->name('updateRole');
+    Route::delete('/user-delete/{id}', [UserManagementController::class, 'userDeleteAdmin'])->name('userDeleteAdmin');
     Route::post('/update-ekyc-status/{id}', [UserManagementController::class, 'updateEkycStatus'])->name('updateEkycStatus');
     Route::post('/update-email-status/{id}', [UserManagementController::class, 'updateEmailStatus'])->name('updateEmailStatus');
     Route::post('/update-account-status/{id}', [UserManagementController::class, 'updateAccountStatus'])->name('updateAccountStatus');
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailAdmin'])->name('updateProfilePersonalDetailAdmin');
     Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordAdmin'])->name('updatePasswordAdmin');
-
-
-
 
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('admin.logout');
 });
@@ -148,7 +144,6 @@ Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function
     // Route::middleware(['ekycCheck'])->group(function () {
 
     // });
-
 
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('content-creator.logout');
 });
