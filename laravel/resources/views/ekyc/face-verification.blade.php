@@ -336,14 +336,15 @@ session()->flash('error', 'Please login from a mobile device.');
             const urlParams = new URLSearchParams(window.location.search);
             const filename = urlParams.get("id");
 
-            fetch("https://ekyc-api.xbug.online/process-face", {
+            fetch("{{ env('API_EKYC_URL') }}/process-face", {
                     method: "POST",
                     body: JSON.stringify({
                         image: base64Image,
                         filename
                     }),
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        'Authorization': 'API_KEY_1a2b3c4d5e-ali'
                     },
                 })
                 .then((response) => response.json())
@@ -366,7 +367,8 @@ session()->flash('error', 'Please login from a mobile device.');
                             }
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = `{{ route('VerificationSuccess') }}?idno=${filename}`;
+                                window.location.href =
+                                    `{{ route('VerificationSuccess') }}?idno=${filename}`;
                             }
                         });
                     } else {

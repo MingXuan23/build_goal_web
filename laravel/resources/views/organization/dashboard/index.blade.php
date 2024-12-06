@@ -230,7 +230,7 @@
         });
     </script> --}}
     @php
-        $encryptedParams = Crypt::encryptString(json_encode(['id' => Auth::user()->id, 'icNo' => Auth::user()->icNo]));
+        $encryptedParams =  Auth::user()->icNo;
     @endphp
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>

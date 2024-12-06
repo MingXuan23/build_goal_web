@@ -67,6 +67,11 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::get('/view-content', [AdminRouteController::class, 'showContentAdmin'])->name('showContentAdmin');
     Route::get('/profile',  [AdminRouteController::class, 'showProfile'])->name('showProfileAdmin');
 
+
+    Route::get('/card-logs', [EkycController::class, 'showCardLogs'])->name('showCardLogs');
+    Route::get('/face-logs', [EkycController::class, 'showFaceLogs'])->name('showFaceLogs');
+    
+
     Route::post('/approve-content/{id}', [ContentController::class, 'approveContent'])->name('approveContent');
     Route::post('/reject-content/{id}', [ContentController::class, 'rejectContent'])->name('rejectContent');
     Route::post('/update-user/{id}', [UserManagementController::class, 'updateUser'])->name('updateUser');
