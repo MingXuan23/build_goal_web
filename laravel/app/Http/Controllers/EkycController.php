@@ -123,7 +123,7 @@ class EkycController extends Controller
     {
         // Ambil data dari API
         $response = Http::withHeaders([
-            'Authorization' => 'API_KEY_1a2b3c4d5e-ali',
+            'Authorization' => env("EKYC_API_KEY"),
         ])->get(env('API_EKYC_URL').'/card-logs');   
         $data = $response->json(); 
         
@@ -173,7 +173,7 @@ class EkycController extends Controller
     public function showFaceLogs(Request $request)
     {
         $response = Http::withHeaders([
-            'Authorization' => 'API_KEY_1a2b3c4d5e-ali',
+            'Authorization' => env("EKYC_API_KEY"),
         ])->get(env('API_EKYC_URL').'/face-logs');
         $data = $response->json();
  

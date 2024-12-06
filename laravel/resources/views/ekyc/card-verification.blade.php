@@ -432,7 +432,7 @@ session()->flash('error', 'Please login from a mobile device.');
                     }),
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization' : 'API_KEY_1a2b3c4d5e-ali'
+                        'Authorization' : '{{ env("EKYC_API_KEY") }}'
                     },
                 })
                 .then((response) => response.json())
