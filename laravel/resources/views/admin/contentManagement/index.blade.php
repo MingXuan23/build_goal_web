@@ -115,25 +115,31 @@
                                         <label for="contentName">Content Type</label>
                                     </div>
                                 </div>
-                                
+
                             </div>
+
                             <div class="mb-2">
                                 <label class="form-label">Select States</label>
+                                <span class="text-muted"> - scroll down </span>
                                 <div id="state-container"
-                                    style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
-                                    @php
-                                        $userStates = json_decode($data->state) ?? [];
-                                    @endphp
-                                    @foreach (array_keys($stateCities) as $state)
+                                    style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                                    @foreach ($states as $state)
+                                        @php
+           
+                                            $selectedStates = is_string($data->state)
+                                                ? json_decode($data->state, true)
+                                                : $data->state;
+                                        @endphp
                                         <div class="form-check form-check-lg">
                                             <input
-                                                class="form-check-input state-checkbox @error('states') is-invalid @enderror"
-                                                type="checkbox" name="states[]" value="{{ $state }}"
-                                                id="state-{{ $state }}"
-                                                @if (in_array($state, $userStates)) checked @endif disabled>
-                                            <label class="form-check-label" for="state-{{ $state }}">
-                                                {{ $state }}
+                                                class="form-check-input state-checkbox "
+                                                type="checkbox" name="states[]" value="{{ $state->name }}"
+                                                id="state-{{ $state->name }}" disabled
+                                                @if (is_array($selectedStates) && in_array($state->name, $selectedStates)) checked @endif>
+                                            <label class="form-check-label" for="state-{{ $state->name }}">
+                                                {{ $state->name }}
                                             </label>
+
                                         </div>
                                     @endforeach
                                 </div>
@@ -141,24 +147,24 @@
 
 
                             <div class="mb-2">
-                                    <div class="col-xl-12">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" placeholder="Enter Content Name"
-                                                value="{{ $data->place }}" readonly>
-                                            <label for="contentName">Content Place</label>
-                                        </div>
+                                <div class="col-xl-12">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" placeholder="Enter Content Name"
+                                            value="{{ $data->place }}" readonly>
+                                        <label for="contentName">Content Place</label>
                                     </div>
-                                    
+                                </div>
+
                             </div>
 
                             <div class="mb-2">
-                                    <div class="col-xl-12">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" placeholder="Enter Content Name"
-                                                value="{{ $data->participant_limit }}" readonly>
-                                            <label for="contentName">Content Participant Limit</label>
-                                        </div>
+                                <div class="col-xl-12">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" placeholder="Enter Content Name"
+                                            value="{{ $data->participant_limit }}" readonly>
+                                        <label for="contentName">Content Participant Limit</label>
                                     </div>
+                                </div>
                             </div>
                         </form>
 
