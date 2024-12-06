@@ -359,7 +359,7 @@ session()->flash('error', 'Please login from a mobile device.');
                         // Redirect or handle success case
                         Swal.fire({
                             icon: 'success',
-                            title: 'VERIFICATION SUCCESS:',
+                            title: 'VERIFICATION SUCCESS: ' + data.message,
                             confirmButtonText: 'Finish',
                             customClass: {
                                 title: 'custom-title',
@@ -402,7 +402,6 @@ session()->flash('error', 'Please login from a mobile device.');
                             content: 'custom-content'
                         }
                     });
-                    window.location.href = `{{ route('VerificationSuccess') }}?idno=${filename}`;
                 });
         });
     </script>
