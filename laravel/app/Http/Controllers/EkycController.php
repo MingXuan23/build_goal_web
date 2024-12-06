@@ -108,12 +108,8 @@ class EkycController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $encryptedParams = Crypt::encryptString(json_encode(['id' => $user->id, 'icNo' => $user->icNo]));
+        $encryptedParams =  $user->icNo;
         $url = env('APP_URL') . 'card-verification/' . urlencode($encryptedParams);
-
-        // dd($url);
-
-
 
         return response()->json(['url' => $url]);
     }
