@@ -193,7 +193,7 @@
                                                                                             class="form-control @error('address') is-invalid @enderror"
                                                                                             id="floatingInput"
                                                                                             placeholder="Full Name"
-                                                                                            value="{{ $datas[0]->org_address }}"
+                                                                                            value="{{ $datas[0]->address }}"
                                                                                             name="address">
                                                                                         <label
                                                                                             for="floatingInput">Address</label>
@@ -214,50 +214,50 @@
                                                                                                 selected>- Select State -
                                                                                             </option>
                                                                                             <option value="pahang"
-                                                                                                @selected($datas[0]->org_state == 'pahang')>
+                                                                                                @selected($datas[0]->state == 'pahang')>
                                                                                                 Pahang
                                                                                             </option>
                                                                                             <option value="perak"
-                                                                                                @selected($datas[0]->org_state == 'perak')>
+                                                                                                @selected($datas[0]->state == 'perak')>
                                                                                                 Perak
                                                                                             </option>
                                                                                             <option value="terengganu"
-                                                                                                @selected($datas[0]->org_state == 'terengganu')>
+                                                                                                @selected($datas[0]->state == 'terengganu')>
                                                                                                 Terengganu</option>
                                                                                             <option value="perlis"
-                                                                                                @selected($datas[0]->org_state == 'perlis')>
+                                                                                                @selected($datas[0]->state == 'perlis')>
                                                                                                 Perlis
                                                                                             </option>
                                                                                             <option value="selangor"
-                                                                                                @selected($datas[0]->org_state == 'selangor')>
+                                                                                                @selected($datas[0]->state == 'selangor')>
                                                                                                 Selangor</option>
                                                                                             <option value="negeri_sembilan"
-                                                                                                @selected($datas[0]->org_state == 'negeri_sembilan')>
+                                                                                                @selected($datas[0]->state == 'negeri_sembilan')>
                                                                                                 Negeri Sembilan</option>
                                                                                             <option value="johor"
-                                                                                                @selected($datas[0]->org_state == 'johor')>
+                                                                                                @selected($datas[0]->state == 'johor')>
                                                                                                 Johor
                                                                                             </option>
                                                                                             <option value="kelantan"
-                                                                                                @selected($datas[0]->org_state == 'kelantan')>
+                                                                                                @selected($datas[0]->state == 'kelantan')>
                                                                                                 Kelantan</option>
                                                                                             <option value="kedah"
-                                                                                                @selected($datas[0]->org_state == 'kedah')>
+                                                                                                @selected($datas[0]->state == 'kedah')>
                                                                                                 Kedah
                                                                                             </option>
                                                                                             <option value="pulau_pinang"
-                                                                                                @selected($datas[0]->org_state == 'pulau_pinang')>
+                                                                                                @selected($datas[0]->state == 'pulau_pinang')>
                                                                                                 Pulau Pinang</option>
                                                                                             <option value="melaka"
-                                                                                                @selected($datas[0]->org_state == 'melaka')>
+                                                                                                @selected($datas[0]->state == 'melaka')>
                                                                                                 Melaka
                                                                                             </option>
                                                                                             <option value="sabah"
-                                                                                                @selected($datas[0]->org_state == 'sabah')>
+                                                                                                @selected($datas[0]->state == 'sabah')>
                                                                                                 Sabah
                                                                                             </option>
                                                                                             <option value="sarawak"
-                                                                                                @selected($datas[0]->org_state == 'sarawak')>
+                                                                                                @selected($datas[0]->state == 'sarawak')>
                                                                                                 Sarawak</option>
                                                                                         </select>
                                                                                         <label
