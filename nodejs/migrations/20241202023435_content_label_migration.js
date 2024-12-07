@@ -10,7 +10,9 @@ exports.up = function(knex) {
         table.bigInteger('label_id').unsigned().notNullable()
             .references('id').inTable('labels').onDelete('CASCADE'); // Foreign key to organization table
       
-        table.timestamps(true, true); // Created at & Updated at timestamps
+          
+            table.timestamp('created_at').defaultTo(knex.fn.now()).nullable();
+      table.timestamp('updated_at').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')).nullable();
     });
 };
 

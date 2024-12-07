@@ -15,7 +15,7 @@ exports.up = function(knex) {
  */
 exports.down = function(knex) {
     return knex.schema.alterTable('contents', function (table) {
-        table.dropColumn('reject_reason').notNullable(); // Remove the column if rolled back
+        table.dropColumn('reject_reason'); // Remove the column if rolled back
     });
     
 };

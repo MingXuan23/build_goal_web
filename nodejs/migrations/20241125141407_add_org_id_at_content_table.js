@@ -17,8 +17,7 @@ exports.up = function (knex) {
  */
 exports.down = function(knex) {
     return knex.schema.table('contents', function(table) {
-      table.bigInteger('user_id').unsigned().nullable()
-       .references('id').inTable('users').onDelete('CASCADE'); // Foreign key to users table
+     // table.dropColumn('user_id'); // Foreign key to users table
 
         
     });

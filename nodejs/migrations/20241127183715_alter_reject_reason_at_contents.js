@@ -14,7 +14,7 @@ exports.up = function(knex) {
    */
   exports.down = function(knex) {
     return knex.schema.table('contents', function(table) {
-      table.string('reject_reason').notNullable.alter(); // Revert back to 255 if rolled back
+     //table.string('reject_reason').notNullable.alter(); // Revert back to 255 if rolled back
     });
   };
   

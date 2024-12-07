@@ -15,7 +15,7 @@ exports.up = function(knex) {
  */
 exports.down = function(knex) {
     return knex.schema.alterTable('contents', function (table) {
-        table.dropColumn('ekyc_signature', 255); // Remove the column if rolled back
+       // table.dropColumn('ekyc_signature'); // Remove the column if rolled back
     });
     
 };

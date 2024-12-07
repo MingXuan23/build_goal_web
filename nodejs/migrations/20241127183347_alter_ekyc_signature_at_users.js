@@ -14,7 +14,7 @@ exports.up = function(knex) {
    */
   exports.down = function(knex) {
     return knex.schema.table('users', function(table) {
-      table.string('ekyc_signature', 255).alter(); // Revert back to 255 if rolled back
+      //table.string('ekyc_signature', 255).alter(); // Revert back to 255 if rolled back
     });
   };
   

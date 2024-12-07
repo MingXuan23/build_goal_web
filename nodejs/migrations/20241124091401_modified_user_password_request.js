@@ -7,7 +7,8 @@ exports.up = function (knex) {
         table.bigIncrements('id').primary(); // Primary key, auto-incrementing
         table.string('unique_id').notNullable(); // Name, required
         table.boolean('status').nullable();
-        table.timestamps(true, true); // Created at & Updated at timestamps
+        table.timestamp('created_at').defaultTo(knex.fn.now()).nullable();
+        table.timestamp('updated_at').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')).nullable();// Created at & Updated at timestamps
         table.timestamp('expired_at').nullable();
         table.bigInteger('user_id').unsigned().notNullable()
             .references('id').inTable('users').onDelete('CASCADE'); // Foreign key to users table

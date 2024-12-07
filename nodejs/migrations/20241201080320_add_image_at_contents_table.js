@@ -15,8 +15,7 @@ exports.up = function(knex) {
  */
 exports.down = function(knex) {
     return knex.schema.table('contents', function(table) {
-      table.bigInteger('image').nullable();
-
+        table.dropColumn('image'); // Remove the column if rolled back
         
     });
 };

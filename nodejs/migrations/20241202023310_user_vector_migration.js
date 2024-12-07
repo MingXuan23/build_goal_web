@@ -9,7 +9,9 @@ exports.up = function(knex) {
         table.boolean('status').defaultTo(true);
         table.bigInteger('user_id').unsigned().notNullable()
         .references('id').inTable('users').onDelete('CASCADE');
-        table.timestamps(true, true); // Created at & Updated at timestamps
+       
+        table.timestamp('created_at').defaultTo(knex.fn.now()).nullable();
+        table.timestamp('updated_at').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')).nullable();// Created at & Updated at timestamps
     });
 };
 

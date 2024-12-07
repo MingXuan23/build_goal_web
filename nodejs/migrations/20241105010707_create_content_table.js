@@ -18,7 +18,8 @@ exports.up = function(knex) {
         table.string('place').nullable(); // Place, optional
         table.bigInteger('participant_limit').nullable(); // Participant limit, optional
         table.json('state').nullable(); // State, optional
-        table.timestamps(true, true); 
+        table.timestamp('created_at').defaultTo(knex.fn.now()).nullable();
+        table.timestamp('updated_at').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')).nullable();// Created at & Updated at timestamps
         table.datetime('closed_at').nullable(); // Automatically add created_at and updated_at timestamps
       });
 };

@@ -8,7 +8,8 @@ exports.up = async function (knex) {
 
         const hasUpdatedAt = await knex.schema.hasColumn('user_token', 'updated_at');
         if (!hasUpdatedAt) {
-            table.timestamp('updated_at').nullable(); // Add updated_at only if it doesn't exist
+
+      table.timestamp('updated_at').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')).nullable(); // Add updated_at only if it doesn't exist
         }
     });
 };
@@ -19,7 +20,7 @@ exports.up = async function (knex) {
  */
 exports.down = function (knex) {
     return knex.schema.alterTable('user_token', function (table) {
-        table.datetime('expired_at').notNullable().alter(); // Revert expired_at to datetime and make it not nullable
+      //  table.datetime('expired_at').notNullable().alter(); // Revert expired_at to datetime and make it not nullable
         // No need to remove the updated_at column in down migration since it might have existed before
     });
 };
