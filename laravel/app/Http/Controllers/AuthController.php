@@ -107,7 +107,7 @@ class AuthController extends Controller
                 'address' => $validatedData['oaddress'],
                 'state' => $validatedData['ostate'],
                 'email' => $validatedData['email'],
-                'status' => 'Active',
+                'status' => 'ACTIVE',
                 'role' => json_encode([3]),
                 'active' => 1,
                 'email_status' => 'NOT VERIFY',
@@ -214,7 +214,7 @@ class AuthController extends Controller
                 'email' => $validatedData['email'],
                 'address' => $validatedData['address'],
                 'state' => $validatedData['state'],
-                'status' => 'Active',
+                'status' => 'ACTIVE',
                 'role' => json_encode([4]),
                 'active' => 1,
                 'email_status' => 'NOT VERIFY',
@@ -284,32 +284,56 @@ class AuthController extends Controller
             'password' => 'required|min:5',
         ]);
 
-        if (Auth::attempt($request->only('email', 'password'))) {
-            $user = Auth::user();
+        $user = \App\Models\User::where('email', $validatedData['email'])->first();
 
+        // Check if the user exists
+        if (!$user) {
+            return back()->with('error', 'Invalid credentials. Please make sure your email and password is correct');
+        }
+    
+        // Replace $2b$ with $2y$ in the stored password hash for compatibility
+        $userPasswordHash = str_replace('$2b$', '$2y$', $user->password);
+        $userPasswordHash = str_replace('$2a$', '$2y$', $userPasswordHash);
+
+    
+        // Verify the password using Hash::check
+        if (Hash::check($validatedData['password'], $userPasswordHash)) {
+            Auth::login($user);
+    
+            // Check if the user's email is not verified
             if ($user->email_status === "NOT VERIFY") {
                 Session::put('user_id', $user->id);
                 $maskedEmail = $this->maskEmail($user->email);
-                return back()->with('error', 'Your account is not verified by email. <a class="fw-bold text-danger" href="' . route('resendVerify') . '">Click here</a> to get the verification code via email ' . $maskedEmail);
+                return back()->with(
+                    'error',
+                    'Your account is not verified by email. <a class="fw-bold text-danger" href="' . route('resendVerify') . '">Click here</a> to get the verification code via email ' . $maskedEmail
+                );
             }
-
+    
+            // Check if the user is blocked
             if ($user->active !== 1) {
-                return back()->with('error', 'Your account is block, Please Contact us by email to help-center@xbug.online for inform if we mistake');
+                return back()->with('error', 'Your account is blocked. Please contact us at help-center@xbug.online if this is a mistake.');
             }
-            // dd($user);
+    
+            // Store user roles in the session
             Session::put('user_roles', json_encode($user->role));
-            if (in_array(1, json_decode($user->role))) {
+    
+            // Redirect based on user roles
+            $roles = json_decode($user->role, true);
+            if (in_array(1, $roles)) {
                 return redirect('/admin/dashboard');
-            } elseif (in_array(2, json_decode($user->role))) {
+            } elseif (in_array(2, $roles)) {
                 return redirect('/staff/dashboard');
-            } elseif (in_array(3, json_decode($user->role))) {
+            } elseif (in_array(3, $roles)) {
                 return redirect('/organization/dashboard');
-            } elseif (in_array(4, json_decode($user->role))) {
+            } elseif (in_array(4, $roles)) {
                 return redirect('/content-creator/dashboard');
             }
         }
-
+    
+        // If password verification fails
         return back()->with('error', 'Invalid credentials. Please make sure your email and password is correct');
+    
     }
 
     public function logout(Request $request)

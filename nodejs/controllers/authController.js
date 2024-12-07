@@ -1,4 +1,4 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const crypto = require('crypto');
@@ -355,7 +355,7 @@ const login = async (req, res) => {
 
     const user = await getUserByEmail(email);
     // console.log(user);
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    if (!user || !(await bcrypt.compare(password, user.password.replace('$2y$', '$2b$')))) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
     else if (user.email_status === "NOT VERIFY") {

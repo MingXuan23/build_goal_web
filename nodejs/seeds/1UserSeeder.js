@@ -3,7 +3,7 @@
  * @returns { Promise<void> } 
  */
 
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 exports.seed = async function (knex) {
   // Clear existing entries (optional, depending on your requirement)
