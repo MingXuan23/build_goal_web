@@ -11,14 +11,15 @@ require("dotenv").config();
 const knexConfig = require('../knexfile');
 const knex = require('knex')(knexConfig[process.env.NODE_ENV])
 
-const { registerSchema, loginSchema, forgetPasswordSchema, changePasswordSchema, validateSessionSchema } = require("../validators/authValidator");
+const { registerSchema, loginSchema, forgetPasswordSchema, changePasswordSchema, validateSessionSchema, profileSchema, userPrivacySchema } = require("../validators/authValidator");
 const {
   getUserByEmail,
   createUser,
   updateUserStatus,
   updateVerificationCode,
   updatePassword,
-  getStaticToken
+  getStaticToken,
+  updateUseProfile
 } = require("../models/userModel");
 const { v4: uuidv4 } = require("uuid");
 const { create } = require("domain");
@@ -160,10 +161,14 @@ const register = async (req, res) => {
       role: JSON.stringify(role),
       success: success_acc,
       email_status: email_status,
-      
+
     });
 
     if (result) {
+
+      await knex('user_privacy').insert({
+        user_id: result.id
+      });
       await sendVerificationEmail(email, name, verificationCode);
       const responseData = {
         name: validatedData.name,
@@ -175,6 +180,7 @@ const register = async (req, res) => {
         .json({ success: true, message: "User registered successfully", data: responseData });
     }
   } catch (error) {
+    console.log(error);
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);
       const message = messages.join(", ");
@@ -184,6 +190,88 @@ const register = async (req, res) => {
     }
   }
 };
+
+const getProfile = async (req, res) => {
+  try {
+    var user = req.user;
+
+    const user_privacy = await knex('user_privacy').where('user_id', user.id).select('detail').first();
+
+    return res.status(200).json({ telno: user.telno, address: user.address, name: user.name, state: user.state, email: user.email, user_privacy: user_privacy });
+  } catch (error) {
+    if (error.errors) {
+      const messages = error.errors.map((err) => err.message);
+      const message = messages.join(", ");
+      res.status(400).json({ success: false, message: message });
+    } else {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+}
+
+const updateProfile = async (req, res) => {
+
+  try {
+    const validatedData = profileSchema.parse(req.body);
+    const { name, state, address, telno } = validatedData;
+
+    const user = req.user;
+
+
+
+    const result = await updateUseProfile({
+      name,
+      state,
+      address,
+      telno,
+      id: user.id
+    });
+
+    if (result) {
+
+      res
+        .status(200)
+        .json({ success: true, message: "Profile update successfully" });
+    }
+  } catch (error) {
+    if (error.errors) {
+      const messages = error.errors.map((err) => err.message);
+      const message = messages.join(", ");
+      res.status(400).json({ success: false, message: message });
+    } else {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+
+};
+
+const updateUserPrivacy = async (req, res) => {
+  try {
+    const validatedData = userPrivacySchema.parse(req.body);
+    const { user_privacy } = validatedData;
+
+    const user = req.user;
+
+
+
+    const result = await knex('user_privacy').where('user_id', user.id).update({
+      'detail': user_privacy
+    });
+
+    res
+      .status(200)
+      .json({ success: true, message: "User privacy update successfully" });
+  } catch (error) {
+    if (error.errors) {
+      const messages = error.errors.map((err) => err.message);
+      const message = messages.join(", ");
+      res.status(400).json({ success: false, message: message });
+    } else {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+}
 
 const verifyCode = async (req, res) => {
   try {
@@ -246,6 +334,16 @@ const resendVerificationCode = async (req, res) => {
   }
 };
 
+const getStates = async (req, res) => {
+  try {
+    const states = await knex('states');
+    return res.status(200).json(states);
+  } catch (error) {
+    return res.status(500).json(error);
+
+  }
+
+}
 const login = async (req, res) => {
 
 
@@ -268,60 +366,60 @@ const login = async (req, res) => {
       return res.status(401).json({ success: false, message: "Your Account is Suspended." });
     }
 
-    else if(user.status != "ACTIVE"){
+    else if (user.status != "ACTIVE") {
       return res.status(401).json({ success: false, message: "Your Account is Suspended." });
     }
-   
+
     console.log(req.applicationId);
 
     const token = getStaticToken(user.id, user.created_at);
 
 
 
-      const existingTokenRecord = await knex("user_token").where({ user_id: user.id }).first();
+    const existingTokenRecord = await knex("user_token").where({ user_id: user.id }).first();
 
 
-      const ipAddress = req.header('x-forwarded-for') || req.connection.remoteAddress; // Get user's IP address
+    const ipAddress = req.header('x-forwarded-for') || req.connection.remoteAddress; // Get user's IP address
 
-      const rememberToken = crypto.randomBytes(30).toString("hex"); // Generate 40-char random token
-      console.log(req.applicationId);
+    const rememberToken = crypto.randomBytes(30).toString("hex"); // Generate 40-char random token
+    console.log(req.applicationId);
 
-      // Generate bcrypt hash of user_id
+    // Generate bcrypt hash of user_id
 
-      if (!existingTokenRecord) {
-        // If user_id does not exist, create a new record
-        await knex("user_token").insert({
-          user_id: user.id,
+    if (!existingTokenRecord) {
+      // If user_id does not exist, create a new record
+      await knex("user_token").insert({
+        user_id: user.id,
+        remember_token: rememberToken,
+        app_id: req.applicationId.id,
+        device_token: device_token,
+        token: token, // Use only the first 20 chars of the hash
+        ip_address: ipAddress,
+        created_at: knex.fn.now(),
+
+      });
+    } else {
+      // If user_id exists, update the record
+      await knex("user_token")
+        .where({ user_id: user.id })
+        .update({
           remember_token: rememberToken,
-          app_id: req.applicationId.id,
           device_token: device_token,
-          token: token, // Use only the first 20 chars of the hash
           ip_address: ipAddress,
-          created_at: knex.fn.now(),
+          token: token,
+          updated_at: knex.fn.now()
 
         });
-      } else {
-        // If user_id exists, update the record
-        await knex("user_token")
-          .where({ user_id: user.id })
-          .update({
-            remember_token: rememberToken,
-            device_token: device_token,
-            ip_address: ipAddress,
-            token: token,
-            updated_at: knex.fn.now()
+    }
+    console.log(req.applicationId);
 
-          });
-      }
-      console.log(req.applicationId);
-
-      return res.status(200).json({ success: true, token, rememberToken, email: user.email });
+    return res.status(200).json({ success: true, token, rememberToken, email: user.email });
 
   } catch (error) {
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);
       const message = messages.join(", ");
-      res.status(400).json({ success: false,  message: message });
+      res.status(400).json({ success: false, message: message });
     } else {
       res.status(400).json({ success: false, message: error.message });
     }
@@ -389,7 +487,7 @@ const performForgetPassword = async (req, res) => {
 
     const password_reset = await knex('user_password_reset')
       .select('*') // Select all columns (or specify the columns you need)
-      .where({ status: 1, user_id: user.id ,unique_id : data.unique_id}) // Filter by status and user_id
+      .where({ status: 1, user_id: user.id, unique_id: data.unique_id }) // Filter by status and user_id
       .andWhere('expired_at', '>=', knex.fn.now())
       .first();
 
@@ -411,10 +509,10 @@ const performForgetPassword = async (req, res) => {
       );
 
 
-      await knex('user_password_reset') .where({ status: true, user_id: user.id}).update({
-       status:0,
+      await knex('user_password_reset').where({ status: true, user_id: user.id }).update({
+        status: 0,
         updated_at: knex.fn.now(),
-  
+
       });
       return res.send(`A new password has been sent to your email: ${data.email}`);
     }
@@ -435,7 +533,7 @@ const performForgetPassword = async (req, res) => {
 
 const forgetPassword = async (req, res) => {
   try {
-   
+
     const validatedData = forgetPasswordSchema.parse(req.body);
     const { email } = validatedData;
 
@@ -474,12 +572,12 @@ const forgetPassword = async (req, res) => {
       user_id: user.id,
       created_at: knex.fn.now(),
       updated_at: knex.fn.now(),
- 
+
     });
 
     // Prepare the data object
     const data = {
-      
+
       unique_id: unique_id,
       email: email,
       name: user.name
@@ -517,16 +615,16 @@ const forgetPassword = async (req, res) => {
 const changePassword = async (req, res) => {
   try {
 
-   
+
     const validatedData = changePasswordSchema.parse(req.body)
     const { oldPassword, newPassword } = validatedData;
 
     const user = req.user;
- 
+
     if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
       return res.status(401).json({ success: false, message: "Your old password is inccorrect" });
     }
-   
+
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     await updatePassword(user.email, hashedPassword);
@@ -543,4 +641,9 @@ const changePassword = async (req, res) => {
 };
 
 
-module.exports = { register, login, verifyCode, resendVerificationCode, forgetPassword, changePassword, validateSession, sendForgetPasswordRequestEmail, performForgetPassword };
+
+
+module.exports = {
+  register, login, verifyCode, resendVerificationCode, forgetPassword, changePassword, validateSession, sendForgetPasswordRequestEmail, performForgetPassword, getStates, updateProfile,
+  getProfile, updateUserPrivacy
+};
