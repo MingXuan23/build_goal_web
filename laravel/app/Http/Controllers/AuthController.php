@@ -68,7 +68,12 @@ class AuthController extends Controller
         $validatedData = $request->validate([
             'icno' => 'required|digits:12|unique:users',
             'fullname' => 'required',
-            'email' => 'required|email|unique:organization',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('organization', 'email'),
+                Rule::unique('users', 'email'),
+            ],
             'phoneno' => 'required',
             'password' => 'required|min:5',
             'cpassword' => 'required|min:5|same:password',
@@ -183,7 +188,12 @@ class AuthController extends Controller
         $validatedData = $request->validate([
             'icno' => 'required|digits:12|unique:users',
             'fullname' => 'required',
-            'email' => 'required|email|unique:users',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('organization', 'email'),
+                Rule::unique('users', 'email'),
+            ],
             'phoneno' => 'required',
             'password' => 'required|min:5',
             'cpassword' => 'required|min:5|same:password',
@@ -334,15 +344,12 @@ class AuthController extends Controller
                 return redirect('/organization/dashboard');
             } elseif (in_array(4, $roles)) {
                 return redirect('/content-creator/dashboard');
-            }elseif (in_array(5, $roles)) {
+            } elseif (in_array(5, $roles)) {
                 return back()->with('error', ' <span class="fw-bold">Your account is not for Web User. Please contact us at [help-center@xbug.online] to add you for new role for web</span>');
             }
         } else {
             return back()->with('error', 'Invalid credentials. Please make sure your email and password is correct');
         }
-
-
-
     }
 
     public function logout(Request $request)

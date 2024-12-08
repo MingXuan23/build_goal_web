@@ -303,7 +303,8 @@ class AdminRouteController extends Controller
     }
 
     public function showEmailLogs(Request $request){
-        $logs = DB::table('email_logs')->select([
+        $logs = DB::table('email_logs')
+        ->select([
             'id',
             'email_type',
             'recipient_email',
@@ -312,7 +313,11 @@ class AdminRouteController extends Controller
             'status',
             'response_data',
             'created_at'
-        ]);
+        ])
+        ->whereNotIn('email_type', ['NOTIFICATION USER', 'NOTIFICATION TO ALL USERS']) // Mengecualikan 'NOTIFICATION USER' dan 'NOTIFICATION TO ALL USERS'
+        ->orderBy('id', 'desc') // Mengurutkan berdasarkan id secara menurun
+        ->get();
+    
         if ($request->ajax()) {
 
             return DataTables::of($logs)

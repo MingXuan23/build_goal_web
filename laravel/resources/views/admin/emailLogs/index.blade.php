@@ -19,8 +19,8 @@
                                 <th>No.</th>
                                 <th>Email Type</th>
                                 <th>Name</th>
-                                <th>Recipient Email</th>
                                 <th>Sender Email</th>
+                                <th>Recipient Email</th>
                                 <th>Status</th>
                                 <th>Response</th>
                                 <th>Date</th>
@@ -43,9 +43,16 @@
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false },
                 { data: 'email_type', name: 'email_type' },
-                { data: 'name', name: 'name' },
-                { data: 'recipient_email', name: 'recipient_email' },
+                {
+                        data: 'name',
+                        name: 'name',
+                        render: function(data, type, row) {
+                            return data ? data.toUpperCase() :
+                            ''; 
+                        }
+                    },
                 { data: 'from_email', name: 'from_email' },
+                { data: 'recipient_email', name: 'recipient_email' },
                 { data: 'status', name: 'status' },
                 { data: 'response_data', name: 'response_data' },
                 { data: 'created_at', name: 'created_at' }

@@ -6,6 +6,7 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\ContentCreatorRouteController;
 use App\Http\Controllers\EkycController;
+use App\Http\Controllers\emailController;
 use App\Http\Controllers\OrganizationRouteController;
 use App\Http\Controllers\StaffRouteController;
 use App\Http\Controllers\UserProfileController;
@@ -41,6 +42,7 @@ Route::get('/organization-register', [AuthController::class, 'viewOrganizationRe
 Route::get('/content-creator-register', [AuthController::class, 'viewContentCreatorRegister'])->name('viewContentCreatorRegister');
 Route::get('/reset-password', [AuthController::class, 'viewResetPassword'])->name('viewResetPassword');
 
+
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/organization-register', [AuthController::class, 'createOrganizationRegister'])->name('createOrganizationRegister');
 Route::post('/content-creator-register', [AuthController::class, 'createContentCreatorRegister'])->name('createContentCreatorRegister');
@@ -67,9 +69,15 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::get('/profile',  [AdminRouteController::class, 'showProfile'])->name('showProfileAdmin');
     Route::get('/email-logs',  [AdminRouteController::class, 'showEmailLogs'])->name('showEmailLogs');
 
+    Route::get('/email', [emailController::class, 'showEmail'])->name('showEmail');
+    Route::post('/send-email', [emailController::class, 'sendEmail'])->name('sendEmail');
+    Route::post('/send-email-to-all', [emailController::class, 'sendEmailToAll'])->name('sendEmailToAll');
+    Route::get('/email-notification-logs', [emailController::class, 'showNotificationLogs'])->name('showNotificationLogs');
+
+
     Route::get('/card-logs', [EkycController::class, 'showCardLogs'])->name('showCardLogs');
     Route::get('/face-logs', [EkycController::class, 'showFaceLogs'])->name('showFaceLogs');
-    
+
     Route::post('/approve-content/{id}', [ContentController::class, 'approveContent'])->name('approveContent');
     Route::post('/reject-content/{id}', [ContentController::class, 'rejectContent'])->name('rejectContent');
     Route::post('/update-user/{id}', [UserManagementController::class, 'updateUser'])->name('updateUser');
