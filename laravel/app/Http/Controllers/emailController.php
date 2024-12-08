@@ -103,7 +103,7 @@ class emailController extends Controller
                 $logData = [
                     'email_type' => 'NOTIFICATION USER',
                     'recipient_email' => $toEmail,
-                    'from_email' => 'admin@xbug.online',
+                    'from_email' => 'help-center@xbug.online',
                     'name' => $user->name,
                     'status' => 'SUCCESS',
                     'response_data' => $content,
@@ -122,7 +122,7 @@ class emailController extends Controller
                 $logData = [
                     'email_type' => 'NOTIFICATION USER',
                     'recipient_email' => $toEmail,
-                    'from_email' => 'admin@xbug.online',
+                    'from_email' => 'help-center@xbug.online',
                     'name' => $user->name,
                     'status' => 'FAILED',
                     'response_data' => 'ERROR : ' . $e->getMessage(),
