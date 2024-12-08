@@ -379,7 +379,7 @@ const login = async (req, res) => {
     const existingTokenRecord = await knex("user_token").where({ user_id: user.id }).first();
 
 
-    const ipAddress = req.header('x-forwarded-for') || req.connection.remoteAddress; // Get user's IP address
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;; // Get user's IP address
 
     const rememberToken = crypto.randomBytes(30).toString("hex"); // Generate 40-char random token
     console.log(req.applicationId);
@@ -445,7 +445,7 @@ const validateSession = async (req, res) => {
 
 
     const ipAddress = req.header('x-forwarded-for') || req.connection.remoteAddress; // Get user's IP address
-
+    console.log( req.header('x-forwarded-for') , req.connection.remoteAddress)
     const newRememberToken = crypto.randomBytes(30).toString("hex"); // Generate 40-char random token
 
     // Generate bcrypt hash of user_id
