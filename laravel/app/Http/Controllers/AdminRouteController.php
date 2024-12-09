@@ -163,7 +163,46 @@ class AdminRouteController extends Controller
     public function showDashboard(Request $request)
     {
 
-        return view('admin.dashboard.index');
+        $ekycVerified = DB::table('users')->where('eKYC_status', 1)->count();
+        $ekycNotVerified = DB::table('users')->where('eKYC_status', 0)->count();
+        $totalUsers = DB::table('users')->count();
+    
+        // Count users with email_status = VERIFY
+        $emailVerified = DB::table('users')->where('email_status', 'VERIFY')->count();
+
+    
+        // Count active users
+        $activeUsers = DB::table('users')->where('active', 1)->count();
+
+
+        // Get the count of users grouped by role
+        $userCounts = DB::table('users as u')
+        ->join('roles as r', function ($join) {
+            $join->whereRaw('JSON_CONTAINS(u.role, JSON_ARRAY(r.id))');
+        })
+        ->select(
+            'r.role as role_name', // Get the role name
+            DB::raw('COUNT(u.id) as user_count') // Count users per role
+        )
+        ->groupBy('r.role') // Group by role name
+        ->orderBy('role_name', 'asc') // Optional: Order alphabetically
+        ->get();
+
+        $contentCounts = DB::table('contents')
+        ->select('reason_phrase', DB::raw('COUNT(*) as count'))
+        ->groupBy('reason_phrase')
+        ->get();
+
+        $totalContents = DB::table('contents')->count();
+
+        // Prepare the counts for each reason_phrase
+        $approvedCount = $contentCounts->where('reason_phrase', 'APPROVED')->first()->count ?? 0;
+        $rejectedCount = $contentCounts->where('reason_phrase', 'REJECTED')->first()->count ?? 0;
+        $pendingCount = $contentCounts->where('reason_phrase', 'PENDING')->first()->count ?? 0;
+
+    
+
+        return view('admin.dashboard.index', compact('userCounts','totalContents', 'approvedCount', 'rejectedCount', 'pendingCount','ekycVerified', 'ekycNotVerified','emailVerified','activeUsers','totalUsers'));
     }
     public function showProfile(Request $request)
     {
@@ -335,4 +374,7 @@ class AdminRouteController extends Controller
 
         return view('admin.emailLogs.index');
     }
+
+
+    
 }
