@@ -11,13 +11,10 @@ use App\Http\Controllers\OrganizationRouteController;
 use App\Http\Controllers\StaffRouteController;
 use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
-<<<<<<< HEAD
 use App\Http\Controllers\MicrolearningController;
-
-=======
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Auth;
->>>>>>> 0c249390de1eb95323f70859025e374138b9aafd
+
 
 /*
 |--------------------------------------------------------------------------
@@ -78,6 +75,7 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::post('/send-email', [emailController::class, 'sendEmail'])->name('sendEmail');
     Route::post('/send-email-to-all', [emailController::class, 'sendEmailToAll'])->name('sendEmailToAll');
     Route::get('/email-notification-logs', [emailController::class, 'showNotificationLogs'])->name('showNotificationLogs');
+    Route::get('/package', [AdminRouteController::class, 'showPackage'])->name('showPackage');
 
 
     Route::get('/card-logs', [EkycController::class, 'showCardLogs'])->name('showCardLogs');
@@ -108,19 +106,6 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-Route::prefix('staff')->middleware(['auth', 'role:2'])->group(function () {
-
-    Route::get('/dashboard', [StaffRouteController::class, 'showDashboard'])->name('showDashboardStaff');
-    Route::get('/profile',  [StaffRouteController::class, 'showProfile'])->name('showProfileStaff');
-
-    Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailStaff'])->name('updateProfilePersonalDetailStaff');
-    Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordStaff'])->name('updatePasswordStaff');
-
-    Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('staff.logout');
-});
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

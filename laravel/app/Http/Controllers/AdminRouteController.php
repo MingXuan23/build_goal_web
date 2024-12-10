@@ -404,6 +404,58 @@ class AdminRouteController extends Controller
         return view('admin.emailLogs.index');
     }
 
+    public function showPackage(Request $request){
+
+        $data = DB::table('package')
+        ->orderby('id', 'asc')
+        ->get();
+
+    if ($request->ajax()) {
+        $table = DataTables::of($data)->addIndexColumn();
+
+        $table->addColumn('action', function ($row) {
+            $button = '<div class="d-flex justify-content-end"><button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2"
+                                    data-bs-toggle="modal" data-bs-target="#modalView-' . $row->id . '">
+                                    <i class="ri-eye-line fw-bold"></i>
+                                </button>
+                                <button class="btn btn-icon btn-sm btn-warning-transparent rounded-pill"
+                                    data-bs-toggle="modal" data-bs-target="#modalUpdate-' . $row->id . '">
+                                    <i class="ri-edit-line fw-bold"></i>
+                                </button>
+                                </div>
+                                ';
+            return $button;
+        });
+
+  
+        $table->addColumn('active', function ($row) {
+            $messageActive = ($row->status === 1 ? 'ACTIVE' : 'DISABLE');
+            $statusClass = ($row->status === 1) ? 'success' : 'danger';
+            $button = '
+                        <div class="d-flex justify-content-between">
+                        <span class=" text-' . $statusClass . ' p-2 me-1 fw-bold">
+                            <i class="bi bi-circle-fill"></i> ' . $messageActive . '
+                        </span>
+                        <button class="btn btn-icon btn-sm btn-warning-transparent rounded-pill " data-bs-toggle="modal" data-bs-target="#modalActive-' . $row->id . '">
+                            <i class="ri-edit-line fw-bold"></i>
+                        </button>
+                    </div>
+                                ';
+            return $button;
+         });
+
+
+        $table->rawColumns(['action', 'active',]);
+
+        return $table->make(true);
+    }
+    $role = DB::table('roles')->get();
+    $state = DB::table('states')->select('id', 'name')->get();
+        return view('admin.setting.view-package', [
+            'datas' => $data,
+        ]);
+    }
+
 
     
 }
