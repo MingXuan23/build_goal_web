@@ -118,10 +118,11 @@
                                                         <option value="" disabled selected> - Select Package - </option>
                                                     @foreach ($packages as $package)
                                                     <option
-                                                        value="{{ $package->id }}"data-base-price="{{ $package->base_price }}"
-                                                        data-base-state="{{ $package->base_state }}">{{ $package->name }}
-                                                        | RM {{ $package->base_price }} | {{ $package->estimate_user }}
-                                                        ppl.</option>
+                                                        value="{{ $package->id }}"
+                                                        data-base-price="{{ $package->base_price }}"
+                                                        data-base-state="{{ $package->base_state }}">
+                                                        {{ $package->name }}| RM {{ $package->base_price }} | {{ $package->estimate_user }}ppl.
+                                                    </option>
                                                 @endforeach
                                                 </select>
                                                 <label for="floatingSelect">Choose Package</label>
@@ -135,9 +136,9 @@
                                         <div class="mb-3">
                                                 <div class="col-xl-12">
                                                     <div class="form-floating">
-                                                        <input type="text" class="form-control" name="final_price"
+                                                        <input type="text" class="form-control" id = "final_price" name="final_price"
                                                             value="RM 0.00" readonly>
-                                                        <label for="contentName">Final Price</label>
+                                                        <label for="final_price" class = "form-label" >Final Price</label>
                                                     </div>
                                                 </div>
                                         </div>
@@ -278,7 +279,7 @@
         $(document).ready(function() {
             const calculateFinalPrice = () => {
                 // Get selected package
-                const selectedPackage = $('#package option:selected');
+                const selectedPackage = $('#floatingSelect option:selected');
                 const basePrice = parseFloat(selectedPackage.data('base-price')) || 0;
                 const baseState = parseInt(selectedPackage.data('base-state')) || 0;
 

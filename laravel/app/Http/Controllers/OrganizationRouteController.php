@@ -25,10 +25,16 @@ class OrganizationRouteController extends Controller
             ->where('reason_phrase', 'REJECTED')
             ->count();
 
+        $pendingContents = DB::table('contents')
+        ->where('user_id', Auth::user()->id)
+        ->where('reason_phrase', 'PENDING')
+        ->count();
+
         return view('organization.dashboard.index', [
             'proposedContents' => $proposedContents,
             'approvedContents' => $approvedContents,
             'rejectedContents' => $rejectedContents,
+            'pendingContents' => $pendingContents,
         ]);
     }
     public function showProfile(Request $request)

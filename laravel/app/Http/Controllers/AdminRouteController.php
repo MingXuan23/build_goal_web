@@ -162,20 +162,39 @@ class AdminRouteController extends Controller
     }
     public function showDashboard(Request $request)
     {
-
-        $ekycVerified = DB::table('users')->where('eKYC_status', 1)->count();
-        $ekycNotVerified = DB::table('users')->where('eKYC_status', 0)->count();
+        //Total Users and Active Users
         $totalUsers = DB::table('users')->count();
-    
-        // Count users with email_status = VERIFY
-        $emailVerified = DB::table('users')->where('email_status', 'VERIFY')->count();
-
-    
-        // Count active users
         $activeUsers = DB::table('users')->where('active', 1)->count();
 
+        //Registration Statistic
+        $yearData = DB::table('users')
+        ->select(DB::raw('YEAR(created_at) as year'), DB::raw('COUNT(*) as count'))
+        ->groupBy('year')
+        ->orderBy('year', 'asc')
+        ->pluck('count', 'year');
 
-        // Get the count of users grouped by role
+        $monthData = DB::table('users')
+        ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
+        ->whereYear('created_at', now()->year)
+        ->groupBy('month')
+        ->orderBy('month', 'asc')
+        ->pluck('count', 'month');
+
+        $weekData = DB::table('users')
+        ->select(DB::raw('DAYNAME(created_at) as day'), DB::raw('COUNT(*) as count'))
+        ->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])
+        ->groupBy('day')
+        ->orderByRaw("FIELD(day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')")
+        ->pluck('count', 'day');
+
+        //EKYC Status
+        $ekycVerified = DB::table('users')->where('eKYC_status', 1)->count();
+        $ekycNotVerified = DB::table('users')->where('eKYC_status', 0)->count();
+    
+        //Verified Email
+        $emailVerified = DB::table('users')->where('email_status', 'VERIFY')->count();
+
+        //Total Users Based on roles
         $userCounts = DB::table('users as u')
         ->join('roles as r', function ($join) {
             $join->whereRaw('JSON_CONTAINS(u.role, JSON_ARRAY(r.id))');
@@ -188,21 +207,31 @@ class AdminRouteController extends Controller
         ->orderBy('role_name', 'asc') // Optional: Order alphabetically
         ->get();
 
+        //Content Summary
         $contentCounts = DB::table('contents')
         ->select('reason_phrase', DB::raw('COUNT(*) as count'))
         ->groupBy('reason_phrase')
         ->get();
-
         $totalContents = DB::table('contents')->count();
-
-        // Prepare the counts for each reason_phrase
         $approvedCount = $contentCounts->where('reason_phrase', 'APPROVED')->first()->count ?? 0;
         $rejectedCount = $contentCounts->where('reason_phrase', 'REJECTED')->first()->count ?? 0;
         $pendingCount = $contentCounts->where('reason_phrase', 'PENDING')->first()->count ?? 0;
 
-    
-
-        return view('admin.dashboard.index', compact('userCounts','totalContents', 'approvedCount', 'rejectedCount', 'pendingCount','ekycVerified', 'ekycNotVerified','emailVerified','activeUsers','totalUsers'));
+        return view('admin.dashboard.index', compact(
+        'userCounts',
+        'totalContents', 
+        'approvedCount', 
+        'rejectedCount', 
+        'pendingCount',
+        'ekycVerified', 
+        'ekycNotVerified',
+        'emailVerified',
+        'activeUsers',
+        'totalUsers',
+        'yearData',
+        'monthData',
+        'weekData'
+    ));
     }
     public function showProfile(Request $request)
     {

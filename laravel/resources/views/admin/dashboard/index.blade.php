@@ -18,7 +18,7 @@
       <!-- Page Header Close -->
       <!-- Start::row 1 -->
             <div class="row">
-                <div class="col-xl-6">
+                <div class="col-xl-6 col-lg-6 col-md-12">
                     <div class="card custom-card">
                         <div class="card-header">
                             <h5 class="card-title">User Summary</h5>
@@ -34,6 +34,22 @@
                                     <h4 class="fw-bold text-success">{{ $activeUsers }}</h4>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12">
+                    <div class="card custom-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">Registration Statistics</h5>
+                            <div>
+                                <button class="btn btn-primary btn-sm" id="weekBtn">Week</button>
+                                <button class="btn btn-secondary btn-sm" id="monthBtn">Month</button>
+                                <button class="btn btn-secondary btn-sm" id="yearBtn">Year</button>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <canvas id="registrationsChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -97,17 +113,17 @@
                                 </div>
                                 </div>
                             </div>
-                            <!-- Approved Contents -->
+                            <!-- Pending Contents -->
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-12">
                                 <div class="d-flex align-items-top">
                                 <div class="me-3">
-                                    <span class="avatar avatar-rounded bg-light text-success">
-                                    <i class="ti ti-file-check fs-18"></i>
+                                    <span class="avatar avatar-rounded bg-light text-warning">
+                                    <i class="ti ti-file fs-18"></i>
                                     </span>
                                 </div>
                                 <div>
-                                    <span class="d-block mb-1 text-muted">Approved Contents</span>
-                                    <h6 class="fw-semibold mb-0 text-success">{{ $approvedCount }}</h6>
+                                    <span class="d-block mb-1 text-muted">Pending Contents</span>
+                                    <h6 class="fw-semibold mb-0 text-warning">{{ $pendingCount }}</h6>
                                 </div>
                                 </div>
                             </div>
@@ -125,17 +141,17 @@
                                 </div>
                                 </div>
                             </div>
-                            <!-- Pending Contents -->
+                            <!-- Approved Contents -->
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-12">
                                 <div class="d-flex align-items-top">
                                 <div class="me-3">
-                                    <span class="avatar avatar-rounded bg-light text-warning">
-                                    <i class="ti ti-file fs-18"></i>
+                                    <span class="avatar avatar-rounded bg-light text-success">
+                                    <i class="ti ti-file-check fs-18"></i>
                                     </span>
                                 </div>
                                 <div>
-                                    <span class="d-block mb-1 text-muted">Pending Contents</span>
-                                    <h6 class="fw-semibold mb-0 text-warning">{{ $pendingCount }}</h6>
+                                    <span class="d-block mb-1 text-muted">Approved Contents</span>
+                                    <h6 class="fw-semibold mb-0 text-success">{{ $approvedCount }}</h6>
                                 </div>
                                 </div>
                             </div>
@@ -229,6 +245,91 @@
             }
         });
     });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('registrationsChart').getContext('2d');
+
+        // Data from the backend
+        const yearData = @json($yearData);
+        const monthData = @json($monthData);
+        const weekData = @json($weekData);
+
+        // Chart initialization
+        const registrationsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(weekData), // Default to week labels
+                datasets: [{
+                    label: 'Number of Registered Users',
+                    data: Object.values(weekData), // Default to week data
+                    backgroundColor: '#007bff',
+                    borderColor: '#0056b3',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0 // Whole numbers only
+                        }
+                    }
+                }
+            }
+        });
+
+        // Button click handlers
+        document.getElementById('weekBtn').addEventListener('click', function () {
+            updateChart('week', weekData);
+            setActiveButton('weekBtn');
+        });
+
+        document.getElementById('monthBtn').addEventListener('click', function () {
+            updateChart('month', monthData);
+            setActiveButton('monthBtn');
+        });
+
+        document.getElementById('yearBtn').addEventListener('click', function () {
+            updateChart('year', yearData);
+            setActiveButton('yearBtn');
+        });
+
+        // Update chart data
+        function updateChart(range, data) {
+            let labels, dataset;
+
+            if (range === 'week') {
+                labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                dataset = labels.map(day => data[day] || 0); // Fill missing days with 0
+            } else if (range === 'month') {
+                labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                dataset = labels.map((_, i) => data[i + 1] || 0); // Months are indexed 1-12
+            } else {
+                labels = Object.keys(data);
+                dataset = Object.values(data);
+            }
+
+            registrationsChart.data.labels = labels;
+            registrationsChart.data.datasets[0].data = dataset;
+            registrationsChart.update();
+        }
+
+        // Highlight active button
+        function setActiveButton(activeId) {
+            ['weekBtn', 'monthBtn', 'yearBtn'].forEach(id => {
+                document.getElementById(id).classList.toggle('btn-primary', id === activeId);
+                document.getElementById(id).classList.toggle('btn-secondary', id !== activeId);
+            });
+        }
+
+        // Set the default active button (week) on page load
+        setActiveButton('weekBtn');
+    });
+</script>
    
 </script>
 @endsection
