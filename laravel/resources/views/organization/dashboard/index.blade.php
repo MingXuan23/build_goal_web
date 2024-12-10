@@ -174,7 +174,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="row gy-md-0 gy-3">
-                                    <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-12">
                                         <div class="d-flex align-items-top">
                                             <div class="me-3">
                                                 <span class="avatar avatar-rounded bg-light text-primary">
@@ -187,20 +187,22 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                                    <!-- Pending Contents -->
+                                    <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-12">
                                         <div class="d-flex align-items-top">
                                             <div class="me-3">
-                                                <span class="avatar avatar-rounded bg-light text-success">
-                                                    <i class="ti ti-file-check fs-18"></i>
+                                                <span class="avatar avatar-rounded bg-light text-warning">
+                                                <i class="ti ti-file fs-18"></i>
                                                 </span>
                                             </div>
                                             <div>
-                                                <span class="d-block mb-1 text-muted">Approved Contents</span>
-                                                <h6 class="fw-semibold mb-0 text-success">{{ $approvedContents }}</h6>
+                                                <span class="d-block mb-1 text-muted">Pending Contents</span>
+                                                <h6 class="fw-semibold mb-0 text-warning">{{ $pendingContents }}</h6>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                                    <!-- Rejected Contents -->
+                                    <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-12">
                                         <div class="d-flex align-items-top">
                                             <div class="me-3">
                                                 <span class="avatar avatar-rounded bg-light text-danger">
@@ -210,6 +212,20 @@
                                             <div>
                                                 <span class="d-block mb-1 text-muted">Rejected Contents</span>
                                                 <h6 class="fw-semibold mb-0 text-danger">{{ $rejectedContents }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                     <!-- Approve Contents -->
+                                     <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-12">
+                                        <div class="d-flex align-items-top">
+                                            <div class="me-3">
+                                                <span class="avatar avatar-rounded bg-light text-success">
+                                                    <i class="ti ti-file-check fs-18"></i>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span class="d-block mb-1 text-muted">Approved Contents</span>
+                                                <h6 class="fw-semibold mb-0 text-success">{{ $approvedContents }}</h6>
                                             </div>
                                         </div>
                                     </div>

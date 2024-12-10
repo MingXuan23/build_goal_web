@@ -97,17 +97,17 @@
                                 </div>
                                 </div>
                             </div>
-                            <!-- Approved Contents -->
+                            <!-- Pending Contents -->
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-12">
                                 <div class="d-flex align-items-top">
                                 <div class="me-3">
-                                    <span class="avatar avatar-rounded bg-light text-success">
-                                    <i class="ti ti-file-check fs-18"></i>
+                                    <span class="avatar avatar-rounded bg-light text-warning">
+                                    <i class="ti ti-file fs-18"></i>
                                     </span>
                                 </div>
                                 <div>
-                                    <span class="d-block mb-1 text-muted">Approved Contents</span>
-                                    <h6 class="fw-semibold mb-0 text-success">{{ $approvedCount }}</h6>
+                                    <span class="d-block mb-1 text-muted">Pending Contents</span>
+                                    <h6 class="fw-semibold mb-0 text-warning">{{ $pendingCount }}</h6>
                                 </div>
                                 </div>
                             </div>
@@ -125,17 +125,17 @@
                                 </div>
                                 </div>
                             </div>
-                            <!-- Pending Contents -->
+                            <!-- Approved Contents -->
                             <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-12">
                                 <div class="d-flex align-items-top">
                                 <div class="me-3">
-                                    <span class="avatar avatar-rounded bg-light text-warning">
-                                    <i class="ti ti-file fs-18"></i>
+                                    <span class="avatar avatar-rounded bg-light text-success">
+                                    <i class="ti ti-file-check fs-18"></i>
                                     </span>
                                 </div>
                                 <div>
-                                    <span class="d-block mb-1 text-muted">Pending Contents</span>
-                                    <h6 class="fw-semibold mb-0 text-warning">{{ $pendingCount }}</h6>
+                                    <span class="d-block mb-1 text-muted">Approved Contents</span>
+                                    <h6 class="fw-semibold mb-0 text-success">{{ $approvedCount }}</h6>
                                 </div>
                                 </div>
                             </div>
