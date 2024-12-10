@@ -14,7 +14,7 @@ exports.up = function(knex) {
  */
 exports.down = function(knex) {
     return knex.schema.alterTable('users', function (table) {
-        table.dropColumn('icNo'); // Remove the column if rolled back
+     //   table.dropColumn('icNo'); // Remove the column if rolled back
     });
     
 };

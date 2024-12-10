@@ -36,14 +36,28 @@ return [
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
-            'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
-            'port' => env('MAIL_PORT', 587),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'host' => env('MAIL_HOST'),
+            'port' => env('MAIL_PORT'),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
-            'timeout' => null,
-            'local_domain' => env('MAIL_EHLO_DOMAIN'),
+            'encryption' => env('MAIL_ENCRYPTION'),
+            'from' => [
+                'address' => env('MAIL_FROM_ADDRESS'),
+                'name' => env('MAIL_FROM_NAME'),
+            ],
+        ],
+
+        'smtp2' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST_2'),
+            'port' => env('MAIL_PORT_2'),
+            'username' => env('MAIL_USERNAME_2'),
+            'password' => env('MAIL_PASSWORD_2'),
+            'encryption' => env('MAIL_ENCRYPTION_2'),
+            'from' => [
+                'address' => env('MAIL_FROM_ADDRESS_2'),
+                'name' => env('MAIL_FROM_NAME_2'),
+            ],
         ],
 
         'ses' => [

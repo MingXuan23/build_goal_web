@@ -22,12 +22,12 @@
                 <!-- End::slide__category -->
                 <!-- Start::slide -->
                 <li class="slide">
-                    <a href="/admin/dashboard" class="side-menu__item">
+                    <a href="/staff/dashboard" class="side-menu__item">
                         <i class="bx bx-home side-menu__icon"></i>
                         <span class="side-menu__label">Dashboard</span>
                     </a>
                 </li>
-                <li class="slide has-sub">
+                {{-- <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
                         <i class="bi bi-people"></i>
                         <span class="side-menu__label mx-2">User Management</span>
@@ -41,7 +41,7 @@
                             <a href="/admin/add-user" class="side-menu__item">Add User</a>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
 
             </ul>
             <div class="slide-right" id="slide-right">

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -21,7 +22,7 @@ class AuthController extends Controller
     public function maskEmail($email)
     {
         $parts = explode('@', $email);
-        $username = $parts[0]; // Bagian username sebelum '@'
+        $username = $parts[0];
         $maskedUsername = substr($username, 0, 3) . str_repeat('*', strlen($username) - 4);
         return $maskedUsername . '@' . $parts[1];
     }
@@ -33,8 +34,10 @@ class AuthController extends Controller
     public function viewOrganizationRegister()
     {
         $organization_type = DB::table('organization_type')->select('id', 'type')->get();
+        $state = DB::table('states')->select('id', 'name')->get();
         return view('auth.organization-register', [
-            'organization_types' => $organization_type
+            'organization_types' => $organization_type,
+            'states' => $state
         ]);
     }
 
@@ -50,13 +53,13 @@ class AuthController extends Controller
     }
 
 
-
-
     public function viewContentCreatorRegister()
     {
         $organization_type = DB::table('organization_type')->select('id', 'type')->get();
+        $state = DB::table('states')->select('id', 'name')->get();
         return view('auth.content-creator-register', [
-            'organization_types' => $organization_type
+            'organization_types' => $organization_type,
+            'states' => $state
         ]);
     }
 
@@ -65,30 +68,18 @@ class AuthController extends Controller
         $validatedData = $request->validate([
             'icno' => 'required|digits:12|unique:users',
             'fullname' => 'required',
-            'email' => 'required|email|unique:organization',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('organization', 'email'),
+                Rule::unique('users', 'email'),
+            ],
             'phoneno' => 'required',
             'password' => 'required|min:5',
             'cpassword' => 'required|min:5|same:password',
             'oname' => 'required',
             'oaddress' => 'required',
-            'ostate' => [
-                'required',
-                Rule::in([
-                    'pahang',
-                    'perak',
-                    'terengganu',
-                    'perlis',
-                    'selangor',
-                    'negeri_sembilan',
-                    'johor',
-                    'kelantan',
-                    'kedah',
-                    'pulau_pinang',
-                    'melaka',
-                    'sabah',
-                    'sarawak'
-                ]),
-            ],
+            'ostate' => 'required|exists:states,name',
             'otype' => 'required|exists:organization_type,id',
         ], [
             'otype.in' => 'The selected organization type is invalid. Please choose a valid organization type.',
@@ -118,8 +109,10 @@ class AuthController extends Controller
                 'password' => $validatedData['password'],
                 'telno' => $validatedData['phoneno'],
                 'icNo' => $validatedData['icno'],
+                'address' => $validatedData['oaddress'],
+                'state' => $validatedData['ostate'],
                 'email' => $validatedData['email'],
-                'status' => 'Active',
+                'status' => 'ACTIVE',
                 'role' => json_encode([3]),
                 'active' => 1,
                 'email_status' => 'NOT VERIFY',
@@ -154,15 +147,38 @@ class AuthController extends Controller
                 'updated_at' => now()
             ]);
             Session::put('user_id', $user);
+
+
+            $logData = [
+                'email_type' => 'REGISTER ORGANIZATION',
+                'recipient_email' => $validatedData['email'],
+                'from_email' => 'admin@xbug.online',
+                'name' => $validatedData['fullname'],
+                'status' => 'SUCCESS',
+                'response_data' => 'Verification code has been sent',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
+
+            DB::table('email_logs')->insert($logData);
             DB::commit();
-
-
-            // Mail::to($validatedData['email'])->send(new VerificationCodeMail($validatedData['fullname'], $verificationCode));
+            Mail::to($validatedData['email'])->send(new VerificationCodeMail($validatedData['fullname'], $verificationCode));
 
             return redirect(route('viewVerify'))->with('success', 'Registration successfull. Please check your Inbox or Spam email to get verification code to active your account');
         } catch (\Exception $e) {
             DB::rollBack();
+            $logData = [
+                'email_type' => 'REGISTER ORGANIZATION',
+                'recipient_email' => $validatedData['email'],
+                'from_email' => 'admin@xbug.online',
+                'name' => $validatedData['fullname'],
+                'status' => 'FAILED',
+                'response_data' => 'ERROR',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
 
+            DB::table('email_logs')->insert($logData);
             return back()->withError('Error EDE' . $e->getLine() . ' : ' . $e->getMessage());
         }
     }
@@ -172,29 +188,17 @@ class AuthController extends Controller
         $validatedData = $request->validate([
             'icno' => 'required|digits:12|unique:users',
             'fullname' => 'required',
-            'email' => 'required|email|unique:users',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('organization', 'email'),
+                Rule::unique('users', 'email'),
+            ],
             'phoneno' => 'required',
             'password' => 'required|min:5',
             'cpassword' => 'required|min:5|same:password',
             'address' => 'required',
-            'state' => [
-                'required',
-                Rule::in([
-                    'pahang',
-                    'perak',
-                    'terengganu',
-                    'perlis',
-                    'selangor',
-                    'negeri_sembilan',
-                    'johor',
-                    'kelantan',
-                    'kedah',
-                    'pulau_pinang',
-                    'melaka',
-                    'sabah',
-                    'sarawak'
-                ]),
-            ]
+            'state' => 'required|exists:states,name',
 
         ], [], [
             'icno' => 'IC Number',
@@ -218,7 +222,9 @@ class AuthController extends Controller
                 'telno' => $validatedData['phoneno'],
                 'icNo' => $validatedData['icno'],
                 'email' => $validatedData['email'],
-                'status' => 'Active',
+                'address' => $validatedData['address'],
+                'state' => $validatedData['state'],
+                'status' => 'ACTIVE',
                 'role' => json_encode([4]),
                 'active' => 1,
                 'email_status' => 'NOT VERIFY',
@@ -246,13 +252,37 @@ class AuthController extends Controller
                 'updated_at' => now()
             ]);
             Session::put('user_id', $user);
+
+            $logData = [
+                'email_type' => 'REGISTER CONTENT CREATOR',
+                'recipient_email' => $validatedData['email'],
+                'from_email' => 'admin@xbug.online',
+                'name' => $validatedData['fullname'],
+                'status' => 'SUCCESS',
+                'response_data' => 'Verification code has been sent',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
+
+            DB::table('email_logs')->insert($logData);
             DB::commit();
-            // Mail::to($validatedData['email'])->send(new VerificationCodeMail($validatedData['fullname'], $verificationCode));
+            Mail::to($validatedData['email'])->send(new VerificationCodeMail($validatedData['fullname'], $verificationCode));
 
             return redirect(route('viewVerify'))->with('success', 'Registration successfull. Please check your Inbox or Spam email to get verification code to active your account');
         } catch (Exception $e) {
             DB::rollBack();
+            $logData = [
+                'email_type' => 'REGISTER CONTENT CREATOR',
+                'recipient_email' => $validatedData['email'],
+                'from_email' => 'admin@xbug.online',
+                'name' => $validatedData['fullname'],
+                'status' => 'FAILED',
+                'response_data' => 'ERROR',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
 
+            DB::table('email_logs')->insert($logData);
             return back()->withError('Error EDE' . $e->getLine() . ' : ' . $e->getMessage());
         }
     }
@@ -264,31 +294,62 @@ class AuthController extends Controller
             'password' => 'required|min:5',
         ]);
 
-        if (Auth::attempt($request->only('email', 'password'))) {
-            $user = Auth::user();
+        $user = \App\Models\User::where('email', $validatedData['email'])->first();
 
+        // Check if the user exists
+        if (!$user) {
+            return back()->with('error', 'Invalid credentials. Please make sure your email and password is correct');
+        }
+
+        // Replace $2b$ with $2y$ in the stored password hash for compatibility
+        $userPasswordHash = str_replace('$2b$', '$2y$', $user->password);
+        $userPasswordHash = str_replace('$2a$', '$2y$', $userPasswordHash);
+
+        // Verify the password using Hash::check
+        if (Hash::check($validatedData['password'], $userPasswordHash)) {
+            Auth::login($user);
+
+            // Check if the user's email is not verified
             if ($user->email_status === "NOT VERIFY") {
                 Session::put('user_id', $user->id);
                 $maskedEmail = $this->maskEmail($user->email);
-                return back()->with('error', 'Your account is not verified by email. <a class="fw-bold text-danger" href="' . route('resendVerify') . '">Click here</a> to get the verification code via email ' . $maskedEmail);
+                return back()->with(
+                    'error',
+                    'Your account is not verified by email. <a class="fw-bold text-danger" href="' . route('resendVerify') . '">Click here</a> to get the verification code via email ' . $maskedEmail
+                );
+            }
+            if ($user->email_status === null) {
+                return back()->with(
+                    'error',
+                    'Your account is not verified by email and dont have email registered with us. contact us at [help-center@xbug.online] if this is a mistake.'
+                );
             }
 
+            // Check if the user is blocked
             if ($user->active !== 1) {
-                return back()->with('error', 'Your account is block, Please Contact us by email to help-center@xbug.online for inform if we mistake');
+                return back()->with('error', 'Your account is blocked. Please contact us at [help-center@xbug.online] if this is a mistake.');
             }
-            // dd($user);
-            if (in_array(1, json_decode($user->role))) {
-                return redirect('/admin/dashboard');
-            } elseif (in_array(2, json_decode($user->role))) {
-                return redirect('/staff/dashboard');
-            } elseif (in_array(3, json_decode($user->role))) {
-                return redirect('/organization/dashboard');
-            } elseif (in_array(4, json_decode($user->role))) {
-                return redirect('/content-creator/dashboard');
-            }
-        }
 
-        return back()->with('error', 'Invalid credentials. Please make sure your email and password is correct');
+            // Store user roles in the session
+            Session::put('user_roles', json_encode($user->role));
+
+            // Redirect based on user roles
+            $roles = json_decode($user->role, true);
+
+            if (in_array(1, $roles)) {
+                return redirect('/admin/dashboard');
+            } elseif (in_array(2, $roles)) {
+                return redirect('/staff/dashboard');
+            } elseif (in_array(3, $roles)) {
+                return redirect('/organization/dashboard');
+            } elseif (in_array(4, $roles)) {
+                return redirect('/content-creator/dashboard');
+            } elseif (in_array(5, $roles)) {
+                return back()->with('error', ' <span class="fw-bold">Your account is not for Web User. Please contact us at [help-center@xbug.online] to add you for new role for web</span>');
+            }
+        } else {
+            return back()->with('error', 'Invalid credentials. Please make sure your email and password is correct');
+        }
     }
 
     public function logout(Request $request)
@@ -304,7 +365,7 @@ class AuthController extends Controller
 
     public function resendVerify(Request $request)
     {
-
+        DB::beginTransaction();
         try {
             $user = Auth::user();
 
@@ -328,11 +389,36 @@ class AuthController extends Controller
             DB::table('users')
                 ->where('id', $user->id)
                 ->update(['verification_code' => $verificationCode]);
+            $logData = [
+                'email_type' => 'RESEND CODE EMAIL',
+                'recipient_email' => $user->email,
+                'from_email' => 'admin@xbug.online',
+                'name' => $user->name,
+                'status' => 'SUCCESS',
+                'response_data' => 'Resend code has been sent',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
 
+            DB::table('email_logs')->insert($logData);
+            DB::commit();
             Mail::to($user->email)->send(new ResendVerificationCodeMail($user->name, $verificationCode));
 
             return redirect(route('viewVerify'))->with('success', 'Resend code successfull. Please check your Inbox or Spam email to get verification code to active your account');
         } catch (\Exception $e) {
+            DB::rollBack();
+            $logData = [
+                'email_type' => 'RESEND CODE EMAIL',
+                'recipient_email' => $user->email,
+                'from_email' => 'admin@xbug.online',
+                'name' => $user->name,
+                'status' => 'FAILED',
+                'response_data' => 'ERROR',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
+
+            DB::table('email_logs')->insert($logData);
             return back()->with('error', 'There was an error sending the verification code. Please try again later. Error: ' . $e->getMessage());
         }
     }
@@ -377,11 +463,6 @@ class AuthController extends Controller
         }
     }
 
-
-
-
-
-
     public function resetPassword(Request $request)
     {
         $validator = $request->validate([
@@ -403,32 +484,53 @@ class AuthController extends Controller
             DB::table('users')->where('email', $validator['emailResetPassword'])->update([
                 'password' => bcrypt($password)
             ]);
+
+            $logData = [
+                'email_type' => 'RESET PASSWORD CODE EMAIL',
+                'recipient_email' => $user->email,
+                'from_email' => 'admin@xbug.online',
+                'name' => $user->name,
+                'status' => 'SUCCESS',
+                'response_data' => 'Reset password has been sent',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
+
+            DB::table('email_logs')->insert($logData);
             DB::commit();
             Mail::to($user->email)->send(new ResetPasswordMail($user->name, $password));
             return back()->with('success', 'Password reset successfully. A new password has been sent to your email. Use it to login. You can change later when you login into your account. If You dont recieve a email, click resend email');
         } catch (Exception $e) {
             DB::rollBack();
+            $logData = [
+                'email_type' => 'RESET PASSWORD CODE EMAIL',
+                'recipient_email' => $user->email,
+                'from_email' => 'admin@xbug.online',
+                'name' => $user->name,
+                'status' => 'FAILED',
+                'response_data' => 'ERROR',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
 
+            DB::table('email_logs')->insert($logData);
             return back()->withError('Error EDE' . $e->getLine() . ' : ' . $e->getMessage());
         }
     }
 
-
-
     public function resendResetPassword(Request $request)
     {
 
+        DB::beginTransaction();
         try {
-
-
             $userId = Session::get('user_email');
-           
+
 
             if (!$userId) {
                 return back()->with('error', 'Your session has expired, please login to get new verification code - 1');
             }
 
-            $user = DB::table('users')->where('email',$userId)->first();
+            $user = DB::table('users')->where('email', $userId)->first();
             // dd($user);
 
 
@@ -441,11 +543,35 @@ class AuthController extends Controller
             DB::table('users')->where('email', $userId)->update([
                 'password' => bcrypt($password)
             ]);
+            $logData = [
+                'email_type' => 'RESEND RESET PASSWORD CODE EMAIL',
+                'recipient_email' => $user->email,
+                'from_email' => 'admin@xbug.online',
+                'name' => $user->name,
+                'status' => 'SUCCESS',
+                'response_data' => 'Resend reset password has been sent',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
+
+            DB::table('email_logs')->insert($logData);
             DB::commit();
             Mail::to($user->email)->send(new ResetPasswordMail($user->name, $password));
             return back()->with('success', 'Password has been resend, Check Your Inbox or Spam email to get the new password. If You dont recieve a email, click resend email');
-
         } catch (\Exception $e) {
+            DB::rollBack();
+            $logData = [
+                'email_type' => 'RESEND RESET PASSWORD CODE EMAIL',
+                'recipient_email' => $user->email,
+                'from_email' => 'admin@xbug.online',
+                'name' => $user->name,
+                'status' => 'FAILED',
+                'response_data' => 'ERROR',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
+
+            DB::table('email_logs')->insert($logData);
             return back()->with('error', 'There was an error sending the email reset password. Please try again later. Error: ' . $e->getMessage());
         }
     }

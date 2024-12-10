@@ -4,6 +4,12 @@ FROM node:23-alpine
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 # Set the working directory inside the container
+
+RUN apk update && apk add --no-cache tzdata
+
+# Set the time zone to Asia/Kuala_Lumpur
+ENV TZ=Asia/Kuala_Lumpur
+
 WORKDIR /usr/src/app
 
 # Install pnpm globally
@@ -24,7 +30,7 @@ RUN pnpm install
 COPY . .
 
 # Expose the port your app runs on (default is 3000 for Express)
-EXPOSE 3000
+EXPOSE 30000
 
 # Command to run your application
-CMD ["npm", "run", "start"]
+CMD ["sh", "-c", "if [ \"$NODE_ENV\" = \"production\" ]; then npm run prod; else npm run start; fi"]

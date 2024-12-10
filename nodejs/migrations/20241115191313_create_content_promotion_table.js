@@ -15,7 +15,8 @@ exports.up = function(knex) {
       table.decimal('estimate_reach', 10, 2).defaultTo(0); // Estimated reach, default 0
       table.decimal('promotion_price', 10, 2).defaultTo(0); // Promotion price, default 0
       table.boolean('status').defaultTo(true); // Status, default true
-      table.timestamps(true, true); // Created at & Updated at timestamps
+      table.timestamp('created_at').defaultTo(knex.fn.now()).nullable();
+      table.timestamp('updated_at').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')).nullable();// Created at & Updated at timestamps
       table.bigInteger('transaction_id').unsigned().nullable().references('id').inTable('transactions').onDelete('CASCADE'); // Foreign key to transactions table, nullable
     });
   };

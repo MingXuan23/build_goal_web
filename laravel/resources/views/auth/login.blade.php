@@ -102,6 +102,22 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
+                @if (session()->has('errorEkyc'))
+                    <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                        <i class="bi bi-dash-circle-fill fs-4"></i>
+                        <div class="ms-3"> {!! session('errorEkyc') !!} </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                @if (request()->query('error'))
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                    <i class="bi bi-dash-circle-fill fs-4"></i>
+                    <div class="ms-3 fw-bold">{{ request()->query('error') }} </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                @endif
+
 
 
                 <div class="card custom-card">
@@ -114,7 +130,9 @@
                                 <img src="../../assets/images/brand-logos/desktop-dark.png" alt="" class="authentication-brand desktop-dark">
                             </a> --}}
                             </div>
-                            <p class="h5 fw-semibold mb-2">Sign In</p>
+                            <a href="/" class="text-decoration-underline fw-bold "><i
+                                    class="bi bi-arrow-left fw-bold"></i> Back</a>
+                            <p class="h5 fw-semibold mb-2 mt-2">Sign In</p>
                             <p class="mb-4 text-muted op-7 fw-normal ">Hii, Welcome back !</p>
                             <form action="{{ route('login') }}" method="post">
                                 @csrf
@@ -123,7 +141,8 @@
                                         <div class="form-floating">
                                             <input type="email"
                                                 class="form-control  @error('email') is-invalid @enderror"
-                                                id="floatingInputprimary" placeholder="name@example.com" name="email" value="{{ old('email') }}">
+                                                id="floatingInputprimary" placeholder="name@example.com" name="email"
+                                                value="{{ old('email') }}">
                                             <label for="floatingInputprimary">Email Address</label>
                                             @error('email')
                                                 <span class="mb-1 text-danger">{{ $message }}</span>
@@ -160,6 +179,7 @@
                                             name="register" value="Sign In">
                                         </input>
                                     </div>
+
                                 </div>
                             </form>
 
@@ -213,9 +233,9 @@
                 </div>
             </div>
 
-           </div>
-           
         </div>
+
+    </div>
 
     </div>
 

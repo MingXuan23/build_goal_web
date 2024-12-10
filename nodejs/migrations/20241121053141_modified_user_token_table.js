@@ -16,10 +16,10 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-    return knex.schema.alterTable('users', function (table) {
-      table.dropColumn('token'); // Remove the column if rolled back
+    return knex.schema.alterTable('user_token', function (table) {
+     table.dropColumn('token'); // Remove the column if rolled back
       table.dropColumn('remember_token');
-      table.dropColumn('device_token');
+      table.dropColumn('device_token'); 
 
     });
 };

@@ -1,6 +1,6 @@
 @extends('admin.layouts.main')
 @section('container')
-    {{-- @dd($datas); --}}
+
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
@@ -17,7 +17,7 @@
                 </div>
             </div>
             <!-- Page Header Close -->
-            {{-- @dd(Auth::user()); --}}
+
 
             <!-- Start::row-1 -->
             <div class="row">
@@ -31,12 +31,21 @@
                         </div>
                     @endif
                     @if (session()->has('error'))
-                        <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
-                            <i class="bi bi-dash-circle-fill fs-4"></i>
-                            <div class="ms-3 fw-bold"> {{ session('error') }} </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
+                        @php
+                            $errors = is_array(session('error')) ? session('error') : [session('error')];
+                        @endphp
+
+                        @foreach ($errors as $error)
+                            <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                                <i class="bi bi-dash-circle-fill fs-4"></i>
+                                <div class="ms-3 fw-bold"> {{ $error }} </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endforeach
                     @endif
+
+
                     <div class="card custom-card">
                         <div class="card-header">
                             <div class="card-title">List All User </div>
@@ -44,8 +53,10 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
+
                                 <table class="table table-bordered table-hover text-nowrap w-100 data-table">
                                     <thead>
+
                                         <tr>
                                             <th>No.</th>
                                             <th>Ic No</th>
@@ -58,53 +69,7 @@
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    {{-- <tbody>
-                                        <tr>
-                                            <td>Tiger Nixon</td>
-                                            <td>System Architect</td>
-                                            <td>Edinburgh</td>
-                                            <td>61</td>
-                                            <td><span class="badge bg-danger-transparent">Not Verify</span></td>
-                                            <td>
-                                                <button class="btn btn-icon btn-sm btn-info-transparent rounded-pill"
-                                                    data-bs-toggle="modal" data-bs-target="#modalView-1">
-                                                    <i class="ri-eye-line"></i>
-                                                </button>
-                                                <button class="btn btn-icon btn-sm btn-warning-transparent rounded-pill"
-                                                    data-bs-toggle="modal" data-bs-target="#modalUpdate-1">
-                                                    <i class="ri-edit-line"></i>
-                                                </button>
 
-                                                <button class="btn btn-icon btn-sm btn-danger-transparent rounded-pill"
-                                                    id="alert-confirm-1">
-                                                    <i class="ri-delete-bin-line"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Tiger Nixon</td>
-                                            <td>System Architect</td>
-                                            <td>Edinburgh</td>
-                                            <td>61</td>
-                                            <td><span class="badge bg-success-transparent">Verify</span></td>
-                                            <td>
-                                                <button class="btn btn-icon btn-sm btn-info-transparent rounded-pill"
-                                                    data-bs-toggle="modal" data-bs-target="#modalView-2">
-                                                    <i class="ri-eye-line"></i>
-                                                </button>
-                                                <button class="btn btn-icon btn-sm btn-warning-transparent rounded-pill"
-                                                    data-bs-toggle="modal" data-bs-target="#modalUpdate-2">
-                                                    <i class="ri-edit-line"></i>
-                                                </button>
-
-                                                <button class="btn btn-icon btn-sm btn-danger-transparent rounded-pill"
-                                                    id="alert-confirm-2">
-                                                    <i class="ri-delete-bin-line"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-
-                                    </tbody> --}}
                                 </table>
                             </div>
                         </div>
@@ -144,9 +109,8 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary ">Update</button>
+                                    <button type="button" class="btn btn-danger " data-bs-dismiss="modal">Close</button>
                                 </div>
                             </form>
                         </div>
@@ -183,9 +147,8 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary ">Update</button>
+                                    <button type="button" class="btn btn-danger " data-bs-dismiss="modal">Close</button>
                                 </div>
 
                             </form>
@@ -223,9 +186,8 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary ">Update</button>
+                                    <button type="button" class="btn btn-danger " data-bs-dismiss="modal">Close</button>
                                 </div>
 
                             </form>
@@ -263,9 +225,8 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                                 </div>
 
                             </form>
@@ -284,7 +245,7 @@
                             'admin' => 'Admin',
                             'staff' => 'Staff',
                             'organization' => 'Organization',
-                            'content creator' => 'Content Creator',
+                            'content-creator' => 'Content Creator',
                             'mobile-user' => 'Mobile User',
                         ];
 
@@ -293,8 +254,8 @@
                         class="modal-dialog modal-dialog-centered text-center {{ in_array('organization', $roles) ? 'modal-xl' : '' }}">
                         <div class="modal-content modal-content-demo">
                             <div class="modal-header">
-                                <h6 class="modal-title">View User - {{ $data->name }}</h6><button aria-label="Close"
-                                    class="btn-close" data-bs-dismiss="modal"></button>
+                                <h6 class="modal-title">View User - {{ $data->name }} ( {{ $data->role_names }} )</h6>
+                                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
 
                             <form action="{{ route('updateUser', $data->id) }}" method="POST">
@@ -309,7 +270,7 @@
 
                                                 <div class="col-xl-12">
                                                     <div class="form-floating">
-                                                        <input type="number" class="form-control"
+                                                        <input disabled type="number" class="form-control"
                                                             id="floatingInputprimary" placeholder="name@example.com"
                                                             value="{{ $data->icNo }}">
                                                         <label for="floatingInputprimary">Ic Number</label>
@@ -317,7 +278,7 @@
                                                 </div>
                                                 <div class="col-xl-6">
                                                     <div class="form-floating">
-                                                        <input type="text" class="form-control"
+                                                        <input disabled type="text" class="form-control"
                                                             id="floatingInputprimary" placeholder="name@example.com"
                                                             value="{{ $data->name }}">
                                                         <label for="floatingInputprimary">Full Name</label>
@@ -325,7 +286,7 @@
                                                 </div>
                                                 <div class="col-xl-6">
                                                     <div class="form-floating">
-                                                        <input type="email" class="form-control"
+                                                        <input disabled type="email" class="form-control"
                                                             id="floatingInputprimary" placeholder="name@example.com"
                                                             value="{{ $data->email }}">
                                                         <label for="floatingInputprimary">Email Address</label>
@@ -333,10 +294,18 @@
                                                 </div>
                                                 <div class="col-xl-12">
                                                     <div class="form-floating">
-                                                        <input type="number" class="form-control"
+                                                        <input disabled type="number" class="form-control"
                                                             id="floatingInputprimary" placeholder="name@example.com"
                                                             value="{{ $data->telno }}">
                                                         <label for="floatingInputprimary">Phone Number</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xl-12">
+                                                    <div class="form-floating">
+                                                        <input disabled type="text" class="form-control"
+                                                            id="floatingInputprimary" placeholder="name@example.com"
+                                                            value="{{ strtoupper($data->role_names) }}">
+                                                        <label for="floatingInputprimary">Role</label>
                                                     </div>
                                                 </div>
 
@@ -367,7 +336,7 @@
 
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <input type="text" class="form-control"
+                                                            <input disabled type="text" class="form-control"
                                                                 id="floatingInputprimary" placeholder="name@example.com"
                                                                 value="{{ $data->org_name }}">
                                                             <label for="floatingInputprimary">Organization Name</label>
@@ -375,7 +344,7 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <input type="text" class="form-control"
+                                                            <input disabled type="text" class="form-control"
                                                                 id="floatingInputprimary" placeholder="name@example.com"
                                                                 value="{{ $data->org_address }}">
                                                             <label for="floatingInputprimary">Organization Address</label>
@@ -383,38 +352,51 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <input type="text" class="form-control"
-                                                                id="floatingInputprimary" placeholder="name@example.com"
-                                                                value="{{ $data->org_state }}">
-                                                            <label for="floatingInputprimary">Organization State</label>
+                                                            <select disabled class="form-select" id="floatingSelect"
+                                                                aria-label="Floating label select example" name="ostate">
+                                                                <option selected>- Select State -</option>
+                                                                @foreach ($states as $state)
+                                                                    <option value="{{ $state->name }}"
+                                                                        @selected(old('ostate', $data->org_state) == $state->name)>
+                                                                        {{ $state->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            <label for="floatingSelect">State</label>
                                                         </div>
                                                     </div>
+
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <select class="form-select" id="floatingSelect"
-                                                                aria-label="Floating label select example">
+                                                            <select class="form-select" disabled id="floatingSelect"
+                                                                aria-label="Floating label select example" name="otype">
                                                                 <option value="" disabled
                                                                     {{ $data->org_type == null ? 'selected' : '' }}>-
                                                                     Select -
                                                                 </option>
                                                                 <option value="1"
-                                                                    {{ $data->org_type == 1 ? 'selected' : '' }}>Government
+                                                                    {{ $data->org_type === 'Government' ? 'selected' : '' }}>
+                                                                    Government
                                                                 </option>
                                                                 <option value="2"
-                                                                    {{ $data->org_type == 2 ? 'selected' : '' }}>Company
+                                                                    {{ $data->org_type === 'Company' ? 'selected' : '' }}>
+                                                                    Company
                                                                 </option>
                                                                 <option value="3"
-                                                                    {{ $data->org_type == 3 ? 'selected' : '' }}>Skill
+                                                                    {{ $data->org_type === 'Skill Training Vendor' ? 'selected' : '' }}>
+                                                                    Skill
                                                                     Training
                                                                     Vendor</option>
                                                                 <option value="4"
-                                                                    {{ $data->org_type == 4 ? 'selected' : '' }}>NGO
+                                                                    {{ $data->org_type === 'NGO' ? 'selected' : '' }}>NGO
                                                                 </option>
                                                                 <option value="5"
-                                                                    {{ $data->org_type == 5 ? 'selected' : '' }}>Content
+                                                                    {{ $data->org_type === 'Content Creator' ? 'selected' : '' }}>
+                                                                    Content
                                                                     Creator</option>
                                                                 <option value="6"
-                                                                    {{ $data->org_type == 6 ? 'selected' : '' }}>Event
+                                                                    {{ $data->org_type === 'Event Organizer' ? 'selected' : '' }}>
+                                                                    Event
                                                                     Organizer</option>
                                                             </select>
                                                             <label for="floatingSelect">Organization Type</label>
@@ -424,11 +406,32 @@
                                             </div>
                                         @endif
 
-                                        @if (in_array('content creator', $roles))
-                                            {{-- <div class="col-md-6">
-                                                <p class="fw-bold mt-2">This user role in
-                                                    {{ $availableRoles['content creator'] }}</p>
-                                            </div> --}}
+                                        @if (in_array('content-creator', $roles) && !in_array('organization', $roles))
+                                            <div class="col-xl-12 mt-2">
+                                                <div class="form-floating">
+                                                    <input disabled type="text" class="form-control"
+                                                        id="floatingInputprimary" placeholder="name@example.com"
+                                                        value="{{ $data->org_address }}" name="oaddress">
+                                                    <label for="floatingInputprimary">Address</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-12 mt-2">
+                                                <div class="form-floating">
+                                                    <div class="form-floating">
+                                                        <select disabled class="form-select " id="floatingSelect"
+                                                            aria-label="Floating label select example" name="ostate">
+                                                            <option selected>- Select State -</option>
+                                                            @foreach ($states as $state)
+                                                                <option value="{{ $state->name }}"
+                                                                    @selected(old('ostate', $data->org_state) == $state->name)>
+                                                                    {{ $state->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                        <label for="floatingSelect">State</label>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @endif
 
                                         @if (in_array('mobile-user', $roles))
@@ -443,13 +446,17 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
-                                        data-bs-placement="top" title="Delete user Record">Delete</button>
-                                    <button type="button" class="btn btn-primary btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#delete{{ $data->id }}">
+                                        Delete
+                                    </button>
+                                    <button type="button" class="btn btn-danger " data-bs-dismiss="modal">Close</button>
                                 </div>
 
                             </form>
+
+
 
                         </div>
                     </div>
@@ -457,11 +464,17 @@
             @endforeach
 
             @foreach ($datas as $data)
+                @php
+
+                    $roles = explode(',', $data->role_names);
+
+                @endphp
                 <div class="modal fade" id="modalUpdate-{{ $data->id }}">
-                    <div class="modal-dialog modal-dialog-centered text-center modal-xl">
+                    <div
+                        class="modal-dialog modal-dialog-centered text-center {{ in_array('organization', $roles) ? 'modal-xl' : '' }}">
                         <div class="modal-content modal-content-demo">
                             <div class="modal-header">
-                                <h6 class="modal-title">Edit User - {{ $data->name }}</h6><button aria-label="Close"
+                                <h6 class="modal-title">Edit User- {{ $data->name }}</h6><button aria-label="Close"
                                     class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
 
@@ -487,7 +500,7 @@
                                                     <div class="form-floating">
                                                         <input type="text" class="form-control"
                                                             id="floatingInputprimary" placeholder="name@example.com"
-                                                            value="{{ $data->name }}" name="name">
+                                                            value="{{ $data->name }}" name="fullname">
                                                         <label for="floatingInputprimary">Full Name</label>
                                                     </div>
                                                 </div>
@@ -503,11 +516,37 @@
                                                     <div class="form-floating">
                                                         <input type="number" class="form-control"
                                                             id="floatingInputprimary" placeholder="name@example.com"
-                                                            value="{{ $data->telno }}" name="telno">
+                                                            value="{{ $data->telno }}" name="phoneno">
                                                         <label for="floatingInputprimary">Phone Number</label>
                                                     </div>
                                                 </div>
+                                                @if (!in_array('organization', $roles))
+                                                    <div class="col-xl-12">
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control"
+                                                                id="floatingInputprimary" placeholder="name@example.com"
+                                                                value="{{ $data->org_address }}" name="oaddress">
+                                                            <label for="floatingInputprimary">Address</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-12">
+                                                        <div class="form-floating">
+                                                            <select class="form-select" id="floatingSelect"
+                                                                aria-label="Floating label select example" name="ostate">
 
+                                                                @foreach ($states as $state)
+                                                                    <option value="{{ $state->name }}"
+                                                                        @selected(old('ostate', $data->org_state) == $state->name)>
+                                                                        {{ $state->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+
+                                                            <label for="floatingSelect">State</label>
+
+                                                        </div>
+                                                    </div>
+                                                @endif
                                                 <div class="col-xl-12">
                                                     <div class="form-floating">
                                                         <input type="password" class="form-control"
@@ -568,38 +607,50 @@
                                                     </div>
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
-                                                            <input type="text" class="form-control"
-                                                                id="floatingInputprimary" placeholder="name@example.com"
-                                                                value="{{ $data->org_state }}" name="ostate">
-                                                            <label for="floatingInputprimary">Organization State</label>
+                                                            <select class="form-select " id="floatingSelect"
+                                                                aria-label="Floating label select example" name="ostate">
+
+                                                                @foreach ($states as $state)
+                                                                    <option value="{{ $state->name }}"
+                                                                        @selected(old('ostate', $data->org_state) == $state->name)>
+                                                                        {{ $state->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+
+                                                            <label for="floatingSelect">State</label>
+
                                                         </div>
                                                     </div>
+
                                                     <div class="col-xl-12">
                                                         <div class="form-floating">
                                                             <select class="form-select" id="floatingSelect"
-                                                                aria-label="Floating label select example" name="ostate">
-                                                                <option value="" disabled
-                                                                    {{ $data->org_type == null ? 'selected' : '' }}>-
-                                                                    Select -
-                                                                </option>
+                                                                aria-label="Floating label select example" name="otype">
+
                                                                 <option value="1"
-                                                                    {{ $data->org_type == 1 ? 'selected' : '' }}>Government
+                                                                    {{ $data->org_type === 'Government' ? 'selected' : '' }}>
+                                                                    Government
                                                                 </option>
                                                                 <option value="2"
-                                                                    {{ $data->org_type == 2 ? 'selected' : '' }}>Company
+                                                                    {{ $data->org_type === 'Company' ? 'selected' : '' }}>
+                                                                    Company
                                                                 </option>
                                                                 <option value="3"
-                                                                    {{ $data->org_type == 3 ? 'selected' : '' }}>Skill
+                                                                    {{ $data->org_type === 'Skill Training Vendor' ? 'selected' : '' }}>
+                                                                    Skill
                                                                     Training
                                                                     Vendor</option>
                                                                 <option value="4"
-                                                                    {{ $data->org_type == 4 ? 'selected' : '' }}>NGO
+                                                                    {{ $data->org_type === 'NGO' ? 'selected' : '' }}>NGO
                                                                 </option>
                                                                 <option value="5"
-                                                                    {{ $data->org_type == 5 ? 'selected' : '' }}>Content
+                                                                    {{ $data->org_type === 'Content Creator' ? 'selected' : '' }}>
+                                                                    Content
                                                                     Creator</option>
                                                                 <option value="6"
-                                                                    {{ $data->org_type == 6 ? 'selected' : '' }}>Event
+                                                                    {{ $data->org_type === 'Event Organizer' ? 'selected' : '' }}>
+                                                                    Event
                                                                     Organizer</option>
                                                             </select>
                                                             <label for="floatingSelect">Organization Type</label>
@@ -628,10 +679,9 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
-                                        data-bs-placement="top" title="Delete user Record">Delete</button>
-                                    <button type="button" class="btn btn-primary btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary " data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Delete user Record">Update</button>
+                                    <button type="button" class="btn btn-danger " data-bs-dismiss="modal">Close</button>
                                 </div>
 
                             </form>
@@ -639,6 +689,34 @@
                         </div>
                     </div>
                 </div>
+            @endforeach
+
+            @foreach ($datas as $data)
+                <form action="{{ route('userDeleteAdmin', $data->id) }}" method="post">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal fade" id="delete{{ $data->id }}" data-bs-backdrop="static"
+                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title" id="deleteLabel">Delete Confirmation
+                                    </h6>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="fw-bold text-muted">Are Sure to Delete Account for {{ $data->name }} with
+                                        role {{ $data->role_names }} ? This action can't be undo !</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Confirm</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             @endforeach
 
         </div>
@@ -651,7 +729,7 @@
                 serverSide: true,
                 responsive: true,
                 pageLength: 50,
-                ajax: "{{ route('viewUser') }}",
+                ajax: "{{ route('showUserAdmin') }}",
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',

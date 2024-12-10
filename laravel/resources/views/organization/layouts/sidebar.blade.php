@@ -42,6 +42,7 @@
                         </li>
                     </ul>
                 </li> -->
+                @if (Auth::user()->ekyc_status === 1) 
                 <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
                         <i class="bi bi-body-text "></i>
@@ -50,13 +51,14 @@
                     </a>
                     <ul class="slide-menu child1">
                         <li class="slide">
-                            <a href="/organization/index" class="side-menu__item">View Content</a>
+                            <a href="/organization/content-management" class="side-menu__item">View Content</a>
                         </li>
-                        <!-- <li class="slide">
-                            <a href="/admin/promote-content" class="side-menu__item">Promote Content</a>
-                        </li> -->
+                        <li class="slide">
+                            <a href="/organization/apply-content" class="side-menu__item">Apply Content</a>
+                        </li>
                     </ul>
                 </li>
+                @endif
 
             </ul>
             <div class="slide-right" id="slide-right">

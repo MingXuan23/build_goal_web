@@ -7,16 +7,29 @@ services:
       context: ./nodejs
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "30000:3000"
     volumes:
       - ./nodejs:/usr/src/app
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV}
+      - JWT_SECRET=${JWT_SECRET}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - GPT_HOST=${GPT_HOST}
+      - GPT_MODEL=${GPT_MODEL}
+      - VECTOR_HOST=${VECTOR_HOST}
+      - VECTOR_API_KEY=${VECTOR_API_KEY}
+      - INIT_KEY=${INIT_KEY}
+      - TZ=Asia/Kuala_Lumpur
     depends_on:
       - mysql
-    command: npm run start
+    command: sh -c "if [ \"$NODE_ENV\" = \"production\" ]; then npm run prod; else npm run start; fi"
     networks:
       - app-network
+    
+    image: mxchuah23/nodejs-app:latest
 
   # Laravel PHP-FPM Application
   laravel-app:
@@ -24,13 +37,17 @@ services:
       context: ./laravel
       dockerfile: docker/app.dockerfile
     working_dir: /var/www
+    environment:
+      - TZ=Asia/Kuala_Lumpur
     volumes:
-      - ./laravel:/var/www
-      - ./laravel/storage:/var/www/storage
+      - ./laravel:/var/www:cached
+      - ./laravel/storage:/var/www/storage:cached
+      - ./laravel/docker/php/php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - mysql
     networks:
       - app-network
+    image: mxchuah23/laravel-app:latest
 
   # Laravel Web Server (Nginx)
   laravel-web:
@@ -46,6 +63,9 @@ services:
       - app-network
     ports:
       - "8080:80"
+    environment:
+      - TZ=Asia/Kuala_Lumpur
+    image: mxchuah23/laravel-web:latest
 
   # Shared MySQL Database
   mysql:
@@ -57,39 +77,25 @@ services:
       MYSQL_ROOT_PASSWORD: ${LOCAL_DB_ROOT_PASSWORD}
       MYSQL_PASSWORD: ${LOCAL_DB_PASSWORD}
       MYSQL_USER: ${LOCAL_DB_USER}
+      TZ: Asia/Kuala_Lumpur
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
       - app-network
 
-  # PHPMyAdmin for MySQL Database
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    ports:
-      - "8006:80"
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: ${LOCAL_DB_PORT}
-    depends_on:
-      - mysql
-    networks:
-      - app-network
-
    # Ollama Service
-  gpt_serivce:
+  gpt_service:
     image: ollama/ollama
-    container_name: gpt_serivce
+    container_name: gpt_service
     ports:
       - "11434:11434" # Default Ollama port
     networks:
       - app-network
-    restart: unless-stopped
     volumes:
       - ollama-data:/ollama/data
 
   qdrant:
     image: qdrant/qdrant:latest
-    restart: always
     container_name: vector_db
     ports:
       - 6333:6333
@@ -101,6 +107,8 @@ services:
     configs:
       - source: qdrant_config
         target: /qdrant/config/production.yaml
+    networks:
+      - app-network
     volumes:
       - ./qdrant_data:/qdrant/storage
 
@@ -119,3 +127,34 @@ volumes:
   mysql-data:
   ollama-data:
 
+
+# # Node.js App
+# docker build -t mxchuah23/build_goal:nodejs ./nodejs
+
+# # Laravel App
+# docker build -t mxchuah23/build_goal:laravel-app ./laravel --file ./laravel/docker/app.dockerfile
+
+# # Laravel Web (Nginx)
+# docker build -t mxchuah23/build_goal:laravel-web ./laravel --file ./laravel/docker/web.dockerfile
+
+# # Ollama Service
+# docker tag ollama/ollama:latest mxchuah23/build_goal:ollama
+
+# # Qdrant (Vector Database)
+# docker tag qdrant/qdrant:latest mxchuah23/build_goal:qdrant
+
+
+# # Node.js App
+# docker push mxchuah23/build_goal:nodejs
+
+# # Laravel App
+# docker push mxchuah23/build_goal:laravel-app
+
+# # Laravel Web (Nginx)
+# docker push mxchuah23/build_goal:laravel-web
+
+# # Ollama Service
+# docker push mxchuah23/build_goal:ollama
+
+# # Qdrant (Vector Database)
+# docker push mxchuah23/build_goal:qdrant

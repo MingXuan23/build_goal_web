@@ -21,6 +21,10 @@ class RoleMiddleware
         Session::forget('user_email');
         $user = Auth::user();
 
+        if($user->active === 0){
+            return redirect('/login')->with('error', 'Your account is block, Please Contact us by email to help-center@xbug.online for inform if we mistake');
+        }
+
         if (!Auth::check()) {
             Auth::logout();
 

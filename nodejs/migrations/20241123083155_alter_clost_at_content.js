@@ -14,6 +14,6 @@ exports.up = function(knex) {
  */
 exports.down = function(knex) {
     return knex.schema.table('contents', function(table) {
-        table.datetime('closed_at').nullable().alter();
+        table.dropColumn('closed_at');
       });
 };

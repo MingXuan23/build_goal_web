@@ -31,6 +31,11 @@ npx knex migrate:latest --env docker
 npx knex seed:run --env docker
 ```
 
+For adding new migration 
+```
+knex migrate:make migration_name
+```
+
 
 5. Laravel Setup (execute in exec tab in image laravel app)
 
@@ -48,3 +53,20 @@ php artisan optimize
    docker-compose down -v
    docker-compose up -d
    ```
+
+## In Case to solve the laravel running slow
+
+
+1. go to laravel\docker\php\php.ini
+2. Modify the value of the opcache.validate_timestamps = 0 and run this command
+  ```
+   docker-compose restart laravel-app
+   ```
+3. This action will speed up your laravel project but any changes you made in the project will not update to the docker
+
+4. To update your changes to the docker,  Modify the value of the opcache.validate_timestamps = 2 and run this command
+   ```
+   docker-compose restart laravel-app
+   ```
+5. This action will slow down a bit your laravel project but your changes will update to the docker
+ 

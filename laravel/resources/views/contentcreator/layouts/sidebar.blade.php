@@ -22,26 +22,28 @@
                 <!-- End::slide__category -->
                 <!-- Start::slide -->
                 <li class="slide">
-                    <a href="/admin/dashboard" class="side-menu__item">
+                    <a href="/content-creator/dashboard" class="side-menu__item">
                         <i class="bx bx-home side-menu__icon"></i>
                         <span class="side-menu__label">Dashboard</span>
                     </a>
                 </li>
+                @if (Auth::user()->ekyc_status === 1)
                 <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
-                        <i class="bi bi-people"></i>
-                        <span class="side-menu__label mx-2">User Management</span>
+                        <i class="bi bi-body-text"></i>
+                        <span class="side-menu__label mx-2">Content Management</span>
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
                         <li class="slide">
-                            <a href="/admin/user" class="side-menu__item">View User</a>
-                        </li>
-                        <li class="slide">
-                            <a href="/admin/add-user" class="side-menu__item">Add User</a>
+                            <a href="#" class="side-menu__item">View Content</a>
                         </li>
                     </ul>
                 </li>
+                @endif
+
+
+
 
             </ul>
             <div class="slide-right" id="slide-right">

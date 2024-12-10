@@ -12,7 +12,8 @@ exports.up = function (knex) {
         table.bigInteger('role_id').unsigned().notNullable()
             .references('id').inTable('roles').onDelete('CASCADE'); // Foreign key to roles table
         table.boolean('status').defaultTo(true); // Status, defaults to true
-        table.timestamps(true, true); // Created at & Updated at timestamps
+        table.timestamp('created_at').defaultTo(knex.fn.now()).nullable();
+        table.timestamp('updated_at').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')).nullable();// Created at & Updated at timestamps
     });
 };
 

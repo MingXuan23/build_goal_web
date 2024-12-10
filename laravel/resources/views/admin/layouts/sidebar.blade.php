@@ -29,8 +29,8 @@
                 </li>
                 <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
-                        <i class="bi bi-people"></i>
-                        <span class="side-menu__label mx-2">User Management</span>
+                        <i class='bx bxs-user-detail side-menu__icon' ></i>
+                        <span class="side-menu__label">User Management</span>
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
@@ -39,6 +39,64 @@
                         </li>
                         <li class="slide">
                             <a href="/admin/add-user" class="side-menu__item">Add User</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="slide has-sub">
+                    <a href="javascript:void(0);" class="side-menu__item ">
+                        <i class='bx bx-align-left side-menu__icon'></i>
+                        <span class="side-menu__label ">Content</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="/admin/view-content" class="side-menu__item">View Applied Content</a>
+                        </li>
+                        <!-- <li class="slide">
+                            <a href="/organization/apply-content" class="side-menu__item">Apply Content</a>
+                        </li> -->
+                    </ul>
+                </li>
+                <li class="slide has-sub">
+                    <a href="javascript:void(0);" class="side-menu__item ">
+                        <i class="bx bx-mail-send side-menu__icon"></i>
+                        <span class="side-menu__label ">Email Notifications</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="/admin/email" class="side-menu__item">Send Email</a>
+                        </li>
+                        <li class="slide">
+                            <a href="/admin/email-notification-logs" class="side-menu__item">Notification Logs</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="slide has-sub">
+                    <a href="javascript:void(0);" class="side-menu__item ">
+                        <i class='bx bxs-select-multiple side-menu__icon'></i>
+                        <span class="side-menu__label ">e-KYC Logs</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="/admin/card-logs" class="side-menu__item">Card Log</a>
+                        </li>
+                        <li class="slide">
+                            <a href="/admin/face-logs" class="side-menu__item">Face Log</a>
+                        </li>
+
+                    </ul>
+                </li>
+                <li class="slide has-sub">
+                    <a href="javascript:void(0);" class="side-menu__item ">
+                        <i class="bx bxs-envelope side-menu__icon"></i>
+                        <span class="side-menu__label ">Email Logs</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="/admin/email-logs" class="side-menu__item">email logs</a>
                         </li>
                     </ul>
                 </li>

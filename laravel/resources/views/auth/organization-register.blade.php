@@ -57,7 +57,8 @@
                     <div class="card-body">
 
                         <div class="p-3">
-                            <p class="h5 fw-bold mb-2">Sign Up for Organization</p>
+                            <a href="/login" class="text-decoration-underline fw-bold "><i class="bi bi-arrow-left fw-bold"></i> Back</a>
+                            <p class="h5 fw-bold mb-2 mt-2">Sign Up for Organization</p>
                             <p class="mb-4 text-muted op-7 fw-normal ">Welcome & Join us by creating a free account
                                 !</p>
                             <div class="mb-3">
@@ -183,29 +184,20 @@
                                             <div class="col-xl-12">
                                                 <div class="form-floating">
                                                     <select class="form-select @error('ostate') is-invalid @enderror" 
-                                                        id="floatingSelect" 
-                                                        aria-label="Floating label select example" 
-                                                        name="ostate">
+                                                            id="floatingSelect" 
+                                                            aria-label="Floating label select example" 
+                                                            name="ostate">
                                                         <option selected>- Select State -</option>
-                                                        <option value="pahang" @selected(old('ostate') == 'pahang')>Pahang</option>
-                                                        <option value="perak" @selected(old('ostate') == 'perak')>Perak</option>
-                                                        <option value="terengganu" @selected(old('ostate') == 'terengganu')>Terangganu</option>
-                                                        <option value="perlis" @selected(old('ostate') == 'perlis')>Perlis</option>
-                                                        <option value="selangor" @selected(old('ostate') == 'selangor')>Selangor</option>
-                                                        <option value="negeri_sembilan" @selected(old('ostate') == 'negeri_sembilan')>Negeri Sembilan</option>
-                                                        <option value="johor" @selected(old('ostate') == 'johor')>Johor</option>
-                                                        <option value="kelantan" @selected(old('ostate') == 'kelantan')>Kelantan</option>
-                                                        <option value="kedah" @selected(old('ostate') == 'kedah')>Kedah</option>
-                                                        <option value="pulau_pinang" @selected(old('ostate') == 'pulau_pinang')>Pulau Pinang</option>
-                                                        <option value="melaka" @selected(old('ostate') == 'melaka')>Melaka</option>
-                                                        <option value="sabah" @selected(old('ostate') == 'sabah')>Sabah</option>
-                                                        <option value="sarawak" @selected(old('ostate') == 'sarawak')>Sarawak</option>
+                                                        @foreach($states as $state)
+                                                            <option value="{{ $state->name }}" @selected(old('ostate') == $state->name)>{{ $state->name }}</option>
+                                                        @endforeach
                                                     </select>
                                                     <label for="floatingSelect">State</label>
                                                     @error('ostate')
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
+                                                
                                             </div>
                                             <div class="col-xl-12">
                                                 <div class="form-floating">

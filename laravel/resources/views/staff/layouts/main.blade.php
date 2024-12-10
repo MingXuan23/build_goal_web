@@ -71,6 +71,15 @@
     <div class="scrollToTop">
         <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
     </div>
+
+    <script>
+        function changeRole(select) {
+            const role = select.value;
+            if (role) {
+                window.location.href = `/${role}/dashboard`;
+            }
+        }
+    </script>
     <script>
         // Function to toggle fullscreen
         // Function to toggle fullscreen
