@@ -18,4 +18,4 @@ return [
     "Sabah - Kota Belud", "Sabah - Kota Kinabalu", "Sabah - Papar", "Sabah - Penampang", 
     "Sabah - Putatan", "Sabah - Ranau", "Sabah - Tuaran"
 ];
-?> 
+?>

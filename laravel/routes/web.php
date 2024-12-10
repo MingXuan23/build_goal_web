@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MicrolearningController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -75,6 +77,13 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('admin.logout');
 });
 
+//Route::prefix('microlearning')->group(function () {
+//    Route::get('/', [MicrolearningController::class, 'index'])->name('microlearning.index'); // List lessons
+//    Route::get('/lesson/{id}', [MicrolearningController::class, 'lesson'])->name('microlearning.lesson'); // Show single lesson
+//    Route::get('/quiz', [MicrolearningController::class, 'quiz'])->name('microlearning.quiz'); // Quiz page
+//});
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,3 +130,12 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Route::get('/microlearning/upload', [MicrolearningController::class, 'upload']);
+Route::get('/microlearning', [MicrolearningController::class, 'index']);
+Route::get('/content/{id}', [MicrolearningController::class, 'show']);
+
+
+
+
+
