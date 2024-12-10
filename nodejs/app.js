@@ -18,6 +18,7 @@ const vectorRouter =  require('./routes/vectorRoute');
 
 
 var app = express();
+app.set('trust proxy', true);
 
 app.use(express.json());
 app.use('/api/auth', authRoutes);
@@ -59,3 +60,4 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+

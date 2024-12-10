@@ -33,4 +33,4 @@ COPY . .
 EXPOSE 30000
 
 # Command to run your application
-CMD ["npm", "run", "start"]
+CMD ["sh", "-c", "if [ \"$NODE_ENV\" = \"production\" ]; then npm run prod; else npm run start; fi"]
