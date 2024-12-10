@@ -1,17 +1,23 @@
 require("dotenv").config();
 
+
+const knexConfig = require('../knexfile');
+const knex = require('knex')(knexConfig[process.env.NODE_ENV])
 const axios = require('axios');
 const { Transform } = require('stream');
+
+const { getContentByVector } = require('../controllers/contentController');
 
 const HOST_URL = process.env.GPT_HOST;// Replace with your actual host URL
 const model = process.env.GPT_MODEL;
 const node_env = process.env.NODE_ENV;
 
 const fastResponse = async (req, res, next) => {
-  const { prompt, estimate_word, information, tone } = req.body;
+  const { prompt, estimate_word, information, tone, chat_history, use_content } = req.body;
+  const user = req.user;
 
   if (!prompt || !information) {
-    console.error('Prompt pr Inforamtion is missing');
+    console.error('Prompt or Inforamtion is missing');
     return res.status(400).json({ error: 'Prompt is required' });
   }
 
@@ -27,25 +33,55 @@ const fastResponse = async (req, res, next) => {
     final_prompt = `${prompt}. Response in ${estimateWords} words.`;
   }
 
- 
+  const user_vector = await knex('user_vector').select('*').where({ 'user_id': user.id }).first();
+
+  let contentList = [];
+  if (user_vector || !use_content) {
+    const content_ids = await getContentByVector(user_vector.values);
+
+
+    contentList = await knex('contents').select('name', 'place', 'enrollment_price', 'first_date').whereIn('id', content_ids);
+  }
+
+  
+
+  let messagesBody = [
+    {
+      role: 'system',
+      content: `Your name is Jan, an experienced financial advisor in the "Build Growth" Mobile App, who always giving practical solution to financial issues, uses RM (Ringgit Malaysia) as the main currency and responds using English. If the user asks for financial advice, ${toneMsg}.` +
+        `You have read and understood the user's financial information as stated below: ${JSON.stringify(information)}.` +
+        (contentList.length >= 1
+          ? ` You may suggest the user to involve themselves in these courses and events as the solution to increase their income: ${JSON.stringify(contentList)}.`
+          : ` You may suggest the user to take a look at the "Content" section in the app for more entrepreneurship and self-investment opportunities.`),
+    },
+  ];
+  
+
+  console.log(contentList.length, contentList, contentList.length >= 1 )
+  // Check if chat_history exists and is a non-empty array
+  if (Array.isArray(chat_history) && chat_history.length > 0) {
+    messagesBody.push(...chat_history); // Spread the chat_history array into messagesBody
+  }
+
+  // Add the user message to the messagesBody
+  messagesBody.push({ role: 'user', content: final_prompt });
+
+
   try {
     const apiResponse = await axios.post(`${HOST_URL}/api/chat`, {
       model: model, // Replace with your actual model name
-      messages: [{ role: 'system', content: `Your name is Moon, a experienced financial advisor who using RM(Ringgit Malaysia) as the main currency. If the user ask for financial advise, ${toneMsg}.`
-      +`You have read and understand user's financial informtion as stated as below ${JSON.stringify(information)}.` +`If user are asking my advice, you may suggest these event/content as below Flutter Helper Class, Car boot Sale` },
-      
-      { role: 'user', content: final_prompt }],
+      messages: messagesBody,
       options: {
         temperature: 0.5,
         num_ctx: 4096,
-        repeat_last_n :-1
+        repeat_last_n: -1
       },
     }, {
       headers: { 'Content-Type': 'application/json' },
       responseType: 'stream', // Important for streaming responses
     });
 
-    //console.log(apiResponse);
+    console.log(apiResponse);
     if (apiResponse.status !== 200) {
       console.error(`API error: ${apiResponse.status}`);
       return res.status(apiResponse.status).json({ error: 'API error' });

@@ -113,5 +113,6 @@ const getContents = async (req, res) => {
 
 
 module.exports = {
-    getContents
+    getContents,
+    getContentByVector
 };
