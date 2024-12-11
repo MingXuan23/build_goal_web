@@ -299,6 +299,7 @@ class AdminRouteController extends Controller
             ->select(
                 'contents.id',
                 'contents.name',
+                'contents.desc',
                 'contents.created_at',
                 'contents.link',
                 'contents.status',

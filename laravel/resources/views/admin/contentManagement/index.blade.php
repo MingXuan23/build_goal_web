@@ -81,6 +81,16 @@
                                 <div class="col-xl-12">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" placeholder="Enter Content Name"
+                                            value="{{ $data->desc }}" readonly>
+                                        <label for="contentName">Content Description</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="col-xl-12">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" placeholder="Enter Content Name"
                                             value="{{ $data->link }}" readonly>
                                         <label for="contentName">Content Link</label>
                                     </div>
@@ -92,7 +102,7 @@
                                     <div class="form-floating">
                                         <input type="text" class="form-control" placeholder="Enter Content Name"
                                             value="{{ $data->created_at }}" readonly>
-                                        <label for="contentName">Content Link</label>
+                                        <label for="contentName">Applied On</label>
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +112,7 @@
                                     <div class="form-floating">
                                         <input type="text" class="form-control" placeholder="Enter Content Name"
                                             value="{{ $data->enrollment_price }}" readonly>
-                                        <label for="contentName">Content Link</label>
+                                        <label for="contentName">Enrollment Price</label>
                                     </div>
                                 </div>
                             </div>
