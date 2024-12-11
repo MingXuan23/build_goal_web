@@ -9,11 +9,11 @@ exports.seed = async function(knex) {
       {
         name: 'Microentrepreneuship:start with roti canai',
         desc: 'Learn how to start a successful roti canai business',
-        link: null,
+        link: 'https://xbug.online/',
         content: "```***Introduction***Here I will teach u do make roti canai```***Sell it!***Find your neighbour and sell to them",
         enrollment_price: '0.00',
         status: 1,
-        category_weight: null,
+        category_weight: JSON.stringify([0.291,0.082,0.8,0.122,0.114,0.999,0.177,0.999]),
         content_type_id: await knex('content_types')
           .where('type', 'MicroLearning Resource')
           .select('id')
@@ -31,11 +31,11 @@ exports.seed = async function(knex) {
       {
         name: 'Online Course: Flutter Helper Course',
         desc: 'Comprehensive course on Flutter development',
-        link: null,
+        link: 'https://xbug.online/',
         content: null,
         enrollment_price: 10.00,
         status: 1,
-        category_weight: null,
+        category_weight: JSON.stringify([0.4,0.082,0,0.9,0.1,0.2,0,0.4]),
         content_type_id: await knex('content_types')
           .where('type', 'Course and Training')
           .select('id')
@@ -53,11 +53,11 @@ exports.seed = async function(knex) {
       {
         name: 'Event: Satria Car Boot Sale',
         desc: 'Community car boot sale event',
-        link: null,
+        link: 'https://xbug.online/',
         content: null,
         enrollment_price: 20.00,
         status: 1,
-        category_weight: null,
+        category_weight:  JSON.stringify([0,0.082,0.9,0,0.2,0.2,0.1,0.5]),
         content_type_id: await knex('content_types')
           .where('type', 'Micro Entrepreneurship')
           .select('id')

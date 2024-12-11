@@ -8,12 +8,8 @@
     "prod": "node ./bin/www"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "axios": "^1.7.9",
-=======
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
->>>>>>> 0c249390de1eb95323f70859025e374138b9aafd
     "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",

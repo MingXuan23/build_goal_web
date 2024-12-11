@@ -120,7 +120,6 @@ const addPointToCollection = async (collectionName, id) => {
     } else {
         const content = await knex('contents as c')
             .where({ 'c.id': id, 'c.status': 1 })
-            .whereNotNull('c.image')
             .whereNotNull('c.link')
             .whereNotNull('c.category_weight')
             .first();
