@@ -17,18 +17,20 @@
     </form>
 
     <div class="row">
-        @forelse ($contents as $content)
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <img src="{{ $content['thumbnail'] }}" class="card-img-top" alt="Thumbnail">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $content['title'] }}</h5>
-                        <a href="/content/{{ $content['id'] }}" class="btn btn-primary">View Content</a>
+        @if ($contents->isEmpty())
+            <p>No content available.</p>
+        @else
+            @foreach ($contents as $content)
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ asset($content->image) }}" class="card-img-top" alt="Content Image">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $content->name }}</h5>
+                            <a href="/content/{{ $content->id }}" class="btn btn-primary">View Content</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @empty
-            <p>No content available.</p>
-        @endforelse
+            @endforeach
+        @endif
     </div>
 @endsection
