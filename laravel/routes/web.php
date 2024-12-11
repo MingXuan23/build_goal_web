@@ -15,6 +15,8 @@ use App\Http\Controllers\MicrolearningController;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Auth;
 
+use App\Http\Controllers\TransactionController; // Ensure you import the controller at the top
+
 
 /*
 |--------------------------------------------------------------------------
@@ -100,6 +102,13 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
 //    Route::get('/lesson/{id}', [MicrolearningController::class, 'lesson'])->name('microlearning.lesson'); // Show single lesson
 //    Route::get('/quiz', [MicrolearningController::class, 'quiz'])->name('microlearning.quiz'); // Quiz page
 //});
+
+
+
+Route::post('directpayIndex', [TransactionController::class, 'directpayIndex'])->name('directpayIndex');
+Route::get('testcallback', [TransactionController::class, 'testcallback']);
+Route::post('directpayReceipt', [TransactionController::class, 'directpayReceipt'])->name('directpayReceipt');
+Route::get('payment_template', [TransactionController::class, 'index'])->name('payment_template');
 
 
 
