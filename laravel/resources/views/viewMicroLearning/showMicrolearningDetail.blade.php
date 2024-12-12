@@ -277,7 +277,7 @@
             <div class="modal fade" id="viewContent" tabindex="-1"
                aria-labelledby="viewContent" data-bs-keyboard="false"
                aria-hidden="true">
-               <div class="modal-dialog modal-dialog-scrollable">
+               <div class="modal-dialog modal-dialog-scrollable modal-lg">
                   <div class="modal-content">
                      <div class="modal-header">
                         <h6 class="modal-title" id="staticBackdropLabel1">How to be a backend Software Engineer

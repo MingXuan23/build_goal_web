@@ -43,7 +43,7 @@
         }
         if (localStorage.ynexlandingrtl) {
             document.querySelector("html").setAttribute("dir", "rtl")
-            document.querySelector("#style")?.setAttribute("href", "../../assets/libs/bootstrap/css/bootstrap.rtl.min.css");
+            document.querySelector("#style")?.setAttribute("href", "../assets/libs/bootstrap/css/bootstrap.rtl.min.css");
         }
     </script>
 
@@ -219,7 +219,7 @@
                             <div class="card custom-card border">
                                 <div class="row g-0">
                                     <div class="col-md-3 col-4 ">
-                                        <img src="../../assets/images/course-tranning.svg" style="width: 400px; height: 150px;" class="img-fluid rounded-start" alt="...">
+                                        <img src="../assets/images/course-tranning.svg" style="width: 400px; height: 150px;" class="img-fluid rounded-start" alt="...">
                                     </div>
                                     <div class="col-md-9 col-8 my-auto">
                                         <div class="card-body">
@@ -235,7 +235,7 @@
                             <div class="card custom-card border">
                                 <div class="row g-0">
                                     <div class="col-md-3 col-4">
-                                        <img src="../../assets/images/microLearning-resource.svg" style="width: 400px; height: 150px;" class="img-fluid rounded-start" alt="...">
+                                        <img src="../assets/images/microLearning-resource.svg" style="width: 400px; height: 150px;" class="img-fluid rounded-start" alt="...">
                                     </div>
                                     <div class="col-md-9 col-8 my-auto">
                                         <div class="card-body">
@@ -251,7 +251,7 @@
                             <div class="card custom-card border">
                                 <div class="row g-0">
                                     <div class="col-md-3 col-4">
-                                        <img src="../../assets/images/event.png" style="width: 400px; height: 150px;" class="img-fluid rounded-start" alt="...">
+                                        <img src="../assets/images/event.png" style="width: 400px; height: 150px;" class="img-fluid rounded-start" alt="...">
                                     </div>
                                     <div class="col-md-9 col-8 my-auto">
                                         <div class="card-body">
@@ -267,7 +267,7 @@
                             <div class="card custom-card border">
                                 <div class="row g-0">
                                     <div class="col-md-3 col-4">
-                                        <img src="../../assets/images/job.png" style="width: 400px; height: 150px;" class="img-fluid rounded-start" alt="...">
+                                        <img src="../assets/images/job.png" style="width: 400px; height: 150px;" class="img-fluid rounded-start" alt="...">
                                     </div>
                                     <div class="col-md-9 col-8 my-auto">
                                         <div class="card-body">
