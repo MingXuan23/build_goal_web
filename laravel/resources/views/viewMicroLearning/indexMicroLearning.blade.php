@@ -190,7 +190,7 @@
                         <div class="row justify-content-center text-center">
                             <div class="col-xxl-7 col-xl-7 col-lg-8">
                                 <div class="">
-                                    <h6 class="landing-banner-heading mb-3"><span class="text-secondary fw-bold">100+ </span>Content available</h6>
+                                    <h6 class="landing-banner-heading mb-3"><span class="text-secondary fw-bold">{{ $countContent}}+ </span>Content available</h6>
                                     <p class="fs-18 mb-5 op-8 fw-normal text-fixed-white">Register &amp; get free access to create your content and <br>submit your content with few easy steps.</p>
                                     <div class="mb-3 custom-form-group">
                                         <input type="text" class="form-control form-control-lg shadow-sm" placeholder="your keyword...." 
@@ -224,7 +224,7 @@
                                     <div class="col-md-9 col-8 my-auto">
                                         <div class="card-body">
                                             <h5 class="card-title fw-semibold">Course and Training</h5>
-                                            <p><span class="text-default fw-semibold">23 Content</span> available</p>
+                                            <p><span class="text-default fw-semibold">{{ $countContents_CourseTraining }} Content</span> available</p>
                                             <a class="text-primary fw-semibold" href="{{ url('/view-microlearning/1') }}">Explore now for Course and Training<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
                                         </div>
                                     </div>
@@ -240,7 +240,7 @@
                                     <div class="col-md-9 col-8 my-auto">
                                         <div class="card-body">
                                             <h5 class="card-title fw-semibold">MicroLearning Resource</h5>
-                                            <p><span class="text-default fw-semibold">44 Content</span> available</p>
+                                            <p><span class="text-default fw-semibold">{{ $countContents_MicroLearning }} Content</span> available</p>
                                             <a class="text-primary fw-semibold" href="{{ url('/view-microlearning/2') }}">Explore now for MicroLearning Resource<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
                                         </div>
                                     </div>
@@ -256,7 +256,7 @@
                                     <div class="col-md-9 col-8 my-auto">
                                         <div class="card-body">
                                             <h5 class="card-title fw-semibold">Event</h5>
-                                            <p><span class="text-default fw-semibold">67 active</span> event</p>
+                                            <p><span class="text-default fw-semibold">{{ $countContents_Event}} active</span> event</p>
                                             <a class="text-primary fw-semibold" href="{{ url('/view-microlearning/4') }}">Explore now for Event<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
                                         </div>
                                     </div>
@@ -272,7 +272,7 @@
                                     <div class="col-md-9 col-8 my-auto">
                                         <div class="card-body">
                                             <h5 class="card-title fw-semibold">Job Offering</h5>
-                                            <p><span class="text-default fw-semibold">140 Jobs</span> available</p>
+                                            <p><span class="text-default fw-semibold">{{ $countContents_JobOffer }} Jobs</span> available</p>
                                             <a class="text-primary fw-semibold" href="{{ url('/view-microlearning/5') }}">Explore Jobs<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
                                         </div>
                                     </div>

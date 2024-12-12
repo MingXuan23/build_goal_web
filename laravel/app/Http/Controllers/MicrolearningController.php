@@ -65,9 +65,25 @@ class MicrolearningController extends Controller
 
     public function showMicrolearning()
     {
-        
-        
-        return view('viewMicroLearning.indexMicrolearning');
+        $countContent = DB::table('contents')
+        ->count();
+        $countContents_CourseTraining = DB::table('contents')
+        ->where('content_type_id', '=', 1)
+        ->count();
+
+        $countContents_MicroLearning = DB::table('contents')
+        ->where('content_type_id', '=', 2)
+        ->count();
+
+        $countContents_Event = DB::table('contents')
+        ->where('content_type_id', '=', 4)
+        ->count();
+
+        $countContents_JobOffer = DB::table('contents')
+        ->where('content_type_id', '=', 5)
+        ->count();
+
+        return view('viewMicroLearning.indexMicrolearning', compact('countContent','countContents_CourseTraining','countContents_MicroLearning', 'countContents_Event', 'countContents_JobOffer'));
     }
 
 
@@ -75,6 +91,7 @@ class MicrolearningController extends Controller
     {
         // Get the search term from the request
         $search = $request->query('search', '');
+        
     
         // Query the database to fetch and filter contents by content_type_id and search term
         $contents = DB::table('contents as c')
