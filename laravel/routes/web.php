@@ -168,10 +168,7 @@ Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Route::get('/microlearning/upload', [MicrolearningController::class, 'upload']);
-Route::get('/microlearning', [MicrolearningController::class, 'displayContent']);
-Route::get('/content/{id}', [MicrolearningController::class, 'showContentBasedOnID']);
-
-
-
-
-
+Route::get('/microlearning', [MicrolearningController::class, 'index']);
+Route::get('/content/{id}', [MicrolearningController::class, 'show']);
+Route::get('/view-microlearning', [MicrolearningController::class, 'showMicrolearning'])->name('showMicrolearning');
+Route::get('/view-microlearning/{id}', [MicrolearningController::class, 'showMicrolearningDetail'])->name('showMicrolearningDetail');

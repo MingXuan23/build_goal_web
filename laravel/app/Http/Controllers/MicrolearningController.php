@@ -61,4 +61,14 @@ class MicrolearningController extends Controller
 
 
 
+
+    public function showMicrolearning()
+    {
+        return view('viewMicroLearning.indexMicrolearning');
+    }
+    public function showMicrolearningDetail($id)
+    {
+        return view('viewMicroLearning.showMicrolearningDetail');
+    }
+
 }

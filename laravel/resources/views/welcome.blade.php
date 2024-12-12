@@ -147,6 +147,11 @@
                                     <span class="side-menu__label">About</span>
                                 </a>
                             </li>
+                            <li class="slide">
+                                <a href="/view-microlearning" class="side-menu__item">
+                                    <span class="side-menu__label">Content</span>
+                                </a>
+                            </li>
                             <!-- End::slide -->
                             <!-- Start::slide -->
 
@@ -162,7 +167,7 @@
                             <div class="btn-list d-lg-flex d-none mt-lg-2 mt-xl-0 mt-0">
 
                                 <a href="/login" class="btn btn-wave btn-primary">
-                                    log In
+                                    Sign In
                                 </a>
                             </div>
                         </div>
