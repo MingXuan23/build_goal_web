@@ -56,6 +56,7 @@ class MicrolearningController extends Controller
 
     public function upload()
     {
+        
         return view('microlearning.upload');
     }
 
@@ -64,11 +65,32 @@ class MicrolearningController extends Controller
 
     public function showMicrolearning()
     {
+        
+        
         return view('viewMicroLearning.indexMicrolearning');
     }
-    public function showMicrolearningDetail($id)
+
+
+    public function showMicrolearningDetail(Request $request, $id)
     {
-        return view('viewMicroLearning.showMicrolearningDetail');
+        // Get the search term from the request
+        $search = $request->query('search', '');
+    
+        // Query the database to fetch and filter contents by content_type_id and search term
+        $contents = DB::table('contents as c')
+            ->join('content_types', 'c.content_type_id', '=', 'content_types.id')
+            ->select('c.id', 'c.name', 'c.image', 'content_types.type as content_type_name', 'c.created_at')
+            ->where('content_types.id', '=', $id) // Use dynamic $id
+            ->when($search, function ($query, $search) {
+                return $query->where('c.name', 'like', '%' . $search . '%'); 
+            })
+            ->get();
+    
+        // Return the view with the fetched data
+        return view('viewMicroLearning.showMicrolearningDetail', [
+            'contents' => $contents
+        ]);
     }
+    
 
 }

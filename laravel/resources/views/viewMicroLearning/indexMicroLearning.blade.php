@@ -223,9 +223,9 @@
                                     </div>
                                     <div class="col-md-9 col-8 my-auto">
                                         <div class="card-body">
-                                            <h5 class="card-title fw-semibold">Course and Tranning</h5>
+                                            <h5 class="card-title fw-semibold">Course and Training</h5>
                                             <p><span class="text-default fw-semibold">23 Content</span> available</p>
-                                            <a class="text-primary fw-semibold" href="/view-microlearning/1">Explore now for Coruse and Tranning<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
+                                            <a class="text-primary fw-semibold" href="{{ url('/view-microlearning/1') }}">Explore now for Course and Training<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -241,7 +241,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title fw-semibold">MicroLearning Resource</h5>
                                             <p><span class="text-default fw-semibold">44 Content</span> available</p>
-                                            <a class="text-primary fw-semibold" href="/view-microlearning/1">Explore now for MicroLearning Resource<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
+                                            <a class="text-primary fw-semibold" href="{{ url('/view-microlearning/2') }}">Explore now for MicroLearning Resource<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -257,7 +257,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title fw-semibold">Event</h5>
                                             <p><span class="text-default fw-semibold">67 active</span> event</p>
-                                            <a class="text-primary fw-semibold" href="/view-microlearning/1">Explore now for Event<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
+                                            <a class="text-primary fw-semibold" href="{{ url('/view-microlearning/4') }}">Explore now for Event<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -273,7 +273,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title fw-semibold">Job Offering</h5>
                                             <p><span class="text-default fw-semibold">140 Jobs</span> available</p>
-                                            <a class="text-primary fw-semibold" href="/view-microlearning/1">Explore Jobs<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
+                                            <a class="text-primary fw-semibold" href="{{ url('/view-microlearning/5') }}">Explore Jobs<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
                                         </div>
                                     </div>
                                 </div>
