@@ -45,8 +45,8 @@
                 @if (Auth::user()->ekyc_status === 1) 
                 <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
-                        <i class="bi bi-body-text "></i>
-                        <span class="side-menu__label mx-2">Content Management</span>
+                        <i class='bx bx-align-left side-menu__icon'></i>
+                        <span class="side-menu__label">Content</span>
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
@@ -58,8 +58,22 @@
                         </li>
                     </ul>
                 </li>
+                <li class="slide__category mt-4"><span class="category-name">xBug GPT (Premium)</span></li>
+                <li class="slide has-sub">
+                    <a href="javascript:void(0);" class="side-menu__item ">
+                        <img src="../../assets/images/gpt.png" alt="" width="28px" height="28px">
+                        <span class="side-menu__label mx-2">xBug GPT</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="/organization/chatbot" class="side-menu__item">ChatBot</a>
+                        </li>
+                    </ul>
+                </li>
                 @endif
 
+                
             </ul>
             <div class="slide-right" id="slide-right">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24"

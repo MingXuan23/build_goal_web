@@ -16,52 +16,56 @@ class AdminRouteController extends Controller
     public function showUser(Request $request)
     {
         $data = DB::table('users as u')
-            ->join('roles as r', function ($join) {
-                $join->whereRaw('JSON_CONTAINS(u.role, JSON_ARRAY(r.id))');
-            })
-            ->join('organization_user as ou', 'ou.user_id', 'u.id')
-            ->join('organization as o', 'o.id', 'ou.organization_id')
-            ->select(
-                'u.*',
-                'o.name as org_name',
-                'o.desc as org_desc',
-                'o.status as org_status',
-                'o.logo as org_logo',
-                'o.address as org_address',
-                'o.state as org_state',
-                'o.org_type',
-                DB::raw('GROUP_CONCAT(r.role) as role_names')
-            )
-            ->groupBy(
-                'u.id',
-                'u.name',
-                'u.password',
-                'u.telno',
-                'u.address',
-                'u.state',
-                'u.email',
-                'u.status',
-                'u.role',
-                'u.active',
-                'u.created_at',
-                'u.Updated_at',
-                'u.email_status',
-                'u.verification_code',
-                'u.icNo',
-                'u.remember_token',
-                'u.ekyc_status',
-                'u.ekyc_time',
-                'u.ekyc_signature',
-                'o.name',
-                'o.desc',
-                'o.status',
-                'o.logo',
-                'o.address',
-                'o.state',
-                'o.org_type',
-            )
-            ->orderby('u.created_at', 'asc')
-            ->get();
+        ->join('roles as r', function ($join) {
+            $join->whereRaw('JSON_CONTAINS(u.role, JSON_ARRAY(r.id))');
+        })
+        ->join('organization_user as ou', 'ou.user_id', 'u.id')
+        ->join('organization as o', 'o.id', 'ou.organization_id')
+        ->select(
+            'u.*',
+            'o.name as org_name',
+            'o.desc as org_desc',
+            'o.status as org_status',
+            'o.logo as org_logo',
+            'o.address as org_address',
+            'o.state as org_state',
+            'o.org_type',
+            DB::raw('GROUP_CONCAT(r.role) as role_names')
+        )
+        ->whereRaw('NOT (JSON_LENGTH(u.role) = 1 AND JSON_CONTAINS(u.role, JSON_ARRAY(4)))')  // Exclude [5] only
+        ->groupBy(
+            'u.id',
+            'u.name',
+            'u.password',
+            'u.telno',
+            'u.address',
+            'u.state',
+            'u.email',
+            'u.status',
+            'u.role',
+            'u.active',
+            'u.created_at',
+            'u.updated_at',
+            'u.email_status',
+            'u.verification_code',
+            'u.icNo',
+            'u.remember_token',
+            'u.ekyc_status',
+            'u.ekyc_time',
+            'u.ekyc_signature',
+            'u.is_gpt',
+            'u.gpt_status',
+            'o.name',
+            'o.desc',
+            'o.status',
+            'o.logo',
+            'o.address',
+            'o.state',
+            'o.org_type'
+        )
+        ->orderBy('u.created_at', 'asc')
+        ->get();
+    
 
         if ($request->ajax()) {
             $table = DataTables::of($data)->addIndexColumn();
@@ -149,6 +153,81 @@ class AdminRouteController extends Controller
         $state = DB::table('states')->select('id', 'name')->get();
 
         return view('admin.userManagement.index', [
+            'roles' => $role,
+            'datas' => $data,
+            'states' => $state
+        ]);
+    }
+    public function showUserMobile(Request $request)
+    {
+        $data = DB::table('users')
+        ->whereRaw('JSON_LENGTH(role) = 1 AND JSON_CONTAINS(role, JSON_ARRAY(5))')  // Ensure role is [5] only
+        ->orderBy('created_at', 'asc')
+        ->get();
+
+        if ($request->ajax()) {
+            $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('action', function ($row) {
+                $button = '<div class="d-flex justify-content-end"><button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2"
+                                        data-bs-toggle="modal" data-bs-target="#modalView-' . $row->id . '">
+                                        <i class="ri-eye-line fw-bold"></i>
+                                    </button>
+                                    <button class="btn btn-icon btn-sm btn-warning-transparent rounded-pill"
+                                        data-bs-toggle="modal" data-bs-target="#modalUpdate-' . $row->id . '">
+                                        <i class="ri-edit-line fw-bold"></i>
+                                    </button>
+                                    </div>
+                                    ';
+                return $button;
+            });
+
+            $table->addColumn('email_status', function ($row) {
+                $statusClass = ($row->email_status !== 'NOT VERIFY') ? 'success' : 'danger';
+                $button = '<div class="d-flex justify-content-between">
+                                <span class=" text-' . $statusClass . ' p-2 me-1 fw-bold">
+                                    <i class="bi bi-circle-fill"></i> ' . $row->email_status . '
+                                </span>
+                                <button class="btn btn-icon btn-sm btn-warning-transparent rounded-pill " data-bs-toggle="modal" data-bs-target="#modalEmailStatus-' . $row->id . '">
+                                    <i class="ri-edit-line fw-bold"></i>
+                                </button>
+                            </div>
+                                    ';
+                return $button;
+            });
+            $table->addColumn('active', function ($row) {
+                $messageActive = ($row->active === 1 ? 'ACTIVE' : 'DISABLE');
+                $statusClass = ($row->active === 1) ? 'success' : 'danger';
+                $button = '
+                            <div class="d-flex justify-content-between">
+                            <span class=" text-' . $statusClass . ' p-2 me-1 fw-bold">
+                                <i class="bi bi-circle-fill"></i> ' . $messageActive . '
+                            </span>
+                            <button class="btn btn-icon btn-sm btn-warning-transparent rounded-pill " data-bs-toggle="modal" data-bs-target="#modalActive-' . $row->id . '">
+                                <i class="ri-edit-line fw-bold"></i>
+                            </button>
+                        </div>
+                                    ';
+                return $button;
+            });
+            $table->addColumn('role_names', function ($row) {
+                $button = '
+
+                <div class="d-flex justify-content-between"><span class="badge bg-info-transparent p-2 me-1 fw-bold">Mobile User</span>
+                </div> 
+                        
+                                    ';
+                return $button;
+            });
+
+            $table->rawColumns(['action', 'email_status', 'active','role_names']);
+
+            return $table->make(true);
+        }
+        $role = DB::table('roles')->get();
+        $state = DB::table('states')->select('id', 'name')->get();
+
+        return view('admin.userManagement.mobile', [
             'roles' => $role,
             'datas' => $data,
             'states' => $state

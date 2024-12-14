@@ -35,7 +35,10 @@
                     </a>
                     <ul class="slide-menu child1">
                         <li class="slide">
-                            <a href="/admin/user" class="side-menu__item">View User</a>
+                            <a href="/admin/user" class="side-menu__item">User Web</a>
+                        </li>
+                        <li class="slide">
+                            <a href="/admin/user-mobile" class="side-menu__item">User Mobile</a>
                         </li>
                         <li class="slide">
                             <a href="/admin/add-user" class="side-menu__item">Add User</a>
@@ -112,7 +115,37 @@
                         </li>
                     </ul>
                 </li>
-
+                <li class="slide__category mt-4"><span class="category-name">xBug GPT</span></li>
+                <li class="slide has-sub">
+                    <a href="javascript:void(0);" class="side-menu__item ">
+                        <img src="../../assets/images/gpt.png" alt="" width="28px" height="28px">
+                        <span class="side-menu__label mx-2">xBug GPT</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="/admin/chatbot" class="side-menu__item">ChatBot</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="slide has-sub">
+                    <a href="javascript:void(0);" class="side-menu__item ">
+                        <i class='bx bxs-cog side-menu__icon mx-1'></i>
+                        <span class="side-menu__label mx-2">setting</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="/admin/gpt-model" class="side-menu__item">Model</a>
+                        </li>
+                        <li class="slide">
+                            <a href="/admin/gpt-usage" class="side-menu__item">Usage</a>
+                        </li>
+                        <li class="slide">
+                            <a href="/admin/gpt-log" class="side-menu__item">Logs</a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
             <div class="slide-right" id="slide-right">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24"

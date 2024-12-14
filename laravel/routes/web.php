@@ -9,6 +9,7 @@ use App\Http\Controllers\EkycController;
 use App\Http\Controllers\emailController;
 use App\Http\Controllers\OrganizationRouteController;
 use App\Http\Controllers\StaffRouteController;
+use App\Http\Controllers\GPTChatBot;
 use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MicrolearningController;
@@ -68,28 +69,41 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
 
     Route::get('/dashboard', [AdminRouteController::class, 'showDashboard'])->name('showDashboardAdmin');
     Route::get('/user', [AdminRouteController::class, 'showUser'])->name('showUserAdmin');
+    Route::get('/user-mobile', [AdminRouteController::class, 'showUserMobile'])->name('showUserMobile');
     Route::get('/add-user', [AdminRouteController::class, 'showAddUser'])->name('showAddUser');
     Route::get('/view-content', [AdminRouteController::class, 'showContentAdmin'])->name('showContentAdmin');
     Route::get('/profile',  [AdminRouteController::class, 'showProfile'])->name('showProfileAdmin');
     Route::get('/email-logs',  [AdminRouteController::class, 'showEmailLogs'])->name('showEmailLogs');
-
+    Route::get('/gpt-usage', [GPTChatBot::class, 'getUsage'])->name('getUsage');
+    Route::get('/gpt-model', [GPTChatBot::class, 'showModelGpt'])->name('showModelGpt');
+    Route::post('/update-gpt-model/{id}', [GPTChatBot::class, 'updateGptModel'])->name('updateGptModel');
+    Route::get('/gpt-log', [GPTChatBot::class, 'showGptLog'])->name('showGptLog');
+    
+    Route::get('/chatbot', [GPTChatBot::class, 'showChatBotAdmin'])->name('showChatBotAdmin');
+    Route::get('/gpt-model', [GPTChatBot::class, 'showGptModel'])->name('showGptModel');
+    Route::get('/email-notification-logs', [emailController::class, 'showNotificationLogs'])->name('showNotificationLogs');
+    Route::post('/chatbot/send', [GPTChatBot::class, 'sendMessageAdmin'])->name('sendMessageAdmin');
+    
     Route::get('/email', [emailController::class, 'showEmail'])->name('showEmail');
     Route::post('/send-email', [emailController::class, 'sendEmail'])->name('sendEmail');
     Route::post('/send-email-to-all', [emailController::class, 'sendEmailToAll'])->name('sendEmailToAll');
-    Route::get('/email-notification-logs', [emailController::class, 'showNotificationLogs'])->name('showNotificationLogs');
     Route::get('/package', [AdminRouteController::class, 'showPackage'])->name('showPackage');
-
-
+    
+    
     Route::get('/card-logs', [EkycController::class, 'showCardLogs'])->name('showCardLogs');
     Route::get('/face-logs', [EkycController::class, 'showFaceLogs'])->name('showFaceLogs');
-
+    
+    Route::post('/update-gpt-model-status/{id}', [GPTChatBot::class, 'updateGptModelStatus'])->name('updateGptModelStatus');
     Route::post('/approve-content/{id}', [ContentController::class, 'approveContent'])->name('approveContent');
     Route::post('/reject-content/{id}', [ContentController::class, 'rejectContent'])->name('rejectContent');
     Route::post('/update-user/{id}', [UserManagementController::class, 'updateUser'])->name('updateUser');
+    Route::post('/update-user-mobile/{id}', [UserManagementController::class, 'updateUserMobile'])->name('updateUserMobile');
     Route::post('/update-role/{id}', [UserManagementController::class, 'updateRole'])->name('updateRole');
     Route::delete('/user-delete/{id}', [UserManagementController::class, 'userDeleteAdmin'])->name('userDeleteAdmin');
     Route::post('/update-ekyc-status/{id}', [UserManagementController::class, 'updateEkycStatus'])->name('updateEkycStatus');
     Route::post('/update-email-status/{id}', [UserManagementController::class, 'updateEmailStatus'])->name('updateEmailStatus');
+    Route::post('/update-email-email-mobile/{id}', [UserManagementController::class, 'updateEmailStatusMobile'])->name('updateEmailStatusMobile');
+    Route::post('/update-email-status-mobile/{id}', [UserManagementController::class, 'updateAccountStatusMobile'])->name('updateAccountStatusMobile');
     Route::post('/update-account-status/{id}', [UserManagementController::class, 'updateAccountStatus'])->name('updateAccountStatus');
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailAdmin'])->name('updateProfilePersonalDetailAdmin');
     Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordAdmin'])->name('updatePasswordAdmin');
@@ -124,6 +138,9 @@ Route::get('payment_template', [TransactionController::class, 'index'])->name('p
 Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function () {
     Route::get('/dashboard', [OrganizationRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
     Route::get('/profile', [OrganizationRouteController::class, 'showProfile'])->name('showProfileOrganization');
+    Route::get('/chatbot', [GPTChatBot::class, 'showChatBot'])->name('showChatBot');
+    Route::post('/chatbot/send', [GPTChatBot::class, 'sendMessage'])->name('sendMessage');
+
 
     // Route::middleware(['ekycCheck'])->group(function () {
     Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');
