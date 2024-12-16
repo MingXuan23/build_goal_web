@@ -49,6 +49,8 @@ Route::get('/reset-password', [AuthController::class, 'viewResetPassword'])->nam
 
 
 Route::get('/request-delete-acc', [AuthController::class, 'requestDelAcc'])->name('requestDelAcc');
+Route::get('/policy', [AuthController::class, 'policy'])->name('policy');
+
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/organization-register', [AuthController::class, 'createOrganizationRegister'])->name('createOrganizationRegister');
