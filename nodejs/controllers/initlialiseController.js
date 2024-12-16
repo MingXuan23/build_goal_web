@@ -55,19 +55,7 @@ const deletePointFromCollection = async (collectionName, id, res) => {
 
     } catch (error) {
 
-        if (error.response) {
-            console.error('API Error:', error.response.data);
-            return res.status(error.response.status).json({
-                error: 'Error deleting points from collection',
-                details: error.response.data
-            });
-        } else if (error.request) {
-            console.error('No response from API:', error.request);
-            return res.status(500).json('No response from API');
-        } else {
-            console.error('Unexpected Error:', error.message);
-            return res.status(500).json('Unexpected error: ' + error.message);
-        }
+       console.log(error);
     }
 };
 
@@ -106,7 +94,7 @@ const addPointToCollection = async (collectionName, id) => {
             .first();
 
         if (!user) {
-            return res.status(400).json({ message: 'Id not found' });
+            return
         }
 
         pointData = {
@@ -145,10 +133,11 @@ const addPointToCollection = async (collectionName, id) => {
         pointData = {
             id: parseInt(id), // Replace with your desired ID
             payload: {
-                state: content.state,
+                state: (typeof content.state === 'string' ? JSON.parse(content.state || '{}') : content.state),
+
                 reach_score: reach_score
             },
-            vector: content.category_weight // Replace with your actual vector data
+            vector: (typeof content.category_weight === 'string' ? JSON.parse(content.category_weight || '{}') : content.category_weight),// Replace with your actual vector data
         };
 
 
@@ -170,19 +159,7 @@ const addPointToCollection = async (collectionName, id) => {
     } catch (error) {
 
         console.error(error);
-        if (error.response) {
-            console.error('API Error:', error.response.data); // Log the response
-            return res.status(error.response.status).json({
-                message: 'Error adding point to collection',
-                details: error.response.data, // Include detailed server response
-            });
-        } else if (error.request) {
-            console.error('No response from API:', error.request);
-            return res.status(500).json({ message: 'No response from API' });
-        } else {
-            console.error('Unexpected Error:', error.message);
-            return res.status(500).json({ message: 'Unexpected error: ' + error.message });
-        }
+      
 
     }
 };
@@ -286,7 +263,7 @@ const intialise = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
         return res.status(403).json({ error: error.message });
     }
 };

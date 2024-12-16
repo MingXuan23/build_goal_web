@@ -456,7 +456,8 @@ const addPointToCollection = async (collectionName, id, res) => {
             payload: {
                 state: [user.state]
             },
-            vector: user.values // Replace with your actual vector data
+            vector: (typeof user.values === 'string' ? JSON.parse(user.values || '{}') : user.values),
+           
         };
 
     } else {
@@ -488,10 +489,10 @@ const addPointToCollection = async (collectionName, id, res) => {
         pointData = {
             id: parseInt(id), // Replace with your desired ID
             payload: {
-                state: content.state,
+                state: (typeof content.state === 'string' ? JSON.parse(content.state || '{}') : content.state),
                 reach_score: reach_score
             },
-            vector: content.category_weight // Replace with your actual vector data
+            vector: (typeof content.category_weight === 'string' ? JSON.parse(content.category_weight || '{}') : content.category_weight),
         };
 
 

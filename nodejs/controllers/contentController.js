@@ -18,7 +18,7 @@ const getContentByVector = async (values) => {
 
     const filters = [
         {
-            vector: values,
+            vector:   (typeof values === 'string' ? JSON.parse(values || '{}') : values),
             limit: 2,
             filter: {
                 must: [
@@ -32,7 +32,7 @@ const getContentByVector = async (values) => {
             }
         },
         {
-            vector: values,
+            vector:   (typeof values === 'string' ? JSON.parse(values || '{}') : values),
             limit: 3,
             filter: {
                 should: [
@@ -52,7 +52,7 @@ const getContentByVector = async (values) => {
             }
         },
         {
-            vector: values,
+            vector:   (typeof values === 'string' ? JSON.parse(values || '{}') : values),
             limit: 20
         }
     ];
