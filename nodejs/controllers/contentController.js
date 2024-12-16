@@ -14,77 +14,73 @@ const HOST_URL = process.env.VECTOR_HOST;// Replace with your actual host URL
 const API_KEY = process.env.VECTOR_API_KEY;
 
 const getContentByVector = async (values) => {
-    const content_ids = new Set();
+    const parseValues = typeof values === 'string' ? JSON.parse(values || '{}') : values;
 
-    const filters = [
-        {
-            vector:   (typeof values === 'string' ? JSON.parse(values || '{}') : values),
-            limit: 2,
-            filter: {
-                must: [
-                    {
-                        key: "reach_score",
-                        range: {
-                            "gte": 5.0
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            vector:   (typeof values === 'string' ? JSON.parse(values || '{}') : values),
-            limit: 3,
-            filter: {
-                should: [
-                    {
-                        key: "reach_score",
-                        range: {
-                            "gte": 2
-                        }
-                    },
-                    {
-                        key: "state",
-                        match: {
-                            "any": ["Melaka"]
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            vector:   (typeof values === 'string' ? JSON.parse(values || '{}') : values),
-            limit: 20
+    // Function to create a filter object
+    const createFilter = (limit, must = [], should = [], mustNot = []) => ({
+        vector: parseValues,
+        limit,
+        filter: {
+            must,
+            should,
+            must_not: mustNot
         }
+    });
+
+    // Define the filters
+    const filters = [
+        createFilter(2, [{ key: "reach_score", range: { "gte": 5.0 } }], [], [{ key: "type", value: 1 }]),
+        createFilter(3, [{ key: "reach_score", range: { "gte": 2 } }], [{ key: "state", match: { "any": ["Melaka"] } }], [{ key: "type", value: 1 }]),
+        createFilter(20, [], [], [{ key: "type", value: 1 }])
     ];
 
-    const response = await axios.post(`${HOST_URL}/collections/content_collection/points/search/batch`, {
-        searches: filters
-    }, {
-        headers: {
-            'api-key': API_KEY,
-            'Content-Type': 'application/json'
-        }
-    });
+    const microLearningFilter = createFilter(7, [{ key: "type", value: 1 }]);
 
+    try {
+        // Send both regular filters and micro-learning filters concurrently
+        const [regularResponse, microLearningResponse] = await Promise.all([
+            axios.post(`${HOST_URL}/collections/content_collection/points/search/batch`, { searches: filters }, {
+                headers: {
+                    'api-key': API_KEY,
+                    'Content-Type': 'application/json'
+                }
+            }),
+            axios.post(`${HOST_URL}/collections/content_collection/points/search/batch`, { searches: [microLearningFilter] }, {
+                headers: {
+                    'api-key': API_KEY,
+                    'Content-Type': 'application/json'
+                }
+            })
+        ]);
 
-    response.data?.result?.forEach(list => {
-        list.forEach(item =>{
-            if (item.id) {
-                content_ids.add(item.id);
-            }
-        })
-        
-    });
+        // Create a Set to store unique content IDs
+        const content_ids = new Set();
 
+        // Process regular filter results
+        regularResponse.data?.result?.forEach(list => {
+            list.forEach(item => {
+                if (item.id) {
+                    content_ids.add(item.id);
+                }
+            });
+        });
 
-    const list =  Array.from(content_ids).slice(0, 10);
+        // Process micro-learning results
+        microLearningResponse.data?.result?.forEach(list => {
+            list.forEach(item => {
+                if (item.id) {
+                    content_ids.add(item.id);
+                }
+            });
+        });
 
- 
-
-    // Return as an array
-    return Array.from(list);
-    //return Array.from(content_ids);
-}
+        // Return the first 10 content IDs
+        return Array.from(content_ids).slice(0, 10);
+    } catch (error) {
+        console.error('Error fetching content:', error);
+        throw error;  // Rethrow or handle the error as needed
+    }
+};
 
 const getContents = async (req, res) => {
     try {

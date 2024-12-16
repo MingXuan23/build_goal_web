@@ -497,7 +497,8 @@ const addPointToCollection = async (collectionName, id, res) => {
             id: parseInt(id), // Replace with your desired ID
             payload: {
                 state: (typeof content.state === 'string' ? JSON.parse(content.state || '{}') : content.state),
-                reach_score: reach_score
+                reach_score: reach_score,
+                type: content.content_type_id
             },
             vector: (typeof content.category_weight === 'string' ? JSON.parse(content.category_weight || '{}') : content.category_weight),
         };
