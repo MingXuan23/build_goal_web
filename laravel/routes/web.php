@@ -144,6 +144,7 @@ Route::get('payment_template', [TransactionController::class, 'index'])->name('p
 Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function () {
     Route::get('/dashboard', [OrganizationRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
     Route::get('/profile', [OrganizationRouteController::class, 'showProfile'])->name('showProfileOrganization');
+    Route::get('/MicroLearning', [OrganizationRouteController::class, 'showMicroLearningForm'])->name('showMicroLearningForm');
     Route::get('/chatbot', [GPTChatBot::class, 'showChatBot'])->name('showChatBot');
     Route::post('/chatbot/send', [GPTChatBot::class, 'sendMessage'])->name('sendMessage');
 
@@ -151,7 +152,7 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
     // Route::middleware(['ekycCheck'])->group(function () {
     Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');
     Route::get('/apply-content', [OrganizationRouteController::class, 'showAddContent'])->name('showAddContent');
-
+    Route::post('/MicroLearning', [ContentController::class, 'uploadMicroLearning'])->name('uploadMicroLearning');
     Route::post('/apply-content', [ContentController::class, 'addContent'])->name('addContent');
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailOrganization'])->name('updateProfilePersonalDetailOrganization');
     Route::post('/profile/update-organization-Detail', [UserProfileController::class, 'updateProfileOrganizationDetail'])->name('updateProfileOrganizationDetail');

@@ -197,5 +197,8 @@ class OrganizationRouteController extends Controller
         return view('organization.contentManagement.applyContent', compact('content_types', 'stateCities','states'));
     }
 
-
+    public function showMicroLearningForm()
+    {
+        return view('organization.contentManagement.microLearning');
+    }
 }
