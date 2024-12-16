@@ -31,6 +31,10 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    public function requestDelAcc(){
+        return view('auth.requestDelAcc');
+    }
+
     public function viewOrganizationRegister()
     {
         $organization_type = DB::table('organization_type')->select('id', 'type')->get();

@@ -48,6 +48,8 @@ Route::get('/content-creator-register', [AuthController::class, 'viewContentCrea
 Route::get('/reset-password', [AuthController::class, 'viewResetPassword'])->name('viewResetPassword');
 
 
+Route::get('/request-delete-acc', [AuthController::class, 'requestDelAcc'])->name('requestDelAcc');
+
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/organization-register', [AuthController::class, 'createOrganizationRegister'])->name('createOrganizationRegister');
 Route::post('/content-creator-register', [AuthController::class, 'createContentCreatorRegister'])->name('createContentCreatorRegister');
@@ -56,6 +58,8 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 Route::get('/resend-email-reset-password', [AuthController::class, 'resendResetPassword'])->name('resendResetPassword');
 
 Route::get('/check-mobile', [EkycController::class, 'CheckMobile'])->name('CheckMobile');
+
+
 Route::get('/card-verification/{data}', [EkycController::class, 'CardVerification'])->name('CardVerification');
 Route::get('/face-verification', [EkycController::class, 'FaceVerification'])->name('FaceVerification');
 Route::get('/verification-process', [EkycController::class, 'VerificationSuccess'])->name('VerificationSuccess');
