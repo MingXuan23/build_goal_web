@@ -118,5 +118,8 @@ class ContentController extends Controller
     //     return view('organization.contentManagement.applyContent', compact('content_types'));
     // }
     
+    public function deeplink(){
+        return view('content_interaction.index');
+    }
 
 }

@@ -189,3 +189,5 @@ Route::get('/microlearning', [MicrolearningController::class, 'index']);
 Route::get('/content/{id}', [MicrolearningController::class, 'show']);
 Route::get('/view-microlearning', [MicrolearningController::class, 'showMicrolearning'])->name('showMicrolearning');
 Route::get('/view-microlearning/{id}', [MicrolearningController::class, 'showMicrolearningDetail'])->name('showMicrolearningDetail');
+
+Route::get('/deeplink', [ContentController::class, 'deeplink'])->name('deeplink');

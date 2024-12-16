@@ -13,7 +13,7 @@ const model = process.env.GPT_MODEL;
 const node_env = process.env.NODE_ENV;
 
 const fastResponse = async (req, res, next) => {
-  const { prompt, estimate_word, information, tone, chat_history, use_content } = req.body;
+  const { prompt, estimate_word, information, tone, chat_history, contentList } = req.body;
   const user = req.user;
 
   if (!prompt || !information) {
@@ -33,25 +33,17 @@ const fastResponse = async (req, res, next) => {
     final_prompt = `${prompt}. Response in ${estimateWords} words.`;
   }
 
-  const user_vector = await knex('user_vector').select('*').where({ 'user_id': user.id }).first();
-
-  let contentList = [];
-  if (user_vector || !use_content) {
-    const content_ids = await getContentByVector(user_vector.values);
 
 
-    contentList = await knex('contents').select('name', 'place', 'enrollment_price', 'first_date').whereIn('id', content_ids);
-  }
-
-  
 
   let messagesBody = [
     {
       role: 'system',
-      content: `Your name is Jan, an experienced financial advisor in the "Build Growth" Mobile App, who always giving practical solution to financial issues, uses RM (Ringgit Malaysia) as the main currency and responds using English. If the user asks for financial advice, ${toneMsg}.` +
-        `You have read and understood the user's financial information as stated below: ${JSON.stringify(information)}.` +
-        (contentList.length >= 1
-          ? ` You may suggest the user to involve themselves in these courses and events as the solution to increase their income: ${JSON.stringify(contentList)}.`
+      content: `Your name is xBUG Ai, an experienced financial advisor in the "Build Growth" Mobile App, who always giving practical solution to financial issues, uses RM (Ringgit Malaysia) as the main currency and responds using English. If the user asks for financial advice, ${toneMsg}.` +
+      `If user initialising you, you need to tell the user you are ready.`+
+        `The app have other two section which is "Financial" and "Content". You have read and understood the user's financial information from the "Financial Section": ${JSON.stringify(information)}.` +
+        (contentList
+          ? ` You may suggest the user to involve themselves in these courses and events at the "Content" section as the solution to increase their income: ${contentList}.`
           : ` You may suggest the user to take a look at the "Content" section in the app for more entrepreneurship and self-investment opportunities.`),
     },
   ];
@@ -71,10 +63,12 @@ const fastResponse = async (req, res, next) => {
     const apiResponse = await axios.post(`${HOST_URL}/api/chat`, {
       model: model, // Replace with your actual model name
       messages: messagesBody,
+      keep_alive: -1,
       options: {
         temperature: 0.5,
         num_ctx: 4096,
-        repeat_last_n: -1
+        repeat_last_n: -1,
+       
       },
     }, {
       headers: { 'Content-Type': 'application/json' },
