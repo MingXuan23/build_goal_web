@@ -119,7 +119,14 @@ const saveUserVectorTest = async (req, res) => {
          
         let vector =initialValues;
 
-        dislike_list = dislike_list.map(item => item.map(value => 1 - value) );
+        dislike_list = dislike_list.map(item => {
+            if (Array.isArray(item)) {
+                return item.map(value => 1 - value); // If item is an array, map over it
+            } else {
+                return 1 - item; // If it's a number, just subtract from 1
+            }
+        });
+        
        
 
         vector = calUserVector(vector,like_list,1,2);
