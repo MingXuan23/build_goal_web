@@ -123,6 +123,7 @@ class ContentController extends Controller
     }
     public function uploadMicroLearning(Request $request)
     {
+        $user = Auth::user();
         // Handle the POST request when the form is submitted
         if ($request->isMethod('post')) {
             // Validate the form inputs
@@ -145,6 +146,7 @@ class ContentController extends Controller
                 'content_type_id' => 2, // Set content_type_id to 2
                 'created_at' => now(), // Timestamp for creation
                 'updated_at' => now(), // Timestamp for update
+                'user_id' => $user -> id
             ];
 
             // Insert the data into the contents table

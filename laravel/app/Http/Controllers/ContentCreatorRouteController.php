@@ -14,7 +14,28 @@ class ContentCreatorRouteController extends Controller
     public function showDashboard(Request $request)
     {
      
-        return view('contentcreator.dashboard.index');
+        $proposedContents = DB::table('contents')
+        ->where('user_id', Auth::user()->id)->count();
+        $approvedContents = DB::table('contents')
+            ->where('user_id', Auth::user()->id)
+            ->where('reason_phrase', 'APPROVED')
+            ->count();
+        $rejectedContents = DB::table('contents')
+            ->where('user_id', Auth::user()->id)
+            ->where('reason_phrase', 'REJECTED')
+            ->count();
+
+        $pendingContents = DB::table('contents')
+        ->where('user_id', Auth::user()->id)
+        ->where('reason_phrase', 'PENDING')
+        ->count();
+
+        return view('contentcreator.dashboard.index', [
+            'proposedContents' => $proposedContents,
+            'approvedContents' => $approvedContents,
+            'rejectedContents' => $rejectedContents,
+            'pendingContents' => $pendingContents,
+        ]);
     }
     public function showProfile(Request $request)
     {
@@ -70,4 +91,18 @@ class ContentCreatorRouteController extends Controller
             'datas' => $data
         ]);
     }
+    public function showAddContentForm(Request $request)
+    {
+        $content_types = DB::table('content_types')->where('status', true)->get();
+        $stateCitiesJson = file_get_contents(public_path('assets/json/states-cities.json'));
+        $stateCities = json_decode($stateCitiesJson, true);
+        $states = DB::table('states')->select('id', 'name')->get();
+        return view('contentcreator.contentManagement.applyContent', compact('content_types', 'stateCities','states'));
+    }
+
+    public function showMicroLearning()
+    {
+        return view('contentcreator.contentManagement.microLearning');
+    }
+
 }

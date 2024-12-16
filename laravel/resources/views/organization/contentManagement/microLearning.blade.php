@@ -29,51 +29,51 @@
       <div class="card-header">
          <h2>MicroLearning Content</h2>
       </div>
-      <div class="card-body">
-         <form action="{{ route('uploadMicroLearning') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="mb-3">
-               <label for="content_name" class="form-label">Title</label>
-               <input type="text" class="form-control" id="content_name" name="content_name" required>
-            </div>
-            <div class="mb-3">
-               <label for="image" class="form-label">Thumbnail (Image)</label>
-               <input type="file" class="form-control" id="image" name="image" required>
-            </div>
-            <div class="mb-3">
-               <label for="content_desc" class="form-label">Description</label>
-               <textarea class="form-control" id="content_desc" name="content_desc" rows="5" required></textarea>
-            </div>
-            <div id="sectionsContainer"></div>
-            <div id="mainButtons">
-               <button type="button" class="btn btn-primary" onclick="showSectionInput()">Add Section Here</button>
-               <button type="button" class="btn btn-primary" onclick="generatePreview()">Generate Preview</button>
-            </div>
-            <div id="sectionInput" class="section-input" style="display: none;">
-               <div class="mb-3">
-                     <label for="sectionHeader" class="form-label">Section Header</label>
-                     <input type="text" id="sectionHeader" class="form-control" placeholder="Enter Section Header">
-               </div>
-               <div class="mb-3">
-                     <label for="sectionBody" class="form-label">Section Body</label>
-                     <textarea id="sectionBody" class="form-control" rows="4" placeholder="Enter Section Content"></textarea>
-               </div>
-               <button type="button" class="btn btn-primary" onclick="addSection()">Add Section</button>
-            </div>
-
-            <input type="hidden" id="formattedContent" name="formattedContent" value="">
-
-            <div class="col-md-12">
-               <div class="row">
-                     <div class="col-md-8"></div>
-                     <div class="col-md-2 text-end"></div>
-                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-success mt-5 px-4">Upload</button>
+         <div class="card-body">
+               <form action="{{ route('uploadMicroLearning') }}" method="POST" enctype="multipart/form-data">
+                  @csrf
+                  <div class="mb-3">
+                     <label for="content_name" class="form-label">Title</label>
+                     <input type="text" class="form-control" id="content_name" name="content_name" required>
+                  </div>
+                  <div class="mb-3">
+                     <label for="image" class="form-label">Thumbnail (Image)</label>
+                     <input type="file" class="form-control" id="image" name="image" required>
+                  </div>
+                  <div class="mb-3">
+                     <label for="content_desc" class="form-label">Description</label>
+                     <textarea class="form-control" id="content_desc" name="content_desc" rows="5" required></textarea>
+                  </div>
+                  <div id="sectionsContainer"></div>
+                  <div id="mainButtons">
+                     <button type="button" class="btn btn-primary" onclick="showSectionInput()">Add Section Here</button>
+                     <button type="button" class="btn btn-primary" onclick="generatePreview()">Generate Preview</button>
+                  </div>
+                  <div id="sectionInput" class="section-input" style="display: none;">
+                     <div class="mb-3">
+                           <label for="sectionHeader" class="form-label">Section Header</label>
+                           <input type="text" id="sectionHeader" class="form-control" placeholder="Enter Section Header">
                      </div>
-               </div>
-            </div>
-         </form>
-      </div>
+                     <div class="mb-3">
+                           <label for="sectionBody" class="form-label">Section Body</label>
+                           <textarea id="sectionBody" class="form-control" rows="4" placeholder="Enter Section Content"></textarea>
+                     </div>
+                     <button type="button" class="btn btn-primary" onclick="addSection()">Add Section</button>
+                  </div>
+
+                  <input type="hidden" id="formattedContent" name="formattedContent" value="">
+
+                  <div class="col-md-12">
+                     <div class="row">
+                           <div class="col-md-8"></div>
+                           <div class="col-md-2 text-end"></div>
+                           <div class="col-md-2">
+                              <button type="submit" class="btn btn-success mt-5 px-4">Upload</button>
+                           </div>
+                     </div>
+                  </div>
+               </form>
+         </div>
    </div>
 
    <!-- Preview Card -->

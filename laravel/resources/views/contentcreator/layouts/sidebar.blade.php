@@ -38,7 +38,14 @@
                         <li class="slide">
                             <a href="#" class="side-menu__item">View Content</a>
                         </li>
+                        <li class="slide">
+                            <a href="/content-creator/apply-content" class="side-menu__item">Apply Content</a>
+                        </li>
+                        <li class="slide">
+                            <a href="/content-creator/MicroLearning" class="side-menu__item">MicroLearning Resource</a>
+                        </li>
                     </ul>
+                    
                 </li>
                 @endif
 

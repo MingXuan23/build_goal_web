@@ -25,7 +25,7 @@
          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
    @endif
-   <form action="{{ route('addContent') }}" method="POST">
+   <form action="{{ route('addContentOrganization') }}" method="POST">
     @csrf
       <div class="row">
          <div class="card custom-card">

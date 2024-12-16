@@ -153,7 +153,7 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
     Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');
     Route::get('/apply-content', [OrganizationRouteController::class, 'showAddContent'])->name('showAddContent');
     Route::post('/MicroLearning', [ContentController::class, 'uploadMicroLearning'])->name('uploadMicroLearning');
-    Route::post('/apply-content', [ContentController::class, 'addContent'])->name('addContent');
+    Route::post('/apply-content', [ContentController::class, 'addContent'])->name('addContentOrganization');
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailOrganization'])->name('updateProfilePersonalDetailOrganization');
     Route::post('/profile/update-organization-Detail', [UserProfileController::class, 'updateProfileOrganizationDetail'])->name('updateProfileOrganizationDetail');
     Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordOrganization'])->name('updatePasswordOrganization');
@@ -175,9 +175,13 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
 Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function () {
     Route::get('/dashboard', [ContentCreatorRouteController::class, 'showDashboard'])->name('showDashboardContentCreator');
     Route::get('/profile', [ContentCreatorRouteController::class, 'showProfile'])->name('showProfileContentCreator');
+    Route::get('/apply-content', [ContentCreatorRouteController::class, 'showAddContentForm'])->name('showAddContentForm');
+    Route::get('/MicroLearning', [ContentCreatorRouteController::class, 'showMicroLearning'])->name('showMicrolearningContentCreator');
 
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailContentCreator'])->name('updateProfilePersonalDetailContentCreator');
     Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordContentCreator'])->name('updatePasswordContentCreator');
+    Route::post('/apply-content', [ContentCreatorRouteController::class, 'addContent'])->name('addContentContentCreator');
+    Route::post('/MicroLearning', [ContentController::class, 'uploadMicroLearning'])->name('uploadMicroLearningContentCreator');
 
     // Route::middleware(['ekycCheck'])->group(function () {
 
