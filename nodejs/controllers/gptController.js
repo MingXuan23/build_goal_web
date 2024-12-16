@@ -49,7 +49,6 @@ const fastResponse = async (req, res, next) => {
   ];
   
 
-  console.log(contentList.length, contentList, contentList.length >= 1 )
   // Check if chat_history exists and is a non-empty array
   if (Array.isArray(chat_history) && chat_history.length > 0) {
     messagesBody.push(...chat_history); // Spread the chat_history array into messagesBody
