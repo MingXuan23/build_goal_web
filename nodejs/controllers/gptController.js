@@ -39,9 +39,9 @@ const fastResponse = async (req, res, next) => {
   let messagesBody = [
     {
       role: 'system',
-      content: `Your name is xBUG Ai, an experienced financial advisor in the "Build Growth" Mobile App, who always giving practical solution to financial issues, uses RM (Ringgit Malaysia) as the main currency and responds using English. If the user asks for financial advice, ${toneMsg}.` +
+      content: `Your name is xBUG Ai, an experienced financial advisor in the "Build Growth" Mobile App, who always considering the user financial situation and giving practical solution to financial issues, uses RM (Ringgit Malaysia) as the main currency and responds using English. If the user asks for financial advice, ${toneMsg}.` +
       `If user initialising you, you need to tell the user you are ready in one sentence.`+
-        `The app have other two section which is "Financial" and "Content". You have read and understood the user's financial information from the "Financial Section": ${JSON.stringify(information)}.` +
+        `The app have other two section which is "Financial" and "Content".The average daily expenses (exclude the debt and bill) should control in RM20 to RM50. You have read and understood the user's financial information from the "Financial Section": ${JSON.stringify(information)}.` +
         (contentList
           ? ` You may suggest the user to involve themselves in these courses and events at the "Content" section as the solution to increase their income: ${contentList}.`
           : ` You may suggest the user to take a look at the "Content" section in the app for more entrepreneurship and self-investment opportunities.`),
@@ -62,7 +62,7 @@ const fastResponse = async (req, res, next) => {
     const apiResponse = await axios.post(`${HOST_URL}/api/chat`, {
       model: model, // Replace with your actual model name
       messages: messagesBody,
-      keep_alive: -1,
+      keep_alive: '60m',
       options: {
         temperature: 0.5,
         num_ctx: 4096,
@@ -74,7 +74,7 @@ const fastResponse = async (req, res, next) => {
       responseType: 'stream', // Important for streaming responses
     });
 
-    console.log(apiResponse);
+   // console.log(apiResponse);
     if (apiResponse.status !== 200) {
       console.error(`API error: ${apiResponse.status}`);
       return res.status(apiResponse.status).json({ error: 'API error' });

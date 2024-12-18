@@ -102,22 +102,36 @@ const saveUserVectorTest = async (req, res) => {
 
         let like_list = await Promise.all(
             like_content_ids.map(async (x) => {
-              const result = await knex('contents').select('category_weight').where('id', x).first();
-              return result ? result.category_weight : null; // Ensure you get only the category_weight
-            })
-          );
+                const result = await knex('contents').select('category_weight').where('id', x).first();
+                if (result) {
+                    return typeof result.category_weight === 'string' ? JSON.parse(result.category_weight || '{}') : result.category_weight;
 
-          let dislike_list = await Promise.all(
-            dislike_content_ids.map(async (x) => {
-              const result = await knex('contents').select('category_weight').where('id', x).first();
-              return result ? result.category_weight : null; // Ensure you get only the category_weight
+                } else {
+                    return null;
+                }
             })
-          );
-          
-         like_list = like_list.filter(z => z !== null);
-         dislike_list = dislike_list.filter(z => z !== null);
-         
-        let vector =initialValues;
+        );
+
+        let dislike_list = await Promise.all(
+            dislike_content_ids.map(async (x) => {
+                const result = await knex('contents').select('category_weight').where('id', x).first();
+
+
+                if (result) {
+                    return typeof result.category_weight === 'string' ? JSON.parse(result.category_weight || '{}') : result.category_weight;
+
+                } else {
+                    return null;
+                }
+
+
+            })
+        );
+
+        like_list = like_list.filter(z => z !== null);
+        dislike_list = dislike_list.filter(z => z !== null);
+
+        let vector = initialValues;
 
         dislike_list = dislike_list.map(item => {
             if (Array.isArray(item)) {
@@ -126,22 +140,22 @@ const saveUserVectorTest = async (req, res) => {
                 return 1 - item; // If it's a number, just subtract from 1
             }
         });
-        
-       
 
-        vector = calUserVector(vector,like_list,1,2);
+
+
+        vector = calUserVector(vector, like_list, 1, 2);
         console.log(vector);
 
-        vector = calUserVector(vector,dislike_list, 0.2 ,2);
-      
-      
+        vector = calUserVector(vector, dislike_list, 0.2, 2);
+
+
         vector = Array.from(vector);
 
-        if(vector.length == 0){
+        if (vector.length == 0) {
             res.status(400).json({ success: false, message: "Vector Value wrong", vector: vector });
         }
 
-       
+
         // Call the Qdrant API with the like and dislike content IDs
         // const response = await axios.post(
         //     `${HOST_URL}/collections/content_collection/points/recommend`,
@@ -163,7 +177,7 @@ const saveUserVectorTest = async (req, res) => {
         // console.log('hello',response.data);
         // // Extract the vector from the response
         // const vector = response.data.result[0].vector;
-        
+
 
         //console.log(vector);
         var result = await knex('user_vector').insert({
@@ -186,10 +200,10 @@ const saveUserVectorTest = async (req, res) => {
             });
         } else if (error.request) {
             console.error('No response from API:', error.request);
-            return res.status(500).json({message: 'No response from API'});
+            return res.status(500).json({ message: 'No response from API' });
         } else {
             console.error('Unexpected Error:', error.message);
-            return res.status(500).json({message:'Unexpected error: ' + error.message});
+            return res.status(500).json({ message: 'Unexpected error: ' + error.message });
         }
     }
 
@@ -224,22 +238,22 @@ const flattenValues = (values, weight) => {
     });
 };
 
-const calUserVector =  (origin, contents, learning_rate, weight) => {
+const calUserVector = (origin, contents, learning_rate, weight) => {
 
     let newValue = origin
 
-    if(contents.length == 0){
+    if (contents.length == 0) {
         return origin;
     }
     contents.forEach(c => {
-        newValue = getSum(newValue,c);
+        newValue = getSum(newValue, c);
     });
 
     newValue = flattenValues(newValue, learning_rate);
-   
-    origin = getSum(origin,newValue)
-    origin = flattenValues(origin,weight);
-   
+
+    origin = getSum(origin, newValue)
+    origin = flattenValues(origin, weight);
+
     return Array.from(origin);
 
 }
@@ -324,10 +338,10 @@ const fetchVectorContent = async (req, res, next) => {
                     }
                 });
             let contents = [];
- 
+
             if (response.data?.result) {
                 for (const item of response.data.result) {
-                  
+
                     if (contents.length >= 7) break; // Stop if we already have 5 contents
                     if (item.id) {
                         const content = await knex('contents')
@@ -336,7 +350,7 @@ const fetchVectorContent = async (req, res, next) => {
                             .first();
                         if (content) {
                             // Use fallback image if content.image is null
-                           // content.image = content.image || 'https://xbug.online/assets/images/landing-page/3.png';
+                            // content.image = content.image || 'https://xbug.online/assets/images/landing-page/3.png';
                             // Use fallback link if content.link is null
                             content.link = content.link || 'https://xbug.online/';
                             contents.push(content);
@@ -455,7 +469,7 @@ const addPointToCollection = async (collectionName, id, res) => {
             .first();
 
         if (!user) {
-            return res.status(400).json({message:'Id not found'});
+            return res.status(400).json({ message: 'Id not found' });
         }
 
         pointData = {
@@ -464,7 +478,7 @@ const addPointToCollection = async (collectionName, id, res) => {
                 state: [user.state]
             },
             vector: (typeof user.values === 'string' ? JSON.parse(user.values || '{}') : user.values),
-           
+
         };
 
     } else {
@@ -490,7 +504,7 @@ const addPointToCollection = async (collectionName, id, res) => {
         }
 
         if (!content) {
-            return res.status(400).json({message:'Id not found or Content Missing Crucial Information'});
+            return res.status(400).json({ message: 'Id not found or Content Missing Crucial Information' });
         }
 
         pointData = {
@@ -518,7 +532,7 @@ const addPointToCollection = async (collectionName, id, res) => {
             }
         });
 
-        return res.status(200).json({message:"Submit Successfully"})
+        return res.status(200).json({ message: "Submit Successfully" })
         //console.log('Point added successfully:', response.data);
     } catch (error) {
 
@@ -531,10 +545,10 @@ const addPointToCollection = async (collectionName, id, res) => {
             });
         } else if (error.request) {
             console.error('No response from API:', error.request);
-            return res.status(500).json({message:'No response from API'});
+            return res.status(500).json({ message: 'No response from API' });
         } else {
             console.error('Unexpected Error:', error.message);
-            return res.status(500).json({message:'Unexpected error: ' + error.message});
+            return res.status(500).json({ message: 'Unexpected error: ' + error.message });
         }
 
     }

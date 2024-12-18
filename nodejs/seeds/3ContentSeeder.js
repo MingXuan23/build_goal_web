@@ -380,30 +380,30 @@ exports.seed = async function(knex) {
         first_date: new Date('2025-01-05').toISOString().slice(0, 19).replace('T', ' '),
         image: 'https://images.wagwalkingweb.com/media/daily_wag/blog_articles/hero/1642800424.549621/how-to-walk-bigger-dogs-on-dog-walks.png'
       },
-      {
-        name: 'Earn money just by walking pets',
-        desc: 'Earn your side income by helping people walk their pets',
-        link: 'https://xbug.online/',
-        content: null,
-        enrollment_price: 20.00,
-        status: 1,
-        //http://localhost:30000/api/vector/getVectorValue?values=[168,258,88,251,200,112,241,89]
-        category_weight: JSON.stringify([0.289,0.875,0.680,0.040,0.240,0.122,0.073,0.999]),
-        content_type_id: await knex('content_types')
-          .where('type', 'Job Offering')
-          .select('id')
-          .first()
-          .then(result => result.id),
-        place: 'Google Meet',
-        participant_limit: 20,
-        state: JSON.stringify(['Melaka']),
-        created_at: knex.fn.now(),
-        updated_at: knex.fn.now(),
-        closed_at: new Date('2025-01-01').toISOString().slice(0, 19).replace('T', ' '),
-        reason_phrase: 'APPROVED',
-        first_date: new Date('2025-01-05').toISOString().slice(0, 19).replace('T', ' '),
-        image: 'https://images.wagwalkingweb.com/media/daily_wag/blog_articles/hero/1642800424.549621/how-to-walk-bigger-dogs-on-dog-walks.png'
-      }
+      // {
+      //   name: 'Earn money just by walking pets',
+      //   desc: 'Earn your side income by helping people walk their pets',
+      //   link: 'https://xbug.online/',
+      //   content: null,
+      //   enrollment_price: 20.00,
+      //   status: 1,
+      //   //http://localhost:30000/api/vector/getVectorValue?values=[168,258,88,251,200,112,241,89]
+      //   category_weight: JSON.stringify([0.289,0.875,0.680,0.040,0.240,0.122,0.073,0.999]),
+      //   content_type_id: await knex('content_types')
+      //     .where('type', 'Job Offering')
+      //     .select('id')
+      //     .first()
+      //     .then(result => result.id),
+      //   place: 'Google Meet',
+      //   participant_limit: 20,
+      //   state: JSON.stringify(['Melaka']),
+      //   created_at: knex.fn.now(),
+      //   updated_at: knex.fn.now(),
+      //   closed_at: new Date('2025-01-01').toISOString().slice(0, 19).replace('T', ' '),
+      //   reason_phrase: 'APPROVED',
+      //   first_date: new Date('2025-01-05').toISOString().slice(0, 19).replace('T', ' '),
+      //   image: 'https://images.wagwalkingweb.com/media/daily_wag/blog_articles/hero/1642800424.549621/how-to-walk-bigger-dogs-on-dog-walks.png'
+      // }
       
       
 
