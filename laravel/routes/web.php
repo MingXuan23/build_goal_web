@@ -9,6 +9,7 @@ use App\Http\Controllers\EkycController;
 use App\Http\Controllers\emailController;
 use App\Http\Controllers\OrganizationRouteController;
 use App\Http\Controllers\StaffRouteController;
+use App\Http\Controllers\JobScraperController;
 use App\Http\Controllers\GPTChatBot;
 use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,11 @@ Route::get('/', function () {
 
     return view('welcome');
 });
+
+Route::get('/jobs', [JobScraperController::class, 'index']);
+Route::get('/jobstreet', [JobScraperController::class, 'indexJobStreet']);
+Route::get('/fetch-jobs', [JobScraperController::class, 'fetchJobs']);
+Route::get('/get-suggested-location', [JobScraperController::class, 'searchLocationsSuggest']);
 
 Route::get('/login', [AuthController::class, 'viewLogin'])->name('viewLogin');
 Route::get('/verify-code', [AuthController::class, 'viewVerify'])->name('viewVerify');
