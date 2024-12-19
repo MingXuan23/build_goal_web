@@ -70,7 +70,7 @@
                                 !</p>
                             <div class="mb-4">
                             </div>
-                            <form action="{{ route('registerGuestContent', $content->id) }}" method="post">
+                            <form action="{{ route('registerGuestContent', $content->card_id) }}" method="post">
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-12">

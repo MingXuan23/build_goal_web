@@ -46,7 +46,7 @@ class ContentController extends Controller
             'state' => 'Organization state',
         ]);
 
-        $password1 = Str::random(6);
+        $password1 = Str::random(16);
         $password = bcrypt($password1);
 
         DB::beginTransaction();
@@ -72,8 +72,10 @@ class ContentController extends Controller
                 $user = DB::table('users')->where('email',$request->input('email'))->first();
 
                 $content = DB::table('content_card')
-                ->join('contents', 'content_card.content_id', '=', 'contents.id')->where('card_id', $card_id)->first();
+                ->join('contents', 'content_card.content_id', '=', 'contents.id')->where('content_card.card_id', $card_id)->first();
+                
 
+               // dd($content,$card_id);
                 $checkUser = DB::table('user_content')->where('user_id', $user->id)->where('content_id', $content->content_id)->first();
                 if ($checkUser) {
                     return back()->with('error', 'You have already registered for this content');
@@ -107,48 +109,50 @@ class ContentController extends Controller
                 DB::commit();
     
                 Mail::to($request->input('email'))->send(new ResetPasswordMail($validatedData['fullname'], $password1));
-                return back()->with('success', 'Registration successfull. Your record has been saved and we has been created your account. Please check your email for password xBug app');
+                return back()->with('success', 'Registration successfull. Your record has been saved and we has been created your account. Please check your email for password xBUG app');
     
             }
-            $user = DB::table('users')->where('email',$request->input('email') )->first();
 
-            $content = DB::table('content_card')
-            ->join('contents', 'content_card.content_id', '=', 'contents.id')->where('card_id', $card_id)->first();
+            return back()->withError('We detected you have registered account with us. Please check your email for password xBUG app and continue with xBUG app');
+            // $user = DB::table('users')->where('email',$request->input('email') )->first();
 
-            $checkUser = DB::table('user_content')->where('user_id', $user->id)->where('content_id', $content->content_id)->first();
-            if ($checkUser) {
-                return back()->with('error', 'You have already registered for this content');
-            }
+            // $content = DB::table('content_card')
+            // ->join('contents', 'content_card.content_id', '=', 'contents.id')->where('card_id', $card_id)->first();
 
-            $userDetails = DB::table('user_content')->insertGetId([
-                'user_id' => $user->id,
-                'interaction_type_id' =>  3,
-                'status' => 1,
-                'content_id' => $content->content_id,
-                'ip_address' => $request->ip(),
-                'verification_code' => $content->verification_code,
-                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
-                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
-            ]);
+            // $checkUser = DB::table('user_content')->where('user_id', $user->id)->where('content_id', $content->content_id)->first();
+            // if ($checkUser) {
+            //     return back()->with('error', 'You have already registered for this content');
+            // }
 
-            $logData = [
-                'email_type' => 'REGISTER GUEST CONTENT',
-                'recipient_email' => $request->input('email'),
-                'from_email' => 'admin@xbug.online',
-                'name' => $validatedData['fullname'],
-                'status' => 'SUCCESS',
-                'response_data' => 'Verification code has been sent',
-                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
-                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
-            ];
+            // $userDetails = DB::table('user_content')->insertGetId([
+            //     'user_id' => $user->id,
+            //     'interaction_type_id' =>  3,
+            //     'status' => 1,
+            //     'content_id' => $content->content_id,
+            //     'ip_address' => $request->ip(),
+            //     'verification_code' => $content->verification_code,
+            //     'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            //     'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            // ]);
+
+            // $logData = [
+            //     'email_type' => 'REGISTER GUEST CONTENT',
+            //     'recipient_email' => $request->input('email'),
+            //     'from_email' => 'admin@xbug.online',
+            //     'name' => $validatedData['fullname'],
+            //     'status' => 'SUCCESS',
+            //     'response_data' => 'Verification code has been sent',
+            //     'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            //     'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            // ];
 
 
 
-            DB::table('email_logs')->insert($logData);
-            DB::commit();
+            // DB::table('email_logs')->insert($logData);
+            // DB::commit();
 
           
-            return back()->with('success', 'Registration successfull. Your record has been saved.');
+            // return back()->with('success', 'Registration successfull. Your record has been saved.');
         } catch (\Exception $e) {
             DB::rollBack();
             $logData = [
@@ -262,9 +266,28 @@ class ContentController extends Controller
     //     return view('organization.contentManagement.applyContent', compact('content_types'));
     // }
     
-    public function deeplink(){
+    public function deeplink($id){
 
-        return view('content_interaction.index');
+        $today = now(); // Laravel helper for current date and time
+
+        $card = DB::table('content_card as cc')
+            ->join('contents as c', 'c.id', '=', 'cc.content_id')
+            ->leftJoin('transactions as t', 't.id', '=', 'cc.transaction_id') // Ensure correct join key for transactions
+            ->where('t.status', 'Success')
+            ->where('cc.status', 1)
+            ->where('c.status', 1)
+            ->whereDate('cc.startdate', '<=', $today)
+            ->whereDate('cc.enddate', '>=', $today)
+            ->where('cc.card_id',$id)
+            ->select('cc.card_id')
+            ->first();
+
+            if($card ==null){
+                abort(404);
+            }
+
+        
+        return view('content_interaction.index',compact('card'));
     }
     public function uploadMicroLearning(Request $request)
     {

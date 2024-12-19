@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { getContents} = require('../controllers/contentController');
+
+const { getContents, saveContentEnrollment,  getContentEnrollment,getClickedContent} = require('../controllers/contentController');
 const { fetchVectorContent} = require('../controllers/vectorController');
 
 const { authenticateToken, authenticateApplication } = require('../middleware/authMiddleware');
@@ -16,6 +17,12 @@ const { authenticateToken, authenticateApplication } = require('../middleware/au
 // router.post('/validate-session',authenticateApplication, validateSession);
 
 router.post('/', authenticateApplication,authenticateToken, fetchVectorContent ,getContents);
+router.post('/save-content-attendance', authenticateApplication,authenticateToken ,saveContentEnrollment);
+router.get('/get-attendance-history', authenticateApplication,authenticateToken ,getContentEnrollment);
+
+router.get('/get-clicked-content', authenticateApplication,authenticateToken ,getClickedContent);
+
+
 // router.post('/user_collection/save/:id', authenticateApplication, addPointUserCollection);
 // router.post('/content_collection/save/:id', authenticateApplication, addPointContentCollection);
 
