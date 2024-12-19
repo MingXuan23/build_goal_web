@@ -6,7 +6,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
-use App\Models\Content; // Replace with your actual model
+use Illuminate\Validation\Rule;
+use App\Mail\ResetPasswordMail;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class ContentController extends Controller
 {
@@ -16,6 +20,152 @@ class ContentController extends Controller
      * @param int $id Content ID
      * @return \Illuminate\View\View
      */
+
+     public function guest(Request $request,$card_id) {
+        $state = DB::table('states')->select('id', 'name')->get();
+        $content = DB::table('content_card')
+        ->join('contents', 'content_card.content_id', '=', 'contents.id')->where('card_id', $card_id)->first();
+        return view('content_interaction.guest',[
+            'states' => $state,
+            'content' => $content
+        ]);
+    }
+     public function registerGuestContent(Request $request,$card_id) {
+
+        $validatedData = $request->validate([
+            'fullname' => 'required',
+            'phoneno' => 'required',
+            'address' => 'required',
+            'state' => 'required|exists:states,name',
+        ], [
+            'state.in' => 'The selected state is invalid. Please choose a valid state.',
+        ], [
+            'fullname' => 'Full Name',
+            'phoneno' => 'Phone Number',
+            'address' => 'Organization Address',
+            'state' => 'Organization state',
+        ]);
+
+        $password1 = Str::random(6);
+        $password = bcrypt($password1);
+
+        DB::beginTransaction();
+        $user=0;
+        try {
+            if (!DB::table('users')->where('email', $request->input('email'),)->exists()) {
+                $user = DB::table('users')->insertGetId([
+                    'name' => $validatedData['fullname'],
+                    'password' => $password,
+                    'telno' => $validatedData['phoneno'],
+                    'icNo' => $request->input('icno'),
+                    'address' => $validatedData['address'],
+                    'state' => $validatedData['state'],
+                    'email' => $request->input('email'),
+                    'status' => 'ACTIVE',
+                    'role' => json_encode([5]),
+                    'active' => 1,
+                    'email_status' => 'VERIFY',
+                    'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                ]);
+
+                $user = DB::table('users')->where('email',$request->input('email'))->first();
+
+                $content = DB::table('content_card')
+                ->join('contents', 'content_card.content_id', '=', 'contents.id')->where('card_id', $card_id)->first();
+
+                $checkUser = DB::table('user_content')->where('user_id', $user->id)->where('content_id', $content->content_id)->first();
+                if ($checkUser) {
+                    return back()->with('error', 'You have already registered for this content');
+                }
+
+                $userDetails = DB::table('user_content')->insertGetId([
+                    'user_id' => $user->id,
+                    'interaction_type_id' =>  3,
+                    'status' => 1,
+                    'content_id' => $content->content_id,
+                    'ip_address' => $request->ip(),
+                    'verification_code' => $content->verification_code,
+                    'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                ]);
+
+                $logData = [
+                    'email_type' => 'REGISTER GUEST CONTENT',
+                    'recipient_email' => $request->input('email'),
+                    'from_email' => 'admin@xbug.online',
+                    'name' => $validatedData['fullname'],
+                    'status' => 'SUCCESS',
+                    'response_data' => 'Verification code has been sent',
+                    'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                ];
+
+
+
+                DB::table('email_logs')->insert($logData);
+                DB::commit();
+    
+                Mail::to($request->input('email'))->send(new ResetPasswordMail($validatedData['fullname'], $password1));
+                return back()->with('success', 'Registration successfull. Your record has been saved and we has been created your account. Please check your email for password xBug app');
+    
+            }
+            $user = DB::table('users')->where('email',$request->input('email') )->first();
+
+            $content = DB::table('content_card')
+            ->join('contents', 'content_card.content_id', '=', 'contents.id')->where('card_id', $card_id)->first();
+
+            $checkUser = DB::table('user_content')->where('user_id', $user->id)->where('content_id', $content->content_id)->first();
+            if ($checkUser) {
+                return back()->with('error', 'You have already registered for this content');
+            }
+
+            $userDetails = DB::table('user_content')->insertGetId([
+                'user_id' => $user->id,
+                'interaction_type_id' =>  3,
+                'status' => 1,
+                'content_id' => $content->content_id,
+                'ip_address' => $request->ip(),
+                'verification_code' => $content->verification_code,
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ]);
+
+            $logData = [
+                'email_type' => 'REGISTER GUEST CONTENT',
+                'recipient_email' => $request->input('email'),
+                'from_email' => 'admin@xbug.online',
+                'name' => $validatedData['fullname'],
+                'status' => 'SUCCESS',
+                'response_data' => 'Verification code has been sent',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
+
+
+
+            DB::table('email_logs')->insert($logData);
+            DB::commit();
+
+          
+            return back()->with('success', 'Registration successfull. Your record has been saved.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $logData = [
+                'email_type' => 'REGISTER GUEST CONTENT',
+                'recipient_email' => $request->input('email'),
+                'from_email' => 'admin@xbug.online',
+                'name' => $validatedData['fullname'],
+                'status' => 'FAILED',
+                'response_data' => 'ERROR',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
+
+            DB::table('email_logs')->insert($logData);
+            return back()->withError('Error EDE' . $e->getLine() . ' : ' . $e->getMessage());
+        }
+    }
     public function showPromoteContent($id)
     {
 
@@ -37,8 +187,6 @@ class ContentController extends Controller
             'stateCities' => $stateCities
         ]);
     }
-
- 
 
     public function addContent(Request $request)
     {
@@ -80,10 +228,6 @@ class ContentController extends Controller
         return back()->with('success', 'Your Content Is Applied Successfully!');
     }
 
-
-    
-    
-
     public function approveContent($id)
     {
         $content = Content::find($id);
@@ -119,6 +263,7 @@ class ContentController extends Controller
     // }
     
     public function deeplink(){
+
         return view('content_interaction.index');
     }
     public function uploadMicroLearning(Request $request)

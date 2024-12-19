@@ -208,3 +208,5 @@ Route::get('/view-microlearning', [MicrolearningController::class, 'showMicrolea
 Route::get('/view-microlearning/{id}', [MicrolearningController::class, 'showMicrolearningDetail'])->name('showMicrolearningDetail');
 
 Route::get('/deeplink', [ContentController::class, 'deeplink'])->name('deeplink');
+Route::get('/guest/{card_id}', [ContentController::class, 'guest'])->name('guest');
+Route::post('/guest/{card_id}/register', [ContentController::class, 'registerGuestContent'])->name('registerGuestContent');
