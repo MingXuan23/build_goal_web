@@ -314,7 +314,9 @@ class ContentController extends Controller
                 'content_type_id' => 2, // Set content_type_id to 2
                 'created_at' => now(), // Timestamp for creation
                 'updated_at' => now(), // Timestamp for update
-                'user_id' => $user -> id
+                'user_id' => $user -> id,
+                'reason_phrase' => 'PENDING'
+
             ];
 
             // Insert the data into the contents table
@@ -326,5 +328,32 @@ class ContentController extends Controller
 
         // Return the form view for GET requests (display the form)
         return view('organization.contentManagement.microLearning');
+    }
+
+    // public function getLabels(Request $request)
+    // {
+    //     $labels = DB::table('labels')
+    //     ->select('name')->get();
+
+    //     return response()->json($labels);
+    // }
+
+    
+    public function getLabels(Request $request){
+        try {
+            $query = $request->input('query'); // Get the query parameter from the request
+
+            // Fetch labels that match the query (case-insensitive)
+            $labels = Label::where('name', 'like', '%' . $query . '%')->pluck('name');
+
+            // If labels are found, return them as a JSON response
+            return response()->json($labels);
+        } catch (\Exception $e) {
+            // Return an error response with the exception message in case something goes wrong
+            return response()->json([
+                'error' => 'Failed to fetch labels',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

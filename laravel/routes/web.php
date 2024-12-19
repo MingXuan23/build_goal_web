@@ -152,6 +152,7 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
     Route::get('/profile', [OrganizationRouteController::class, 'showProfile'])->name('showProfileOrganization');
     Route::get('/MicroLearning', [OrganizationRouteController::class, 'showMicroLearningForm'])->name('showMicroLearningForm');
     Route::get('/chatbot', [GPTChatBot::class, 'showChatBot'])->name('showChatBot');
+    Route::get('/api/getLabels', [ContentController::class, 'getLabels'])->name('getLabels');
     Route::post('/chatbot/send', [GPTChatBot::class, 'sendMessage'])->name('sendMessage');
 
 

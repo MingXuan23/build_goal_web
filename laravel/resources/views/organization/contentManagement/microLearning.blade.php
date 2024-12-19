@@ -44,7 +44,17 @@
                      <label for="content_desc" class="form-label">Description</label>
                      <textarea class="form-control" id="content_desc" name="content_desc" rows="5" required></textarea>
                   </div>
+                  <div class="col-md-6">
+                        <label for="label-input">Search Labels:</label>
+                        <input type="text" id="label-input" class="form-control" placeholder="Start typing..." autocomplete="off">
+                        <ul id="suggestions-list" class="list-group mt-2" style="display:none;"></ul>
+                  </div>
                   <div id="sectionsContainer"></div>
+                  <div id="selected-labels" class="mb-3">
+                     <p>Selected Labels:</p>
+                     <ul id="selected-labels-list" class="list-group"></ul>
+                  </div>
+                  <p id="error-message" class="text-danger" style="display: none;">Please select at least 5 labels.</p>
                   <div id="mainButtons">
                      <button type="button" class="btn btn-primary" onclick="showSectionInput()">Add Section Here</button>
                      <button type="button" class="btn btn-primary" onclick="generatePreview()">Generate Preview</button>
@@ -228,6 +238,298 @@
          // Show the form again
          mainContent.style.display = 'block';
       }
+
+      // class TagsInput {
+      //       constructor(element) {
+      //          this.container = element;
+      //          this.tags = [];
+      //          this.suggestions = [];
+      //          this.input = this.container.querySelector('input');
+      //          this.suggestionsPanel = null;
+      //          this.availableItems = [];  // Initialize as an empty array
+
+      //          // Fetch label data from the backend
+      //          this.fetchLabels();
+
+      //          this.init();
+      //       }
+
+      //       // Fetch the labels from the backend API
+      //       fetchLabels() {
+      //          fetch('/organization/api/getLabels')
+      //          .then(response => response.json())
+      //          .then(data => {
+      //             // Handle the fetched labels here
+      //          })
+      //          .catch(error => {
+      //             console.error('Error fetching labels:', error);
+      //          });
+      //       }
+
+
+      //       handleInput() {
+      //          // Ensure availableItems is populated
+      //          if (!this.availableItems.length) {
+      //                console.error('No labels available');
+      //                return; // Exit if availableItems is empty
+      //          }
+
+      //          const value = this.input.value.trim().toLowerCase();
+               
+      //          if (value) {
+      //                this.suggestions = this.availableItems
+      //                   .filter(item => !this.tags.includes(item))
+      //                   .filter(item => item.toLowerCase().includes(value));
+      //                this.showSuggestions();
+      //          } else {
+      //                this.hideSuggestions();
+      //          }
+      //       }
+
+      //       showSuggestions() {
+      //          if (this.suggestionsPanel) {
+      //             this.suggestionsPanel.remove();
+      //          }
+
+      //          if (this.suggestions.length === 0) {
+      //             return;
+      //          }
+
+      //          this.suggestionsPanel = document.createElement('div');
+      //          this.suggestionsPanel.className = 'suggestions';
+
+      //          this.suggestions.forEach(suggestion => {
+      //             const item = document.createElement('div');
+      //             item.className = 'suggestion-item';
+      //             item.textContent = suggestion;
+      //             item.addEventListener('click', () => this.addTag(suggestion));
+      //             this.suggestionsPanel.appendChild(item);
+      //          });
+
+      //          this.container.parentNode.appendChild(this.suggestionsPanel);
+      //       }
+
+
+      //       hideSuggestions() {
+      //          if (this.suggestionsPanel) {
+      //                this.suggestionsPanel.remove();
+      //                this.suggestionsPanel = null;
+      //          }
+      //       }
+
+      //       addTag(text) {
+      //          if (text && !this.tags.includes(text)) {
+      //                const tag = document.createElement('span');
+      //                tag.className = 'tag';
+      //                tag.innerHTML = `
+      //                   ${text}
+      //                   <span class="remove">×</span>
+      //                `;
+
+      //                tag.querySelector('.remove').addEventListener('click', () => this.removeTag(tag, text));
+                     
+      //                this.container.insertBefore(tag, this.input);
+      //                this.tags.push(text);
+      //                this.input.value = '';
+      //                this.hideSuggestions();
+      //          }
+      //       }
+
+      //       removeTag(tagElement, text) {
+      //          tagElement.remove();
+      //          this.tags = this.tags.filter(tag => tag !== text);
+      //       }
+
+      //       handleKeydown(e) {
+      //          if (e.key === 'Enter' && this.suggestions.length > 0) {
+      //                e.preventDefault();
+      //                this.addTag(this.suggestions[0]);
+      //          }
+      //       }
+
+      //       handleClickOutside(e) {
+      //          if (!this.container.contains(e.target) && !this.suggestionsPanel?.contains(e.target)) {
+      //                this.hideSuggestions();
+      //          }
+      //       }
+      //    }
+
+      // // Initialize the tags input after DOM content is loaded
+      // document.addEventListener('DOMContentLoaded', () => {
+      //    const tagsInput = new TagsInput(document.getElementById('tagsInput'));
+      // });
+
+
+      // $(document).ready(function() {
+      //    $('#label-input').on('input', function() {
+      //       var query = $(this).val(); // Get the current input value
+
+      //       if (query.length >= 1) { // Start the request only if at least one character is typed
+      //             $.ajax({
+      //                url: '/organization/api/getLabels', // Your route
+      //                method: 'GET',
+      //                data: { query: query }, // Send the query
+      //                success: function(response) {
+      //                   // Show the suggestions list
+      //                   var suggestions = $('#suggestions-list');
+      //                   suggestions.empty(); // Clear the previous suggestions
+      //                   if (response.length > 0) {
+      //                         response.forEach(function(label) {
+      //                            suggestions.append('<li class="list-group-item">' + label + '</li>');
+      //                         });
+      //                         suggestions.show();
+      //                   } else {
+      //                         suggestions.hide(); // Hide if no results
+      //                   }
+      //                }
+      //             });
+      //       } else {
+      //             $('#suggestions-list').hide(); // Hide suggestions if the input is empty
+      //       }
+      //    });
+
+      //    // Close suggestions when clicking outside
+      //    $(document).on('click', function(event) {
+      //       if (!$(event.target).closest('#label-input').length) {
+      //             $('#suggestions-list').hide();
+      //       }
+      //    });
+
+      //    // Handle click on suggestion
+      //    $(document).on('click', '.list-group-item', function() {
+      //       var selectedLabel = $(this).text();
+      //       $('#label-input').val(selectedLabel); // Set the input field value
+      //       $('#suggestions-list').hide(); // Hide the suggestions
+      //    });
+      // });
+
+      $(document).ready(function() {
+    var selectedLabels = []; // Array to store selected labels
+
+    // Handle input and filter suggestions based on the user input
+    $('#label-input').on('input', function() {
+        var query = $(this).val(); // Get the current input value
+
+        if (query.length >= 1) {
+            $.ajax({
+                url: '/organization/api/getLabels', // Your route
+                method: 'GET',
+                data: { query: query }, // Send the query
+                success: function(response) {
+                    var suggestions = $('#suggestions-list');
+                    suggestions.empty(); // Clear the previous suggestions
+                    if (response.length > 0) {
+                        response.forEach(function(label) {
+                            suggestions.append('<li class="list-group-item" data-label="' + label + '">' + label + '</li>');
+                        });
+                        suggestions.show();
+                    } else {
+                        suggestions.hide();
+                    }
+                }
+            });
+        } else {
+            $('#suggestions-list').hide(); // Hide suggestions if the input is empty
+        }
+    });
+
+    // Handle click on a suggestion (add it to the selected labels)
+    $(document).on('click', '.list-group-item', function() {
+            var selectedLabel = $(this).data('label'); // Get the label text
+            if (!selectedLabels.includes(selectedLabel)) { // Prevent duplicate selections
+                  selectedLabels.push(selectedLabel); // Add the label to the selected labels array
+                  updateSelectedLabels(); // Update the displayed selected labels
+            }
+            $('#label-input').val(''); // Clear the input field
+            $('#suggestions-list').hide(); // Hide the suggestions
+         });
+
+         // Function to update the displayed selected labels
+         function updateSelectedLabels() {
+            var selectedLabelsContainer = $('#selected-labels-list');
+            selectedLabelsContainer.empty(); // Clear current selected labels
+
+            selectedLabels.forEach(function(label) {
+                   var tag = $(`
+                           <div class="col-md-6" 
+                                 style="padding-bottom: 10px;"> <!-- Added padding here -->
+                              <li class="badge badge-info mr-2 p-2" 
+                                    style="background-color: white; 
+                                          color: black; 
+                                          display: inline-block; 
+                                          margin-right: 10px; 
+                                          border-radius: 10px; 
+                                          border: 2px solid black;">
+                                    ${label}
+                                    <button class="close ml-2" 
+                                          type="button" 
+                                          style="color: black; 
+                                                   background: transparent; 
+                                                   border: none; 
+                                                   cursor: pointer;">&times;</button>
+                              </li>
+                           </div>
+                        `);
+                  // Add remove functionality to the tag
+                  tag.find('.close').on('click', function() {
+                     selectedLabels = selectedLabels.filter(function(item) {
+                        return item !== label; // Remove label from the selected array
+                     });
+                     updateSelectedLabels(); // Update the display
+                  });
+                  selectedLabelsContainer.append(tag);
+            });
+         }
+
+         // Form validation before submission
+         $('form').on('submit', function(e) {
+            if (selectedLabels.length < 5) { // Check if fewer than 5 labels are selected
+                  e.preventDefault(); // Prevent form submission
+                  $('#error-message').show(); // Show error message
+            }
+         });
+      });
+
+
+
+
+
+   //    $(document).ready(function() {
+   //  // Initialize Select2 for the tags input
+   //       $('#tags').select2({
+   //          placeholder: 'Select Tags',
+   //          allowClear: true,
+   //          tags: true // Allow typing in the input (this enables tag creation)
+   //       });
+
+   //  // Fetch tags from the server
+   //    $.ajax({
+   //       url: "{{ route('getLabels') }}",
+   //       method: 'GET',
+   //       success: function(response) {
+   //             let options = response.map(function(label) {
+   //                return {
+   //                   id: label.id, 
+   //                   text: label.name // Adjust according to your 'labels' table structure
+   //                };
+   //             });
+
+   //             // Populate the Select2 dropdown with the fetched labels
+   //             $('#tags').select2({
+   //                data: options,
+   //                placeholder: 'Select Tags',
+   //                allowClear: true,
+   //                tags: true // Make sure 'tags' is set to true
+   //             });
+   //       },
+   //       error: function(error) {
+   //             console.log('Error fetching tags:', error);
+   //       }
+   //    });
+   // });
+
+
+
    </script>
 
 </div>
