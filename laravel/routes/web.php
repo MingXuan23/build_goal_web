@@ -184,6 +184,7 @@ Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function
     Route::get('/profile', [ContentCreatorRouteController::class, 'showProfile'])->name('showProfileContentCreator');
     Route::get('/apply-content', [ContentCreatorRouteController::class, 'showAddContentForm'])->name('showAddContentForm');
     Route::get('/MicroLearning', [ContentCreatorRouteController::class, 'showMicroLearning'])->name('showMicrolearningContentCreator');
+    Route::get('/api/getLabels', [ContentController::class, 'getLabels'])->name('getLabelsContentCreator');
 
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailContentCreator'])->name('updateProfilePersonalDetailContentCreator');
     Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordContentCreator'])->name('updatePasswordContentCreator');

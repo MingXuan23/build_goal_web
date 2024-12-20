@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Label; 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
