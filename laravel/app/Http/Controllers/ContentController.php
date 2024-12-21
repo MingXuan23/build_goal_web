@@ -290,46 +290,66 @@ class ContentController extends Controller
         
         return view('content_interaction.index',compact('card'));
     }
-    public function uploadMicroLearning(Request $request)
-    {
-        $user = Auth::user();
-        // Handle the POST request when the form is submitted
-        if ($request->isMethod('post')) {
-            // Validate the form inputs
-            $validatedData = $request->validate([
-                'content_name' => 'required|string|max:255', // Title
-                'content_desc' => 'required|string', // Description
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Image
-                'formattedContent' => 'required|string', // Combined sections
-            ]);
+    public function uploadMicroLearning(Request $request){
 
-            // Handle the image upload
-            $imagePath = $request->file('image')->store('asset1/images', 'public'); // Store image in the public/asset1/images folder
+        dd($request->all());
+            $user = Auth::user();
 
-            // Prepare data to be inserted into the contents table
-            $contentData = [
-                'name' => $validatedData['content_name'], // Save title
-                'desc' => $validatedData['content_desc'], // Save description
-                'image' => $imagePath,  // Save image path
-                'content' => $validatedData['formattedContent'],  // Save combined sections (content)
-                'content_type_id' => 2, // Set content_type_id to 2
-                'created_at' => now(), // Timestamp for creation
-                'updated_at' => now(), // Timestamp for update
-                'user_id' => $user -> id,
-                'reason_phrase' => 'PENDING'
+            // Handle the POST request when the form is submitted
+            if ($request->isMethod('post')) {
+                // Validate the form inputs
+                $validatedData = $request->validate([
+                    'content_name' => 'required|string|max:255', // Title
+                    'content_desc' => 'required|string', // Description
+                    'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Image
+                    'formattedContent' => 'required|string', // Combined sections
+                    'selected_labels' => 'required|array', // Selected labels (IDs)
+                ]);
 
-            ];
+                // Handle the image upload
+                $imagePath = $request->file('image')->store('asset1/images', 'public'); // Store image in the public/asset1/images folder
 
-            // Insert the data into the contents table
-            DB::table('contents')->insert($contentData);
+                // Fetch weights from the API
+                $labelIds = $validatedData['selected_labels'];
+                $apiUrl = 'http://localhost:30000/api/vector/getVectorValue?values=' . json_encode($labelIds);
 
-            // Redirect with success message
-            return redirect()->back()->with('success', 'Content uploads successfully!');
+                try {
+                    $response = Http::get($apiUrl); // Use Laravel's HTTP Client
+                    $weights = $response->json()['weights'] ?? []; // Extract weights from API response
+
+                    if (empty($weights)) {
+                        return redirect()->back()->withErrors(['error' => 'Failed to retrieve weights from API.']);
+                    }
+                    dd($weights, $request->all());
+                    // Prepare data to be inserted into the contents table
+                    $contentData = [
+                        'name' => $validatedData['content_name'], // Save title
+                        'desc' => $validatedData['content_desc'], // Save description
+                        'image' => $imagePath, // Save image path
+                        'content' => $validatedData['formattedContent'], // Save combined sections (content)
+                        'content_type_id' => 2, // Set content_type_id to 2
+                        'created_at' => now(), // Timestamp for creation
+                        'updated_at' => now(), // Timestamp for update
+                        'user_id' => $user->id,
+                        'reason_phrase' => 'PENDING',
+                        'category_weight' => json_encode($weights), // Save weights as JSON
+                    ];
+
+                    // Insert the data into the contents table
+                    DB::table('contents')->insert($contentData);
+
+                    // Redirect with success message
+                    return redirect()->back()->with('success', 'Content uploaded successfully!');
+                } catch (\Exception $e) {
+                    // Handle API or other errors
+                    return redirect()->back()->withErrors(['error' => 'An error occurred: ' . $e->getMessage()]);
+                }
+            }
+
+            // Return the form view for GET requests (display the form)
+            return view('organization.contentManagement.microLearning');
         }
 
-        // Return the form view for GET requests (display the form)
-        return view('organization.contentManagement.microLearning');
-    }
 
     // public function getLabels(Request $request)
     // {
@@ -340,21 +360,23 @@ class ContentController extends Controller
     // }
 
     
-    public function getLabels(Request $request){
-        try {
-            $query = $request->input('query'); // Get the query parameter from the request
+        public function getLabels(Request $request){
+            try {
+                $query = $request->input('query'); // Get the query parameter from the request
 
-            // Fetch labels that match the query (case-insensitive)
-            $labels = Label::where('name', 'like', '%' . $query . '%')->pluck('name');
+                // Fetch labels that match the query (case-insensitive)
+                $labels = Label::where('name', 'like', '%' . $query . '%')->select('name',"id")->get();
 
-            // If labels are found, return them as a JSON response
-            return response()->json($labels);
-        } catch (\Exception $e) {
-            // Return an error response with the exception message in case something goes wrong
-            return response()->json([
-                'error' => 'Failed to fetch labels',
-                'message' => $e->getMessage()
-            ], 500);
+                //dd($labels);
+
+                // If labels are found, return them as a JSON response
+                return response()->json($labels);
+            } catch (\Exception $e) {
+                // Return an error response with the exception message in case something goes wrong
+                return response()->json([
+                    'error' => 'Failed to fetch labels',
+                    'message' => $e->getMessage()
+                ], 500);
+            }
         }
-    }
 }

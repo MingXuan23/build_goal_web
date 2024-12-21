@@ -1,3 +1,4 @@
+var cors = require('cors')
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -19,12 +20,14 @@ const vectorRouter =  require('./routes/vectorRoute');
 
 var app = express();
 app.set('trust proxy', true);
+app.use(cors())
 
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/gpt', gptRouter);
 app.use('/api/vector', vectorRouter);
 app.use('/api/content', contentRouter);
+
 
 
 
