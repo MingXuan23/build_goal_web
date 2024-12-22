@@ -53,7 +53,7 @@
                     </a>
                     <ul class="slide-menu child1">
                         <li class="slide">
-                            <a href="/admin/view-content" class="side-menu__item">View Applied Content</a>
+                            <a href="/admin/view-content" class="side-menu__item">Applied Content</a>
                         </li>
                         <!-- <li class="slide">
                             <a href="/organization/apply-content" class="side-menu__item">Apply Content</a>

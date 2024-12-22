@@ -392,6 +392,7 @@ class AdminRouteController extends Controller
                 'content_types.type as content_type_name',
                 'organization.name as organization_name'  // This is the organization name we will display
             )
+            ->orderBy('contents.created_at', 'desc')
             ->get();
 
         if ($request->ajax()) {

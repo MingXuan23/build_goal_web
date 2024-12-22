@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Label; 
+use App\Models\Label;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -12,7 +12,7 @@ use App\Mail\ResetPasswordMail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
-use App\Models\Content; 
+use App\Models\Content;
 
 use Illuminate\Support\Facades\Validator;
 
@@ -25,16 +25,18 @@ class ContentController extends Controller
      * @return \Illuminate\View\View
      */
 
-     public function guest(Request $request,$card_id) {
+    public function guest(Request $request, $card_id)
+    {
         $state = DB::table('states')->select('id', 'name')->get();
         $content = DB::table('content_card')
-        ->join('contents', 'content_card.content_id', '=', 'contents.id')->where('card_id', $card_id)->first();
-        return view('content_interaction.guest',[
+            ->join('contents', 'content_card.content_id', '=', 'contents.id')->where('card_id', $card_id)->first();
+        return view('content_interaction.guest', [
             'states' => $state,
             'content' => $content
         ]);
     }
-     public function registerGuestContent(Request $request,$card_id) {
+    public function registerGuestContent(Request $request, $card_id)
+    {
 
         $validatedData = $request->validate([
             'fullname' => 'required',
@@ -54,7 +56,7 @@ class ContentController extends Controller
         $password = bcrypt($password1);
 
         DB::beginTransaction();
-        $user=0;
+        $user = 0;
         try {
             if (!DB::table('users')->where('email', $request->input('email'),)->exists()) {
                 $user = DB::table('users')->insertGetId([
@@ -73,13 +75,13 @@ class ContentController extends Controller
                     'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                 ]);
 
-                $user = DB::table('users')->where('email',$request->input('email'))->first();
+                $user = DB::table('users')->where('email', $request->input('email'))->first();
 
                 $content = DB::table('content_card')
-                ->join('contents', 'content_card.content_id', '=', 'contents.id')->where('content_card.card_id', $card_id)->first();
-                
+                    ->join('contents', 'content_card.content_id', '=', 'contents.id')->where('content_card.card_id', $card_id)->first();
 
-               // dd($content,$card_id);
+
+                // dd($content,$card_id);
                 $checkUser = DB::table('user_content')->where('user_id', $user->id)->where('content_id', $content->content_id)->first();
                 if ($checkUser) {
                     return back()->with('error', 'You have already registered for this content');
@@ -111,10 +113,9 @@ class ContentController extends Controller
 
                 DB::table('email_logs')->insert($logData);
                 DB::commit();
-    
+
                 Mail::to($request->input('email'))->send(new ResetPasswordMail($validatedData['fullname'], $password1));
                 return back()->with('success', 'Registration successfull. Your record has been saved and we has been created your account. Please check your email for password xBUG app');
-    
             }
 
             return back()->withError('We detected you have registered account with us. Please check your email for password xBUG app and continue with xBUG app');
@@ -155,7 +156,7 @@ class ContentController extends Controller
             // DB::table('email_logs')->insert($logData);
             // DB::commit();
 
-          
+
             // return back()->with('success', 'Registration successfull. Your record has been saved.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -179,7 +180,7 @@ class ContentController extends Controller
 
         $stateCitiesJson = file_get_contents(public_path('assets/json/states-cities.json'));
         $stateCities = json_decode($stateCitiesJson, true);
-        
+
         // Fetch id and name from the table
         // Fetch the content by ID
         $content = DB::table('contents')->where('id', $id)->first();
@@ -212,12 +213,12 @@ class ContentController extends Controller
             'participant_limit' => 'required|integer',
             'states' => 'required|array',
             'content_type_id' => 'required|exists:content_types,id', // Validate foreign key
-        ],[
+        ], [
             'states' => ', Please select at least 1 state',
-        ],[
+        ], [
             'content_type_id' => 'Content Type'
         ]);
-    
+
         // Insert data into the contents table
         DB::table('contents')->insert([
             'name' => $validated['content_name'],
@@ -234,7 +235,7 @@ class ContentController extends Controller
             'org_id' => $org->organization_id,
             'reason_phrase' => 'PENDING'
         ]);
-    
+
         // Redirect back with success message
         return back()->with('success', 'Your Content Is Applied Successfully!');
     }
@@ -247,10 +248,10 @@ class ContentController extends Controller
             $content->reject_reason = null; // Clear any rejection reason if it was previously set
             $content->save();
         }
-    
+
         return redirect()->back()->with('status', 'Content approved successfully!');
     }
-    
+
     public function rejectContent(Request $request, $id)
     {
         $content = Content::find($id);
@@ -259,21 +260,22 @@ class ContentController extends Controller
             $content->reject_reason = $request->input('rejection_reason'); // Save rejection reason
             $content->save();
         }
-    
+
         return back()->with('status', 'Content rejected successfully!');
     }
-    
+
 
     // public function showContentType()
     // {
     //     // Fetch all active content types
     //     $content_types = DB::table('content_types')->where('status', true)->get();
-    
+
     //     // Pass content types to the view
     //     return view('organization.contentManagement.applyContent', compact('content_types'));
     // }
-    
-    public function deeplink($id){
+
+    public function deeplink($id)
+    {
 
         $today = now(); // Laravel helper for current date and time
 
@@ -285,16 +287,16 @@ class ContentController extends Controller
             ->where('c.status', 1)
             ->whereDate('cc.startdate', '<=', $today)
             ->whereDate('cc.enddate', '>=', $today)
-            ->where('cc.card_id',$id)
+            ->where('cc.card_id', $id)
             ->select('cc.card_id')
             ->first();
 
-            if($card ==null){
-                abort(404);
-            }
+        if ($card == null) {
+            abort(404);
+        }
 
-        
-        return view('content_interaction.index',compact('card'));
+
+        return view('content_interaction.index', compact('card'));
     }
     public function uploadMicroLearning(Request $request)
     {
@@ -321,7 +323,7 @@ class ContentController extends Controller
                 'content_type_id' => 2, // Set content_type_id to 2
                 'created_at' => now(), // Timestamp for creation
                 'updated_at' => now(), // Timestamp for update
-                'user_id' => $user -> id,
+                'user_id' => $user->id,
                 'reason_phrase' => 'PENDING'
 
             ];
@@ -344,7 +346,6 @@ class ContentController extends Controller
 
     //     return response()->json($labels);
     // }
-
     public function promoteContentPayment(Request $request)
     {
         // Validation
@@ -435,6 +436,11 @@ class ContentController extends Controller
                 'error' => 'Failed to fetch labels',
                 'message' => $e->getMessage()
             ], 500);
-        }
+        }  
+    }
+
+    public function addCard(Request $request, $card_id)
+    {
+        dd($request->all());
     }
 }
