@@ -154,6 +154,7 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
     Route::get('/chatbot', [GPTChatBot::class, 'showChatBot'])->name('showChatBot');
     Route::get('/api/getLabels', [ContentController::class, 'getLabels'])->name('getLabels');
     Route::post('/chatbot/send', [GPTChatBot::class, 'sendMessage'])->name('sendMessage');
+    
 
 
     // Route::middleware(['ekycCheck'])->group(function () {
@@ -196,6 +197,12 @@ Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function
     // });
 
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('content-creator.logout');
+});
+
+
+Route::prefix('promote-content')->middleware(['auth', 'role:3|4'])->group(function () {
+    Route::post('/payment', [ContentController::class, 'promoteContentPayment'])->name('promote-content.payment');
+    
 });
 
 

@@ -1,6 +1,5 @@
 @extends('organization.layouts.main')
 @section('container')
-    {{-- @dd($content_data); --}}
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
@@ -17,6 +16,33 @@
                 </div>
             </div>
             <!-- Page Header Close -->
+            @if (session()->has('success'))
+                    <div class="alert alert-success alert-dismissible d-flex align-items-center" role="alert">
+                        <i class="bi bi-check-circle-fill fs-4"></i>
+                        </svg>
+                        <div class="ms-3"> {{ session('success') }} </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+                @if (session()->has('error'))
+                    <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                        <i class="bi bi-dash-circle-fill fs-4"></i>
+                        <div class="ms-3"> {!! session('error') !!} </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
             <!-- Start::row-1 -->
             <div class="row">
                 <div class="col-xl-12">
@@ -25,10 +51,9 @@
                             <div class="card-title">Approved Content</div>
                         </div>
                         <div class="card-body">
-
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover text-nowrap w-100 data-table">
-                                    <thead class="table-borderless ">
+                                    <thead class="table-borderless">
                                         <tr>
                                             <th scope="col">No.</th>
                                             <th scope="col">Content Name</th>
@@ -37,266 +62,149 @@
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
-
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!--End::row-1 -->
-            @foreach ($content_data as $data)
-                <div class="modal fade" id="modalView-{{ $data->id }}">
-                    <div class="modal-dialog modal-dialog-centered text-center modal-xl">
-                        <div class="modal-content modal-content-demo">
-                            <div class="modal-header">
-                                <h6 class="modal-title">View Content - {{ $data->name }} </h6>
-                                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
+            <!-- End::row-1 -->
 
-                            <form action="{{ route('updateUser', $data->id) }}" method="POST">
-                                @csrf
-                                <div class="modal-body text-start">
-                                    <form action="#" method="POST">
-                                        @csrf
-                                        <!-- Content Details -->
-                                        <div class="mb-3">
-                                            <div class="col-xl-12">
-                                                <div class="form-floating">
-                                                    <input type="text" class="form-control" name="content_id"
-                                                        value="{{ $data->id }}" readonly>
-                                                    <label for="contentName">Content ID</label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3">
-                                                <div class="col-xl-12">
-                                                    <div class="form-floating">
-                                                        <input type="text" class="form-control" name="content_name"
-                                                            value="{{ $data->name }}" readonly>
-                                                        <label for="contentName">Content ID</label>
-                                                    </div>
-                                                </div>
-                                        </div>
-
-
-                                        <!-- State Selection (Checkbox) -->
-                                        <div class="mb-3">
-                                            <div class="col-xl-12">
-                                                <label class="form-label">Select States</label>
-                                                <span class="text-muted"> - scroll down </span>
-                                                <div id="state-container"
-                                                    style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
-                                                    @foreach ($states as $state)
-                                                        <div class="form-check form-check-lg">
-                                                            <input
-                                                                class="form-check-input state-checkbox @error('states') is-invalid @enderror"
-                                                                type="checkbox" name="states[]" value="{{ $state->name }}"
-                                                                id="state-{{ $state->name }}" @checked(is_array(old('states')) && in_array($state->name, old('states')))>
-                                                            <label class="form-check-label" for="state-{{ $state->name }}">
-                                                                {{ $state->name }}
-                                                            </label>
-
-                                                            @error('states')
-                                                                <span class="mb-1 text-danger">{{ $message }}</span>
-                                                            @enderror
-                                                        </div>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                            
-                                        </div>
-
-                                        <!-- Package Selection -->
-                                        <div class="mb-3">
-                                            <div class="form-floating">
-                                                <select class="form-select"
-                                                        id="floatingSelect" 
-                                                        aria-label="Floating label select example" 
-                                                        name="package">
-                                                        <option value="" disabled selected> - Select Package - </option>
-                                                    @foreach ($packages as $package)
-                                                    <option
-                                                        value="{{ $package->id }}"
-                                                        data-base-price="{{ $package->base_price }}"
-                                                        data-base-state="{{ $package->base_state }}">
-                                                        {{ $package->name }}| RM {{ $package->base_price }} | {{ $package->estimate_user }}ppl.
-                                                    </option>
-                                                @endforeach
-                                                </select>
-                                                <label for="floatingSelect">Choose Package</label>
-                                                @error('ostate')
-                                                    <span class="mb-1 text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- Final Price Display -->
-                                        <div class="mb-3">
-                                                <div class="col-xl-12">
-                                                    <div class="form-floating">
-                                                        <input type="text" class="form-control" id = "final_price" name="final_price"
-                                                            value="RM 0.00" readonly>
-                                                        <label for="final_price" class = "form-label" >Final Price</label>
-                                                    </div>
-                                                </div>
-                                        </div>
-
-
-                                        <!-- Submit Button -->
-                                        <div class="d-flex justify-content-end mt-3">
-                                            <button type="submit" class="btn btn-primary me-2 px-5">Pay</button>
-                                        </div>
-                                    </form>
-
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-danger " data-bs-toggle="tooltip"
-                                        data-bs-placement="top" title="Delete user Record">Delete</button>
-                                    <button type="button" class="btn btn-warning " data-bs-dismiss="modal">Close</button>
-                                </div>
-
-                            </form>
-
-
-
+            <!-- Dynamic Modal -->
+            <div class="modal fade" id="dynamicModal" tabindex="-1" aria-labelledby="dynamicModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="dynamicModalLabel">View Content</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                    </div>
-                </div>
-            @endforeach
-
-            @foreach ($content_data as $data)
-                <div class="modal fade" id="reject-{{ $data->id }}" aria-labelledby="reject">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h6 class="modal-title" id="reject">Rejection Reason for - {{ $data->name }}</h6>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
+                        <form action="{{ route('promote-content.payment') }}" method="POST">
+                            @csrf
                             <div class="modal-body">
-                                <div class="row ">
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label for="rejection_reason" class="form-label">Reason</label>
-                                            <textarea class="form-control" required disabled>{{ $data->reject_reason }}</textarea>
-                                        </div>
+                                <!-- Content Name -->
+                                <input type="hidden" name="content_id" id="content_id">
+                                <div class="mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="contentName" name="content_name" readonly>
+                                        <label for="contentName">Content Name</label>
                                     </div>
-                                    <div class="col-md-12 d-flex justify-content-end">
-                                        <button class="btn btn-danger" data-bs-dismiss="modal"
-                                            aria-label="Close">Close</button>
+                                </div>
+
+                                <!-- Package Selection -->
+                                <div class="mb-3">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="package" name="package">
+                                        
+                                            @foreach ($packages as $index => $package)
+                                                <option value="{{ $package->id }}" 
+                                                        data-base-price="{{ $package->base_price }}" 
+                                                        data-base-state="{{ $package->base_state }}"
+                                                        @if ($index == 0) selected @endif> <!-- Select the first package -->
+                                                    {{ $package->name }} | RM {{ $package->base_price }} | {{ $package->estimate_user }} estimate reach.
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <label for="package">Choose Package</label>
+                                    </div>
+                                </div>
+
+
+                                <!-- State Selection -->
+                                <div class="mb-3">
+                                    <label class="form-label" id="state_label">Select at least 1 states to promote</label>
+                                    <span class="text-muted"> - scroll down </span>
+                                    <div id="state-container" style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                                        @foreach ($states as $state)
+                                            <div class="form-check form-check-lg">
+                                                <input class="form-check-input state-checkbox" type="checkbox" name="states[]" value="{{ $state->name }}" id="state-{{ $state->name }}">
+                                                <label class="form-check-label" for="state-{{ $state->name }}">{{ $state->name }}</label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                               
+
+                                <!-- Final Price -->
+                                <div class="mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="finalPrice" name="final_price" value="RM 0.00" readonly>
+                                        <label for="finalPrice">Final Price</label>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary" id="pay-btn" disabled >Pay</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            @endforeach
+            </div>
+
         </div>
     </div>
 
-
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             var table = $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
                 pageLength: 50,
                 ajax: "{{ route('showContent') }}",
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        searchable: false
-                    },
-                    {
-                        data: 'name',
-                        name: 'name',
-                        // visible:false
-                    },
-                    {
-                        data: 'type',
-                        name: 'type',
-                        // render: ((data, type, row) => {
-                        //     return data.toUpperCase();
-                        // })
-
-                    },
-                    {
-                        data: 'status',
-                        name: 'status',
-
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-
-                    },
+                columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false },
+                    { data: 'name', name: 'name' },
+                    { data: 'type', name: 'type' },
+                    { data: 'status', name: 'status' },
+                    { data: 'action', name: 'action' },
                 ],
-                dom: 'Bfrtip',
-                buttons: [{
-                        extend: 'copy',
-                        text: 'Copy Data',
-                        exportOptions: {
-                            columns: ':not(:last-child)'
-                        }
-                    },
-                    {
-                        extend: 'csv',
-                        text: 'Export CSV',
-                        exportOptions: {
-                            columns: ':not(:last-child)'
-                        }
-                    },
-                    {
-                        extend: 'excel',
-                        text: 'Export Excel',
-                        exportOptions: {
-                            columns: ':not(:last-child)'
-                        }
-                    },
-                    {
-                        extend: 'pdf',
-                        text: 'Export PDF',
-                        exportOptions: {
-                            columns: ':not(:last-child)'
-                        }
-                    },
-                    {
-                        extend: 'print',
-                        text: 'Print Data',
-                        exportOptions: {
-                            columns: ':not(:last-child)'
-                        }
-                    }
-
-                ]
             });
-        })
-    </script>
-    <script>
-        $(document).ready(function() {
+
+
+
             const calculateFinalPrice = () => {
-                // Get selected package
-                const selectedPackage = $('#floatingSelect option:selected');
-                const basePrice = parseFloat(selectedPackage.data('base-price')) || 0;
-                const baseState = parseInt(selectedPackage.data('base-state')) || 0;
+            const selectedPackage = $('#package option:selected');
+            
+            const basePrice = parseFloat(selectedPackage.data('base-price')) || 0;
+            const baseState = parseInt(selectedPackage.data('base-state')) || 0;
 
-                // Count selected states
-                const selectedStatesCount = $('.state-checkbox:checked').length;
 
-                // Calculate final price
-                const n = selectedStatesCount;
-                const finalPrice = basePrice * (1 + (n - baseState) / 10);
+            $('#state_label').text(`Select at least ${baseState} states to promote`);
 
-                // Update final price in the input
-                $('#final_price').val(`RM ${finalPrice.toFixed(2)}`);
-            };
+            // Count the selected states
+            const selectedStatesCount = $('.state-checkbox:checked').length;
 
-            // Event listeners
-            $('#package').on('change', calculateFinalPrice);
-            $('.state-checkbox').on('change', calculateFinalPrice);
+            $('#pay-btn').prop('disabled', (selectedStatesCount < baseState)); 
+            
+
+            // Calculate the final price
+            const n = selectedStatesCount;
+            const finalPrice = basePrice * (1 + Math.max(n - baseState, 0) / 10);
+
+
+            // Update the final price input
+            $('#finalPrice').val(`RM ${finalPrice.toFixed(2)}`);
+        };
+
+        // Event listener to open modal and populate data
+        $(document).on('click', '.view-content', function () {
+            const contentData = $(this).data();
+            $('#dynamicModalLabel').text(`View Content - ${contentData.name}`);
+
+            $('#content_id').val(contentData.id)
+            $('#contentName').val(contentData.name);
+           
+            $('#finalPrice').val('RM 0.00'); // Reset the final price
+
+            // Recalculate final price when state checkboxes or package dropdown change
+            $('.state-checkbox').off('change').on('change', calculateFinalPrice);
+            $('#package').off('change').on('change', calculateFinalPrice);
+        });
+
+       
+
         });
     </script>
 @endsection

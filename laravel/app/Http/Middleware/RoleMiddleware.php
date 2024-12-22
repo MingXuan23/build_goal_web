@@ -47,9 +47,13 @@ class RoleMiddleware
 
         $userRoles = json_decode($user->role);
 
-        $allowedRoles = explode('|', $roles[0]);
+        $allowedRoles = is_array($roles) ? $roles : explode('|', $roles);  // Split the string into an array
+
+        // Convert all allowed roles into integers (to avoid comparison issues between strings and integers)
+        $allowedRoles = array_map('intval', $allowedRoles);
 
         if (empty(array_intersect($userRoles, $allowedRoles))) {
+           // dd($userRoles, $allowedRoles,$roles, is_array($roles));
             Auth::logout();
 
             $request->session()->invalidate();
@@ -58,6 +62,8 @@ class RoleMiddleware
             Session::flush();
             return redirect('/login')->with('error', 'You dont have permission to access this');
         }
+
+       // dd('success');
         return $next($request);
     }
 }

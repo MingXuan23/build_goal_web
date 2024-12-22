@@ -109,7 +109,7 @@ class EkycController extends Controller
         }
 
         $encryptedParams =  $user->icNo;
-        $url = env('APP_URL') . 'card-verification/' . urlencode($encryptedParams);
+        $url = env('APP_URL') . '/card-verification/' . urlencode($encryptedParams);
 
         return response()->json(['url' => $url]);
     }

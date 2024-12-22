@@ -22,23 +22,72 @@ class TransactionController extends Controller
 
         try{
         $user = DB::table('users')->where('id',Auth::id())->first();
-        $organization_id = $request->org_id;
-        $fpx_buyerEmail = $request->email;
-        $telno = $request->telno;
-        $fpx_buyerName = $request->name;
 
-        $fpx_sellerOrderNo = $request->desc . "_" . date('YmdHis') . "_" . $organization_id;
- 
-        $fpx_sellerExOrderNo  = "XBug"  . "_" . date('YmdHis') . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
-
-        $private_key= env('DIRECT_PAY_KEY',''); //$organization->private_key;
- 
+        //payment of the content promotion
+        if (!empty($request->cp_token)) {
+            // Split the cp_token into parts using '-'
+            $data = explode('-', $request->cp_token);
         
- 
- 
-        $fpx_sellerTxnTime  = date('YmdHis');
-        $fpx_txnAmount      = $request->amount;
- 
+            // Fetch the content promotion record
+            $content_promotion = DB::table('content_promotion')->where('id', $data[0])->first();
+        
+            if(empty($content_promotion)){
+                return response()->json(['error' => 'Invalid Request']);
+            }
+            // Validate if the updated_at part matches the data[1]
+            if (!is_numeric($data[1]) || preg_replace('/[^0-9]/', '', $content_promotion->updated_at) !== $data[1]) {
+                return response()->json(['error' => 'Invalid Request']);
+            }
+        
+            // Fetch user information
+            $fpx_buyerEmail = $user->email;
+            $fpx_buyerName = $user->name;
+            $telno = $user->telno;
+        
+            // Fetch content details
+            $content = DB::table('contents')->where('id', $content_promotion->content_id)->first();
+            $organization_id = $content->org_id;
+        
+            // Fetch the organization details
+            $org = DB::table('organization')->where('id', $organization_id)->first();
+        
+            // Get the private key, fallback to env value if not set
+            $private_key = $org->payment_key ?? env('DIRECT_PAY_KEY', '');
+
+            $fpx_sellerTxnTime  = date('YmdHis');
+            $fpx_txnAmount      = $content_promotion->promotion_price;
+            $fpx_sellerExOrderNo  = "XBug"  . "_" . date('YmdHis') . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+            $fpx_sellerOrderNo =  "PromoteContent_" . date('YmdHis') . "_" . $organization_id;
+
+        }
+
+        else if(!empty($request->stand_token)){
+            //khairul continue here
+        }
+        //other payment
+        else{
+            $organization_id = $request->org_id;
+            $fpx_buyerEmail = $request->email;
+            $telno = $request->telno;
+            $fpx_buyerName = $request->name;
+    
+            $fpx_sellerOrderNo = $request->desc . "_" . date('YmdHis') . "_" . $organization_id;
+     
+            $fpx_sellerExOrderNo  = "XBug"  . "_" . date('YmdHis') . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+    
+            $private_key= env('DIRECT_PAY_KEY',''); //$organization->private_key;
+     
+            
+     
+     
+            $fpx_sellerTxnTime  = date('YmdHis');
+            $fpx_txnAmount      = $request->amount;
+     
+        }
+        
+
+
+       
  
         $transaction = new Transaction();
         $transaction->sellerExOrderNo  = $fpx_sellerExOrderNo;
@@ -57,19 +106,21 @@ class TransactionController extends Controller
 
  
         if ($transaction->save()) {
-            
+            if (!empty($request->cp_token)) {
+                DB::table('content_promotion')->where('id', $content_promotion->id)->update([
+                    'transaction_id'=> $transaction->id
+                ]);
+            }else{
+                //do nothing
+            }
         
         }
         else
         {
             return view('errors.500');
         }
-             //dd('fpxsellerOrderNo:'.$fpx_sellerOrderNo.'\nlength:'.strlen($fpx_sellerOrderNo),'fpx_sellerExOrderNo:'.$fpx_sellerExOrderNo.'\nlength:'.strlen($fpx_sellerOrderNo));
-             //$private_key = '9BB6D047-2FB3-4B7A-9199-09441E7F4B0C';
- 
-             // dd($fpx_buyerEmail, $fpx_buyerName, $private_key, $fpx_txnAmount, $fpx_sellerExOrderNo, $fpx_sellerOrderNo);
- 
-             //dd($pos,$fpx_sellerOrderNo);
+           
+
              return view('directpay.index',compact(
                  'fpx_buyerEmail',
                  'fpx_buyerName',
@@ -101,15 +152,41 @@ class TransactionController extends Controller
                 ]
             );
 
+            $transaction =  Transaction::where('sellerOrderNo', '=', $request->Fpx_SellerOrderNo)->first();
+
+            $parts = explode('_', $request->Fpx_SellerOrderNo);
+
+            if($parts[0] == 'PromoteContent'){
+                //do update
+                $cp_id = DB::table('content_promotion')->where('transaction_id', $transaction->id)->first();
+                $content = DB::table('contents')->where('id', $cp_id->content_id)->first();
+
+                return view('content.promote_content_receipt', compact('cp_id','content','transaction'));
+            }
+
+            
+
            return view('directpay.receipt');
             
             
         }
         else {
 
-            Transaction::where('nama', '=', $request->Fpx_SellerOrderNo)->update(['transac_no' => $request->Fpx_FpxTxnId, 'status' => 'Failed']);
+            Transaction::where('sellerOrderNo', '=', $request->Fpx_SellerOrderNo)->update(['transac_no' => $request->Fpx_FpxTxnId, 'status' => 'Failed']);
+            $transaction =  Transaction::where('sellerOrderNo', '=', $request->Fpx_SellerOrderNo)->first();
 
-            $user = Transaction::where('nama', '=', $request->Fpx_SellerOrderNo)->first();
+            $user = Transaction::where('sellerOrderNo', '=', $request->Fpx_SellerOrderNo)->first();
+
+            $parts = explode('_', $request->Fpx_SellerOrderNo);
+
+            if($parts[0] == 'PromoteContent'){
+                $content = DB::table('content_promotion')->where('transaction_id',$transaction->id)->update([
+                    'status'=>0
+                ]); //no success
+              
+                //do update
+            }
+            
             //gitdd($user,$request->Fpx_SellerOrderNo);
             return view('directpay.receipt', compact('request', 'user'));
 

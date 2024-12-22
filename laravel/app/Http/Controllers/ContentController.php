@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use App\Models\Content; 
 
+use Illuminate\Support\Facades\Validator;
+
 class ContentController extends Controller
 {
     /**
@@ -198,6 +200,8 @@ class ContentController extends Controller
     {
         // dd($request->all());
         $user = Auth::user();
+
+        $org = DB::table('organization_user')->where('user_id',$user->id)->where('status',1)->first(); //should change in the future
         // Validate form inputs
         $validated = $request->validate([
             'content_name' => 'required|string|max:255',
@@ -227,6 +231,7 @@ class ContentController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
             'user_id' => $user->id,
+            'org_id' => $org->organization_id,
             'reason_phrase' => 'PENDING'
         ]);
     
@@ -339,6 +344,80 @@ class ContentController extends Controller
 
     //     return response()->json($labels);
     // }
+
+    public function promoteContentPayment(Request $request)
+    {
+        // Validation
+        $validator = Validator::make($request->all(), [
+            'content_id' => 'required|integer|exists:contents,id', // content_id must be an integer and exist in the `contents` table
+            'content_name' => 'required|string|max:255', // content_name must be a string and not exceed 255 characters
+            'package' => 'required|integer|exists:package,id', // package must be a valid ID in the `packages` table
+            'states' => 'required|array|min:1', // at least one state must be selected
+            'states.*' => 'string|exists:states,name', // each state must be a valid state name
+            'final_price' => 'required|regex:/^RM \d+(\.\d{2})?$/', // final_price must match RM <amount> format
+        ]);
+
+        if ($validator->fails()) {
+            dd($validator->errors()); // This will give you the error messages from the validator
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $user_id = Auth::id();
+
+        // Get content and package details
+        $content = DB::table('contents')->where('user_id', $user_id)->where('id', $request->content_id)->where('status', 1)->first();
+        $package = DB::table('package')->where('id', $request->package)->first();
+
+        if (empty($content) || empty($package)) {
+            return back()->withError('Invalid content');
+        }
+
+        // Base price and base state
+        $basePrice = $package->base_price;
+        $baseState = $package->base_state;
+        
+        // Get the number of selected states
+        $n = count($request->states);
+
+        // Calculate the final price on the server side
+        $calculatedPrice = $basePrice * (1 + max($n - $baseState, 0) / 10);
+
+        // Parse the final price sent by the client (remove the "RM" and convert to a number)
+        $clientFinalPrice = floatval(str_replace(['RM', ','], '', $request->final_price));
+
+        // Compare the client-sent price with the server-calculated price
+        if (abs($clientFinalPrice - $calculatedPrice) > 0.01) {
+            // If the prices don't match, you can return an error message
+            return back()->withError('Invalid Request. Please Try Again.');
+        }
+
+        $update = DB::table('content_promotion')->whereNull('transaction_id')->where('status',1)->where('content_id',$content->id)->update([
+            'views' => 0,
+            'clicks' => 0,
+            'enrollment' => 0,
+            'target_audience' =>json_encode($request->states),
+            'estimate_reach'=> $package ->estimate_user,
+            'promotion_price' => $calculatedPrice   
+        ]);
+
+        if(!$update){
+            DB::table('content_promotion')->insert([
+                'content_id' => $content->id,
+                'views' => 0,
+                'clicks' => 0,
+                'enrollment' => 0,
+                'target_audience' =>json_encode($request->states),
+                'estimate_reach'=> $package ->estimate_user,
+                'promotion_price' => $calculatedPrice
+    
+            ]);
+        }
+        $cp_id = DB::table('content_promotion')->whereNull('transaction_id')->where('status',1)->where('content_id',$content->id)->first();
+
+        return view('content.payment', compact('content','cp_id','package'));
+
+       
+    }
 
     
     public function getLabels(Request $request){

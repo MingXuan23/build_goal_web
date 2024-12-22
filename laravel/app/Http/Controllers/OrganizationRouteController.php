@@ -122,31 +122,38 @@ class OrganizationRouteController extends Controller
 
             $table->addColumn('action', function ($row) {
                 if ($row->reason_phrase == 'APPROVED') {
-
                     $button =
                         '<div class="d-flex">
-                        <button class="btn btn-icon btn-sm btn-success-transparent rounded-pill me-2" data-bs-toggle="modal" data-bs-target="#modalView-' . $row->id . '">
-                                       <i class="bi bi-arrow-right-circle-fill"></i>
-                        </button>
-                    </div>';
+                            <button class="btn btn-icon btn-sm btn-success-transparent rounded-pill me-2 view-content" 
+                                    data-id="' . $row->id . '" 
+                                    data-name="' . htmlspecialchars($row->name, ENT_QUOTES) . '" 
+                                    data-base-price="100" 
+                                    data-base-state="2" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#dynamicModal">
+                                <i class="bi bi-arrow-right-circle-fill"></i>
+                            </button>
+                        </div>';
                 } elseif ($row->reason_phrase == 'PENDING') {
                     $button =
                         '<div class="d-flex justify-content-between">
-                        <span class=" text-warning p-2 me-1 fw-bold">
-                             <i class="bi bi-circle-fill"></i> PENDING
-                        </span>
-                    </div>';
+                            <span class="text-warning p-2 me-1 fw-bold">
+                                <i class="bi bi-circle-fill"></i> PENDING
+                            </span>
+                        </div>';
                 } else {
                     $button =
                         '<div class="d-flex">
-                        <button class="btn btn-icon btn-sm btn-danger-transparent rounded-pill me-2"
-                                        data-bs-toggle="modal" data-bs-target="#reject-' . $row->id . '">
-                                        <i class="ri-eye-line fw-bold"></i>
-                        </button>
-                    </div>';
+                            <button class="btn btn-icon btn-sm btn-danger-transparent rounded-pill me-2"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#reject-' . $row->id . '">
+                                <i class="ri-eye-line fw-bold"></i>
+                            </button>
+                        </div>';
                 }
                 return $button;
             });
+            
 
             $table->addColumn('status', function ($row) {
                 if ($row->reason_phrase == 'APPROVED') {
