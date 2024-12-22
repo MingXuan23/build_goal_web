@@ -349,6 +349,8 @@ class ContentController extends Controller
     public function promoteContentPayment(Request $request)
     {
         // Validation
+        // return view('content.payment');
+
         $validator = Validator::make($request->all(), [
             'content_id' => 'required|integer|exists:contents,id', // content_id must be an integer and exist in the `contents` table
             'content_name' => 'required|string|max:255', // content_name must be a string and not exceed 255 characters

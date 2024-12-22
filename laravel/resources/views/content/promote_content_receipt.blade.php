@@ -4,12 +4,12 @@
 
 @section('styles') <!-- Ensure the section is correctly named -->
 <style>
-:root {
+/* :root {
     --primary-color: #2c3e50;
     --secondary-color: #34495e;
     --accent-color: #3498db;
     --success-color: #27ae60;
-}
+} */
 
 .payment-card {
     border: none;

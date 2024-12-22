@@ -79,7 +79,6 @@ exports.seed = async function (knex) {
                 role_id: roles,
               });
             }
-           
           }
         })
       );

@@ -19,10 +19,9 @@ class TransactionController extends Controller
      
      public function directpayIndex(Request $request)
      {
-
+       
         try{
         $user = DB::table('users')->where('id',Auth::id())->first();
-
         //payment of the content promotion
         if (!empty($request->cp_token)) {
             // Split the cp_token into parts using '-'
