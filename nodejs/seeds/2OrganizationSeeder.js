@@ -13,7 +13,6 @@ exports.seed = async function (knex) {
       state: 'Melaka',
       email: 'xbug@xbug.online',
       org_type: 'Company',
-      payment_key: 'key',
     },
   ];
 
