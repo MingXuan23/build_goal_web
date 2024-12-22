@@ -59,13 +59,15 @@
 
                                         <tr>
                                             <th>No.</th>
-                                            <th>Ic No</th>
+                                            {{-- <th>Ic No</th> --}}
                                             <th>Name</th>
                                             <th>Role</th>
                                             <th>e-kyc Status</th>
                                             <th>Account Status</th>
                                             {{-- <th>Organization Name</th> --}}
                                             <th>Email Status</th>
+                                            <th>Gpt</th>
+                                            <th>Gpt Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -218,6 +220,84 @@
                                                     VERIFY</option>
                                                 <option value="0" @if ($data->email_status == 'NOT VERIFY') selected @endif>
                                                     NOT VERIFY</option>
+                                            </select>
+                                            <label for="floatingSelect">Email Status</label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+
+            @foreach ($datas as $data)
+                <div class="modal fade" id="modalGptAccount-{{ $data->id }}">
+                    <div class="modal-dialog modal-dialog-centered text-center">
+                        <div class="modal-content modal-content-demo">
+                            <div class="modal-header">
+                                <h6 class="modal-title">Change GPT Account - {{ $data->name }}</h6><button
+                                    aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <form action="{{ route('updateGptAccount', $data->id) }}" method="POST">
+                                @csrf
+                                <div class="modal-body text-start">
+
+                                    <div class="col-sm-12">
+                                        <div class="form-floating">
+                                            <select class="form-select" id="floatingSelect"
+                                                aria-label="Floating label select example" name="status" required>
+                                                <option value="1" @if ($data->is_gpt === 1) selected @endif>
+                                                    YES</option>
+                                                <option value="0" @if ($data->is_gpt !== 1) selected @endif>
+                                                    NO</option>
+                                            </select>
+                                            <label for="floatingSelect">Email Status</label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+
+            @foreach ($datas as $data)
+                <div class="modal fade" id="modalGptStatus-{{ $data->id }}">
+                    <div class="modal-dialog modal-dialog-centered text-center">
+                        <div class="modal-content modal-content-demo">
+                            <div class="modal-header">
+                                <h6 class="modal-title">Update Email Status - {{ $data->name }}</h6><button
+                                    aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <form action="{{ route('updateGptStatus', $data->id) }}" method="POST">
+                                @csrf
+                                <div class="modal-body text-start">
+
+                                    <div class="col-sm-12">
+                                        <div class="form-floating">
+                                            <select class="form-select" id="floatingSelect"
+                                                aria-label="Floating label select example" name="status" required>
+                                                <option value="1" @if ($data->gpt_status ===1) selected @endif>
+                                                    ACTIVE</option>
+                                                <option value="0" @if ($data->gpt_status !== 1) selected @endif>
+                                                    BLOCK</option>
                                             </select>
                                             <label for="floatingSelect">Email Status</label>
                                         </div>
@@ -735,11 +815,11 @@
                         name: 'DT_RowIndex',
                         searchable: false
                     },
-                    {
-                        data: 'icNo',
-                        name: 'icno',
-                        // visible:false
-                    },
+                    // {
+                    //     data: 'icNo',
+                    //     name: 'icno',
+                    //     // visible:false
+                    // },
                     {
                         data: 'name',
                         name: 'name',
@@ -766,6 +846,14 @@
                     {
                         data: 'email_status',
                         name: 'email_status',
+                    },
+                    {
+                        data: 'gpt_account',
+                        name: 'gpt_account',
+                    },
+                    {
+                        data: 'gpt_status',
+                        name: 'gpt_status',
                     },
                     {
                         data: 'action',

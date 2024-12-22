@@ -209,6 +209,7 @@ class emailController extends Controller
 
     public function sendEmailToAll(Request $request)
     {
+        dd($request->all());
         DB::beginTransaction();
 
         $request->validate([
@@ -228,8 +229,7 @@ class emailController extends Controller
                     ->whereJsonDoesntContain('role', 2)
                     ->orWhere(function ($query) {
                         $query->whereJsonContains('role', 3)
-                            ->orWhereJsonContains('role', 4)
-                            ->orWhereJsonContains('role', 5);
+                            ->orWhereJsonContains('role', 4);
                     });
             })
             ->get();

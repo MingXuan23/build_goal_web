@@ -270,6 +270,49 @@ class UserManagementController extends Controller
             return redirect()->route('showUserAdmin')->with('error', 'Failed to update Email Status!');
         }
     }
+
+    public function updateGptAccount(Request $request, $id)
+    {
+        
+        DB::beginTransaction();
+        try {
+            $request->validate([
+                'status' => 'required|in:1,0',
+            ]);
+            if($request->status == 1){
+                $gpt_status = 1;
+            }else{
+                $gpt_status = 0;
+            }
+            $update = DB::table('users')
+                ->where('id', $id)
+                ->update(['is_gpt' => (int)$request->status,'gpt_status' => $gpt_status]);
+            DB::commit();
+
+            return redirect()->route('showUserAdmin')->with('success', 'Gpt Account Updated Successfully!');
+        } catch (Exception $th) {
+            DB::rollBack();
+            return redirect()->route('showUserAdmin')->with('error', 'Failed to update Email Status!');
+        }
+    }
+    public function updateGptStatus(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $request->validate([
+                'status' => 'required|in:1,0',
+            ]);
+            $update = DB::table('users')
+                ->where('id', $id)
+                ->update(['gpt_status' => (int)$request->status]);
+            DB::commit();
+
+            return redirect()->route('showUserAdmin')->with('success', 'Gpt Status Updated Successfully!');
+        } catch (Exception $th) {
+            DB::rollBack();
+            return redirect()->route('showUserAdmin')->with('error', 'Failed to update Email Status!');
+        }
+    }
     public function updateEmailStatusMobile(Request $request, $id)
     {
         DB::beginTransaction();
@@ -326,7 +369,8 @@ class UserManagementController extends Controller
         }
     }
 
-    public function userDeleteAdmin(Request $request,$id){
+    public function userDeleteAdmin(Request $request,$id)
+    {
         DB::beginTransaction();
         try {
       

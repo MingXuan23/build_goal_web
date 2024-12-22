@@ -145,10 +145,53 @@ class AdminRouteController extends Controller
                 return $button;
             });
 
-            $table->rawColumns(['action', 'email_status', 'active', 'ekyc_status', 'role_names']);
+            $table->addColumn('gpt_account', function ($row) {
+                $messageActive = ($row->is_gpt === 1 ? 'YES' : 'NO');
+                $statusClass = ($row->is_gpt === 1) ? 'success' : 'danger';
+                $button = '
+                            <div class="d-flex justify-content-between">
+                            <span class=" text-' . $statusClass . ' p-2 me-1 fw-bold">
+                                <i class="bi bi-circle-fill"></i> ' . $messageActive . '
+                            </span>
+                            <button class="btn btn-icon btn-sm btn-warning-transparent rounded-pill " data-bs-toggle="modal" data-bs-target="#modalGptAccount-' . $row->id . '">
+                                <i class="ri-edit-line fw-bold"></i>
+                            </button>
+                        </div>
+                                    ';
+                return $button;
+            });
+
+            $table->addColumn('gpt_status', function ($row) {
+                $messageActive = ($row->gpt_status === 1 ? 'ACTIVE' : 'BLOCK');
+                $statusClass = ($row->gpt_status === 1) ? 'success' : 'danger';
+                $button = '';
+
+                if ($row->is_gpt === 1) {
+                    $button = '<div class="d-flex justify-content-between">
+                                    <span class="text-' . $statusClass . ' p-2 me-1 fw-bold">
+                                        <i class="bi bi-circle-fill"></i> ' . $messageActive . '
+                                    </span>
+                                    <button class="btn btn-icon btn-sm btn-warning-transparent rounded-pill" data-bs-toggle="modal" data-bs-target="#modalGptStatus-' . $row->id . '">
+                                        <i class="ri-edit-line fw-bold"></i>
+                                    </button>
+                                </div>';
+                }
+                else{
+                    $button = '<div class="d-flex justify-content-between">
+                                    <span class="text-danger p-2 me-1 fw-bold">
+                                        <i class="bi bi-circle-fill"></i> -
+                                    </span>
+                                </div>';
+                    }
+                
+                return $button;
+            });
+
+            $table->rawColumns(['action', 'email_status', 'active', 'ekyc_status', 'role_names','gpt_account','gpt_status']);
 
             return $table->make(true);
         }
+
         $role = DB::table('roles')->get();
         $state = DB::table('states')->select('id', 'name')->get();
 

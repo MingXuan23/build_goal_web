@@ -114,6 +114,8 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::delete('/user-delete/{id}', [UserManagementController::class, 'userDeleteAdmin'])->name('userDeleteAdmin');
     Route::post('/update-ekyc-status/{id}', [UserManagementController::class, 'updateEkycStatus'])->name('updateEkycStatus');
     Route::post('/update-email-status/{id}', [UserManagementController::class, 'updateEmailStatus'])->name('updateEmailStatus');
+    Route::post('/update-gpt-account/{id}', [UserManagementController::class, 'updateGptAccount'])->name('updateGptAccount');
+    Route::post('/update-gpt-status/{id}', [UserManagementController::class, 'updateGptStatus'])->name('updateGptStatus');
     Route::post('/update-email-email-mobile/{id}', [UserManagementController::class, 'updateEmailStatusMobile'])->name('updateEmailStatusMobile');
     Route::post('/update-email-status-mobile/{id}', [UserManagementController::class, 'updateAccountStatusMobile'])->name('updateAccountStatusMobile');
     Route::post('/update-account-status/{id}', [UserManagementController::class, 'updateAccountStatus'])->name('updateAccountStatus');
