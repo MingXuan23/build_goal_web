@@ -84,6 +84,11 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::get('/user-mobile', [AdminRouteController::class, 'showUserMobile'])->name('showUserMobile');
     Route::get('/add-user', [AdminRouteController::class, 'showAddUser'])->name('showAddUser');
     Route::get('/view-content', [AdminRouteController::class, 'showContentAdmin'])->name('showContentAdmin');
+    Route::get('/view-xbug-stand', [AdminRouteController::class, 'showxBugStandAdmin'])->name('showxBugStandAdmin');
+    Route::get('/content-cards/{contentId}', [AdminRouteController::class, 'getContentCards'])->name('admin.content-cards');
+    Route::post('/save-content-cards', [AdminRouteController::class, 'saveContentCards'])->name('admin.save-content-cards');
+
+
     Route::get('/profile',  [AdminRouteController::class, 'showProfile'])->name('showProfileAdmin');
     Route::get('/email-logs',  [AdminRouteController::class, 'showEmailLogs'])->name('showEmailLogs');
     Route::get('/gpt-usage', [GPTChatBot::class, 'getUsage'])->name('getUsage');
@@ -203,8 +208,17 @@ Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function
 });
 
 
-Route::prefix('promote-content')->middleware(['auth', 'role:3|4'])->group(function () {
+Route::prefix('promote-content')->middleware(['auth', 'role:1|3|4'])->group(function () {
     Route::post('/payment', [ContentController::class, 'promoteContentPayment'])->name('promote-content.payment');
+    Route::get('/receipt/{t_id}', [ContentController::class, 'promoteContentReceipt'])->name('promote-content.receipt');
+
+    
+});
+
+Route::prefix('xbug-stand')->middleware(['auth', 'role:1|3|4'])->group(function () {
+   
+    Route::get('/recepit/{t_id}', [ContentController::class, 'xbugStandReceipt'])->name('xbug-stand.receipt');
+
     
 });
 

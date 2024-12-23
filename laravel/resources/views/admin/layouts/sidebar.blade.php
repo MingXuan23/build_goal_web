@@ -55,6 +55,9 @@
                         <li class="slide">
                             <a href="/admin/view-content" class="side-menu__item">Applied Content</a>
                         </li>
+                        <li class="slide">
+                            <a href="/admin/view-xbug-stand" class="side-menu__item">Applied xBUG Stand</a>
+                        </li>
                         <!-- <li class="slide">
                             <a href="/organization/apply-content" class="side-menu__item">Apply Content</a>
                         </li> -->

@@ -78,7 +78,6 @@
 @endsection
 
 @section('container')
-<<<<<<< Updated upstream
     <div class="main-content app-content">
         <div class="container">
             <div class="payment-body mt-4">
@@ -86,53 +85,6 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <h5 class="mb-4 fw-bold">Promotion Summary</h5>
-=======
-<div class="main-content app-content">
-    <div class="container mt-5">
-    <div class="row justify-content-center">
-    <div class="col-md-10">
-        <div class="payment-container">
-            <div class="payment-card">
-                <div class="payment-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="m-0 text-white">Payment Confirmation</h3>
-                        <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
-                            <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="payment-body">
-                    <div class="order-summary">
-                        <h5 class="text-muted mb-4">Promotion Summary</h5>
-
-                        <div class="detail-section">
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Content Name:</strong><br>{{ $content->name }}</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Package:</strong><br>{{ $package->name }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                <p><strong>Estimated Reach:</strong><br>{{ $package->estimate_user }}</p>
-                                </div>
-                                <div class="col-md-6">
-                                <p><strong>Selected States:</strong><br>
-                                @foreach (json_decode($cp_id->target_audience) as $state)
-                                    {{ $state }},
-                                @endforeach
-                            </p>
-                                </div>
-                            </div>
-                            
-
-                           
-                           
->>>>>>> Stashed changes
                         </div>
                         <div class="col-md-6 d-flex justify-content-end">
                             <div class="secure-badge">
@@ -218,13 +170,6 @@
             </div>
         </div>
     </div>
-<<<<<<< Updated upstream
-=======
-</div>
-</div>
-</div>
-
->>>>>>> Stashed changes
 
     <br><br>
 @endsection

@@ -9,6 +9,8 @@
     --secondary-color: #34495e;
     --accent-color: #3498db;
     --success-color: #27ae60;
+    --danger-color: #dc3545; /* Danger color for errors */
+    --warning-color: #ffc107; /* Warning color for cautions */
 }
 
 .payment-card {
@@ -19,6 +21,21 @@
 
 .payment-header {
     background: linear-gradient(135deg, var(--success-color), var(--success-color));
+    color: white;
+    padding: 20px;
+    border-radius: 15px 15px 0 0;
+}
+
+
+.payment-header-pending {
+    background: linear-gradient(135deg, var(--warning-color), var(--warning-color));
+    color: white;
+    padding: 20px;
+    border-radius: 15px 15px 0 0;
+}
+
+.payment-header-failed {
+    background: linear-gradient(135deg, var(--danger-color), var(--danger-color));
     color: white;
     padding: 20px;
     border-radius: 15px 15px 0 0;
@@ -82,14 +99,32 @@
     <div class="container mt-5">
         <div class="payment-container">
             <div class="payment-card">
+                @if($transaction->status == "Success")
                 <div class="payment-header">
+                @elseif($transaction->status == "Pending")
+                <div class="payment-header-pending">
+                @elseif($transaction->status == "Failed")
+                <div class="payment-header-failed">
+                @else
+                <div class="payment-header-failed">
+                @endif
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="m-0 text-white">Payment Success</h3>
+                    @if($transaction->status == "Success")
+                    <h3 class="m-0 text-white">Payment Success</h3>
+                    @elseif($transaction->status == "Pending")
+                    <h3 class="m-0 text-white">Payment Processing</h3>
+                    @elseif($transaction->status == "Failed")
+                    <h3 class="m-0 text-white">Payment Failed</h3>
+                    @else
+                    <h3 class="m-0 text-white">Payment Failed</h3>
+                    @endif
+                       
                         <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
                             <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
                         </svg>
                     </div>
                 </div>
+               
 
                 <div class="payment-body">
                     <div class="order-summary">

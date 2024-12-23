@@ -53,6 +53,7 @@ class TransactionController extends Controller
             // Get the private key, fallback to env value if not set
             $private_key = $org->payment_key ?? env('DIRECT_PAY_KEY', '');
 
+
             $fpx_sellerTxnTime  = date('YmdHis');
             $fpx_txnAmount      = $content_promotion->promotion_price;
             $fpx_sellerExOrderNo  = "XBug"  . "_" . date('YmdHis') . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -143,6 +144,10 @@ class TransactionController extends Controller
                 ]);
             }else  if (!empty($request->stand_token)) {
                 DB::table('content_promotion')->where('id', $content_promotion->id)->update([
+                    'transaction_id'=> $transaction->id
+                ]);
+
+                DB::table('content_card')->whereNull('transaction_id')->where('content_id', $content_promotion->content_id)->update([
                     'transaction_id'=> $transaction->id
                 ]);
             }

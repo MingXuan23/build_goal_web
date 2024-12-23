@@ -56,6 +56,7 @@
                         <li class="slide">
                             <a href="/organization/apply-content" class="side-menu__item">Apply Content</a>
                         </li>
+                        
                         <li class="slide">
                             <a href="/organization/MicroLearning" class="side-menu__item">MicroLearning Resource</a>
                         </li>

@@ -454,86 +454,148 @@ class ContentController extends Controller
         }  
     }
 
-    public function addCard(Request $request, $card_id)
-{
-    $xbug_stand_price = 1; // Constant value for now
+    public function promoteContentReceipt($transaction_id){
+        $transaction = DB::table('transactions')->where('id',$transaction_id)->first();
 
-    // Validate the incoming request
-    $validatedData = $request->validate([
-        'startDate' => 'required|date|before_or_equal:endDate',
-        'startTime' => 'required|date_format:H:i',
-        'endDate' => 'required|date|after_or_equal:startDate',
-        'endTime' => 'required|date_format:H:i',
-        'numXbugStand' => 'required|integer|min:1|max:10', // Updated min to 1
-    ], [
-        'startDate.required' => 'The start date is required.',
-        'startDate.date' => 'The start date must be a valid date.',
-        'startDate.before_or_equal' => 'The start date must be before or equal to the end date.',
-        'startTime.required' => 'The start time is required.',
-        'startTime.date_format' => 'The start time must be in the format HH:mm.',
-        'endDate.required' => 'The end date is required.',
-        'endDate.date' => 'The end date must be a valid date.',
-        'endDate.after_or_equal' => 'The end date must be after or equal to the start date.',
-        'endTime.required' => 'The end time is required.',
-        'endTime.date_format' => 'The end time must be in the format HH:mm.',
-        'numXbugStand.required' => 'The number of xBUG stands is required.',
-        'numXbugStand.integer' => 'The number of xBUG stands must be an integer.',
-        'numXbugStand.min' => 'The number of xBUG stands must be at least 1.',
-        'numXbugStand.max' => 'For more than 10 stands, please email admin@xbug.online for your request.',
-    ]);
+        if($transaction == null){
+            return response()->json('Invalid Transaction');
 
-    $user_id = Auth::id();
+        }
+        $cp_id = DB::table('content_promotion')->where('transaction_id', $transaction->id)->first();
+        if(!isset($cp_id) ||$cp_id->views == null || $cp_id->clicks == null  ){
+            return response()->json('Invalid Transaction');
+        }
+        $content = DB::table('contents')->where('id', $cp_id->content_id)->first();
 
-    // Retrieve content for the user and validate its existence
-    $content = DB::table('contents')
-        ->where('user_id', $user_id)
-        ->where('id', $card_id)
-        ->where('status', 1)
-        ->first();
+        if(!isset($content) ){
+            return response()->json('Invalid Transaction');
+        }
 
-    if (empty($content)) {
-        return back()->withError('Invalid content');
+        $user = Auth::user();
+        $userRoles = json_decode($user->role);
+        if (!in_array(1, $userRoles) && Auth::id() != $content->user_id) {
+            return response()->json(['message' => 'Unauthorized Action']);
+        }
+       
+
+        return view('content.promote_content_receipt', compact('cp_id','content','transaction'));
+
     }
 
-    // Calculate the price
-    $price = $xbug_stand_price * $request->numXbugStand;
 
+    public function xbugStandReceipt($transaction_id){
+        $transaction = DB::table('transactions')->where('id',$transaction_id)->first();
 
-    $delete = DB::table('content_promotion')
-    ->whereNull('transaction_id')
-    ->where('status', 1)
-    ->whereNull('enrollment')
-    ->whereNull('views')
+        $cp_id = DB::table('content_promotion')->where('transaction_id', $transaction->id)->first();
+        $content = DB::table('contents')->where('id', $cp_id->content_id)->first();
 
-    ->whereNull('clicks')
+        if($cp_id->number_of_card == null || $cp_id->enrollment == null){
+            return response()->json('Invalid Transaction');
+        }
 
-    ->where('content_id', $content->id)
-    ->delete();
-    // Attempt to update the promotion
-    $exists = DB::table('content_promotion')
-        ->whereNotNull('transaction_id')
-        ->where('status', 1)
-        ->whereNotNull('enrollment')
-        ->where('content_id', $content->id)
-        ->exists();
+        $user = Auth::user();
+        $userRoles = json_decode($user->role);
+        if (!in_array(1, $userRoles) && Auth::id() != $content->user_id) {
+            return response()->json(['message' => 'Unauthorized Action']);
+        }
+       
 
-    if (!$exists) {
-        // Insert new promotion if no update occurred
-        $id = DB::table('content_promotion')->insertGetId([
-            'content_id' => $content->id,
-            'views' => null,
-            'clicks' => null,
-            'enrollment' => null,
-            'number_of_card' => $request->numXbugStand,
-            'promotion_price' => $price,
+        return view('content.xbug_stand_receipt', compact('cp_id','content','transaction'));
+
+    }
+    public function addCard(Request $request, $card_id)
+    {
+        $xbug_stand_price = 1; // Constant value for now
+
+        // Validate the incoming request
+        $validatedData = $request->validate([
+            'startDate' => 'required|date|before_or_equal:endDate',
+            'startTime' => 'required|date_format:H:i',
+            'endDate' => 'required|date|after_or_equal:startDate',
+            'endTime' => 'required|date_format:H:i',
+            'numXbugStand' => 'required|integer|min:1|max:10', // Updated min to 1
+        ], [
+            'startDate.required' => 'The start date is required.',
+            'startDate.date' => 'The start date must be a valid date.',
+            'startDate.before_or_equal' => 'The start date must be before or equal to the end date.',
+            'startTime.required' => 'The start time is required.',
+            'startTime.date_format' => 'The start time must be in the format HH:mm.',
+            'endDate.required' => 'The end date is required.',
+            'endDate.date' => 'The end date must be a valid date.',
+            'endDate.after_or_equal' => 'The end date must be after or equal to the start date.',
+            'endTime.required' => 'The end time is required.',
+            'endTime.date_format' => 'The end time must be in the format HH:mm.',
+            'numXbugStand.required' => 'The number of xBUG stands is required.',
+            'numXbugStand.integer' => 'The number of xBUG stands must be an integer.',
+            'numXbugStand.min' => 'The number of xBUG stands must be at least 1.',
+            'numXbugStand.max' => 'For more than 10 stands, please email admin@xbug.online for your request.',
         ]);
 
-        $stand_id = DB::table('content_promotion')->where('id', $id)->first();
-    } else {
-        return back()->withError('You have placed the xBUG Stand for this content already. If you need more stands, please email admin@xbug.online for your request.');
-    }
+        $user_id = Auth::id();
 
-    return view('content.apply_stand', compact('content', 'stand_id', 'price'));
-}
+        // Retrieve content for the user and validate its existence
+        $content = DB::table('contents')
+            ->where('user_id', $user_id)
+            ->where('id', $card_id)
+            ->where('status', 1)
+            ->first();
+
+        if (empty($content)) {
+            return back()->withError('Invalid content');
+        }
+
+        // Calculate the price
+        $price = $xbug_stand_price * $request->numXbugStand;
+
+
+        $delete = DB::table('content_promotion')
+        ->whereNull('transaction_id')
+        ->where('status', 1)
+        ->whereNull('enrollment')
+        ->whereNull('views')
+
+        ->whereNull('clicks')
+
+        ->where('content_id', $content->id)
+        ->delete();
+
+        $delete2 =  DB::table('content_card')->whereNull('transaction_id')->where('content_id', $content->id)->delete();
+        // Attempt to update the promotion
+        $exists = DB::table('content_promotion')
+            ->whereNotNull('transaction_id')
+            ->where('status', 1)
+            ->whereNotNull('enrollment')
+            ->where('content_id', $content->id)
+            ->exists();
+
+        if (!$exists) {
+            // Insert new promotion if no update occurred
+            $id = DB::table('content_promotion')->insertGetId([
+                'content_id' => $content->id,
+                'views' => null,
+                'clicks' => null,
+                'enrollment' => null,
+                'number_of_card' => $request->numXbugStand,
+                'promotion_price' => $price,
+            ]);
+
+            $startDatetime = $request->startDate . ' ' . $request->startTime;
+            $endDatetime = $request->endDate . ' ' . $request->endTime;
+
+            $contentCardId = DB::table('content_card')->insertGetId([
+                'startdate' => $startDatetime,
+                'enddate' => $endDatetime,
+                'content_id' => $content->id,
+            ]);
+
+
+
+            $stand_id = DB::table('content_promotion')->where('id', $id)->first();
+        } else {
+            return back()->withError('You have placed the xBUG Stand for this content already. If you need more stands, please email admin@xbug.online for your request.');
+        }
+
+        return view('content.apply_stand', compact('content', 'stand_id', 'price'));
+    }
 
 }

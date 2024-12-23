@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
-
+use Carbon\Carbon;
 
 class AdminRouteController extends Controller
 {
@@ -412,8 +412,8 @@ class AdminRouteController extends Controller
 
     public function showContentAdmin(Request $request)
     {
-        $stateCitiesJson = file_get_contents(public_path('assets/json/states-cities.json'));
-        $stateCities = json_decode($stateCitiesJson, true);
+        // $stateCitiesJson = file_get_contents(public_path('assets/json/states-cities.json'));
+        // $stateCities = json_decode($stateCitiesJson, true);
         $datas = DB::table('contents as contents')
             ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
             ->join('organization_user', 'contents.user_id', '=', 'organization_user.user_id')
@@ -489,7 +489,7 @@ class AdminRouteController extends Controller
         $states = DB::table('states')->select('id', 'name')->get();
         return view('admin.contentManagement.index', [
             'content_data' => $datas,
-            'stateCities' => $stateCities,
+           // 'stateCities' => $stateCities,
             'states' => $states
         ]);
     }
@@ -578,6 +578,127 @@ class AdminRouteController extends Controller
         return view('admin.setting.view-package', [
             'datas' => $data,
         ]);
+    }
+
+    public function showxBugStandAdmin(Request $request)
+    {
+        $datas = DB::table('contents as c')
+            ->join('content_promotion as cp', 'c.id', '=', 'cp.content_id')
+            ->join('transactions as t', 't.id', '=', 'cp.transaction_id')
+            ->where('t.status',"Success")
+            ->where('c.status',1)
+            ->where('cp.status',1)
+            ->select(
+                'c.id',
+                'c.name',
+                't.created_at',
+                't.amount',
+                't.id as transaction_id',
+                'cp.number_of_card',
+                'cp.status as promotion_status',
+               // DB::raw('(SELECT COUNT(*) FROM content_card WHERE content_id = c.id) as total_cards'),
+                DB::raw('(SELECT COUNT(*) FROM content_card WHERE content_id = c.id AND status = 1 AND verification_code IS NOT NULL) as assigned_cards')
+            )
+            ->orderBy('t.created_at', 'desc');
+    
+        if ($request->ajax()) {
+            return DataTables::of($datas)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    return '<button class="btn btn-info btn-sm view-cards" data-content-id="' . $row->id . '">View Cards</button>';
+                })
+                ->addColumn('receipt', function ($row) {
+                    return route('xbug-stand.receipt', $row->transaction_id);
+                })
+                ->editColumn('created_at', function ($row) {
+                    return Carbon::parse($row->created_at)->format('Y-m-d H:i:s');
+                })
+                ->editColumn('number_of_card', function ($row) {
+                    return $row->assigned_cards  . '/' . $row->number_of_card ;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+    
+        return view('admin.contentManagement.xbug_stand', ['content_data' => $datas->get()]);
+    }
+    
+    public function getContentCards($contentId)
+    {
+        $cards = DB::table('content_card')
+            ->where('content_id', $contentId)
+            ->where('status',1)
+            ->orderBy('created_at')
+            ->get();
+    
+        return response()->json(['cards' => $cards]);
+    }
+    
+    public function saveContentCards(Request $request)
+    {
+       
+        $contentId = $request->input('content_id');
+
+      
+        $cards = $request->input('cards');
+        
+        if(empty($cards) || count($cards) ==0){
+            return response()->json(['error' => "Require at least 1 card"], 400); // Send error message with 400 status
+        }
+
+        // Retrieve all card IDs for the current content
+        $existingCardIds = DB::table('content_card')->where('content_id', $contentId)->where('status',1)->pluck('id')->toArray();
+        $firstTransactionId = DB::table('content_card')
+                            ->where('content_id', $contentId)
+                            ->where('status', 1)
+                            ->whereNotNull('transaction_id')
+                            ->first()->transaction_id;
+
+        // Track the IDs of cards that are included in the request
+        $updatedCardIds = [];
+
+        foreach ($cards as $card) {
+            $updatedCardIds[] = $card['id'] ?? null; // Track card IDs from the request
+            $existCardId = DB::table('content_card')->where('card_id', $card['card_id'])->where('id','<>', $card['id'])->where('status',1)->exists(); 
+            $existCode = DB::table('content_card')->where('verification_code', $card['verification_code'])->where('id','<>', $card['id'])->where('status',1)->exists(); 
+
+            if($existCardId && $card['card_id'] !=null ){
+                return response()->json(['error' => "The card ID {$card['card_id']} already exists."], 400); // Send error message with 400 status
+            }else if($existCode && $card['card_id'] !=null ){
+                return response()->json(['error' => "The verification code {$card['verification_code']} already exists."], 400); 
+            }
+
+            if (isset($card['id']) && $card['id']) {
+                // Update existing card
+                DB::table('content_card')->where('id', $card['id'])->update([
+                    'startdate' => $card['start_date']. ' '. $card['start_time'],
+                    'enddate' => $card['end_date']. ' '. $card['end_time'],
+                    'verification_code' => $card['verification_code'],
+                    'card_id' => $card['card_id']
+                ]);
+            } else {
+                // Create new card
+                DB::table('content_card')->insert([
+                    'content_id' => $contentId,
+                    'startdate' => $card['start_date']. ' '. $card['start_time'],
+                    'enddate' => $card['end_date']. ' '. $card['end_time'],
+                    'verification_code' => $card['verification_code'],
+                    'card_id' => $card['card_id'],
+                    'transaction_id'=>$firstTransactionId
+
+                ]);
+            }
+        }
+
+        // Now handle the cards that were deleted (not in the updated request)
+        $deletedCardIds = array_diff($existingCardIds, $updatedCardIds);
+
+        // Mark deleted cards as null (status set to null)
+        DB::table('content_card')->whereIn('id', $deletedCardIds)->update([
+            'status' => 0
+        ]);
+
+        return response()->json(['message' => 'Cards saved successfully.']);
     }
 
 
