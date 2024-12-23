@@ -275,7 +275,7 @@
             } else {
                 const qrResponse = await fetch('/generate-qrcode');
                 const qrData = await qrResponse.json();
-                console.log(qrData.url);
+              
 
                 document.getElementById('qrcode').innerHTML = '';
 

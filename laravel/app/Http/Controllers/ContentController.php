@@ -361,7 +361,7 @@ class ContentController extends Controller
         ]);
 
         if ($validator->fails()) {
-            dd($validator->errors()); // This will give you the error messages from the validator
+           
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -394,28 +394,41 @@ class ContentController extends Controller
             return back()->withError('Invalid Request. Please Try Again.');
         }
 
-        $update = DB::table('content_promotion')->whereNull('transaction_id')->where('status',1)->where('content_id',$content->id)->update([
-            'views' => 0,
-            'clicks' => 0,
-            'enrollment' => 0,
+        $delete = DB::table('content_promotion')
+        ->whereNull('transaction_id')
+        ->where('status', 1)
+        ->whereNull('enrollment')
+        ->whereNull('views')
+    
+        ->whereNull('clicks')
+    
+        ->where('content_id', $content->id)
+        ->delete();
+
+        $exist = DB::table('content_promotion')
+                
+                ->whereNotNull('views')
+                ->whereNotNull('clicks')
+                ->where('status',1)
+                ->where('content_id',$content->id)
+                ->where('completed',0)
+                ->exists();
+
+        if($exist){
+            return back()->withError('You have an ongoing promotion. Please wait the current promotion to be completed first.');
+        }
+
+        $id = DB::table('content_promotion')->insertGetId([
+            'content_id' => $content->id,
+            'views' => null,
+            'clicks' => null,
+            'enrollment' => null,
             'target_audience' =>json_encode($request->states),
             'estimate_reach'=> $package ->estimate_user,
-            'promotion_price' => $calculatedPrice   
-        ]);
+            'promotion_price' => $calculatedPrice
 
-        if(!$update){
-            DB::table('content_promotion')->insert([
-                'content_id' => $content->id,
-                'views' => 0,
-                'clicks' => 0,
-                'enrollment' => 0,
-                'target_audience' =>json_encode($request->states),
-                'estimate_reach'=> $package ->estimate_user,
-                'promotion_price' => $calculatedPrice
-    
-            ]);
-        }
-        $cp_id = DB::table('content_promotion')->whereNull('transaction_id')->where('status',1)->where('content_id',$content->id)->first();
+        ]);
+        $cp_id =DB::table('content_promotion')->where('id',$id)->first();
 
         return view('content.payment', compact('content','cp_id','package'));
 
@@ -442,7 +455,85 @@ class ContentController extends Controller
     }
 
     public function addCard(Request $request, $card_id)
-    {
-        dd($request->all());
+{
+    $xbug_stand_price = 1; // Constant value for now
+
+    // Validate the incoming request
+    $validatedData = $request->validate([
+        'startDate' => 'required|date|before_or_equal:endDate',
+        'startTime' => 'required|date_format:H:i',
+        'endDate' => 'required|date|after_or_equal:startDate',
+        'endTime' => 'required|date_format:H:i',
+        'numXbugStand' => 'required|integer|min:1|max:10', // Updated min to 1
+    ], [
+        'startDate.required' => 'The start date is required.',
+        'startDate.date' => 'The start date must be a valid date.',
+        'startDate.before_or_equal' => 'The start date must be before or equal to the end date.',
+        'startTime.required' => 'The start time is required.',
+        'startTime.date_format' => 'The start time must be in the format HH:mm.',
+        'endDate.required' => 'The end date is required.',
+        'endDate.date' => 'The end date must be a valid date.',
+        'endDate.after_or_equal' => 'The end date must be after or equal to the start date.',
+        'endTime.required' => 'The end time is required.',
+        'endTime.date_format' => 'The end time must be in the format HH:mm.',
+        'numXbugStand.required' => 'The number of xBUG stands is required.',
+        'numXbugStand.integer' => 'The number of xBUG stands must be an integer.',
+        'numXbugStand.min' => 'The number of xBUG stands must be at least 1.',
+        'numXbugStand.max' => 'For more than 10 stands, please email admin@xbug.online for your request.',
+    ]);
+
+    $user_id = Auth::id();
+
+    // Retrieve content for the user and validate its existence
+    $content = DB::table('contents')
+        ->where('user_id', $user_id)
+        ->where('id', $card_id)
+        ->where('status', 1)
+        ->first();
+
+    if (empty($content)) {
+        return back()->withError('Invalid content');
     }
+
+    // Calculate the price
+    $price = $xbug_stand_price * $request->numXbugStand;
+
+
+    $delete = DB::table('content_promotion')
+    ->whereNull('transaction_id')
+    ->where('status', 1)
+    ->whereNull('enrollment')
+    ->whereNull('views')
+
+    ->whereNull('clicks')
+
+    ->where('content_id', $content->id)
+    ->delete();
+    // Attempt to update the promotion
+    $exists = DB::table('content_promotion')
+        ->whereNotNull('transaction_id')
+        ->where('status', 1)
+        ->whereNotNull('enrollment')
+        ->where('content_id', $content->id)
+        ->exists();
+
+    if (!$exists) {
+        // Insert new promotion if no update occurred
+        $id = DB::table('content_promotion')->insertGetId([
+            'content_id' => $content->id,
+            'views' => null,
+            'clicks' => null,
+            'enrollment' => null,
+            'number_of_card' => $request->numXbugStand,
+            'promotion_price' => $price,
+        ]);
+
+        $stand_id = DB::table('content_promotion')->where('id', $id)->first();
+    } else {
+        return back()->withError('You have placed the xBUG Stand for this content already. If you need more stands, please email admin@xbug.online for your request.');
+    }
+
+    return view('content.apply_stand', compact('content', 'stand_id', 'price'));
+}
+
 }

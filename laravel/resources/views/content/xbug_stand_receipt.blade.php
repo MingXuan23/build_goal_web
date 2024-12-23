@@ -4,12 +4,12 @@
 
 @section('styles') <!-- Ensure the section is correctly named -->
 <style>
-/* :root {
+:root {
     --primary-color: #2c3e50;
     --secondary-color: #34495e;
     --accent-color: #3498db;
     --success-color: #27ae60;
-} */
+}
 
 .payment-card {
     border: none;
@@ -93,7 +93,7 @@
 
                 <div class="payment-body">
                     <div class="order-summary">
-                        <h5 class="text-muted mb-4">Promotion Summary</h5>
+                        <h5 class="text-muted mb-4">Order Summary</h5>
 
                         <div class="detail-section">
 
@@ -107,14 +107,10 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                <p><strong>Estimated Reach:</strong><br>{{ number_format($cp_id->estimate_reach, 0) }}  </p>
+                                <p><strong>Number of Stand:</strong><br>{{ number_format($cp_id->number_of_card, 0) }}  </p>
                                 </div>
-                                <div class="col-md-6">
-                                <p><strong>Selected States:</strong><br>
-                                @foreach (json_decode($cp_id->target_audience) as $state)
-                                    {{ $state }},
-                                @endforeach
-                            </p>
+                              
+                            
                                 </div>
                             </div>
                             

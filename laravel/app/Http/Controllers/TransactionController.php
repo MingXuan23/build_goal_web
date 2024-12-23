@@ -61,7 +61,39 @@ class TransactionController extends Controller
         }
 
         else if(!empty($request->stand_token)){
-            //khairul continue here
+            $data = explode('-', $request->stand_token);
+           
+            // Fetch the content promotion record
+            $content_promotion = DB::table('content_promotion')->where('id', $data[0])->first();
+           // dd($data, $content_promotion);
+            if(empty($content_promotion)){
+                return response()->json(['error' => 'Invalid Request']);
+            }
+            // Validate if the updated_at part matches the data[1]
+            if (!is_numeric($data[1]) || preg_replace('/[^0-9]/', '', $content_promotion->updated_at) !== $data[1]) {
+                return response()->json(['error' => 'Invalid Request']);
+            }
+        
+            // Fetch user information
+            $fpx_buyerEmail = $user->email;
+            $fpx_buyerName = $user->name;
+            $telno = $user->telno;
+        
+            // Fetch content details
+            $content = DB::table('contents')->where('id', $content_promotion->content_id)->first();
+            $organization_id = $content->org_id;
+        
+            // Fetch the organization details
+            $org = DB::table('organization')->where('id', $organization_id)->first();
+        
+            // Get the private key, fallback to env value if not set
+            $private_key = $org->payment_key ?? env('DIRECT_PAY_KEY', '');
+
+            $fpx_sellerTxnTime  = date('YmdHis');
+            $fpx_txnAmount      = $content_promotion->promotion_price;
+            $fpx_sellerExOrderNo  = "XBug"  . "_" . date('YmdHis') . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+            $fpx_sellerOrderNo =  "XBugStand_" . date('YmdHis') . "_" . $organization_id;
+
         }
         //other payment
         else{
@@ -109,7 +141,12 @@ class TransactionController extends Controller
                 DB::table('content_promotion')->where('id', $content_promotion->id)->update([
                     'transaction_id'=> $transaction->id
                 ]);
-            }else{
+            }else  if (!empty($request->stand_token)) {
+                DB::table('content_promotion')->where('id', $content_promotion->id)->update([
+                    'transaction_id'=> $transaction->id
+                ]);
+            }
+            else{
                 //do nothing
             }
         
@@ -157,10 +194,24 @@ class TransactionController extends Controller
 
             if($parts[0] == 'PromoteContent'){
                 //do update
+                 DB::table('content_promotion')->where('transaction_id', $transaction->id)->update([
+                    'clicks'=> 0,
+                    'views'=>0,
+                 ]);
+
                 $cp_id = DB::table('content_promotion')->where('transaction_id', $transaction->id)->first();
                 $content = DB::table('contents')->where('id', $cp_id->content_id)->first();
 
                 return view('content.promote_content_receipt', compact('cp_id','content','transaction'));
+            }else if($parts[0] == 'XBugStand'){
+                DB::table('content_promotion')->where('transaction_id', $transaction->id)->update([
+                    'enrollment'=> 0,
+                 ]);
+
+                $cp_id = DB::table('content_promotion')->where('transaction_id', $transaction->id)->first();
+                $content = DB::table('contents')->where('id', $cp_id->content_id)->first();
+
+                return view('content.xbug_stand_receipt', compact('cp_id','content','transaction'));
             }
 
             

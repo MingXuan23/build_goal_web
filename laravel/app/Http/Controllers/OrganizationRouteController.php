@@ -136,13 +136,7 @@ class OrganizationRouteController extends Controller
                             <i class="bi bi-arrow-right-circle-fill"></i>
                         </button>';
                 
-                if ($row->content_type_id == 1 || $row->content_type_id == 3 || $row->content_type_id == 5) {
-                    $button .= '<button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#modalAddCard-' . $row->id . '">
-                                    <i class="bx bxs-credit-card"></i>
-                                </button>';
-                }
+               
                 
                 $button .= '</div>';
                 
@@ -197,22 +191,22 @@ class OrganizationRouteController extends Controller
             
             $table->addColumn('card', function ($row) {
                 if ($row->content_type_id == 1 || $row->content_type_id == 3 || $row->content_type_id == 5) {
-
-                    $button =
-                        '<div class="d-flex">
-                        <span class=" text-success p-2 me-1 fw-bold">
-                             <i class="bi bi-circle-fill"></i> ELIGIBLE
-                        </span>
+                    return '<div class="d-flex">
+                        <button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2 smart-card-btn" 
+                                data-id="' . $row->id . '"
+                                data-name="' . htmlspecialchars($row->name, ENT_QUOTES) . '"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#smartCardModal">
+                            <i class="bx bxs-credit-card"></i>
+                        </button>
                     </div>';
                 } else {
-                    $button =
-                        '<div class="d-flex">
-                         <span class=" text-danger p-2 me-1 fw-bold">
-                             <i class="bi bi-circle-fill"></i> NOT ELIGIBLE
+                    return '<div class="d-flex">
+                        <span class="text-danger p-2 me-1 fw-bold">
+                            <i class="bi bi-circle-fill"></i> NOT ELIGIBLE
                         </span>
                     </div>';
                 }
-                return $button;
             });
 
             $table->rawColumns(['status', 'action','card']);

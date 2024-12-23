@@ -59,8 +59,9 @@
                                             <th scope="col">Content Name</th>
                                             <th scope="col">Content Type</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col">Smart Card</th>
-                                            <th scope="col">Action</th>
+                                            <th scope="col">Promote Content</th>
+
+                                            <th scope="col">xBUG Stand</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -153,6 +154,54 @@
 
 
 
+            <!-- Smart Card Modal -->
+            <div class="modal fade" id="smartCardModal" tabindex="-1" aria-labelledby="smartCardModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title" id="smartCardModalLabel">Apply xBUG Stand</h6>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="smartCardForm" action="" method="post">
+                            @csrf
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <div class="form-floating">
+                                                <input type="date" class="form-control" id="startDate" name="startDate">
+                                                <label for="startDate">Start Date</label>
+                                            </div>
+                                            <div class="form-floating mt-3">
+                                                <input type="time" class="form-control" id="startTime" name="startTime">
+                                                <label for="startTime">Start Time</label>
+                                            </div>
+                                            <div class="form-floating mt-3">
+                                                <input type="date" class="form-control" id="endDate" name="endDate">
+                                                <label for="endDate">End Date</label>
+                                            </div>
+                                            <div class="form-floating mt-3">
+                                                <input type="time" class="form-control" id="endTime" name="endTime">
+                                                <label for="endTime">End Time</label>
+                                            </div>
+                                            <div class="form-floating mt-3">
+                                                <input type="number" class="form-control" id="numXbugStand" name="numXbugStand" min="1" max="10" value="1">
+                                                <label for="numXbugStand">Number of the xBUG Stand</label>
+                                                <div id="xbugStandHelp" class="form-text">Maximum of 10 stands. For larger requests, please email <a href="mailto:admin@xbug.online">admin@xbug.online</a>.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Payment Now</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+<!-- 
             @foreach ($content_data as $data)
                 <form action="{{ route('addCardOrganization', $data->id) }}" method="post">
                     @csrf
@@ -171,22 +220,22 @@
                                             <div class="mb-3">
                                                 <div class="form-floating">
                                                     <input type="date" class="form-control" id="floatingInputprimary"
-                                                        placeholder="name@example.com" name="startDate" value="">
+                                                        name="startDate" value="">
                                                     <label for="floatingInputprimary">Start Date</label>
                                                 </div>
                                                 <div class="form-floating mt-3">
                                                     <input type="time" class="form-control" id="floatingInputprimary"
-                                                        placeholder="name@example.com" name="startTime" value="">
+                                                        name="startTime" value="">
                                                     <label for="floatingInputprimary">Start Time</label>
                                                 </div>
                                                 <div class="form-floating mt-3">
                                                     <input type="date" class="form-control" id="floatingInputprimary"
-                                                        placeholder="name@example.com" name="endDate" value="">
+                                                      name="endDate" value="">
                                                     <label for="floatingInputprimary">End Date</label>
                                                 </div>
                                                 <div class="form-floating mt-3">
                                                     <input type="time" class="form-control" id="floatingInputprimary"
-                                                        placeholder="name@example.com" name="endTime" value="">
+                                                         name="endTime" value="">
                                                     <label for="floatingInputprimary">End Time</label>
                                                 </div>
                                             </div>
@@ -204,13 +253,16 @@
                         </div>
                     </div>
                 </form>
-            @endforeach
+            @endforeach -->
 
         </div>
     </div>
 
     <script>
         $(document).ready(function() {
+
+            
+            
             var table = $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -235,13 +287,14 @@
                         name: 'status'
                     },
                     {
-                        data: 'card',
-                        name: 'card'
-                    },
-                    {
                         data: 'action',
                         name: 'action'
                     },
+                    {
+                        data: 'card',
+                        name: 'card'
+                    },
+                   
                 ],
             });
 
@@ -282,11 +335,49 @@
                 $('#finalPrice').val('RM 0.00'); // Reset the final price
 
                 // Recalculate final price when state checkboxes or package dropdown change
-                $('.state-checkbox').off('change').on('change', calculateFinalPrice);
-                $('#package').off('change').on('change', calculateFinalPrice);
+               
             });
 
+            $(document).on('click', '.smart-card-btn', function() {
+                const contentId = $(this).data('id');
+                const contentName = $(this).data('name');
+                $('#smartCardModalLabel').text(`Apply xBUG Stand For - ${contentName}`);
+                let routeTemplate = "{{ route('addCardOrganization', ':id') }}";
+                let action = routeTemplate.replace(':id', contentId);
 
+                // Set the action attribute for the form
+                $('#smartCardForm').attr('action', action);
+                // Reset form
+                $('#smartCardForm')[0].reset();
+
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0'); // Month (0-based, so +1)
+                const dd = String(today.getDate()).padStart(2, '0');
+
+                // Start date and time
+                const startDate = `${yyyy}-${mm}-${dd}`;
+                const startTime = "08:00";
+
+                // End date (7 days after today)
+                const endDateObj = new Date();
+                endDateObj.setDate(today.getDate() + 7);
+                const endYYYY = endDateObj.getFullYear();
+                const endMM = String(endDateObj.getMonth() + 1).padStart(2, '0');
+                const endDD = String(endDateObj.getDate()).padStart(2, '0');
+                const endDate = `${endYYYY}-${endMM}-${endDD}`;
+                const endTime = "18:00";
+
+                // Populate the input fields using jQuery
+                $("#startDate").val(startDate);
+                $("#startTime").val(startTime);
+                $("#endDate").val(endDate);
+                $("#endTime").val(endTime);
+                
+            });
+
+            $('.state-checkbox').off('change').on('change', calculateFinalPrice);
+            $('#package').off('change').on('change', calculateFinalPrice);
 
         });
     </script>
