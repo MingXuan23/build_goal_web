@@ -87,6 +87,20 @@
                            </div>
                         </div>
 
+                        <!-- Label -->
+                         <div class="col-xl-12">
+                           <label for="label-input">Search Labels:</label>
+                           <input type="text" id="label-input" class="form-control" placeholder="Start typing..." autocomplete="off">
+                           <ul id="suggestions-list" class="list-group mt-2" style="display:none;"></ul>
+                         </div>
+
+                          <!-- Selected Labels -->
+                        <div id="selected-labels" class="col-xl-12">
+                           <p>Selected Labels:</p>
+                           <ul id="selected-labels-list" class="list-group"></ul>
+                        </div>
+                        <p id="error-message" class="text-danger" style="display: none;">Please select at least 5 labels.</p>
+
                         <!-- Content -->
                          <div class="col-xl-12">
                            
@@ -179,5 +193,137 @@
    </form>
    <!--End::row-1 -->
    </div>
+
+   <script>
+      $(document).ready(function() {
+    var selectedLabels = []; // Array to store selected labels
+
+    // Handle input and filter suggestions based on the user input
+    $('#label-input').on('input', function() {
+        var query = $(this).val(); // Get the current input value
+
+        if (query.length >= 1) {
+            $.ajax({
+                url: '/organization/api/getLabels', // Your route
+                method: 'GET',
+                data: { query: query }, // Send the query
+                success: function(response) {
+                    var suggestions = $('#suggestions-list');
+                    suggestions.empty(); // Clear the previous suggestions
+                    if (response.length > 0) {
+                     response.forEach(function(label) {
+                        // Escape JSON string for HTML attribute
+                        const dataLabel = JSON.stringify(label).replace(/"/g, '&quot;');
+                        suggestions.append(
+                              '<li class="list-group-item" data-label="' +
+                              dataLabel +
+                              '">' +
+                              label.name +
+                              '</li>'
+                        );
+                     });
+                     suggestions.show();
+                  } else {
+                     suggestions.hide();
+                  }
+
+                }
+            });
+        } else {
+            $('#suggestions-list').hide(); // Hide suggestions if the input is empty
+        }
+    });
+
+    // Handle click on a suggestion (add it to the selected labels)
+    $(document).on('click', '.list-group-item', function() {
+            var selectedLabel = $(this).data('label'); // Get the label text
+            console.log(selectedLabel)
+            if (!selectedLabels.includes(selectedLabel)) { // Prevent duplicate selections
+                  selectedLabels.push(selectedLabel); // Add the label to the selected labels array
+                  updateSelectedLabels(); // Update the displayed selected labels
+            }
+            $('#label-input').val(''); // Clear the input field
+            $('#suggestions-list').hide(); // Hide the suggestions
+         });
+
+         // Function to update the displayed selected labels
+         function updateSelectedLabels() {
+            var selectedLabelsContainer = $('#selected-labels-list');
+            selectedLabelsContainer.empty(); // Clear current selected labels
+
+            selectedLabels.forEach(function(label) {
+            console.log(label)
+//               var l = JSON.parse(label);
+                   var tag = $(`
+                           <div class="col-md-6" 
+                                 style="padding-bottom: 10px;"> <!-- Added padding here -->
+                              <li class="badge badge-info mr-2 p-2" 
+                                    style="background-color: white; 
+                                          color: black; 
+                                          display: inline-block; 
+                                          margin-right: 10px; 
+                                          border-radius: 10px; 
+                                          border: 2px solid black;">
+                                    ${label.name}
+                                    <button class="close ml-2" 
+                                          type="button" 
+                                          style="color: black; 
+                                                   background: transparent; 
+                                                   border: none; 
+                                                   cursor: pointer;">&times;</button>
+                              </li>
+                           </div>
+                        `);
+                  // Add remove functionality to the tag
+                  tag.find('.close').on('click', function() {
+                     selectedLabels = selectedLabels.filter(function(item) {
+                        return item !== label; // Remove label from the selected array
+                     });
+                     updateSelectedLabels(); // Update the display
+                  });
+                  selectedLabelsContainer.append(tag);
+            });
+         }
+
+         // Form validation before submission
+         $('form').on('submit', async function (e) {
+               e.preventDefault(); // Prevent default form submission
+
+               if (selectedLabels.length < 5) {
+                  $('#error-message').show();
+                  return;
+               }
+
+               $('#error-message').hide();
+
+               try {
+                  const labelIds = selectedLabels.map(label => label.id); // Extract label IDs
+                  console.log(selectedLabels, labelIds)
+
+                  const response = await fetch(`http://localhost:30000/api/vector/getVectorValue?values=${JSON.stringify(labelIds)}`);
+                  const data = await response.json(); // Parse API response
+
+                  // Assuming API response contains a `weights` array
+                  const weights = data.weights || [];
+                  console.log(weights,data)
+                  document.getElementById('formattedContent').value += `\nCategory Weights: ${weights.join(', ')}`;
+
+                  // Inject `category_weight` into a hidden input field
+                  const categoryWeightInput = document.createElement('input');
+                  categoryWeightInput.type = 'hidden';
+                  categoryWeightInput.name = 'category_weight';
+                  categoryWeightInput.value = JSON.stringify(weights); // Pass weights as JSON string
+                  this.appendChild(categoryWeightInput);
+
+                  // Submit the form after processing the weights
+                  this.submit();
+               } catch (error) {
+                  console.error('Error fetching weights:', error);
+                  alert('An error occurred while processing your request. Please try again.');
+               }
+            });
+
+      });
+   </script>
 </div>
 @endsection

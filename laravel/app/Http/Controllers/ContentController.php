@@ -300,44 +300,45 @@ class ContentController extends Controller
     }
     public function uploadMicroLearning(Request $request)
     {
-        $user = Auth::user();
-        // Handle the POST request when the form is submitted
-        if ($request->isMethod('post')) {
-            // Validate the form inputs
-            $validatedData = $request->validate([
-                'content_name' => 'required|string|max:255', // Title
-                'content_desc' => 'required|string', // Description
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Image
-                'formattedContent' => 'required|string', // Combined sections
-            ]);
+            $user = Auth::user();
+            // Handle the POST request when the form is submitted
+            if ($request->isMethod('post')) {
+                // Validate the form inputs
+                $validatedData = $request->validate([
+                    'content_name' => 'required|string|max:255', // Title
+                    'content_desc' => 'required|string', // Description
+                    'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Image
+                    'formattedContent' => 'required|string', // Combined sections
+                ]);
     
-            // Handle the image upload as a base64-encoded string
-            $imageFile = $request->file('image');
-            $imageBase64 = base64_encode(file_get_contents($imageFile));
+                // Handle the image upload
+                $imagePath = $request->file('image')->store('asset1/images', 'public'); // Store image in the public/asset1/images folder
     
-            // Prepare data to be inserted into the contents table
-            $contentData = [
-                'name' => $validatedData['content_name'], // Save title
-                'desc' => $validatedData['content_desc'], // Save description
-                'image' => $imageBase64,  // Save image as base64 string
-                'content' => $validatedData['formattedContent'],  // Save combined sections (content)
-                'content_type_id' => 2, // Set content_type_id to 2
-                'created_at' => now(), // Timestamp for creation
-                'updated_at' => now(), // Timestamp for update
-                'user_id' => $user->id,
-                'reason_phrase' => 'PENDING'
-            ];
+                // Prepare data to be inserted into the contents table
+                $contentData = [
+                    'name' => $validatedData['content_name'], // Save title
+                    'desc' => $validatedData['content_desc'], // Save description
+                    'image' => $imagePath,  // Save image path
+                    'content' => $validatedData['formattedContent'],  // Save combined sections (content)
+                    'content_type_id' => 2, // Set content_type_id to 2
+                    'created_at' => now(), // Timestamp for creation
+                    'updated_at' => now(), // Timestamp for update
+                    'user_id' => $user -> id,
+                    'reason_phrase' => 'PENDING'
+                ];
+
+                // Insert the data into the contents table
+                DB::table('contents')->insert($contentData);
     
-            // Insert the data into the contents table
-            DB::table('contents')->insert($contentData);
     
-            // Redirect with success message
-            return redirect()->back()->with('success', 'Content uploaded successfully!');
+                // Redirect with success message
+                return redirect()->back()->with('success', 'Content uploads successfully!');
+            }
+    
+            // Return the form view for GET requests (display the form)
+            return view('organization.contentManagement.microLearning');
         }
-    
-        // Return the form view for GET requests (display the form)
-        return view('organization.contentManagement.microLearning');
-    }
+ 
     
 
     // public function getLabels(Request $request)
