@@ -178,47 +178,35 @@
             <div class="container">
                <div class="row justify-content-center">
                   <div class="col-xxl-8 col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                     <ul class="list-unstyled mb-0 notification-container mt-4">
-                        @foreach($contents as $content)
-                        <li class="mt-2">
-                           <div class="card custom-card un-read">
-                              <div class="card-body p-3">
-                                 <button type="button" class="btn p-0 w-100" data-bs-toggle="modal" data-bs-target="#viewContent-{{ $content->id }}">
-                                    <div class="d-flex justify-content-between align-items-start w-100">
-                                       <div class="d-flex align-items-top mt-0 flex-wrap">
-                                          <div class="avatar avatar-md bg-primary online me-3 avatar-rounded">
-                                             <!-- Display first character of the content name -->
-                                             {{ strtoupper(substr($content->name, 0, 1)) }}
+                        <div class="row g-3 mt-4">
+                           @foreach($contents as $content)
+                              <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="card custom-card" style="width: 100%;">
+                                       <!-- Display image or fallback -->
+                                       @if($content->image)
+                                          <img src="{{ asset($content->image) }}" class="card-img-top" alt="{{ $content->name }}" style="height: 180px; object-fit: cover;">
+                                       @else
+                                          <div class="d-flex align-items-center justify-content-center card-img-top bg-primary text-white" style="height: 180px; font-size: 48px; font-weight: bold;">
+                                                {{ strtoupper(substr($content->name, 0, 1)) }}
                                           </div>
-                                          <div class="flex-fill">
-                                             <div class="d-flex align-items-center text-start">
-                                                <div class="mt-sm-0 mt-2">
-                                                   <p class="mb-0 fs-14 fw-semibold">{{ $content->name }}</p>
-                                                   <p class="mb-0 text-muted">{{ $content->content_type_name }}</p>
-                                                   <span class="mb-0 d-block text-muted fs-12">9 hrs ago</span>
-                                                </div>
-                                                <div class="ms-auto">
-                                                   <span class="float-end badge bg-light text-muted">
-                                                   <!-- Assuming you have a 'created_at' field -->
-                                                   {{ \Carbon\Carbon::parse($content->created_at)->format('d, M Y') }}
-                                                   </span>
-                                                </div>
-                                             </div>
-                                          </div>
+                                       @endif
+
+                                       <div class="card-body">
+                                          <h6 class="card-title fw-semibold">{{ $content->name }}</h6>
+                                          <p class="card-text text-muted">{{ $content->content_type_name }}</p>
+                                          <a href="javascript:void(0);" class="btn btn-primary">Read More</a>
                                        </div>
-                                       <div class="text-start fs-12 text-muted"> 
-                                          {{ \Carbon\Carbon::parse($content->created_at)->format('d, M Y') }}
+                                       <div class="card-footer">
+                                          <span class="card-text">Last updated {{ \Carbon\Carbon::parse($content->created_at)->diffForHumans() }}</span>
                                        </div>
                                     </div>
-                                 </button>
                               </div>
-                           </div>
-                        </li>
-                        @endforeach
-                     </ul>
+                           @endforeach
+                        </div>
                   </div>
                </div>
             </div>
+
 
             <div class="modal fade" id="viewContent" tabindex="-1"
                aria-labelledby="viewContent" data-bs-keyboard="false"

@@ -96,8 +96,9 @@ class MicrolearningController extends Controller
         // Query the database to fetch and filter contents by content_type_id and search term
         $contents = DB::table('contents as c')
             ->join('content_types', 'c.content_type_id', '=', 'content_types.id')
-            ->select('c.id', 'c.name', 'c.image', 'content_types.type as content_type_name', 'c.created_at')
+            ->select('c.id', 'c.name', 'c.image', 'content_types.type as content_type_name', 'c.created_at','c.reason_phrase')
             ->where('content_types.id', '=', $id) // Use dynamic $id
+            ->where('c.reason_phrase', '=', 'APPROVED')
             ->when($search, function ($query, $search) {
                 return $query->where('c.name', 'like', '%' . $search . '%'); 
             })
