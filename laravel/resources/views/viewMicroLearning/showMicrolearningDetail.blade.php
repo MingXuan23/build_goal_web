@@ -194,7 +194,14 @@
                                        <div class="card-body">
                                           <h6 class="card-title fw-semibold">{{ $content->name }}</h6>
                                           <p class="card-text text-muted">{{ $content->content_type_name }}</p>
-                                          <a href="javascript:void(0);" class="btn btn-primary">Read More</a>
+                                          <a href="javascript:void(0);" 
+                                             class="btn btn-primary" 
+                                             data-bs-toggle="modal" 
+                                             data-bs-target="#contentModal" 
+                                             onclick="showContentPreview('{{ $content->content }}', '{{ $content->name }}', '{{ $content->desc }}')">
+                                             Read More
+                                          </a>
+
                                        </div>
                                        <div class="card-footer">
                                           <span class="card-text">Last updated {{ \Carbon\Carbon::parse($content->created_at)->diffForHumans() }}</span>
@@ -208,7 +215,7 @@
             </div>
 
 
-            <div class="modal fade" id="viewContent" tabindex="-1"
+            <!-- <div class="modal fade" id="viewContent" tabindex="-1"
                aria-labelledby="viewContent" data-bs-keyboard="false"
                aria-hidden="true">
                <div class="modal-dialog modal-dialog-scrollable modal-lg">
@@ -261,7 +268,28 @@
                      </div>
                   </div>
                </div>
+            </div> -->
+
+            <!-- Modal for Read More -->
+            <!-- Modal for Read More -->
+            <div class="modal fade" id="contentModal" tabindex="-1" aria-labelledby="contentModalLabel" aria-hidden="true">
+               <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h5 class="modal-title" id="contentModalLabel">Content Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                     </div>
+                     <div class="modal-body" id="modalContent">
+                        <!-- Content preview will be dynamically inserted here -->
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                     </div>
+                  </div>
+               </div>
             </div>
+
+
             <!-- End:: Section-11 -->
             <div class="text-center landing-main-footer py-3 bg-light">
                <span class="text-dark  mb-0">All
@@ -294,5 +322,40 @@
       <script src="../../assets/libs/node-waves/waves.min.js"></script>
       <!-- Sticky JS -->
       <script src="../../assets/js/sticky.js"></script>
+
+      <script>
+         function showContentPreview(formattedContent, title, description) {
+            // Update the modal title
+            document.getElementById('contentModalLabel').innerText = title;
+
+            // Build the preview content
+            let contentHtml = `
+               <h1>${title}</h1>
+               <p><em>${description}</em></p>
+               <hr>
+            `;
+
+            const contentSections = formattedContent.split('\n\n');
+            contentSections.forEach((section, index) => {
+               const headerMatch = section.match(/\*\*\*(.*?)\*\*\*/); // Match header in ***
+               if (headerMatch) {
+                  const header = headerMatch[1]; // Extract header
+                  const body = section.replace(/\*\*\*(.*?)\*\*\*/, '').trim(); // Remove header and extract body
+
+                  // Append formatted section to preview
+                  contentHtml += `
+                     <div class="preview-section">
+                        <h2>Step ${index + 1}: ${header}</h2>
+                        <p>${body}</p>
+                     </div>
+                  `;
+               }
+            });
+
+            // Insert content into modal body
+            document.getElementById('modalContent').innerHTML = contentHtml;
+         }
+
+      </script>
    </body>
 </html>
