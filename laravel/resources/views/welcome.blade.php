@@ -148,7 +148,7 @@
                                 </a>
                             </li>
                             <li class="slide">
-                                <a href="/view-microlearning" class="side-menu__item">
+                                <a href="/view-content" class="side-menu__item">
                                     <span class="side-menu__label">Content</span>
                                 </a>
                             </li>

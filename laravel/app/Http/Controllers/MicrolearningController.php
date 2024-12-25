@@ -63,7 +63,7 @@ class MicrolearningController extends Controller
 
 
 
-    public function showMicrolearning()
+    public function showContentHomepage()
     {
         $countContent = DB::table('contents')
         ->where('reason_phrase', '=', 'APPROVED')
@@ -90,11 +90,11 @@ class MicrolearningController extends Controller
         ->where('reason_phrase', '=', 'APPROVED')
         ->count();
 
-        return view('viewMicroLearning.indexMicrolearning', compact('countContent','countContents_CourseTraining','countContents_MicroLearning', 'countContents_Event', 'countContents_JobOffer'));
+        return view('viewContent.indexContent', compact('countContent','countContents_CourseTraining','countContents_MicroLearning', 'countContents_Event', 'countContents_JobOffer'));
     }
 
 
-    public function showMicrolearningDetail(Request $request, $id)
+    public function showContentDetail(Request $request, $id)
     {
         // Get the search term from the request
         $search = $request->query('search', '');
@@ -112,7 +112,7 @@ class MicrolearningController extends Controller
             ->get();
     
         // Return the view with the fetched data
-        return view('viewMicroLearning.showMicrolearningDetail', [
+        return view('viewContent.showContentDetail', [
             'contents' => $contents
         ]);
     }

@@ -278,7 +278,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title fw-semibold">Job Offering</h5>
                                             <p><span class="text-default fw-semibold">{{ $countContents_JobOffer }} Jobs</span> available</p>
-                                            <a class="text-primary fw-semibold" href="{{ url('/view-contents/5') }}">Explore Jobs<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
+                                            <a class="text-primary fw-semibold" href="{{ url('/view-content/5') }}">Explore Jobs<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
                                         </div>
                                     </div>
                                 </div>
