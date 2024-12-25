@@ -48,9 +48,13 @@ Route::get('/get-suggested-location', [JobScraperController::class, 'searchLocat
 
 Route::get('/login', [AuthController::class, 'viewLogin'])->name('viewLogin');
 Route::get('/verify-code', [AuthController::class, 'viewVerify'])->name('viewVerify');
+Route::get('/verify-user-organization', [AuthController::class, 'viewVerifyUserOrganization'])->name('viewVerifyUserOrganization');
+Route::get('/verify-user-content-creator', [AuthController::class, 'viewVerifyUserContentCreator'])->name('viewVerifyUserContentCreator');
 Route::get('/resend-code', [AuthController::class, 'resendVerify'])->name('resendVerify');
 Route::get('/organization-register', [AuthController::class, 'viewOrganizationRegister'])->name('viewOrganizationRegister');
+Route::get('/organization-register-user', [AuthController::class, 'viewOrganizationRegisterUser'])->name('viewOrganizationRegisterUser');
 Route::get('/content-creator-register', [AuthController::class, 'viewContentCreatorRegister'])->name('viewContentCreatorRegister');
+Route::get('/content-creator-register-user', [AuthController::class, 'viewContentCreatorRegisterUser'])->name('viewContentCreatorRegisterUser');
 Route::get('/reset-password', [AuthController::class, 'viewResetPassword'])->name('viewResetPassword');
 
 
@@ -61,6 +65,8 @@ Route::get('/policy', [AuthController::class, 'policy'])->name('policy');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/organization-register', [AuthController::class, 'createOrganizationRegister'])->name('createOrganizationRegister');
 Route::post('/content-creator-register', [AuthController::class, 'createContentCreatorRegister'])->name('createContentCreatorRegister');
+Route::post('/verify-user-organization', [AuthController::class, 'verifyUserOrganization'])->name('verifyUserOrganization');
+Route::post('/verify-user-content-creator', [AuthController::class, 'verifyUserContentCretor'])->name('verifyUserContentCretor');
 Route::post('/verify-code', [AuthController::class, 'verifyCode'])->name('verifyCode');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('resetPassword');
 Route::get('/resend-email-reset-password', [AuthController::class, 'resendResetPassword'])->name('resendResetPassword');
@@ -154,7 +160,7 @@ Route::get('payment_template', [TransactionController::class, 'index'])->name('p
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function () {
+Route::prefix('organization')->middleware(['auth', 'role:2'])->group(function () {
     Route::get('/dashboard', [OrganizationRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
     Route::get('/profile', [OrganizationRouteController::class, 'showProfile'])->name('showProfileOrganization');
     Route::get('/MicroLearning', [OrganizationRouteController::class, 'showMicroLearningForm'])->name('showMicroLearningForm');
@@ -188,7 +194,7 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Route::prefix('content-creator')->middleware(['auth', 'role:4'])->group(function () {
+Route::prefix('content-creator')->middleware(['auth', 'role:3'])->group(function () {
     Route::get('/dashboard', [ContentCreatorRouteController::class, 'showDashboard'])->name('showDashboardContentCreator');
     Route::get('/profile', [ContentCreatorRouteController::class, 'showProfile'])->name('showProfileContentCreator');
     Route::get('/apply-content', [ContentCreatorRouteController::class, 'showAddContentForm'])->name('showAddContentForm');

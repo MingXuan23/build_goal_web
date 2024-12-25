@@ -137,10 +137,9 @@
                 // Data peran
                 $rolesMap = [
                     1 => 'admin',
-                    2 => 'staff',
-                    3 => 'organization',
-                    4 => 'content-creator',
-                    5 => 'mobile user',
+                    2 => 'organization',
+                    3 => 'content-creator',
+                    4 => 'mobile user',
                 ];
 
                 $userRoles = is_string(Auth::user()->role) ? json_decode(Auth::user()->role, true) : Auth::user()->role;
@@ -154,14 +153,12 @@
                 $currentUrl = request()->url();
                 $selectedRole = null;
 
-                if (str_contains($currentUrl, '/organization') && in_array(3, $userRoles)) {
-                    $selectedRole = 3;
+                if (str_contains($currentUrl, '/organization') && in_array(2, $userRoles)) {
+                    $selectedRole = 2;
                 } elseif (str_contains($currentUrl, '/admin') && in_array(1, $userRoles)) {
                     $selectedRole = 1;
-                } elseif (str_contains($currentUrl, '/staff') && in_array(2, $userRoles)) {
-                    $selectedRole = 2;
-                } elseif (str_contains($currentUrl, '/content-creator') && in_array(4, $userRoles)) {
-                    $selectedRole = 4;
+                } elseif (str_contains($currentUrl, '/content-creator') && in_array(3, $userRoles)) {
+                    $selectedRole = 3;
                 }
             @endphp
 
