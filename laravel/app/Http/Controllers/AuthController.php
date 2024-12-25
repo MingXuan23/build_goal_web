@@ -585,10 +585,12 @@ class AuthController extends Controller
         }
     }
 
-    public function viewOrganizationRegisterUser(Request $request) {
+    public function viewOrganizationRegisterUser(Request $request)
+    {
         return view('auth.organization-register-user');
     }
-    public function viewContentCreatorRegisterUser(Request $request) {
+    public function viewContentCreatorRegisterUser(Request $request)
+    {
         return view('auth.cotent-creator-register-user');
     }
     public function verifyUserOrganization(Request $request)
@@ -602,6 +604,12 @@ class AuthController extends Controller
         ]);
 
         $noPengenalan = $validatedData['icNo'];
+
+        $user = DB::table('users')->where('icNo', $noPengenalan)->first();
+
+        if ($user) {
+            return back()->with('error', 'Your Identity Number is already registered. Please contact us at [help-center@xbug.online] for further assistance.');
+        }
 
         $apiUrl = env('EKYC_VERIFY_USER_API');
 
@@ -644,6 +652,12 @@ class AuthController extends Controller
         $noPengenalan = $validatedData['icNo'];
 
         $apiUrl = env('EKYC_VERIFY_USER_API');
+
+        $user = DB::table('users')->where('icNo', $noPengenalan)->first();
+
+        if ($user) {
+            return back()->with('error', 'Your Identity Number is already registered. Please contact us at [help-center@xbug.online] for further assistance.');
+        }
 
         try {
 
