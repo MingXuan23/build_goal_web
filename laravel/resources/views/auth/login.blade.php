@@ -218,10 +218,10 @@
                             </p>
 
                             <div class="d-grid gap-2">
-                                <a class="btn btn-outline-primary" href='/organization-register'>
+                                <a class="btn btn-outline-primary" href='/verify-user-organization'>
                                     Register as Organization
                                 </a>
-                                <a class="btn btn-outline-success" href='/content-creator-register'>
+                                <a class="btn btn-outline-success" href='/verify-user-content-creator'>
                                     Register as Content Creator
                                 </a>
                             </div>

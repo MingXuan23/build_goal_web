@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
@@ -30,12 +32,22 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
+    public function viewVerifyUserOrganization()
+    {
+        return view('auth.verify-user-organization');
+    }
+    public function viewVerifyUserContentCreator()
+    {
+        return view('auth.verify-user-content-creator');
+    }
 
-    public function requestDelAcc(){
+    public function requestDelAcc()
+    {
         return view('auth.requestDelAcc');
     }
 
-    public function policy(){
+    public function policy()
+    {
         return view('auth.policy');
     }
     public function viewOrganizationRegister()
@@ -58,8 +70,6 @@ class AuthController extends Controller
 
         return view('auth.reset-password');
     }
-
-
     public function viewContentCreatorRegister()
     {
         $organization_type = DB::table('organization_type')->select('id', 'type')->get();
@@ -69,7 +79,6 @@ class AuthController extends Controller
             'states' => $state
         ]);
     }
-
     public function createOrganizationRegister(Request $request)
     {
         $validatedData = $request->validate([
@@ -189,7 +198,6 @@ class AuthController extends Controller
             return back()->withError('Error EDE' . $e->getLine() . ' : ' . $e->getMessage());
         }
     }
-
     public function createContentCreatorRegister(Request $request)
     {
         $validatedData = $request->validate([
@@ -293,7 +301,6 @@ class AuthController extends Controller
             return back()->withError('Error EDE' . $e->getLine() . ' : ' . $e->getMessage());
         }
     }
-
     public function login(Request $request)
     {
         $validatedData =  $request->validate([
@@ -358,7 +365,6 @@ class AuthController extends Controller
             return back()->with('error', 'Invalid credentials. Please make sure your email and password is correct');
         }
     }
-
     public function logout(Request $request)
     {
         Auth::logout();
@@ -369,7 +375,6 @@ class AuthController extends Controller
 
         return redirect('/login')->with('success', 'You have been logged out successfully!');
     }
-
     public function resendVerify(Request $request)
     {
         DB::beginTransaction();
@@ -429,7 +434,6 @@ class AuthController extends Controller
             return back()->with('error', 'There was an error sending the verification code. Please try again later. Error: ' . $e->getMessage());
         }
     }
-
     public function verifyCode(Request $request)
     {
         $validator = $request->validate([
@@ -469,7 +473,6 @@ class AuthController extends Controller
             return back()->with('error', 'Invalid verification code. Please make sure yuor verifciation code is valid');
         }
     }
-
     public function resetPassword(Request $request)
     {
         $validator = $request->validate([
@@ -524,7 +527,6 @@ class AuthController extends Controller
             return back()->withError('Error EDE' . $e->getLine() . ' : ' . $e->getMessage());
         }
     }
-
     public function resendResetPassword(Request $request)
     {
 
@@ -580,6 +582,93 @@ class AuthController extends Controller
 
             DB::table('email_logs')->insert($logData);
             return back()->with('error', 'There was an error sending the email reset password. Please try again later. Error: ' . $e->getMessage());
+        }
+    }
+
+    public function viewOrganizationRegisterUser(Request $request) {
+        return view('auth.organization-register-user');
+    }
+    public function viewContentCreatorRegisterUser(Request $request) {
+        return view('auth.cotent-creator-register-user');
+    }
+    public function verifyUserOrganization(Request $request)
+    {
+        // dd($request->all());
+
+        $validatedData = $request->validate([
+            'icNo' => 'required|digits:12',
+        ], [], [
+            'icNo' => 'Identity Number',
+        ]);
+
+        $noPengenalan = $validatedData['icNo'];
+
+        $apiUrl = env('EKYC_VERIFY_USER_API');
+
+        try {
+
+            $response = Http::post($apiUrl, [
+                'noPengenalan' => $noPengenalan,
+            ]);
+
+            if ($response->successful()) {
+                $organization_type = DB::table('organization_type')->select('id', 'type')->get();
+                $state = DB::table('states')->select('id', 'name')->get();
+
+                $apiData = $response->json();
+                return view('auth.organization-register-user', [
+                    'status' => 'success',
+                    'data' => $apiData,
+                    'organization_types' => $organization_type,
+                    'states' => $state,
+                    'noPengenalan' => $noPengenalan
+                ]);
+            } else {
+                return back()->with('error', 'Your Identity Number is not valid. Please contact us at [help-center@xbug.online] for further assistance.');
+            }
+        } catch (\Exception $e) {
+
+            return back()->with('error', 'Something went wrong. Please try again or contact us at [help-center@xbug.online]' . $e->getMessage());
+        }
+    }
+    public function verifyUserContentCretor(Request $request)
+    {
+        // dd($request->all());
+
+        $validatedData = $request->validate([
+            'icNo' => 'required|digits:12',
+        ], [], [
+            'icNo' => 'Identity Number',
+        ]);
+
+        $noPengenalan = $validatedData['icNo'];
+
+        $apiUrl = env('EKYC_VERIFY_USER_API');
+
+        try {
+
+            $response = Http::post($apiUrl, [
+                'noPengenalan' => $noPengenalan,
+            ]);
+
+            if ($response->successful()) {
+                $organization_type = DB::table('organization_type')->select('id', 'type')->get();
+                $state = DB::table('states')->select('id', 'name')->get();
+
+                $apiData = $response->json();
+                return view('auth.content-creator-register-user', [
+                    'status' => 'success',
+                    'data' => $apiData,
+                    'organization_types' => $organization_type,
+                    'states' => $state,
+                    'noPengenalan' => $noPengenalan
+                ]);
+            } else {
+                return back()->with('error', 'Your Identity Number is not valid. Please contact us at [help-center@xbug.online] for further assistance.');
+            }
+        } catch (\Exception $e) {
+
+            return back()->with('error', 'Something went wrong. Please try again or contact us at [help-center@xbug.online]' . $e->getMessage());
         }
     }
 }
