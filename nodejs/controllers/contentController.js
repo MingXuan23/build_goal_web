@@ -223,6 +223,45 @@ const getClickedContent = async (req, res) => {
 
 }
 
+const updateUserContent = async (req, res) =>{
+    try{
+        const user = req.user;
+        const { content_id, action } = req.body; 
+
+        const interaction = await knex('interaction_type').where('type',action).first();
+        const content = await knex('contents').where('id',content_id).where('status',1).first();
+
+        if(!interaction){
+            return res.status(400).json({'message':'Invalid Action'});
+        }
+        if(!content_id){
+            return res.status(400).json({'message':'Invalid Action'});
+        }
+
+        const exist = await knex('user_content').where('user_id',user.id).where('content_id',content.id).where('interaction_type_id',interaction.id).where('status',1);
+
+        if(!exist){
+            await knex('user_content').insert({
+                    'user_id': user.id,
+                    'content_id': content_id,
+                    'interaction_type_id': interaction.id,
+                    'ip_address': req.ip || req.connection.remoteAddress
+                });
+
+            return res.status(201).json({
+                'message': 'Success'
+            })
+        }
+
+        return res.status(200).json({
+            'message': 'Duplicated Request'
+        })
+
+        
+    }catch(error){
+        return res.status(500).json(error);
+    }
+}
 
 
 
@@ -231,5 +270,6 @@ module.exports = {
     getContentByVector,
     saveContentEnrollment,
     getContentEnrollment,
-    getClickedContent
+    getClickedContent,
+    updateUserContent
 };

@@ -25,6 +25,25 @@
       </div>
    @endif
 
+            @if (session()->has('error'))
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                    <i class="bi bi-dash-circle-fill fs-4"></i>
+                    <div class="ms-3"> {!! session('error') !!} </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
    <div class="card">
       <div class="card-header">
          <h2>MicroLearning Content</h2>
@@ -49,10 +68,10 @@
                         <input type="text" id="label-input" class="form-control" placeholder="Start typing..." autocomplete="off">
                         <ul id="suggestions-list" class="list-group mt-2" style="display:none;"></ul>
                   </div>
-                  <div id="sectionsContainer"></div>
+                  
                   <div id="selected-labels" class="mb-3">
-                     <p>Selected Labels:</p>
-                     <ul id="selected-labels-list" class="list-group"></ul>
+                    
+                     <ul id="selected-labels-list" class="list-group d-flex flex-wrap" style="display: flex; gap: 10px; list-style: none; padding: 0; flex-direction: initial"></ul>
                   </div>
                   <p id="error-message" class="text-danger" style="display: none;">Please select at least 5 labels.</p>
                   <div id="mainButtons">
@@ -72,6 +91,8 @@
                   </div>
 
                   <input type="hidden" id="formattedContent" name="formattedContent" value="">
+                  <input type="hidden" id="labelIds" name="labelIds" value="">
+
 
                   <div class="col-md-12">
                      <div class="row">
@@ -390,7 +411,7 @@
 
       //    // Close suggestions when clicking outside
       //    $(document).on('click', function(event) {
-      //       if (!$(event.target).closest('#label-input').length) {
+      //       if (!$(event.taget).closest('#label-input').length) {
       //             $('#suggestions-list').hide();
       //       }
       //    });
@@ -421,10 +442,11 @@
                     if (response.length > 0) {
                      response.forEach(function(label) {
                         // Escape JSON string for HTML attribute
-                        const dataLabel = JSON.stringify(label).replace(/"/g, '&quot;');
+                       
+                       // const dataLabel = JSON.stringify(label).replace(/"/g, '&quot;');
                         suggestions.append(
-                              '<li class="list-group-item" data-label="' +
-                              dataLabel +
+                              '<li class="list-group-item" data-labelid="' +
+                              JSON.stringify(label).replace(/"/g, '&quot;') +
                               '">' +
                               label.name +
                               '</li>'
@@ -444,11 +466,13 @@
 
     // Handle click on a suggestion (add it to the selected labels)
     $(document).on('click', '.list-group-item', function() {
-            var selectedLabel = $(this).data('label'); // Get the label text
-            console.log(selectedLabel)
-            if (!selectedLabels.includes(selectedLabel)) { // Prevent duplicate selections
+            var selectedLabel = $(this).data('labelid'); // Get the label text
+           // console.log(selectedLabel, selectedLabels,selectedLabels.includes(selectedLabel) )
+            if (!selectedLabels.some(label => label.id === selectedLabel.id)) { // Prevent duplicate selections
                   selectedLabels.push(selectedLabel); // Add the label to the selected labels array
                   updateSelectedLabels(); // Update the displayed selected labels
+            }else{
+               alert('This label has been selected');
             }
             $('#label-input').val(''); // Clear the input field
             $('#suggestions-list').hide(); // Hide the suggestions
@@ -460,38 +484,41 @@
             selectedLabelsContainer.empty(); // Clear current selected labels
 
             selectedLabels.forEach(function(label) {
-console.log(label)
-//               var l = JSON.parse(label);
-                   var tag = $(`
-                           <div class="col-md-6" 
-                                 style="padding-bottom: 10px;"> <!-- Added padding here -->
-                              <li class="badge badge-info mr-2 p-2" 
-                                    style="background-color: white; 
-                                          color: black; 
-                                          display: inline-block; 
-                                          margin-right: 10px; 
-                                          border-radius: 10px; 
-                                          border: 2px solid black;">
-                                    ${label.name}
-                                    <button class="close ml-2" 
-                                          type="button" 
-                                          style="color: black; 
-                                                   background: transparent; 
-                                                   border: none; 
-                                                   cursor: pointer;">&times;</button>
-                              </li>
-                           </div>
-                        `);
-                  // Add remove functionality to the tag
-                  tag.find('.close').on('click', function() {
-                     selectedLabels = selectedLabels.filter(function(item) {
-                        return item !== label; // Remove label from the selected array
-                     });
-                     updateSelectedLabels(); // Update the display
+               var tag = $(`
+                  <li class="badge badge-info" 
+                     style="
+                        background-color: white; 
+                        color: black; 
+                        display: inline-flex; 
+                        align-items: center; 
+                        padding: 5px 10px; 
+                        border-radius: 10px; 
+                        border: 2px solid black;">
+                     ${label.name}
+                     <button class="close ml-2" 
+                        type="button" 
+                        style="
+                           color: black; 
+                           background: transparent; 
+                           border: none; 
+                           cursor: pointer;">
+                        &times;
+                     </button>
+                  </li>
+               `);
+
+               // Add remove functionality to the tag
+               tag.find('.close').on('click', function() {
+                  selectedLabels = selectedLabels.filter(function(item) {
+                     return item !== label; // Remove label from the selected array
                   });
-                  selectedLabelsContainer.append(tag);
+                  updateSelectedLabels(); // Update the display
+               });
+
+               selectedLabelsContainer.append(tag);
             });
          }
+
 
          // Form validation before submission
          $('form').on('submit', async function (e) {
@@ -506,22 +533,23 @@ console.log(label)
 
                try {
                   const labelIds = selectedLabels.map(label => label.id); // Extract label IDs
-                  console.log(selectedLabels, labelIds)
+                  $('#labelIds').val(labelIds);
+                  // console.log(selectedLabels, labelIds)
 
-                  const response = await fetch(`http://localhost:30000/api/vector/getVectorValue?values=${JSON.stringify(labelIds)}`);
-                  const data = await response.json(); // Parse API response
+                  // const response = await fetch(`http://localhost:30000/api/vector/getVectorValue?values=${JSON.stringify(labelIds)}`);
+                  // const data = await response.json(); // Parse API response
 
-                  // Assuming API response contains a `weights` array
-                  const weights = data.weights || [];
-                  console.log(weights,data)
-                  document.getElementById('formattedContent').value += `\nCategory Weights: ${weights.join(', ')}`;
+                  // // Assuming API response contains a `weights` array
+                  // const weights = data.weights || [];
+                  // console.log(weights,data)
+                  // document.getElementById('formattedContent').value += `\nCategory Weights: ${weights.join(', ')}`;
 
-                  // Inject `category_weight` into a hidden input field
-                  const categoryWeightInput = document.createElement('input');
-                  categoryWeightInput.type = 'hidden';
-                  categoryWeightInput.name = 'category_weight';
-                  categoryWeightInput.value = JSON.stringify(weights); // Pass weights as JSON string
-                  this.appendChild(categoryWeightInput);
+                  // // Inject `category_weight` into a hidden input field
+                  // const categoryWeightInput = document.createElement('input');
+                  // categoryWeightInput.type = 'hidden';
+                  // categoryWeightInput.name = 'category_weight';
+                  // categoryWeightInput.value = JSON.stringify(weights); // Pass weights as JSON string
+                  // this.appendChild(categoryWeightInput);
 
                   // Submit the form after processing the weights
                   this.submit();

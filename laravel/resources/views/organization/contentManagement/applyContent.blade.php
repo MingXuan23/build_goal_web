@@ -25,6 +25,25 @@
          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
    @endif
+   @if (session()->has('error'))
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                    <i class="bi bi-dash-circle-fill fs-4"></i>
+                    <div class="ms-3"> {!! session('error') !!} </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            
    <form action="{{ route('addContentOrganization') }}" method="POST">
     @csrf
       <div class="row">
@@ -143,29 +162,31 @@
                            </div>
                         </div>
                         <!-- State -->
+
                         <div class="col-xl-12">
-                           <label class="form-label">Select States</label>
-                           <span class="text-muted"> - scroll down </span>
-                           <div id="state-container" style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
-                               @foreach ($states as $state)
-                                   <div class="form-check form-check-lg">
-                                       <input class="form-check-input state-checkbox @error('states') is-invalid @enderror" 
-                                              type="checkbox" 
-                                              name="states[]" 
-                                              value="{{ $state->name }}" 
-                                              id="state-{{ $state->name }}" 
-                                              @checked(is_array(old('states')) && in_array($state->name, old('states')))>
-                                       <label class="form-check-label" for="state-{{ $state->name }}">
-                                           {{ $state->name }}
-                                       </label>
-                                       
-                                       @error('states')
-                                           <span class="mb-1 text-danger">{{ $message }}</span>
-                                       @enderror
-                                   </div>
-                               @endforeach
+                           <div class="form-floating">
+                           <select class="form-select @error('state') is-invalid @enderror" 
+                                    name="state" 
+                                    id="state-select" 
+                                    style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd;"
+                                 >
+                              <option value="" disabled selected>Select a state</option>
+                              @foreach ($states as $state)
+                                    <option value="{{ $state->name }}" 
+                                          @selected(old('state') == $state->name)>
+                                       {{ $state->name }}
+                                    </option>
+                              @endforeach
+                           </select>
+                              <label for="state">Select State</label>
+                              @error('state')
+                              <span class="text-danger">{{ $message }}</span>
+                           @enderror
                            </div>
-                       </div>
+                        </div>
+                     
+
+
                        
                        
 
@@ -173,6 +194,27 @@
                                 
                      </div>
                   </div>
+
+                   
+                  <div class="col-md-6">
+            
+                  <div class="form-floating">
+                        <input type="text" id="label-input" class="form-control" placeholder="Start typing..." autocomplete="off">
+                        <label for="label-input">Related Labels</label>
+                        <ul id="suggestions-list" class="list-group mt-2" style="display:none;"></ul>
+                       <br>
+                  <div id="selected-labels" class="mb-3">
+                 
+                     <ul id="selected-labels-list" class="list-group d-flex flex-wrap" style="display: flex; gap: 10px; list-style: none; padding: 0; flex-direction: initial"></ul>
+                  </div>
+                           </div>
+                       
+                       
+                  </div>
+                
+                  <p id="error-message" class="text-danger" style="display: none;">Please select at least 5 labels.</p>
+                  <input type="hidden" id="labelIds" name="labelIds" value="">
+
                   <!-- Action Buttons -->
                   <div class="col-md-12">
                      <div class="row">
@@ -326,4 +368,127 @@
       });
    </script>
 </div>
+
+<script>
+   
+   $(document).ready(function() {
+    var selectedLabels = []; // Array to store selected labels
+
+    // Handle input and filter suggestions based on the user input
+    $('#label-input').on('input', function() {
+        var query = $(this).val(); // Get the current input value
+
+        if (query.length >= 1) {
+            $.ajax({
+                url: '/organization/api/getLabels', // Your route
+                method: 'GET',
+                data: { query: query }, // Send the query
+                success: function(response) {
+                    var suggestions = $('#suggestions-list');
+                    suggestions.empty(); // Clear the previous suggestions
+                    if (response.length > 0) {
+                     response.forEach(function(label) {
+                        // Escape JSON string for HTML attribute
+                       
+                       // const dataLabel = JSON.stringify(label).replace(/"/g, '&quot;');
+                        suggestions.append(
+                              '<li class="list-group-item" data-labelid="' +
+                              JSON.stringify(label).replace(/"/g, '&quot;') +
+                              '">' +
+                              label.name +
+                              '</li>'
+                        );
+                     });
+                     suggestions.show();
+                  } else {
+                     suggestions.hide();
+                  }
+
+                }
+            });
+        } else {
+            $('#suggestions-list').hide(); // Hide suggestions if the input is empty
+        }
+    });
+
+    // Handle click on a suggestion (add it to the selected labels)
+    $(document).on('click', '.list-group-item', function() {
+            var selectedLabel = $(this).data('labelid'); // Get the label text
+           // console.log(selectedLabel, selectedLabels,selectedLabels.includes(selectedLabel) )
+            if (!selectedLabels.some(label => label.id === selectedLabel.id)) { // Prevent duplicate selections
+                  selectedLabels.push(selectedLabel); // Add the label to the selected labels array
+                  updateSelectedLabels(); // Update the displayed selected labels
+            }else{
+               alert('This label has been selected');
+            }
+            $('#label-input').val(''); // Clear the input field
+            $('#suggestions-list').hide(); // Hide the suggestions
+         });
+
+         // Function to update the displayed selected labels
+         function updateSelectedLabels() {
+            var selectedLabelsContainer = $('#selected-labels-list');
+            selectedLabelsContainer.empty(); // Clear current selected labels
+
+            selectedLabels.forEach(function(label) {
+               var tag = $(`
+                  <li class="badge badge-info" 
+                     style="
+                        background-color: white; 
+                        color: black; 
+                        display: inline-flex; 
+                        align-items: center; 
+                        padding: 5px 10px; 
+                        border-radius: 10px; 
+                        border: 2px solid black;">
+                     ${label.name}
+                     <button class="close ml-2" 
+                        type="button" 
+                        style="
+                           color: black; 
+                           background: transparent; 
+                           border: none; 
+                           cursor: pointer;">
+                        &times;
+                     </button>
+                  </li>
+               `);
+
+               // Add remove functionality to the tag
+               tag.find('.close').on('click', function() {
+                  selectedLabels = selectedLabels.filter(function(item) {
+                     return item !== label; // Remove label from the selected array
+                  });
+                  updateSelectedLabels(); // Update the display
+               });
+
+               selectedLabelsContainer.append(tag);
+            });
+         }
+
+
+         // Form validation before submission
+         $('form').on('submit', async function (e) {
+               e.preventDefault(); // Prevent default form submission
+
+               if (selectedLabels.length < 5) {
+                  $('#error-message').show();
+                  return;
+               }
+
+               $('#error-message').hide();
+
+               try {
+                  const labelIds = selectedLabels.map(label => label.id); // Extract label IDs
+                  $('#labelIds').val(labelIds);
+                 
+                  this.submit();
+               } catch (error) {
+                  console.error('Error fetching weights:', error);
+                  alert('An error occurred while processing your request. Please try again.');
+               }
+            });
+
+      });
+</script>
 @endsection

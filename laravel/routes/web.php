@@ -168,7 +168,7 @@ Route::prefix('organization')->middleware(['auth', 'role:3'])->group(function ()
     Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');
     Route::get('/apply-content', [OrganizationRouteController::class, 'showAddContent'])->name('showAddContent');
     Route::post('/MicroLearning', [ContentController::class, 'uploadMicroLearning'])->name('uploadMicroLearning');
-    Route::post('/apply-content', [ContentController::class, 'addContent'])->name('addContentOrganization');
+    Route::post('/save-content', [ContentController::class, 'addContent'])->name('addContentOrganization');
     Route::post('/apply-card/{content_id}', [ContentController::class, 'addCard'])->name('addCardOrganization');
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailOrganization'])->name('updateProfilePersonalDetailOrganization');
     Route::post('/profile/update-organization-Detail', [UserProfileController::class, 'updateProfileOrganizationDetail'])->name('updateProfileOrganizationDetail');

@@ -206,7 +206,7 @@ class TransactionController extends Controller
 
                 $cp_id = DB::table('content_promotion')->where('transaction_id', $transaction->id)->first();
                 $content = DB::table('contents')->where('id', $cp_id->content_id)->first();
-
+                 //send email
                 return view('content.promote_content_receipt', compact('cp_id','content','transaction'));
             }else if($parts[0] == 'XBugStand'){
                 DB::table('content_promotion')->where('transaction_id', $transaction->id)->update([
@@ -215,7 +215,7 @@ class TransactionController extends Controller
 
                 $cp_id = DB::table('content_promotion')->where('transaction_id', $transaction->id)->first();
                 $content = DB::table('contents')->where('id', $cp_id->content_id)->first();
-
+                 //send email
                 return view('content.xbug_stand_receipt', compact('cp_id','content','transaction'));
             }
 

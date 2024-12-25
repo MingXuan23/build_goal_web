@@ -199,10 +199,12 @@ class ContentController extends Controller
 
     public function addContent(Request $request)
     {
-        // dd($request->all());
+       
         $user = Auth::user();
-
+       
         $org = DB::table('organization_user')->where('user_id',$user->id)->where('status',1)->first(); //should change in the future
+       
+        
         // Validate form inputs
         $validated = $request->validate([
             'content_name' => 'required|string|max:255',
@@ -211,31 +213,43 @@ class ContentController extends Controller
             'enrollment_price' => 'required|numeric|min:0',
             'place' => 'required|string|max:255',
             'participant_limit' => 'required|integer',
-            'states' => 'required|array',
+            'state' => 'required',
             'content_type_id' => 'required|exists:content_types,id', // Validate foreign key
         ], [
-            'states' => ', Please select at least 1 state',
+            'state' => ', Please select at least 1 state',
         ], [
             'content_type_id' => 'Content Type'
         ]);
-
+        
+        $labels = explode(",",$request->labelIds);
+        $weight = $this->calVectorByLabel($labels);
         // Insert data into the contents table
-        DB::table('contents')->insert([
+        $content_id = DB::table('contents')->insertGetId([
             'name' => $validated['content_name'],
             'desc' => $validated['content_desc'],
             'link' => $validated['content_link'],
             'enrollment_price' => $validated['enrollment_price'],
             'place' => $validated['place'],
             'participant_limit' => $validated['participant_limit'],
-            'state' => json_encode($validated['states']),
+            'state' => json_encode([$validated['state']]),
             'content_type_id' => $validated['content_type_id'], // Foreign key
-            'created_at' => now(),
-            'updated_at' => now(),
+           
             'user_id' => $user->id,
             'org_id' => $org->organization_id,
-            'reason_phrase' => 'PENDING'
+            'reason_phrase' => 'PENDING',
+            'category_weight' => json_encode($weight)
         ]);
 
+        foreach($labels as $l){
+            $exist = DB::table('labels')->where('id',$l)->exists();
+            if($exist){
+                DB::table('content_label')->insert([
+                    'content_id'=>$content_id,
+                    'label_id'=>$l
+                ]);
+            }
+        }
+     
         // Redirect back with success message
         return back()->with('success', 'Your Content Is Applied Successfully!');
     }
@@ -298,48 +312,147 @@ class ContentController extends Controller
 
         return view('content_interaction.index', compact('card'));
     }
+
+    private function getSum(array $targetValues, array $sourceValues): array
+    {
+        return array_map(function ($val, $index) use ($sourceValues) {
+            return $val + ($sourceValues[$index] ?? 0);
+        }, $targetValues, array_keys($targetValues));
+    }
+
+    // Function to flatten values based on weight
+    private function flattenValues(array $values, float $weight): array
+    {
+        $totalSum = array_sum($values);
+        $average = $totalSum / (count($values) ?: 1);
+
+        return array_map(function ($v) use ($totalSum, $average, $weight) {
+            $val = 0;
+            if ($totalSum === 0 || $v === 0) {
+                $val = 0;
+            } else {
+                $val = ($v / $totalSum) * $weight;
+            }
+
+            if ($v >= $average) {
+                $val *= 1.5;
+            } elseif ($v < $average * 0.2) {
+                $val *= 0.8;
+            }
+
+            return max(min(round($val, 3), 0.999), 0.0);
+        }, $values);
+    }
+
+    public function calVectorByLabel($labelIds)
+    {
+
+        //dd($labelIds);
+        $initialValues = array_fill(0, 8, 0);
+        $firstLabel = $initialValues;
+        $secondLabel = $initialValues;
+
+        $firstIndex = intdiv(count($labelIds), 2);
+
+        $selectedList = array_map(function ($item) {
+            $label = DB::table('labels')->select('values')->where('id', $item)->first();
+            if($label == null){
+                return array_fill(0, 8, 0);
+            }
+            return json_decode($label->values, true);
+        }, $labelIds);
+
+        for ($i = 0; $i < $firstIndex; $i++) {
+            $firstLabel = $this->getSum($firstLabel, $selectedList[$i]);
+        }
+
+        for ($i = $firstIndex; $i < count($selectedList); $i++) {
+            $secondLabel = $this->getSum($secondLabel, $selectedList[$i]);
+        }
+
+        $firstLabel = $this->flattenValues($firstLabel, 1.5);
+        $secondLabel = $this->flattenValues($secondLabel, 1.0);
+
+        $finalLabel = $this->getSum($initialValues, $firstLabel);
+        $finalLabel = $this->getSum($finalLabel, $secondLabel);
+
+        $finalLabel = $this->flattenValues($finalLabel, 2.5);
+
+        $weight = '[' . implode(",", array_map(function ($v) {
+                return number_format($v, 3);
+            }, $finalLabel)) . ']';
+
+        $weight = json_decode($weight);
+
+        return $weight;
+
+        // //'reference' => '0.Education and Self Improvement ' .
+        // '1.Entertainment and Health Fitness ' .
+        // '2.Financial and business ' .
+        // '3.Technology and digital ' .
+        // '4.fashion and art ' .
+        // '5.production and construction ' .
+        // '6.transportationa and logistics ' .
+        // '7.social and personal services'
+    }
+
     public function uploadMicroLearning(Request $request)
     {
-            $user = Auth::user();
-            // Handle the POST request when the form is submitted
-            if ($request->isMethod('post')) {
-                // Validate the form inputs
-                $validatedData = $request->validate([
-                    'content_name' => 'required|string|max:255', // Title
-                    'content_desc' => 'required|string', // Description
-                    'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Image
-                    'formattedContent' => 'required|string', // Combined sections
-                ]);
-    
-                // Handle the image upload
-                $imagePath = $request->file('image')->store('asset1/images', 'public'); // Store image in the public/asset1/images folder
-    
-                // Prepare data to be inserted into the contents table
-                $contentData = [
-                    'name' => $validatedData['content_name'], // Save title
-                    'desc' => $validatedData['content_desc'], // Save description
-                    'image' => $imagePath,  // Save image path
-                    'content' => $validatedData['formattedContent'],  // Save combined sections (content)
-                    'content_type_id' => 2, // Set content_type_id to 2
-                    'created_at' => now(), // Timestamp for creation
-                    'updated_at' => now(), // Timestamp for update
-                    'user_id' => $user -> id,
-                    'reason_phrase' => 'PENDING'
-                ];
 
-                // Insert the data into the contents table
-                DB::table('contents')->insert($contentData);
-    
-    
-                // Redirect with success message
-                return redirect()->back()->with('success', 'Content uploads successfully!');
+        $user = Auth::user();
+        // Handle the POST request when the form is submitted
+        if ($request->isMethod('post')) {
+            // Validate the form inputs
+          
+           
+            $validatedData = $request->validate([
+                'content_name' => 'required|string|max:255', // Title
+                'content_desc' => 'required|string', // Description
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Image
+                'formattedContent' => 'required|string', // Combined sections
+                'labelIds' => 'required|string'
+            ]);
+
+            $labels = explode(",",$request->labelIds);
+            $weight = $this->calVectorByLabel($labels);
+
+            // Handle the image upload
+            $imagePath = $request->file('image')->store('asset1/images', 'public'); // Store image in the public/asset1/images folder
+
+            // Prepare data to be inserted into the contents table
+            $contentData = [
+                'name' => $validatedData['content_name'], // Save title
+                'desc' => $validatedData['content_desc'], // Save description
+                'image' => $imagePath,  // Save image path
+                'content' => $validatedData['formattedContent'],  // Save combined sections (content)
+                'content_type_id' => 2, // Set content_type_id to 2
+               
+                'user_id' => $user->id,
+                'reason_phrase' => 'PENDING',
+                'category_weight' => json_encode($weight)
+
+            ];
+          
+            // Insert the data into the contents table
+           $content_id =  DB::table('contents')->insertGetId($contentData);
+
+            foreach($labels as $l){
+                $exist = DB::table('labels')->where('id',$l)->exists();
+                if($exist){
+                    DB::table('content_label')->insert([
+                        'content_id'=>$content_id,
+                        'label_id'=>$l
+                    ]);
+                }
             }
-    
-            // Return the form view for GET requests (display the form)
-            return view('organization.contentManagement.microLearning');
+
+            // Redirect with success message
+            return redirect()->back()->with('success', 'Content uploads successfully!');
         }
- 
-    
+
+        // Return the form view for GET requests (display the form)
+        return view('organization.contentManagement.microLearning');
+    }
 
     // public function getLabels(Request $request)
     // {
@@ -443,7 +556,7 @@ class ContentController extends Controller
             $query = $request->input('query'); // Get the query parameter from the request
 
             // Fetch labels that match the query (case-insensitive)
-            $labels = Label::where('name', 'like', '%' . $query . '%')->pluck('name');
+            $labels = Label::where('name', 'like', '%' . $query . '%')->select('id','name')->orderByRaw('LENGTH(name) ASC')->limit(15)->get();
 
             // If labels are found, return them as a JSON response
             return response()->json($labels);
@@ -534,6 +647,10 @@ class ContentController extends Controller
         ]);
 
         $user_id = Auth::id();
+
+        $labels = explode(",",$request->labelIds);
+        $weight = $this->calVectorByLabel($labels);
+
 
         // Retrieve content for the user and validate its existence
         $content = DB::table('contents')
