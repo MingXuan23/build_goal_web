@@ -238,8 +238,8 @@ const updateUserContent = async (req, res) =>{
             return res.status(400).json({'message':'Invalid Action'});
         }
 
-        const exist = await knex('user_content').where('user_id',user.id).where('content_id',content.id).where('interaction_type_id',interaction.id).where('status',1);
-
+        const exist = await knex('user_content').where('user_id',user.id).where('content_id',content.id).where('interaction_type_id',interaction.id).where('status',1).first();
+        console.log(exist, !exist);
         if(!exist){
             await knex('user_content').insert({
                     'user_id': user.id,
