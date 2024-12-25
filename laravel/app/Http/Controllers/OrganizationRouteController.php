@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 class OrganizationRouteController extends Controller
 {
     //
+
     public function showDashboard(Request $request)
     {
         $proposedContents = DB::table('contents')
@@ -234,6 +235,53 @@ class OrganizationRouteController extends Controller
     public function showMicroLearningForm()
     {
         return view('organization.contentManagement.microLearning');
+    }
+
+    public function showNotification(Request $request)
+    {
+        $logs = DB::table('email_logs')
+            ->select([
+                'id',
+                'email_type',
+                'recipient_email',
+                'from_email',
+                'name',
+                'status',
+                'response_data',
+                'created_at'
+            ])
+            ->where('recipient_email', Auth::user()->email)
+            ->whereIn('email_type', ['NOTIFICATION USER', 'NOTIFICATION TO ALL USERS'])
+            ->orderBy('id', 'desc')
+            ->get();
+        if ($request->ajax()) {
+
+            $table = DataTables::of($logs)->addIndexColumn();
+            $table->addColumn('status', function ($row) {
+                $statusClass = $row->status === 'SUCCESS' ? 'success' : 'danger';
+                return '<span class="badge bg-' . $statusClass . ' p-2">' . $row->status . '</span>';
+            });
+            $table->addColumn('action', function ($row) {
+                $button = '<div class="d-flex justify-content-center align-items-center">
+                                <button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2"
+                                        data-bs-toggle="modal" data-bs-target="#modalView-' . $row->id . '">
+                                        <i class="ri-eye-line fw-bold"></i>
+                                    </button>
+                            </div>
+                    ';
+                return $button;
+            });
+
+
+            $table->rawColumns(['status', 'action']);
+
+            return $table->make(true);
+        }
+
+
+        return view('organization.notification.index', [
+            'datas' => $logs
+        ]);
     }
 
     
