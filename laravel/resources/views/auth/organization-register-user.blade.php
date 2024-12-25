@@ -15,19 +15,19 @@
         content="admin,admin dashboard,admin panel,admin template,bootstrap,clean,dashboard,flat,jquery,modern,responsive,premium admin templates,responsive admin,ui,ui kit.">
 
     <!-- Favicon -->
-    <link rel="icon" href="assets/images/brand-logos/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../assets/images/brand-logos/favicon.ico" type="image/x-icon">
 
     <!-- Main Theme Js -->
-    <script src="assets/js/authentication-main.js"></script>
+    <script src="../assets/js/authentication-main.js"></script>
 
     <!-- Bootstrap Css -->
-    <link id="style" href="assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link id="style" href="../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Style Css -->
-    <link href="assets/css/styles.min.css" rel="stylesheet">
+    <link href="../assets/css/styles.min.css" rel="stylesheet">
 
     <!-- Icons Css -->
-    <link href="assets/css/icons.min.css" rel="stylesheet">
+    <link href="../assets/css/icons.min.css" rel="stylesheet">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <style>
@@ -63,8 +63,8 @@
                                 !</p>
                             <div class="mb-3">
                                 {{-- <a href="index.html">
-                                        <img src="../../assets/images/brand-logos/desktop-logo.png" alt="" class="authentication-brand desktop-logo">
-                                        <img src="../../assets/images/brand-logos/desktop-dark.png" alt="" class="authentication-brand desktop-dark">
+                                        <img src="../../../assets/images/brand-logos/desktop-logo.png" alt="" class="authentication-brand desktop-logo">
+                                        <img src="../../../assets/images/brand-logos/desktop-dark.png" alt="" class="authentication-brand desktop-dark">
                                     </a> --}}
                             </div>
                             <form action="{{ route('createOrganizationRegister') }}" method="post">
@@ -92,7 +92,7 @@
                                                     <input type="text"
                                                         class="form-control @error('fullname') is-invalid @enderror"
                                                         id="floatingInputprimary" placeholder="name@example.com"
-                                                        name="fullname" value="{{$data['name']}}" readonly>
+                                                        name="fullname" value="{{$name}}" readonly>
                                                     <label for="floatingInputprimary">Full Name</label>
                                                     @error('fullname')
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
@@ -111,10 +111,11 @@
                                                         maxlength="12" 
                                                         oninput="validateInput(this)"
                                                     >
-                                                    @error('phoneno')
-                                                        <span class="mb-1 text-danger">{{ $message }}</span>
-                                                    @enderror
+                                                   
                                                 </div>
+                                                @error('phoneno')
+                                                <span class="mb-1 text-danger">{{ $message }}</span>
+                                            @enderror
                                             </div>
 
                                             <div class="col-xl-12">
@@ -271,13 +272,13 @@
     </script>
     <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
     <!-- Custom-Switcher JS -->
-    <script src="assets/js/custom-switcher.min.js"></script>
+    <script src="../assets/js/custom-switcher.min.js"></script>
 
     <!-- Bootstrap JS -->
-    <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Show Password JS -->
-    <script src="assets/js/show-password.js"></script>
+    <script src="../assets/js/show-password.js"></script>
 
 </body>
 

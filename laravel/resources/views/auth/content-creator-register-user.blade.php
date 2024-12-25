@@ -15,19 +15,19 @@
         content="admin,admin dashboard,admin panel,admin template,bootstrap,clean,dashboard,flat,jquery,modern,responsive,premium admin templates,responsive admin,ui,ui kit.">
 
     <!-- Favicon -->
-    <link rel="icon" href="assets/images/brand-logos/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../assets/images/brand-logos/favicon.ico" type="image/x-icon">
 
     <!-- Main Theme Js -->
-    <script src="assets/js/authentication-main.js"></script>
+    <script src="../assets/js/authentication-main.js"></script>
 
     <!-- Bootstrap Css -->
-    <link id="style" href="assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link id="style" href="../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Style Css -->
-    <link href="assets/css/styles.min.css" rel="stylesheet">
+    <link href="../assets/css/styles.min.css" rel="stylesheet">
 
     <!-- Icons Css -->
-    <link href="assets/css/icons.min.css" rel="stylesheet">
+    <link href="../assets/css/icons.min.css" rel="stylesheet">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <style>
@@ -57,14 +57,15 @@
                     <div class="card-body">
 
                         <div class="p-3">
-                            <a href="/" class="text-decoration-underline fw-bold "><i class="bi bi-arrow-left fw-bold"></i> Back</a>
+                            <a href="/" class="text-decoration-underline fw-bold "><i
+                                    class="bi bi-arrow-left fw-bold"></i> Back</a>
                             <p class="h5 fw-bold mb-2 mt-2">Sign Up for Content Creator</p>
                             <p class="mb-4 text-muted op-7 fw-normal ">Welcome & Join us by creating a free account
                                 !</p>
                             <div class="mb-4">
                                 {{-- <a href="index.html">
-                                        <img src="../../assets/images/brand-logos/desktop-logo.png" alt="" class="authentication-brand desktop-logo">
-                                        <img src="../../assets/images/brand-logos/desktop-dark.png" alt="" class="authentication-brand desktop-dark">
+                                        <img src="../../../assets/images/brand-logos/desktop-logo.png" alt="" class="authentication-brand desktop-logo">
+                                        <img src="../../../assets/images/brand-logos/desktop-dark.png" alt="" class="authentication-brand desktop-dark">
                                     </a> --}}
                             </div>
                             <form action="{{ route('createContentCreatorRegister') }}" method="post">
@@ -79,7 +80,7 @@
                                                     <input type="number"
                                                         class="form-control @error('icno') is-invalid @enderror"
                                                         id="floatingInputprimary" placeholder="name@example.com"
-                                                        name="icno" value="{{ $noPengenalan}}" readonly>
+                                                        name="icno" value="{{ $noPengenalan }}" readonly>
                                                     <label for="floatingInputprimary">Ic Number</label>
                                                     @error('icno')
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
@@ -91,7 +92,7 @@
                                                     <input type="text"
                                                         class="form-control @error('fullname') is-invalid @enderror"
                                                         id="floatingInputprimary" placeholder="name@example.com"
-                                                        name="fullname" value="{{ $data['name']}}" readonly>
+                                                        name="fullname" value="{{ $name }}" readonly>
                                                     <label for="floatingInputprimary">Full Name</label>
                                                     @error('fullname')
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
@@ -115,19 +116,16 @@
                                                     <span class="input-group-text">+60</span>
                                                     <input type="number"
                                                         class="form-control @error('phoneno') is-invalid @enderror p-3"
-                                                        id="floatingInputprimary"
-                                                        placeholder="Phone Number"
-                                                        name="phoneno"
-                                                        value="{{ old('phoneno') }}"
-                                                        maxlength="12" 
-                                                        oninput="validateInput(this)"
-                                                    >
-                                                    @error('phoneno')
-                                                        <span class="mb-1 text-danger">{{ $message }}</span>
-                                                    @enderror
+                                                        id="floatingInputprimary" placeholder="Phone Number"
+                                                        name="phoneno" value="{{ old('phoneno') }}" maxlength="12"
+                                                        oninput="validateInput(this)">
+
                                                 </div>
+                                                @error('phoneno')
+                                                    <span class="mb-1 text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
-                                            
+
                                             <div class="col-xl-12">
                                                 <div class="form-floating">
                                                     <input type="text"
@@ -142,13 +140,14 @@
                                             </div>
                                             <div class="col-xl-12">
                                                 <div class="form-floating">
-                                                    <select class="form-select @error('state') is-invalid @enderror" 
-                                                            id="floatingSelect" 
-                                                            aria-label="Floating label select example" 
-                                                            name="state">
+                                                    <select class="form-select @error('state') is-invalid @enderror"
+                                                        id="floatingSelect" aria-label="Floating label select example"
+                                                        name="state">
                                                         <option selected>- Select State -</option>
-                                                        @foreach($states as $state)
-                                                            <option value="{{ $state->name }}" @selected(old('state') == $state->name)>{{ $state->name }}</option>
+                                                        @foreach ($states as $state)
+                                                            <option value="{{ $state->name }}"
+                                                                @selected(old('state') == $state->name)>{{ $state->name }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                     <label for="floatingSelect">State</label>
@@ -156,7 +155,7 @@
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
-                                                
+
                                             </div>
                                             <div class="col-xl-6">
                                                 <div class="form-floating">
@@ -186,7 +185,7 @@
                                         </div>
 
                                     </div>
-                                  
+
                                     <center>
                                         <div class="col-md-12 col-sm-12 col-xl-12 mt-3 d-grid">
                                             <div class="g-recaptcha"
@@ -228,22 +227,22 @@
     <script>
         function validateInput(input) {
             input.value = input.value.replace(/[^0-9]/g, '');
-    
+
             if (input.value.length > 12) {
                 input.value = input.value.slice(0, 12);
             }
         }
     </script>
-    
+
     <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
     <!-- Custom-Switcher JS -->
-    <script src="assets/js/custom-switcher.min.js"></script>
+    <script src="../assets/js/custom-switcher.min.js"></script>
 
     <!-- Bootstrap JS -->
-    <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Show Password JS -->
-    <script src="assets/js/show-password.js"></script>
+    <script src="../assets/js/show-password.js"></script>
 
 </body>
 

@@ -115,7 +115,7 @@ class AuthController extends Controller
         ]);
 
         $validatedData['password'] = bcrypt(($validatedData['password']));
-        $validatedData['phoneno'] = '+60' . $validatedData['phoneno']; 
+        $validatedData['phoneno'] = '+60' . $validatedData['phoneno'];
 
 
         DB::beginTransaction();
@@ -229,7 +229,7 @@ class AuthController extends Controller
         ]);
 
         $validatedData['password'] = bcrypt(($validatedData['password']));
-        $validatedData['phoneno'] = '+60' . $validatedData['phoneno']; 
+        $validatedData['phoneno'] = '+60' . $validatedData['phoneno'];
 
         DB::beginTransaction();
         try {
@@ -588,13 +588,41 @@ class AuthController extends Controller
         }
     }
 
-    public function viewOrganizationRegisterUser(Request $request)
+    public function viewOrganizationRegisterUser(Request $request, $data)
     {
-        return view('auth.organization-register-user');
+        try {
+            $organization_type = DB::table('organization_type')->select('id', 'type')->get();
+            $state = DB::table('states')->select('id', 'name')->get();
+            $decryptedData = Crypt::decrypt($data);
+
+            list($icNo, $name) = explode('|', $decryptedData);
+            return view('auth.organization-register-user', [
+                'organization_types' => $organization_type,
+                'states' => $state,
+                'noPengenalan' => $icNo,
+                'name' => $name
+            ]);
+        } catch (Exception $e) {
+            return back()->with('error', 'Please dont change the url! Your action will recorded');
+        }
     }
-    public function viewContentCreatorRegisterUser(Request $request)
+    public function viewContentCreatorRegisterUser(Request $request, $data)
     {
-        return view('auth.cotent-creator-register-user');
+        try {
+            $organization_type = DB::table('organization_type')->select('id', 'type')->get();
+            $state = DB::table('states')->select('id', 'name')->get();
+            $decryptedData = Crypt::decrypt($data);
+
+            list($icNo, $name) = explode('|', $decryptedData);
+            return view('auth.content-creator-register-user', [
+                'organization_types' => $organization_type,
+                'states' => $state,
+                'noPengenalan' => $icNo,
+                'name' => $name
+            ]);
+        } catch (Exception $e) {
+            return back()->with('error', 'Please dont change the url! Your action will recorded');
+        }
     }
     public function verifyUserOrganization(Request $request)
     {
@@ -623,17 +651,10 @@ class AuthController extends Controller
             ]);
 
             if ($response->successful()) {
-                $organization_type = DB::table('organization_type')->select('id', 'type')->get();
-                $state = DB::table('states')->select('id', 'name')->get();
-
                 $apiData = $response->json();
-                return view('auth.organization-register-user', [
-                    'status' => 'success',
-                    'data' => $apiData,
-                    'organization_types' => $organization_type,
-                    'states' => $state,
-                    'noPengenalan' => $noPengenalan
-                ]);
+                $combinedData = $noPengenalan . '|' . $apiData['name'];
+                $encryptedData = Crypt::encrypt($combinedData);
+                return redirect()->route('viewOrganizationRegisterUser', ['data' => $encryptedData]);
             } else {
                 return back()->with('error', 'Your Identity Number is not valid. Please contact us at [help-center@xbug.online] for further assistance.');
             }
@@ -669,17 +690,10 @@ class AuthController extends Controller
             ]);
 
             if ($response->successful()) {
-                $organization_type = DB::table('organization_type')->select('id', 'type')->get();
-                $state = DB::table('states')->select('id', 'name')->get();
-
                 $apiData = $response->json();
-                return view('auth.content-creator-register-user', [
-                    'status' => 'success',
-                    'data' => $apiData,
-                    'organization_types' => $organization_type,
-                    'states' => $state,
-                    'noPengenalan' => $noPengenalan
-                ]);
+                $combinedData = $noPengenalan . '|' . $apiData['name'];
+                $encryptedData = Crypt::encrypt($combinedData);
+                return redirect()->route('viewContentCreatorRegisterUser', ['data' => $encryptedData]);
             } else {
                 return back()->with('error', 'Your Identity Number is not valid. Please contact us at [help-center@xbug.online] for further assistance.');
             }

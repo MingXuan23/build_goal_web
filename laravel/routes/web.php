@@ -52,9 +52,9 @@ Route::get('/verify-user-organization', [AuthController::class, 'viewVerifyUserO
 Route::get('/verify-user-content-creator', [AuthController::class, 'viewVerifyUserContentCreator'])->name('viewVerifyUserContentCreator');
 Route::get('/resend-code', [AuthController::class, 'resendVerify'])->name('resendVerify');
 Route::get('/organization-register', [AuthController::class, 'viewOrganizationRegister'])->name('viewOrganizationRegister');
-Route::get('/organization-register-user', [AuthController::class, 'viewOrganizationRegisterUser'])->name('viewOrganizationRegisterUser');
+Route::get('/organization-register-user/{data}', [AuthController::class, 'viewOrganizationRegisterUser'])->name('viewOrganizationRegisterUser');
 Route::get('/content-creator-register', [AuthController::class, 'viewContentCreatorRegister'])->name('viewContentCreatorRegister');
-Route::get('/content-creator-register-user', [AuthController::class, 'viewContentCreatorRegisterUser'])->name('viewContentCreatorRegisterUser');
+Route::get('/content-creator-register-user/{data}', [AuthController::class, 'viewContentCreatorRegisterUser'])->name('viewContentCreatorRegisterUser');
 Route::get('/reset-password', [AuthController::class, 'viewResetPassword'])->name('viewResetPassword');
 
 
