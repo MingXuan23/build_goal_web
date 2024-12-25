@@ -68,6 +68,11 @@ class MicrolearningController extends Controller
         $countContent = DB::table('contents')
         ->where('reason_phrase', '=', 'APPROVED')
         ->count();
+        $courseAndTrainingSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 1)->value('type'));
+        $microLearningSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 2)->value('type'));
+        $eventSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 4)->value('type'));
+        $jobOfferingSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 4)->value('type'));
+        
         
 
         $countContents_CourseTraining = DB::table('contents')
@@ -90,32 +95,57 @@ class MicrolearningController extends Controller
         ->where('reason_phrase', '=', 'APPROVED')
         ->count();
 
-        return view('viewContent.indexContent', compact('countContent','countContents_CourseTraining','countContents_MicroLearning', 'countContents_Event', 'countContents_JobOffer'));
+        return view('viewContent.indexContent', compact('countContent','countContents_CourseTraining','countContents_MicroLearning', 'countContents_Event', 'countContents_JobOffer','courseAndTrainingSlug','microLearningSlug','eventSlug','jobOfferingSlug'));
     }
 
 
-    public function showContentDetail(Request $request, $id)
+    public function showContentDetail(Request $request, $slug)
     {
-        // Get the search term from the request
-        $search = $request->query('search', '');
-        
+            // Convert slug back to the type (in case you need to restore spaces)
+            $contentType = str_replace('-', ' ', $slug); 
+
+            // Fetch the content type ID based on the slug (type)
+            $contentTypeId = DB::table('content_types')
+                ->select('id')
+                ->where('type', '=', $contentType)
+                ->first();
+
+            // Check if content type is found
+            if (!$contentTypeId) {
+                abort(404, 'Content Type not found');
+            }
+
+            // Extract the ID from the result
+            $contentTypeId = $contentTypeId->id;
+
+            // Fetch the contents related to the content type ID
+            $contents = DB::table('contents as c')
+                ->join('content_types', 'c.content_type_id', '=', 'content_types.id')
+                ->select(
+                    'c.id',
+                    'c.name',
+                    'c.image',
+                    'content_types.type as content_type_name',
+                    'c.created_at',
+                    'c.reason_phrase',
+                    'c.content',
+                    'c.desc'
+                )
+                ->where('content_types.id', '=', $contentTypeId)  // Use content type ID to fetch contents
+                ->where('c.reason_phrase', '=', 'APPROVED')  // Filter only approved contents
+                ->get();
+
+            // Return the view with the fetched content
+            return view('viewContent.showContentDetail', [
+                'contents' => $contents,
+                'contentTypeId' => $contentTypeId,
+            ]);
+        }
+
     
-        // Query the database to fetch and filter contents by content_type_id and search term
-        $contents = DB::table('contents as c')
-            ->join('content_types', 'c.content_type_id', '=', 'content_types.id')
-            ->select('c.id', 'c.name', 'c.image', 'content_types.type as content_type_name', 'c.created_at','c.reason_phrase','c.content','c.desc')
-            ->where('content_types.id', '=', $id) // Use dynamic $id
-            ->where('c.reason_phrase', '=', 'APPROVED')
-            ->when($search, function ($query, $search) {
-                return $query->where('c.name', 'like', '%' . $search . '%'); 
-            })
-            ->get();
-    
-        // Return the view with the fetched data
-        return view('viewContent.showContentDetail', [
-            'contents' => $contents
-        ]);
-    }
+
+
+
     
 
 }

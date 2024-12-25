@@ -228,9 +228,13 @@
                                     </div>
                                     <div class="col-md-9 col-8 my-auto">
                                         <div class="card-body">
+                                            
                                             <h5 class="card-title fw-semibold">Course and Training</h5>
                                             <p><span class="text-default fw-semibold">{{ $countContents_CourseTraining }} Content</span> available</p>
-                                            <a class="text-primary fw-semibold" href="{{ url('/view-content/1') }}">Explore now for Course and Training<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
+                                            <a class="text-primary fw-semibold" href="{{ url('/view-content/' . $courseAndTrainingSlug) }}">
+                                                Explore now for Course and Training
+                                                <i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -246,7 +250,10 @@
                                         <div class="card-body">
                                             <h5 class="card-title fw-semibold">MicroLearning Resource</h5>
                                             <p><span class="text-default fw-semibold">{{ $countContents_MicroLearning }} Content</span> available</p>
-                                            <a class="text-primary fw-semibold" href="{{ url('/view-content/2') }}">Explore now for MicroLearning Resource<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
+                                                <a class="text-primary fw-semibold" href="{{ url('/view-content/' . $microLearningSlug) }}">
+                                                Explore now for MicroLearning Resource
+                                                <i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i>
+                                                </a>
                                         </div>
                                     </div>
                                 </div>
@@ -262,7 +269,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title fw-semibold">Event</h5>
                                             <p><span class="text-default fw-semibold">{{ $countContents_Event}} active</span> event</p>
-                                            <a class="text-primary fw-semibold" href="{{ url('/view-content/4') }}">Explore now for Event<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
+                                            <a class="text-primary fw-semibold" href="{{ url('/view-content/' . $eventSlug) }}">Explore now for Event<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -278,7 +285,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title fw-semibold">Job Offering</h5>
                                             <p><span class="text-default fw-semibold">{{ $countContents_JobOffer }} Jobs</span> available</p>
-                                            <a class="text-primary fw-semibold" href="{{ url('/view-content/5') }}">Explore Jobs<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
+                                            <a class="text-primary fw-semibold" href="{{ url('/view-content/' . $jobOfferingSlug) }}">Explore Jobs<i class="ri-arrow-right-s-line align-middle transform-arrow lh-1"></i></a>
                                         </div>
                                     </div>
                                 </div>
