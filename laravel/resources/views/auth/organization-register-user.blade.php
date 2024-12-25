@@ -100,12 +100,17 @@
                                                 </div>
                                             </div>
                                             <div class="col-xl-12">
-                                                <div class="form-floating">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">+60</span>
                                                     <input type="number"
-                                                        class="form-control @error('phoneno') is-invalid @enderror"
-                                                        id="floatingInputprimary" placeholder="name@example.com"
-                                                        name="phoneno" value="{{ old('phoneno') }}">
-                                                    <label for="floatingInputprimary">Phone Number</label>
+                                                        class="form-control @error('phoneno') is-invalid @enderror p-3"
+                                                        id="floatingInputprimary"
+                                                        placeholder="Phone Number"
+                                                        name="phoneno"
+                                                        value="{{ old('phoneno') }}"
+                                                        maxlength="12" 
+                                                        oninput="validateInput(this)"
+                                                    >
                                                     @error('phoneno')
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
                                                     @enderror
@@ -255,7 +260,15 @@
 
     </div>
 
+    <script>
+        function validateInput(input) {
+            input.value = input.value.replace(/[^0-9]/g, '');
 
+            if (input.value.length > 12) {
+                input.value = input.value.slice(0, 12);
+            }
+        }
+    </script>
     <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
     <!-- Custom-Switcher JS -->
     <script src="assets/js/custom-switcher.min.js"></script>

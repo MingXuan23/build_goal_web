@@ -57,7 +57,8 @@
                     <div class="card-body">
 
                         <div class="p-3">
-                            <a href="/" class="text-decoration-underline fw-bold "><i class="bi bi-arrow-left fw-bold"></i> Back</a>
+                            <a href="/" class="text-decoration-underline fw-bold "><i
+                                    class="bi bi-arrow-left fw-bold"></i> Back</a>
                             <p class="h5 fw-bold mb-2 mt-2">Sign Up for Content Creator</p>
                             <p class="mb-4 text-muted op-7 fw-normal ">Welcome & Join us by creating a free account
                                 !</p>
@@ -111,12 +112,13 @@
                                                 </div>
                                             </div>
                                             <div class="col-xl-6">
-                                                <div class="form-floating">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">+60</span>
                                                     <input type="number"
-                                                        class="form-control @error('phoneno') is-invalid @enderror"
-                                                        id="floatingInputprimary" placeholder="name@example.com"
-                                                        name="phoneno" value="{{ old('phoneno') }}">
-                                                    <label for="floatingInputprimary">Phone Number</label>
+                                                        class="form-control @error('phoneno') is-invalid @enderror p-3"
+                                                        id="floatingInputprimary" placeholder="Phone Number"
+                                                        name="phoneno" value="{{ old('phoneno') }}" maxlength="12"
+                                                        oninput="validateInput(this)">
                                                     @error('phoneno')
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
                                                     @enderror
@@ -136,13 +138,14 @@
                                             </div>
                                             <div class="col-xl-12">
                                                 <div class="form-floating">
-                                                    <select class="form-select @error('state') is-invalid @enderror" 
-                                                            id="floatingSelect" 
-                                                            aria-label="Floating label select example" 
-                                                            name="state">
+                                                    <select class="form-select @error('state') is-invalid @enderror"
+                                                        id="floatingSelect" aria-label="Floating label select example"
+                                                        name="state">
                                                         <option selected>- Select State -</option>
-                                                        @foreach($states as $state)
-                                                            <option value="{{ $state->name }}" @selected(old('state') == $state->name)>{{ $state->name }}</option>
+                                                        @foreach ($states as $state)
+                                                            <option value="{{ $state->name }}"
+                                                                @selected(old('state') == $state->name)>{{ $state->name }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                     <label for="floatingSelect">State</label>
@@ -150,7 +153,7 @@
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
-                                                
+
                                             </div>
                                             <div class="col-xl-6">
                                                 <div class="form-floating">
@@ -180,7 +183,7 @@
                                         </div>
 
                                     </div>
-                                  
+
                                     <center>
                                         <div class="col-md-12 col-sm-12 col-xl-12 mt-3 d-grid">
                                             <div class="g-recaptcha"
@@ -219,6 +222,16 @@
 
     </div>
 
+
+    <script>
+        function validateInput(input) {
+            input.value = input.value.replace(/[^0-9]/g, '');
+
+            if (input.value.length > 12) {
+                input.value = input.value.slice(0, 12);
+            }
+        }
+    </script>
 
     <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
     <!-- Custom-Switcher JS -->

@@ -200,11 +200,10 @@
                                                                                         @php
                                                                                             // Data peran
                                                                                             $rolesMap = [
-                                                                                                1 => 'admin',
-                                                                                                2 => 'staff',
-                                                                                                3 => 'organization',
-                                                                                                4 => 'content creator',
-                                                                                                5 => 'mobile user',
+                                                                                                1 => 'admin',                                                                                            
+                                                                                                2 => 'organization',
+                                                                                                3 => 'content creator',
+                                                                                                4 => 'mobile user',
                                                                                             ];
                                                                                             $userRoles = is_string(
                                                                                                 Auth::user()->role,

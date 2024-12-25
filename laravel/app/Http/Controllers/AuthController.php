@@ -81,6 +81,7 @@ class AuthController extends Controller
     }
     public function createOrganizationRegister(Request $request)
     {
+        // dd($request->all());
         $validatedData = $request->validate([
             'icno' => 'required|digits:12|unique:users',
             'fullname' => 'required',
@@ -114,6 +115,7 @@ class AuthController extends Controller
         ]);
 
         $validatedData['password'] = bcrypt(($validatedData['password']));
+        $validatedData['phoneno'] = '+60' . $validatedData['phoneno']; 
 
 
         DB::beginTransaction();
@@ -227,6 +229,7 @@ class AuthController extends Controller
         ]);
 
         $validatedData['password'] = bcrypt(($validatedData['password']));
+        $validatedData['phoneno'] = '+60' . $validatedData['phoneno']; 
 
         DB::beginTransaction();
         try {
