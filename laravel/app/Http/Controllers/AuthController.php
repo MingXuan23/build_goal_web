@@ -647,14 +647,19 @@ class AuthController extends Controller
             $response = Http::post($apiUrl, [
                 'noPengenalan' => $noPengenalan,
             ]);
-
             if ($response->successful()) {
                 $apiData = $response->json();
                 $combinedData = $noPengenalan . '|' . $apiData['name'];
                 $encryptedData = Crypt::encrypt($combinedData);
                 return redirect()->route('viewOrganizationRegisterUser', ['data' => $encryptedData]);
             } else {
-                return back()->with('error', 'Your Identity Number is not valid. Please contact us at [help-center@xbug.online] for further assistance.');
+                $apiData = $response->json();
+                if($apiData['error'] === 'TOO MANY REQUESTS, PLEASE TRY AGAIN LATER AFTER 10 MINUTES.'){
+                    return back()->with('error', $apiData['error']);
+                }
+                else{
+                    return back()->with('error', 'Your Identity Number is not valid. Please contact us at [help-center@xbug.online] for further assistance.');
+                }
             }
         } catch (\Exception $e) {
 
@@ -693,7 +698,13 @@ class AuthController extends Controller
                 $encryptedData = Crypt::encrypt($combinedData);
                 return redirect()->route('viewContentCreatorRegisterUser', ['data' => $encryptedData]);
             } else {
-                return back()->with('error', 'Your Identity Number is not valid. Please contact us at [help-center@xbug.online] for further assistance.');
+                $apiData = $response->json();
+                if($apiData['error'] === 'TOO MANY REQUESTS, PLEASE TRY AGAIN LATER AFTER 10 MINUTES.'){
+                    return back()->with('error', $apiData['error']);
+                }
+                else{
+                    return back()->with('error', 'Your Identity Number is not valid. Please contact us at [help-center@xbug.online] for further assistance.');
+                }
             }
         } catch (\Exception $e) {
 
