@@ -90,7 +90,7 @@ const getContentByVector = async (values, m_id) => {
                 }
             });
         });
-        console.log(microLearningResponse.data?.result, content_ids)
+        //console.log(microLearningResponse.data?.result, content_ids)
         return Array.from(content_ids);
 
     } catch (error) {
@@ -204,14 +204,22 @@ const getClickedContent = async (req, res) => {
     try {
         const user = req.user;
 
-        var result = await knex('user_content')
+        var type = await knex('interaction_type').where('type', 'clicked').first();
+        const result = await knex('user_content')
             .join('contents', 'user_content.content_id', '=', 'contents.id')
-            .select('user_content.created_at as enrolled_at', 'contents.link', 'contents.name', 'contents.desc', 'contents.id') // Select all fields from both tables
+            .select(
+                'user_content.created_at as enrolled_at',
+                'contents.link',
+                'contents.name',
+                'contents.desc',
+                'contents.id'
+            )
             .where({
                 'user_content.user_id': user.id,
-                'user_content.interaction_type_id': 2,
-            });
-
+                'user_content.interaction_type_id': type.id,
+            })
+            .orderBy('user_content.updated_at', 'desc') // Explicitly specify the sort direction
+            .limit(30);
 
 
         return res.status(200).json({ 'clicked_list': result });
@@ -223,42 +231,55 @@ const getClickedContent = async (req, res) => {
 
 }
 
-const updateUserContent = async (req, res) =>{
-    try{
+const updateUserContent = async (req, res) => {
+    try {
         const user = req.user;
-        const { content_id, action } = req.body; 
+        const { content_id, action } = req.body;
 
-        const interaction = await knex('interaction_type').where('type',action).first();
-        const content = await knex('contents').where('id',content_id).where('status',1).first();
+        const interaction = await knex('interaction_type').where('type', action).first();
+        const content = await knex('contents').where('id', content_id).where('status', 1).first();
 
-        if(!interaction){
-            return res.status(400).json({'message':'Invalid Action'});
+        if (!interaction) {
+            return res.status(400).json({ 'message': 'Invalid Action' });
         }
-        if(!content_id){
-            return res.status(400).json({'message':'Invalid Action'});
+        if (!content_id) {
+            return res.status(400).json({ 'message': 'Invalid Action' });
         }
 
-        const exist = await knex('user_content').where('user_id',user.id).where('content_id',content.id).where('interaction_type_id',interaction.id).where('status',1).first();
-        console.log(exist, !exist);
-        if(!exist){
+        const exist = await knex('user_content').where('user_id', user.id).where('content_id', content.id).where('interaction_type_id', interaction.id).where('status', 1).first();
+        //console.log(exist, !exist);
+        if (!exist) {
             await knex('user_content').insert({
-                    'user_id': user.id,
-                    'content_id': content_id,
-                    'interaction_type_id': interaction.id,
-                    'ip_address': req.ip || req.connection.remoteAddress
-                });
+                'user_id': user.id,
+                'content_id': content_id,
+                'interaction_type_id': interaction.id,
+                'ip_address': req.ip || req.connection.remoteAddress
+            });
 
             return res.status(201).json({
                 'message': 'Success'
             })
+        } else {
+
+            await knex('user_content').where({
+                'user_id': user.id,
+                'content_id': content_id,
+                'interaction_type_id': interaction.id,
+
+            }).update({
+
+                'desc': new Date()
+
+            });
+
         }
 
         return res.status(200).json({
             'message': 'Duplicated Request'
         })
 
-        
-    }catch(error){
+
+    } catch (error) {
         return res.status(500).json(error);
     }
 }
