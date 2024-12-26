@@ -15,3 +15,6 @@ storage/framework/cache/**
 storage/framework/sessions/**
 storage/framework/views/**
 storage/logs/**
+
+nodejs/node_modules
+laravel/vendor

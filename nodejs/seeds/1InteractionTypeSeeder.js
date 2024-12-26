@@ -5,9 +5,9 @@
 exports.seed = async function (knex) {
   // Data to seed
   const interactionTypes = [
-    { type: 'viewed', desc: 'The content was viewed by the user', status: true },
-    { type: 'clicked', desc: 'The content was clicked by the user', status: true },
-    { type: 'enrolled', desc: 'The user enrolled in the content', status: true },
+    {id :1, type: 'viewed', desc: 'The content was viewed by the user', status: true },
+    { id :2,type: 'clicked', desc: 'The content was clicked by the user', status: true },
+    { id :3,type: 'enrolled', desc: 'The user enrolled in the content', status: true },
   ];
 
   return Promise.all(

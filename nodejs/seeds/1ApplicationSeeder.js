@@ -5,8 +5,8 @@
 exports.seed = async function(knex) {
   // Deletes ALL existing entries
   const applications = [
-   {name: 'BuildGrowth-Mobile'},
-   {name: 'BuildGoal-Web'},
+   {id:1,name: 'BuildGrowth-Mobile'},
+   {id:2 ,name: 'BuildGoal-Web'},
 
   ];
 

@@ -5,11 +5,11 @@
 exports.seed = async function(knex) {
   // Deletes ALL existing entries
   const contentTypes = [
-    { type: 'Course and Training', desc: 'Educational programs and workshops' },
-    { type: 'MicroLearning Resource', desc: 'Short, focused learning resources' },
-    { type: 'Micro Entrepreneurship', desc: 'Resources and opportunities for small business' },
-    { type: 'Job Offering', desc: 'Available job positions' },
-    { type: 'Event', desc: 'Upcoming events and activities' },
+    { id :1,type: 'Course and Training', desc: 'Educational programs and workshops' },
+    { id :2,type: 'MicroLearning Resource', desc: 'Short, focused learning resources' },
+    { id :3,type: 'Micro Entrepreneurship', desc: 'Resources and opportunities for small business' },
+    { id :4,type: 'Job Offering', desc: 'Available job positions' },
+    { id :5,type: 'Event', desc: 'Upcoming events and activities' },
   ];
 
   return Promise.all(
