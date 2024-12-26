@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 
 class MicrolearningController extends Controller
 {
@@ -103,7 +105,11 @@ class MicrolearningController extends Controller
     {
             // Convert slug back to the type (in case you need to restore spaces)
             $contentType = str_replace('-', ' ', $slug); 
+            $countContent = DB::table('contents')
+            ->where('reason_phrase', '=', 'APPROVED')
+            ->count();
 
+            $microLearningSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 2)->value('type'));
             // Fetch the content type ID based on the slug (type)
             $contentTypeId = DB::table('content_types')
                 ->select('id')
@@ -138,9 +144,55 @@ class MicrolearningController extends Controller
             // Return the view with the fetched content
             return view('viewContent.showContentDetail', [
                 'contents' => $contents,
-                'contentTypeId' => $contentTypeId,
+                'contentTypeId' => $contentTypeId
+                
+            ], compact('countContent','microLearningSlug'));
+        }
+
+        public function showMicrolearningDetail(Request $request, $slug, $name)
+        {
+            // Convert slug back to content name with spaces
+            $name = str_replace('-', ' ', $name);
+
+            // Fetch the content type ID for 'MicroLearning' (or similar)
+            $contentTypeId = DB::table('content_types')
+                ->select('id')
+                ->where('type', '=', str_replace('-', ' ', $slug))
+                ->first();
+
+            if (!$contentTypeId) {
+                abort(404, 'Content Type not found');
+            }
+
+            $contentTypeId = $contentTypeId->id;
+
+            // Fetch the content by name and type
+            $contents = DB::table('contents as c')
+                ->join('content_types', 'c.content_type_id', '=', 'content_types.id')
+                ->select(
+                    'c.id',
+                    'c.name',
+                    'c.image',
+                    'content_types.type as content_type_name',
+                    'c.created_at',
+                    'c.reason_phrase',
+                    'c.content',
+                    'c.desc'
+                )
+                ->where('content_types.id', '=', $contentTypeId)
+                ->where('c.name', '=', $name)
+                ->where('c.reason_phrase', '=', 'APPROVED')
+                ->first();
+
+            if (!$contents) {
+                abort(404, 'Content not found');
+            }
+
+            return view('viewContent.showMicrolearning', [
+                'contents' => $contents
             ]);
         }
+
 
     
 

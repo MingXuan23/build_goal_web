@@ -160,7 +160,7 @@
                      <div class="row justify-content-center text-center">
                         <div class="col-xxl-7 col-xl-7 col-lg-8">
                            <div class="">
-                              <h6 class="landing-banner-heading mb-3"><span class="text-secondary fw-bold">{{ $countContent}}+ </span>Content for Course and Tranning</h6>
+                              <h6 class="landing-banner-heading mb-3"><span class="text-secondary fw-bold">14+ </span>Content for Course and Tranning</h6>
                               <p class="fs-18 mb-5 op-8 fw-normal text-fixed-white">Register &amp; get free access to create your content and <br>submit your content with few easy steps.</p>
                               <div class="mb-3 custom-form-group">
                                  <input type="text" class="form-control form-control-lg shadow-sm" placeholder="your keyword...." 
@@ -175,72 +175,41 @@
                   </div>
                </section>
             </div>
-            <div class="container">
-               <div class="row justify-content-center">
-                  <div class="col-xxl-8 col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                        <div class="row g-3 mt-4">
-                           @foreach($contents as $content)
-                              @if($contentTypeId == 2) 
-                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                       <div class="card custom-card" style="width: 100%;">
-                                          <!-- Display image or fallback -->
-                                          @if($content->image)
-                                             <img src="{{ asset($content->image) }}" class="card-img-top" alt="{{ $content->name }}" style="height: 180px; object-fit: cover;">
-                                          @else
-                                             <div class="d-flex align-items-center justify-content-center card-img-top bg-primary text-white" style="height: 180px; font-size: 48px; font-weight: bold;">
-                                                   {{ strtoupper(substr($content->name, 0, 1)) }}
-                                             </div>
-                                          @endif
-
-                                          <div class="card-body">
-                                             <h6 class="card-title fw-semibold">{{ $content->name }}</h6>
-                                             <p class="card-text text-muted">{{ $content->content_type_name }}</p>
-                                             <a href="{{ url('/view-content/' . $microLearningSlug . '/' . str_replace(' ', '-', $content->name)) }}" 
-                                                class="btn btn-primary">
-                                                Read More
-                                             </a>
-
-                                          </div>
-                                          <div class="card-footer">
-                                             <span class="card-text">Last updated {{ \Carbon\Carbon::parse($content->created_at)->diffForHumans() }}</span>
-                                          </div>
-                                       </div>
-                                 </div>
-                                 @else
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                          <div class="card custom-card" style="width: 100%;">
-                                             <!-- Display image or fallback -->
-                                             @if($content->image)
-                                                <img src="{{ asset($content->image) }}" class="card-img-top" alt="{{ $content->name }}" style="height: 180px; object-fit: cover;">
-                                             @else
-                                                <div class="d-flex align-items-center justify-content-center card-img-top bg-primary text-white" style="height: 180px; font-size: 48px; font-weight: bold;">
-                                                      {{ strtoupper(substr($content->name, 0, 1)) }}
-                                                </div>
-                                             @endif
-
-                                             <div class="card-body">
-                                                <h6 class="card-title fw-semibold">{{ $content->name }}</h6>
-                                                <p class="card-text text-muted">{{ $content->content_type_name }}</p>
-                                                <a href="javascript:void(0);" 
-                                                   class="btn btn-primary" 
-                                                   data-bs-toggle="modal" 
-                                                   data-bs-target="#contentModal" 
-                                                   onclick="showContentPreview('{{ $content->content }}', '{{ $content->name }}', '{{ $content->desc }}')">
-                                                   Read More
-                                                </a>
-
-                                             </div>
-                                             <div class="card-footer">
-                                                <span class="card-text">Last updated {{ \Carbon\Carbon::parse($content->created_at)->diffForHumans() }}</span>
-                                             </div>
-                                          </div>
-                                    </div>
-                                    @endif
-                           @endforeach
+            <div class="container d-flex justify-content-center">
+                <div class="card custom-card" style="width: 100%; max-width: 600px; border: 2px solidrgb(0, 0, 0); border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);"">
+                    <!-- Card Header -->
+                    <div class="card-header justify-content-between m-0">
+                        <div class="card-title text-center">
+                            {{ $contents->name }}
                         </div>
-                  </div>
-               </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <!-- Display image or fallback -->
+                        @if($contents->image)
+                            <img src="{{ asset($contents->image) }}" class="card-img-top mb-3" alt="{{ $contents->name }}" style="height: 200px; object-fit: cover;">
+                        @else
+                            <div class="d-flex align-items-center justify-content-center card-img-top bg-primary text-white mb-3" style="height: 200px; font-size: 48px; font-weight: bold;">
+                                {{ strtoupper(substr($contents->name, 0, 1)) }}
+                            </div>
+                        @endif
+
+                        <!-- Content Information -->
+                        <p class="text-muted mb-2">{{ $contents->content_type_name }}</p>
+                        <p class="text-muted"><em id="descriptionPreview">{{ Str::limit($contents->desc, 100, '...') }}</em></p>
+
+                        <!-- Read More Button -->
+                        <div id="formattedContent" class="content-preview mt-3"></div>
+                    </div>
+
+                    <!-- Card Footer -->
+                    <div class="card-footer text-center">
+                        <span class="text-muted">Last updated {{ \Carbon\Carbon::parse($contents->created_at)->diffForHumans() }}</span>
+                    </div>
+                </div>
             </div>
+
 
 
             <!-- <div class="modal fade" id="viewContent" tabindex="-1"
@@ -298,7 +267,7 @@
                </div>
             </div> -->
 
-            <!-- Modal for Read More -->
+       
             <!-- Modal for Read More -->
             <div class="modal fade" id="contentModal" tabindex="-1" aria-labelledby="contentModalLabel" aria-hidden="true">
                <div class="modal-dialog modal-lg">
@@ -352,38 +321,40 @@
       <script src="../../assets/js/sticky.js"></script>
 
       <script>
-         function showContentPreview(formattedContent, title, description) {
-            // Update the modal title
-            document.getElementById('contentModalLabel').innerText = title;
+            document.addEventListener("DOMContentLoaded", function() {
+                // Fetch the content
+                const formattedContent = `{{ addslashes($contents->content) }}`; // Replace this with the dynamic content if needed.
 
-            // Build the preview content
-            let contentHtml = `
-               <h1>${title}</h1>
-               <p><em>${description}</em></p>
-               <hr>
-            `;
+                // Function to format the content
+                function formatContent(content) {
+                    let formattedHtml = "";
+                    const sections = content.split("\n\n"); // Assuming sections are separated by double new lines
+                    sections.forEach((section, index) => {
+                        const headerMatch = section.match(/\*\*\*(.*?)\*\*\*/); // Match header in ***
+                        if (headerMatch) {
+                            const header = headerMatch[1]; // Extract header
+                            const body = section.replace(/\*\*\*(.*?)\*\*\*/, '').trim(); // Remove header and extract body
 
-            const contentSections = formattedContent.split('\n\n');
-            contentSections.forEach((section, index) => {
-               const headerMatch = section.match(/\*\*\*(.*?)\*\*\*/); // Match header in ***
-               if (headerMatch) {
-                  const header = headerMatch[1]; // Extract header
-                  const body = section.replace(/\*\*\*(.*?)\*\*\*/, '').trim(); // Remove header and extract body
+                            // Append formatted section to preview
+                            formattedHtml += `
+                                <div class="preview-section">
+                                    <h2>Step ${index + 1}: ${header}</h2>
+                                    <p>${body}</p>
+                                </div>
+                            `;
+                        } else {
+                            // If no header is found, treat the entire section as normal text
+                            formattedHtml += `<p>${section}</p>`;
+                        }
+                    });
+                    return formattedHtml;
+                }
 
-                  // Append formatted section to preview
-                  contentHtml += `
-                     <div class="preview-section">
-                        <h2>Step ${index + 1}: ${header}</h2>
-                        <p>${body}</p>
-                     </div>
-                  `;
-               }
+                // Display the formatted content
+                const contentHtml = formatContent(formattedContent);
+                document.getElementById("formattedContent").innerHTML = contentHtml;
             });
+    </script>
 
-            // Insert content into modal body
-            document.getElementById('modalContent').innerHTML = contentHtml;
-         }
-
-      </script>
    </body>
 </html>

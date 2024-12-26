@@ -254,6 +254,10 @@ Route::get('/content/{id}', [MicrolearningController::class, 'show']);
 Route::get('/view-content', [MicrolearningController::class, 'showContentHomepage'])->name('showContentHomepage');
 //Route::get('/view-content/{id}', [MicrolearningController::class, 'showContentDetail'])->name('showContentDetail');
 Route::get('/view-content/{slug}', [MicrolearningController::class, 'showContentDetail'])->name('showContentDetail');
+// Route::get('/view-content/{slug}/{id}', [MicrolearningController::class, 'showContentDetail'])->name('showContentDetail');
+Route::get('/view-content/{slug}/{name}', [MicrolearningController::class, 'showMicrolearningDetail'])->name('showMicrolearningDetail');
+
+
 
 
 Route::get('/deeplink/{id}', [ContentController::class, 'deeplink'])->name('deeplink');
