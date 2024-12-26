@@ -284,5 +284,319 @@ class OrganizationRouteController extends Controller
         ]);
     }
 
+    public function showContentUserClickedViewedOrganization(Request $request)
+    {
+        $datas = DB::table('user_content as userContent')
+            ->join('contents', 'userContent.content_id', '=', 'contents.id')
+            ->where('contents.user_id', Auth::user()->id)
+            ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id')
+            ->join('users', 'userContent.user_id', '=', 'users.id') 
+            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+            ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
+            ->whereIn('userContent.interaction_type_id', [1,2])
+            ->select(
+                DB::raw('MAX(userContent.id) as id'),
+                DB::raw('MAX(userContent.user_id) as user_id'),
+                DB::raw('MAX(userContent.interaction_type_id) as interaction_type_id'),
+                DB::raw('MAX(userContent.status) as status'),
+                DB::raw('MAX(userContent.content_id) as content_id'),
+                DB::raw('MAX(userContent.ip_address) as ip_address'),
+                DB::raw('MAX(userContent.token) as token'),
+                DB::raw('MAX(userContent.verification_code) as verification_code'),
+                DB::raw('MAX(userContent.`desc`) as `desc`'),
+                DB::raw('MAX(userContent.created_at) as user_content_created_at'),
+                DB::raw('MAX(users.name) as user_name'), 
+                DB::raw('MAX(users.email) as user_email'), 
+                DB::raw('MAX(contentOwner.name) as content_owner_name'),
+                DB::raw('MAX(contentOwner.email) as content_owner_email'), 
+                DB::raw('MAX(contents.name) as name'),
+                DB::raw('MAX(contents.link) as link'),
+                DB::raw('MAX(contents.content) as content'),
+                DB::raw('MAX(contents.enrollment_price) as enrollment_price'),
+                DB::raw('MAX(contents.category_weight) as category_weight'),
+                DB::raw('MAX(contents.content_type_id) as content_type_id'),
+                DB::raw('MAX(contents.edit_from) as edit_from'),
+                DB::raw('MAX(contents.place) as place'),
+                DB::raw('MAX(contents.participant_limit) as participant_limit'),
+                DB::raw('MAX(contents.state) as state'),
+                DB::raw('MAX(contents.closed_at) as closed_at'),
+                DB::raw('MAX(contents.reason_phrase) as reason_phrase'),
+                DB::raw('MAX(contents.first_date) as first_date'),
+                DB::raw('MAX(contents.org_id) as org_id'),
+                DB::raw('MAX(contents.reject_reason) as reject_reason'),
+                DB::raw('MAX(contents.image) as image'),
+                DB::raw('MAX(contents.status) as content_status'),
+                DB::raw('MAX(contents.created_at) as content_created_at'),
+                DB::raw('MAX(interaction_type.type) as interaction_type'),
+                DB::raw('MAX(content_types.type) as content_type'),
+                DB::raw('COUNT(userContent.content_id) as total_interactions')
+            )
+            ->groupBy('userContent.content_id', 'userContent.interaction_type_id')
+            ->orderBy('content_created_at', 'desc') 
+            ->get();
+
+        // $datass = DB::table('user_content as userContent')
+        //     ->join('contents', 'userContent.content_id', '=', 'contents.id')
+        //     ->join('users', 'userContent.user_id', '=', 'users.id')
+        //     ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
+        //     ->select(
+        //         'userContent.*',
+        //         'users.name as user_name',
+        //         'users.email as user_email',
+        //         'contents.*',
+        //         'contents.status as content_status',
+        //         'contents.created_at as content_created_at',
+        //         'interaction_type.type as interaction_type'
+        //     )
+        //     ->orderBy('contents.created_at', 'desc')
+        //     ->get();
+
+        // $combinedData = $datas->merge($datass);
+        // dd($combinedData);
+
+
+
+        if ($request->ajax()) {
+            return DataTables::of($datas)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    return '<button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2"
+                                data-bs-toggle="modal" data-bs-target="#modalView-' . $row->content_id . '"
+                                data-content-id="' . $row->content_id . '"
+                                data-interaction-type="' . $row->interaction_type_id . '">
+                                <i class="ri-eye-line fw-bold"></i>
+                            </button>';
+                })
+                
+                ->addColumn('status', function ($row) {
+                    if ($row->content_status == 1) {
+
+                        $button =
+                            '<div class="d-flex justify-content-between">
+                            <button class="btn btn-sm bg-success text-light me-1 fw-bold">
+                                 Active
+                            </button>
+                        </div>';
+                    } else {
+                        $button =
+
+                            '<div class="d-flex align-items-between">
+                            <button class="btn btn-sm bg-danger text-light me-1 fw-bold">
+                                  Inactive
+                            </span>
+                        </div>';
+                    }
+                    return $button;
+                })
+                ->addColumn('totalInteractions', function ($row) {
+                    $status = $row->content_status == 1 ? 'Active' : 'Inactive';
+                    $bg = $row->content_status == 1 ? 'badge bg-success text-light me-1 fw-bold mt-2' : 'badge bg-danger text-light me-1 fw-bold mt-2';
+                    $button =
+                        '<div class="">
+                            <button class="btn btn-sm bg-success-transparent text-primary me-1 fw-bold">
+                                 ' . $row->total_interactions . '
+                            </button>
+                            <br>
+                             <span>status: <span class="' . $bg . '">' . $status . '</span></span>
+                        </div>';
+
+                    return $button;
+                })
+                ->addColumn('interaction_type', function ($row) {
+                    $button =
+                        '<div class="">
+                    
+                            <button class="btn btn-sm bg-success-transparent text-primary me-1 fw-bold">
+                                 ' . strtoupper($row->interaction_type) . '
+                            </button>
+                            
+                           
+                        </div>';
+
+                    return $button;
+                })
+                ->addColumn('name', function ($row) {
+
+                    $button =
+                        '<span class="fw-bold">' . strtoupper($row->name) . ' </span>';
+
+                    return $button;
+                })
+                ->rawColumns(['action', 'status', 'totalInteractions', 'interaction_type', 'name'])
+                ->make(true);
+        }
+        return view('organization.contentActivity.index', [
+            'datas' => $datas,
+        ]);
+    }
+    public function showContentUserEnrolledOrganization(Request $request)
+    {
+        $datas = DB::table('user_content as userContent')
+            ->join('contents', 'userContent.content_id', '=', 'contents.id')
+            ->where('contents.user_id', Auth::user()->id)
+            ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id')
+            ->join('users', 'userContent.user_id', '=', 'users.id') 
+            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+            ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
+            ->whereIn('userContent.interaction_type_id', [3])
+            ->select(
+                DB::raw('MAX(userContent.id) as id'),
+                DB::raw('MAX(userContent.user_id) as user_id'),
+                DB::raw('MAX(userContent.interaction_type_id) as interaction_type_id'),
+                DB::raw('MAX(userContent.status) as status'),
+                DB::raw('MAX(userContent.content_id) as content_id'),
+                DB::raw('MAX(userContent.ip_address) as ip_address'),
+                DB::raw('MAX(userContent.token) as token'),
+                DB::raw('MAX(userContent.verification_code) as verification_code'),
+                DB::raw('MAX(userContent.`desc`) as `desc`'),
+                DB::raw('MAX(userContent.created_at) as user_content_created_at'),
+                DB::raw('MAX(users.name) as user_name'), 
+                DB::raw('MAX(users.email) as user_email'), 
+                DB::raw('MAX(contentOwner.name) as content_owner_name'),
+                DB::raw('MAX(contentOwner.email) as content_owner_email'), 
+                DB::raw('MAX(contents.name) as name'),
+                DB::raw('MAX(contents.link) as link'),
+                DB::raw('MAX(contents.content) as content'),
+                DB::raw('MAX(contents.enrollment_price) as enrollment_price'),
+                DB::raw('MAX(contents.category_weight) as category_weight'),
+                DB::raw('MAX(contents.content_type_id) as content_type_id'),
+                DB::raw('MAX(contents.edit_from) as edit_from'),
+                DB::raw('MAX(contents.place) as place'),
+                DB::raw('MAX(contents.participant_limit) as participant_limit'),
+                DB::raw('MAX(contents.state) as state'),
+                DB::raw('MAX(contents.closed_at) as closed_at'),
+                DB::raw('MAX(contents.reason_phrase) as reason_phrase'),
+                DB::raw('MAX(contents.first_date) as first_date'),
+                DB::raw('MAX(contents.org_id) as org_id'),
+                DB::raw('MAX(contents.reject_reason) as reject_reason'),
+                DB::raw('MAX(contents.image) as image'),
+                DB::raw('MAX(contents.status) as content_status'),
+                DB::raw('MAX(contents.created_at) as content_created_at'),
+                DB::raw('MAX(interaction_type.type) as interaction_type'),
+                DB::raw('MAX(content_types.type) as content_type'),
+                DB::raw('COUNT(userContent.content_id) as total_interactions')
+            )
+            ->groupBy('userContent.content_id', 'userContent.interaction_type_id')
+            ->orderBy('content_created_at', 'desc') 
+            ->get();
+
+        // $datass = DB::table('user_content as userContent')
+        //     ->join('contents', 'userContent.content_id', '=', 'contents.id')
+        //     ->join('users', 'userContent.user_id', '=', 'users.id')
+        //     ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
+        //     ->select(
+        //         'userContent.*',
+        //         'users.name as user_name',
+        //         'users.email as user_email',
+        //         'contents.*',
+        //         'contents.status as content_status',
+        //         'contents.created_at as content_created_at',
+        //         'interaction_type.type as interaction_type'
+        //     )
+        //     ->orderBy('contents.created_at', 'desc')
+        //     ->get();
+
+        // $combinedData = $datas->merge($datass);
+        // dd($combinedData);
+
+
+
+        if ($request->ajax()) {
+            return DataTables::of($datas)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    return '<button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2"
+                                data-bs-toggle="modal" data-bs-target="#modalView-' . $row->content_id . '"
+                                data-content-id="' . $row->content_id . '"
+                                data-interaction-type="' . $row->interaction_type_id . '">
+                                <i class="ri-eye-line fw-bold"></i>
+                            </button>';
+                })
+                
+                ->addColumn('status', function ($row) {
+                    if ($row->content_status == 1) {
+
+                        $button =
+                            '<div class="d-flex justify-content-between">
+                            <button class="btn btn-sm bg-success text-light me-1 fw-bold">
+                                 Active
+                            </button>
+                        </div>';
+                    } else {
+                        $button =
+
+                            '<div class="d-flex align-items-between">
+                            <button class="btn btn-sm bg-danger text-light me-1 fw-bold">
+                                  Inactive
+                            </span>
+                        </div>';
+                    }
+                    return $button;
+                })
+                ->addColumn('totalInteractions', function ($row) {
+                    $status = $row->content_status == 1 ? 'Active' : 'Inactive';
+                    $bg = $row->content_status == 1 ? 'badge bg-success text-light me-1 fw-bold mt-2' : 'badge bg-danger text-light me-1 fw-bold mt-2';
+                    $button =
+                        '<div class="">
+                            <button class="btn btn-sm bg-success-transparent text-primary me-1 fw-bold">
+                                 ' . $row->total_interactions . '
+                            </button>
+                            <br>
+                             <span>status: <span class="' . $bg . '">' . $status . '</span></span>
+                        </div>';
+
+                    return $button;
+                })
+                ->addColumn('interaction_type', function ($row) {
+                    $button =
+                        '<div class="">
+                    
+                            <button class="btn btn-sm bg-success-transparent text-primary me-1 fw-bold">
+                                 ' . strtoupper($row->interaction_type) . '
+                            </button>
+                            
+                           
+                        </div>';
+
+                    return $button;
+                })
+                ->addColumn('name', function ($row) {
+
+                    $button =
+                        '<span class="fw-bold">' . strtoupper($row->name) . ' </span>';
+
+                    return $button;
+                })
+                ->rawColumns(['action', 'status', 'totalInteractions', 'interaction_type', 'name'])
+                ->make(true);
+        }
+        return view('organization.contentActivity.indexEnrolled', [
+            'datas' => $datas,
+        ]);
+    }
+
+    public function getContentDetailOrganization($content_id, $interaction_type)
+    {
+        $contentDetail = DB::table('user_content as userContent')
+            ->join('contents', 'userContent.content_id', '=', 'contents.id')
+            ->where('contents.user_id', Auth::user()->id)
+            ->join('users', 'userContent.user_id', '=', 'users.id')
+            ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
+            ->select(
+                'userContent.*',
+                'userContent.created_at	 as content_user_created_at',
+                'users.name as user_name',
+                'users.email as user_email',
+                'contents.*',
+                'contents.status as content_status',
+                'contents.created_at as content_created_at',
+                'interaction_type.type as interaction_type'
+            )
+            ->where('userContent.content_id', $content_id)
+            ->where('userContent.interaction_type_id', $interaction_type)
+            ->get();
+    
+        return response()->json($contentDetail);
+    }
     
 }

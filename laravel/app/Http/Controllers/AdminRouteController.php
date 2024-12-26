@@ -16,56 +16,56 @@ class AdminRouteController extends Controller
     public function showUser(Request $request)
     {
         $data = DB::table('users as u')
-        ->join('roles as r', function ($join) {
-            $join->whereRaw('JSON_CONTAINS(u.role, JSON_ARRAY(r.id))');
-        })
-        ->join('organization_user as ou', 'ou.user_id', 'u.id')
-        ->join('organization as o', 'o.id', 'ou.organization_id')
-        ->select(
-            'u.*',
-            'o.name as org_name',
-            'o.desc as org_desc',
-            'o.status as org_status',
-            'o.logo as org_logo',
-            'o.address as org_address',
-            'o.state as org_state',
-            'o.org_type',
-            DB::raw('GROUP_CONCAT(r.role) as role_names')
-        )
-        ->whereRaw('NOT (JSON_LENGTH(u.role) = 1 AND JSON_CONTAINS(u.role, JSON_ARRAY(4)))')  // Exclude [5] only
-        ->groupBy(
-            'u.id',
-            'u.name',
-            'u.password',
-            'u.telno',
-            'u.address',
-            'u.state',
-            'u.email',
-            'u.status',
-            'u.role',
-            'u.active',
-            'u.created_at',
-            'u.updated_at',
-            'u.email_status',
-            'u.verification_code',
-            'u.icNo',
-            'u.remember_token',
-            'u.ekyc_status',
-            'u.ekyc_time',
-            'u.ekyc_signature',
-            'u.is_gpt',
-            'u.gpt_status',
-            'o.name',
-            'o.desc',
-            'o.status',
-            'o.logo',
-            'o.address',
-            'o.state',
-            'o.org_type'
-        )
-        ->orderBy('u.created_at', 'asc')
-        ->get();
-    
+            ->join('roles as r', function ($join) {
+                $join->whereRaw('JSON_CONTAINS(u.role, JSON_ARRAY(r.id))');
+            })
+            ->join('organization_user as ou', 'ou.user_id', 'u.id')
+            ->join('organization as o', 'o.id', 'ou.organization_id')
+            ->select(
+                'u.*',
+                'o.name as org_name',
+                'o.desc as org_desc',
+                'o.status as org_status',
+                'o.logo as org_logo',
+                'o.address as org_address',
+                'o.state as org_state',
+                'o.org_type',
+                DB::raw('GROUP_CONCAT(r.role) as role_names')
+            )
+            ->whereRaw('NOT (JSON_LENGTH(u.role) = 1 AND JSON_CONTAINS(u.role, JSON_ARRAY(4)))')  // Exclude [5] only
+            ->groupBy(
+                'u.id',
+                'u.name',
+                'u.password',
+                'u.telno',
+                'u.address',
+                'u.state',
+                'u.email',
+                'u.status',
+                'u.role',
+                'u.active',
+                'u.created_at',
+                'u.updated_at',
+                'u.email_status',
+                'u.verification_code',
+                'u.icNo',
+                'u.remember_token',
+                'u.ekyc_status',
+                'u.ekyc_time',
+                'u.ekyc_signature',
+                'u.is_gpt',
+                'u.gpt_status',
+                'o.name',
+                'o.desc',
+                'o.status',
+                'o.logo',
+                'o.address',
+                'o.state',
+                'o.org_type'
+            )
+            ->orderBy('u.created_at', 'asc')
+            ->get();
+
 
         if ($request->ajax()) {
             $table = DataTables::of($data)->addIndexColumn();
@@ -175,19 +175,18 @@ class AdminRouteController extends Controller
                                         <i class="ri-edit-line fw-bold"></i>
                                     </button>
                                 </div>';
-                }
-                else{
+                } else {
                     $button = '<div class="d-flex justify-content-between">
                                     <span class="text-danger p-2 me-1 fw-bold">
                                         <i class="bi bi-circle-fill"></i> -
                                     </span>
                                 </div>';
-                    }
-                
+                }
+
                 return $button;
             });
 
-            $table->rawColumns(['action', 'email_status', 'active', 'ekyc_status', 'role_names','gpt_account','gpt_status']);
+            $table->rawColumns(['action', 'email_status', 'active', 'ekyc_status', 'role_names', 'gpt_account', 'gpt_status']);
 
             return $table->make(true);
         }
@@ -204,9 +203,9 @@ class AdminRouteController extends Controller
     public function showUserMobile(Request $request)
     {
         $data = DB::table('users')
-        ->whereRaw('JSON_LENGTH(role) = 1 AND JSON_CONTAINS(role, JSON_ARRAY(4))')  // Ensure role is [5] only
-        ->orderBy('created_at', 'asc')
-        ->get();
+            ->whereRaw('JSON_LENGTH(role) = 1 AND JSON_CONTAINS(role, JSON_ARRAY(4))')  // Ensure role is [5] only
+            ->orderBy('created_at', 'asc')
+            ->get();
 
         if ($request->ajax()) {
             $table = DataTables::of($data)->addIndexColumn();
@@ -263,7 +262,7 @@ class AdminRouteController extends Controller
                 return $button;
             });
 
-            $table->rawColumns(['action', 'email_status', 'active','role_names']);
+            $table->rawColumns(['action', 'email_status', 'active', 'role_names']);
 
             return $table->make(true);
         }
@@ -290,122 +289,122 @@ class AdminRouteController extends Controller
 
         //Registration Statistic
         $yearData = DB::table('users')
-        ->select(DB::raw('YEAR(created_at) as year'), DB::raw('COUNT(*) as count'))
-        ->groupBy('year')
-        ->orderBy('year', 'asc')
-        ->pluck('count', 'year');
+            ->select(DB::raw('YEAR(created_at) as year'), DB::raw('COUNT(*) as count'))
+            ->groupBy('year')
+            ->orderBy('year', 'asc')
+            ->pluck('count', 'year');
 
         $monthData = DB::table('users')
-        ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
-        ->whereYear('created_at', now()->year)
-        ->groupBy('month')
-        ->orderBy('month', 'asc')
-        ->pluck('count', 'month');
+            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
+            ->whereYear('created_at', now()->year)
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->pluck('count', 'month');
 
         $weekData = DB::table('users')
-        ->select(DB::raw('DAYNAME(created_at) as day'), DB::raw('COUNT(*) as count'))
-        ->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])
-        ->groupBy('day')
-        ->orderByRaw("FIELD(day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')")
-        ->pluck('count', 'day');
+            ->select(DB::raw('DAYNAME(created_at) as day'), DB::raw('COUNT(*) as count'))
+            ->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])
+            ->groupBy('day')
+            ->orderByRaw("FIELD(day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')")
+            ->pluck('count', 'day');
 
         //EKYC Status
         $ekycVerified = DB::table('users')->where('eKYC_status', 1)->count();
         $ekycNotVerified = DB::table('users')->where('eKYC_status', 0)->count();
-    
+
         //Verified Email
         $emailVerified = DB::table('users')->where('email_status', 'VERIFY')->count();
 
         //Total Users Based on roles
         $userCounts = DB::table('users as u')
-        ->join('roles as r', function ($join) {
-            $join->whereRaw('JSON_CONTAINS(u.role, JSON_ARRAY(r.id))');
-        })
-        ->select(
-            'r.role as role_name', // Get the role name
-            DB::raw('COUNT(u.id) as user_count') // Count users per role
-        )
-        ->groupBy('r.role') // Group by role name
-        ->orderBy('role_name', 'asc') // Optional: Order alphabetically
-        ->get();
+            ->join('roles as r', function ($join) {
+                $join->whereRaw('JSON_CONTAINS(u.role, JSON_ARRAY(r.id))');
+            })
+            ->select(
+                'r.role as role_name', // Get the role name
+                DB::raw('COUNT(u.id) as user_count') // Count users per role
+            )
+            ->groupBy('r.role') // Group by role name
+            ->orderBy('role_name', 'asc') // Optional: Order alphabetically
+            ->get();
 
         //Content Summary
         $contentCounts = DB::table('contents')
-        ->select('reason_phrase', DB::raw('COUNT(*) as count'))
-        ->groupBy('reason_phrase')
-        ->get();
+            ->select('reason_phrase', DB::raw('COUNT(*) as count'))
+            ->groupBy('reason_phrase')
+            ->get();
         $totalContents = DB::table('contents')->count();
         $approvedCount = $contentCounts->where('reason_phrase', 'APPROVED')->first()->count ?? 0;
         $rejectedCount = $contentCounts->where('reason_phrase', 'REJECTED')->first()->count ?? 0;
         $pendingCount = $contentCounts->where('reason_phrase', 'PENDING')->first()->count ?? 0;
 
         return view('admin.dashboard.index', compact(
-        'userCounts',
-        'totalContents', 
-        'approvedCount', 
-        'rejectedCount', 
-        'pendingCount',
-        'ekycVerified', 
-        'ekycNotVerified',
-        'emailVerified',
-        'activeUsers',
-        'totalUsers',
-        'yearData',
-        'monthData',
-        'weekData'
-    ));
+            'userCounts',
+            'totalContents',
+            'approvedCount',
+            'rejectedCount',
+            'pendingCount',
+            'ekycVerified',
+            'ekycNotVerified',
+            'emailVerified',
+            'activeUsers',
+            'totalUsers',
+            'yearData',
+            'monthData',
+            'weekData'
+        ));
     }
     public function showProfile(Request $request)
     {
         $data = DB::table('users as u')
-        ->where('u.id', Auth::user()->id)
-        ->join('roles as r', function ($join) {
-            $join->whereRaw('JSON_CONTAINS(u.role, JSON_ARRAY(r.id))');
-        })
-        ->join('organization_user as ou', 'ou.user_id', 'u.id')
-        ->join('organization as o', 'o.id', 'ou.organization_id')
-        ->select(
-            'u.*',
-            'o.name as org_name',
-            'o.desc as org_desc',
-            'o.status as org_status',
-            'o.logo as org_logo',
-            'o.address as org_address',
-            'o.state as org_state',
-            'o.org_type',
-            DB::raw('GROUP_CONCAT(r.role) as role_names')
-        )
-        ->groupBy(
-            'u.id',
-            'u.name',
-            'u.password',
-            'u.telno',
-            'u.address',
-            'u.state',
-            'u.email',
-            'u.status',
-            'u.role',
-            'u.active',
-            'u.created_at',
-            'u.Updated_at',
-            'u.email_status',
-            'u.verification_code',
-            'u.icNo',
-            'u.remember_token',
-            'u.ekyc_status',
-            'u.ekyc_signature',
-            'u.ekyc_time',
-            'o.name',
-            'o.desc',
-            'o.status',
-            'o.logo',
-            'o.address',
-            'o.state',
-            'o.org_type',
-        )
-        ->orderby('u.created_at', 'asc')
-        ->get();
-        return view('admin.profile.index',[
+            ->where('u.id', Auth::user()->id)
+            ->join('roles as r', function ($join) {
+                $join->whereRaw('JSON_CONTAINS(u.role, JSON_ARRAY(r.id))');
+            })
+            ->join('organization_user as ou', 'ou.user_id', 'u.id')
+            ->join('organization as o', 'o.id', 'ou.organization_id')
+            ->select(
+                'u.*',
+                'o.name as org_name',
+                'o.desc as org_desc',
+                'o.status as org_status',
+                'o.logo as org_logo',
+                'o.address as org_address',
+                'o.state as org_state',
+                'o.org_type',
+                DB::raw('GROUP_CONCAT(r.role) as role_names')
+            )
+            ->groupBy(
+                'u.id',
+                'u.name',
+                'u.password',
+                'u.telno',
+                'u.address',
+                'u.state',
+                'u.email',
+                'u.status',
+                'u.role',
+                'u.active',
+                'u.created_at',
+                'u.Updated_at',
+                'u.email_status',
+                'u.verification_code',
+                'u.icNo',
+                'u.remember_token',
+                'u.ekyc_status',
+                'u.ekyc_signature',
+                'u.ekyc_time',
+                'o.name',
+                'o.desc',
+                'o.status',
+                'o.logo',
+                'o.address',
+                'o.state',
+                'o.org_type',
+            )
+            ->orderby('u.created_at', 'asc')
+            ->get();
+        return view('admin.profile.index', [
             'datas' => $data
         ]);
     }
@@ -489,27 +488,28 @@ class AdminRouteController extends Controller
         $states = DB::table('states')->select('id', 'name')->get();
         return view('admin.contentManagement.index', [
             'content_data' => $datas,
-           // 'stateCities' => $stateCities,
+            // 'stateCities' => $stateCities,
             'states' => $states
         ]);
     }
 
-    public function showEmailLogs(Request $request){
+    public function showEmailLogs(Request $request)
+    {
         $logs = DB::table('email_logs')
-        ->select([
-            'id',
-            'email_type',
-            'recipient_email',
-            'from_email',
-            'name',
-            'status',
-            'response_data',
-            'created_at'
-        ])
-        ->whereNotIn('email_type', ['NOTIFICATION USER', 'NOTIFICATION TO ALL USERS']) // Mengecualikan 'NOTIFICATION USER' dan 'NOTIFICATION TO ALL USERS'
-        ->orderBy('id', 'desc') // Mengurutkan berdasarkan id secara menurun
-        ->get();
-    
+            ->select([
+                'id',
+                'email_type',
+                'recipient_email',
+                'from_email',
+                'name',
+                'status',
+                'response_data',
+                'created_at'
+            ])
+            ->whereNotIn('email_type', ['NOTIFICATION USER', 'NOTIFICATION TO ALL USERS']) // Mengecualikan 'NOTIFICATION USER' dan 'NOTIFICATION TO ALL USERS'
+            ->orderBy('id', 'desc') // Mengurutkan berdasarkan id secara menurun
+            ->get();
+
         if ($request->ajax()) {
 
             return DataTables::of($logs)
@@ -528,17 +528,18 @@ class AdminRouteController extends Controller
         return view('admin.emailLogs.index');
     }
 
-    public function showPackage(Request $request){
+    public function showPackage(Request $request)
+    {
 
         $data = DB::table('package')
-        ->orderby('id', 'asc')
-        ->get();
+            ->orderby('id', 'asc')
+            ->get();
 
-    if ($request->ajax()) {
-        $table = DataTables::of($data)->addIndexColumn();
+        if ($request->ajax()) {
+            $table = DataTables::of($data)->addIndexColumn();
 
-        $table->addColumn('action', function ($row) {
-            $button = '<div class="d-flex justify-content-end"><button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2"
+            $table->addColumn('action', function ($row) {
+                $button = '<div class="d-flex justify-content-end"><button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2"
                                     data-bs-toggle="modal" data-bs-target="#modalView-' . $row->id . '">
                                     <i class="ri-eye-line fw-bold"></i>
                                 </button>
@@ -548,14 +549,14 @@ class AdminRouteController extends Controller
                                 </button>
                                 </div>
                                 ';
-            return $button;
-        });
+                return $button;
+            });
 
-  
-        $table->addColumn('active', function ($row) {
-            $messageActive = ($row->status === 1 ? 'ACTIVE' : 'DISABLE');
-            $statusClass = ($row->status === 1) ? 'success' : 'danger';
-            $button = '
+
+            $table->addColumn('active', function ($row) {
+                $messageActive = ($row->status === 1 ? 'ACTIVE' : 'DISABLE');
+                $statusClass = ($row->status === 1) ? 'success' : 'danger';
+                $button = '
                         <div class="d-flex justify-content-between">
                         <span class=" text-' . $statusClass . ' p-2 me-1 fw-bold">
                             <i class="bi bi-circle-fill"></i> ' . $messageActive . '
@@ -565,16 +566,16 @@ class AdminRouteController extends Controller
                         </button>
                     </div>
                                 ';
-            return $button;
-         });
+                return $button;
+            });
 
 
-        $table->rawColumns(['action', 'active',]);
+            $table->rawColumns(['action', 'active',]);
 
-        return $table->make(true);
-    }
-    $role = DB::table('roles')->get();
-    $state = DB::table('states')->select('id', 'name')->get();
+            return $table->make(true);
+        }
+        $role = DB::table('roles')->get();
+        $state = DB::table('states')->select('id', 'name')->get();
         return view('admin.setting.view-package', [
             'datas' => $data,
         ]);
@@ -585,9 +586,9 @@ class AdminRouteController extends Controller
         $datas = DB::table('contents as c')
             ->join('content_promotion as cp', 'c.id', '=', 'cp.content_id')
             ->join('transactions as t', 't.id', '=', 'cp.transaction_id')
-            ->where('t.status',"Success")
-            ->where('c.status',1)
-            ->where('cp.status',1)
+            ->where('t.status', "Success")
+            ->where('c.status', 1)
+            ->where('cp.status', 1)
             ->select(
                 'c.id',
                 'c.name',
@@ -596,11 +597,11 @@ class AdminRouteController extends Controller
                 't.id as transaction_id',
                 'cp.number_of_card',
                 'cp.status as promotion_status',
-               // DB::raw('(SELECT COUNT(*) FROM content_card WHERE content_id = c.id) as total_cards'),
+                // DB::raw('(SELECT COUNT(*) FROM content_card WHERE content_id = c.id) as total_cards'),
                 DB::raw('(SELECT COUNT(*) FROM content_card WHERE content_id = c.id AND status = 1 AND verification_code IS NOT NULL) as assigned_cards')
             )
             ->orderBy('t.created_at', 'desc');
-    
+
         if ($request->ajax()) {
             return DataTables::of($datas)
                 ->addIndexColumn()
@@ -614,65 +615,65 @@ class AdminRouteController extends Controller
                     return Carbon::parse($row->created_at)->format('Y-m-d H:i:s');
                 })
                 ->editColumn('number_of_card', function ($row) {
-                    return $row->assigned_cards  . '/' . $row->number_of_card ;
+                    return $row->assigned_cards  . '/' . $row->number_of_card;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
-    
+
         return view('admin.contentManagement.xbug_stand', ['content_data' => $datas->get()]);
     }
-    
+
     public function getContentCards($contentId)
     {
         $cards = DB::table('content_card')
             ->where('content_id', $contentId)
-            ->where('status',1)
+            ->where('status', 1)
             ->orderBy('created_at')
             ->get();
-    
+
         return response()->json(['cards' => $cards]);
     }
-    
+
     public function saveContentCards(Request $request)
     {
-       
+
         $contentId = $request->input('content_id');
 
-      
+
         $cards = $request->input('cards');
-        
-        if(empty($cards) || count($cards) ==0){
+
+        if (empty($cards) || count($cards) == 0) {
             return response()->json(['error' => "Require at least 1 card"], 400); // Send error message with 400 status
         }
 
         // Retrieve all card IDs for the current content
-        $existingCardIds = DB::table('content_card')->where('content_id', $contentId)->where('status',1)->pluck('id')->toArray();
+        $existingCardIds = DB::table('content_card')->where('content_id', $contentId)->where('status', 1)->pluck('id')->toArray();
         $firstTransactionId = DB::table('content_card')
-                            ->where('content_id', $contentId)
-                            ->where('status', 1)
-                            ->whereNotNull('transaction_id')
-                            ->first()->transaction_id;
+            ->where('content_id', $contentId)
+            ->where('status', 1)
+            ->whereNotNull('transaction_id')
+            ->first()->transaction_id;
 
         // Track the IDs of cards that are included in the request
         $updatedCardIds = [];
 
         foreach ($cards as $card) {
             $updatedCardIds[] = $card['id'] ?? null; // Track card IDs from the request
-            $existCardId = DB::table('content_card')->where('card_id', $card['card_id'])->where('id','<>', $card['id'])->where('status',1)->exists(); 
-            $existCode = DB::table('content_card')->where('verification_code', $card['verification_code'])->where('id','<>', $card['id'])->where('status',1)->exists(); 
+            $existCardId = DB::table('content_card')->where('card_id', $card['card_id'])->where('id', '<>', $card['id'])->where('status', 1)->exists();
+            $existCode = DB::table('content_card')->where('verification_code', $card['verification_code'])->where('id', '<>', $card['id'])->where('status', 1)->exists();
 
-            if($existCardId && $card['card_id'] !=null ){
+            if ($existCardId && $card['card_id'] != null) {
                 return response()->json(['error' => "The card ID {$card['card_id']} already exists."], 400); // Send error message with 400 status
-            }else if($existCode && $card['card_id'] !=null ){
-                return response()->json(['error' => "The verification code {$card['verification_code']} already exists."], 400); 
+            } else if ($existCode && $card['card_id'] != null) {
+                return response()->json(['error' => "The verification code {$card['verification_code']} already exists."], 400);
             }
 
             if (isset($card['id']) && $card['id']) {
                 // Update existing card
                 DB::table('content_card')->where('id', $card['id'])->update([
-                    'startdate' => $card['start_date']. ' '. $card['start_time'],
-                    'enddate' => $card['end_date']. ' '. $card['end_time'],
+                    'startdate' => $card['start_date'] . ' ' . $card['start_time'],
+                    'enddate' => $card['end_date'] . ' ' . $card['end_time'],
                     'verification_code' => $card['verification_code'],
                     'card_id' => $card['card_id']
                 ]);
@@ -680,11 +681,11 @@ class AdminRouteController extends Controller
                 // Create new card
                 DB::table('content_card')->insert([
                     'content_id' => $contentId,
-                    'startdate' => $card['start_date']. ' '. $card['start_time'],
-                    'enddate' => $card['end_date']. ' '. $card['end_time'],
+                    'startdate' => $card['start_date'] . ' ' . $card['start_time'],
+                    'enddate' => $card['end_date'] . ' ' . $card['end_time'],
                     'verification_code' => $card['verification_code'],
                     'card_id' => $card['card_id'],
-                    'transaction_id'=>$firstTransactionId
+                    'transaction_id' => $firstTransactionId
 
                 ]);
             }
@@ -701,6 +702,317 @@ class AdminRouteController extends Controller
         return response()->json(['message' => 'Cards saved successfully.']);
     }
 
+    public function showContentUserClickedViewed(Request $request)
+    {
+        $datas = DB::table('user_content as userContent')
+            ->join('contents', 'userContent.content_id', '=', 'contents.id')
+            ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id')
+            ->join('users', 'userContent.user_id', '=', 'users.id') 
+            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+            ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
+            ->whereIn('userContent.interaction_type_id', [1, 2])
+            ->select(
+                DB::raw('MAX(userContent.id) as id'),
+                DB::raw('MAX(userContent.user_id) as user_id'),
+                DB::raw('MAX(userContent.interaction_type_id) as interaction_type_id'),
+                DB::raw('MAX(userContent.status) as status'),
+                DB::raw('MAX(userContent.content_id) as content_id'),
+                DB::raw('MAX(userContent.ip_address) as ip_address'),
+                DB::raw('MAX(userContent.token) as token'),
+                DB::raw('MAX(userContent.verification_code) as verification_code'),
+                DB::raw('MAX(userContent.`desc`) as `desc`'),
+                DB::raw('MAX(userContent.created_at) as user_content_created_at'),
+                DB::raw('MAX(users.name) as user_name'), 
+                DB::raw('MAX(users.email) as user_email'), 
+                DB::raw('MAX(contentOwner.name) as content_owner_name'),
+                DB::raw('MAX(contentOwner.email) as content_owner_email'), 
+                DB::raw('MAX(contents.name) as name'),
+                DB::raw('MAX(contents.link) as link'),
+                DB::raw('MAX(contents.content) as content'),
+                DB::raw('MAX(contents.enrollment_price) as enrollment_price'),
+                DB::raw('MAX(contents.category_weight) as category_weight'),
+                DB::raw('MAX(contents.content_type_id) as content_type_id'),
+                DB::raw('MAX(contents.edit_from) as edit_from'),
+                DB::raw('MAX(contents.place) as place'),
+                DB::raw('MAX(contents.participant_limit) as participant_limit'),
+                DB::raw('MAX(contents.state) as state'),
+                DB::raw('MAX(contents.closed_at) as closed_at'),
+                DB::raw('MAX(contents.reason_phrase) as reason_phrase'),
+                DB::raw('MAX(contents.first_date) as first_date'),
+                DB::raw('MAX(contents.org_id) as org_id'),
+                DB::raw('MAX(contents.reject_reason) as reject_reason'),
+                DB::raw('MAX(contents.image) as image'),
+                DB::raw('MAX(contents.status) as content_status'),
+                DB::raw('MAX(contents.created_at) as content_created_at'),
+                DB::raw('MAX(interaction_type.type) as interaction_type'),
+                DB::raw('MAX(content_types.type) as content_type'),
+                DB::raw('COUNT(userContent.content_id) as total_interactions')
+            )
+            ->groupBy('userContent.content_id', 'userContent.interaction_type_id')
+            ->orderBy('content_created_at', 'desc') 
+            ->get();
 
-    
+        // $datass = DB::table('user_content as userContent')
+        //     ->join('contents', 'userContent.content_id', '=', 'contents.id')
+        //     ->join('users', 'userContent.user_id', '=', 'users.id')
+        //     ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
+        //     ->select(
+        //         'userContent.*',
+        //         'users.name as user_name',
+        //         'users.email as user_email',
+        //         'contents.*',
+        //         'contents.status as content_status',
+        //         'contents.created_at as content_created_at',
+        //         'interaction_type.type as interaction_type'
+        //     )
+        //     ->orderBy('contents.created_at', 'desc')
+        //     ->get();
+
+        // $combinedData = $datas->merge($datass);
+        // dd($combinedData);
+
+
+
+        if ($request->ajax()) {
+            return DataTables::of($datas)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    return '<button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2"
+                                data-bs-toggle="modal" data-bs-target="#modalView-' . $row->content_id . '"
+                                data-content-id="' . $row->content_id . '"
+                                data-interaction-type="' . $row->interaction_type_id . '">
+                                <i class="ri-eye-line fw-bold"></i>
+                            </button>';
+                })
+
+                ->addColumn('status', function ($row) {
+                    if ($row->content_status == 1) {
+
+                        $button =
+                            '<div class="d-flex justify-content-between">
+                            <button class="btn btn-sm bg-success text-light me-1 fw-bold">
+                                 Active
+                            </button>
+                        </div>';
+                    } else {
+                        $button =
+
+                            '<div class="d-flex align-items-between">
+                            <button class="btn btn-sm bg-danger text-light me-1 fw-bold">
+                                  Inactive
+                            </span>
+                        </div>';
+                    }
+                    return $button;
+                })
+                ->addColumn('totalInteractions', function ($row) {
+                    $status = $row->content_status == 1 ? 'Active' : 'Inactive';
+                    $bg = $row->content_status == 1 ? 'badge bg-success text-light me-1 fw-bold mt-2' : 'badge bg-danger text-light me-1 fw-bold mt-2';
+                    $button =
+                        '<div class="">
+                            <button class="btn btn-sm bg-success-transparent text-primary me-1 fw-bold">
+                                 ' . $row->total_interactions . '
+                            </button>
+                            <br>
+                             <span>status: <span class="' . $bg . '">' . $status . '</span></span>
+                        </div>';
+
+                    return $button;
+                })
+                ->addColumn('interaction_type', function ($row) {
+                    $button =
+                        '<div class="">
+                    
+                            <button class="btn btn-sm bg-success-transparent text-primary me-1 fw-bold">
+                                 ' . strtoupper($row->interaction_type) . '
+                            </button>
+                            
+                           
+                        </div>';
+
+                    return $button;
+                })
+                ->addColumn('name', function ($row) {
+
+                    $button =
+                        '<span class="fw-bold">' . strtoupper($row->name) . ' </span>';
+
+                    return $button;
+                })
+                ->rawColumns(['action', 'status', 'totalInteractions', 'interaction_type', 'name'])
+                ->make(true);
+        }
+        return view('admin.contentUser.index', [
+            'datas' => $datas,
+        ]);
+    }
+    public function showContentUserEnrolled(Request $request)
+    {
+        $datas = DB::table('user_content as userContent')
+            ->join('contents', 'userContent.content_id', '=', 'contents.id')
+            ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id') 
+            ->join('users', 'userContent.user_id', '=', 'users.id') 
+            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+            ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
+            ->whereIn('userContent.interaction_type_id', [3])
+            ->select(
+                DB::raw('MAX(userContent.id) as id'),
+                DB::raw('MAX(userContent.user_id) as user_id'),
+                DB::raw('MAX(userContent.interaction_type_id) as interaction_type_id'),
+                DB::raw('MAX(userContent.status) as status'),
+                DB::raw('MAX(userContent.content_id) as content_id'),
+                DB::raw('MAX(userContent.ip_address) as ip_address'),
+                DB::raw('MAX(userContent.token) as token'),
+                DB::raw('MAX(userContent.verification_code) as verification_code'),
+                DB::raw('MAX(userContent.`desc`) as `desc`'),
+                DB::raw('MAX(userContent.created_at) as user_content_created_at'),
+                DB::raw('MAX(users.name) as user_name'), 
+                DB::raw('MAX(users.email) as user_email'), 
+                DB::raw('MAX(contentOwner.name) as content_owner_name'), 
+                DB::raw('MAX(contentOwner.email) as content_owner_email'), 
+                DB::raw('MAX(contents.name) as name'),
+                DB::raw('MAX(contents.link) as link'),
+                DB::raw('MAX(contents.content) as content'),
+                DB::raw('MAX(contents.enrollment_price) as enrollment_price'),
+                DB::raw('MAX(contents.category_weight) as category_weight'),
+                DB::raw('MAX(contents.content_type_id) as content_type_id'),
+                DB::raw('MAX(contents.edit_from) as edit_from'),
+                DB::raw('MAX(contents.place) as place'),
+                DB::raw('MAX(contents.participant_limit) as participant_limit'),
+                DB::raw('MAX(contents.state) as state'),
+                DB::raw('MAX(contents.closed_at) as closed_at'),
+                DB::raw('MAX(contents.reason_phrase) as reason_phrase'),
+                DB::raw('MAX(contents.first_date) as first_date'),
+                DB::raw('MAX(contents.org_id) as org_id'),
+                DB::raw('MAX(contents.reject_reason) as reject_reason'),
+                DB::raw('MAX(contents.image) as image'),
+                DB::raw('MAX(contents.status) as content_status'),
+                DB::raw('MAX(contents.created_at) as content_created_at'),
+                DB::raw('MAX(interaction_type.type) as interaction_type'),
+                DB::raw('MAX(content_types.type) as content_type'),
+                DB::raw('COUNT(userContent.content_id) as total_interactions')
+            )
+            ->groupBy('userContent.content_id', 'userContent.interaction_type_id')
+            ->orderBy('content_created_at', 'desc') 
+            ->get();
+
+        // $datass = DB::table('user_content as userContent')
+        //     ->join('contents', 'userContent.content_id', '=', 'contents.id')
+        //     ->join('users', 'userContent.user_id', '=', 'users.id')
+        //     ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
+        //     ->select(
+        //         'userContent.*',
+        //         'users.name as user_name',
+        //         'users.email as user_email',
+        //         'contents.*',
+        //         'contents.status as content_status',
+        //         'contents.created_at as content_created_at',
+        //         'interaction_type.type as interaction_type'
+        //     )
+        //     ->orderBy('contents.created_at', 'desc')
+        //     ->get();
+
+        // $combinedData = $datas->merge($datass);
+        // dd($combinedData);
+
+
+
+        if ($request->ajax()) {
+            return DataTables::of($datas)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    return '<button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2"
+                                data-bs-toggle="modal" data-bs-target="#modalView-' . $row->content_id . '"
+                                data-content-id="' . $row->content_id . '"
+                                data-interaction-type="' . $row->interaction_type_id . '">
+                                <i class="ri-eye-line fw-bold"></i>
+                            </button>';
+                })
+
+                ->addColumn('status', function ($row) {
+                    if ($row->content_status == 1) {
+
+                        $button =
+                            '<div class="d-flex justify-content-between">
+                            <button class="btn btn-sm bg-success text-light me-1 fw-bold">
+                                 Active
+                            </button>
+                        </div>';
+                    } else {
+                        $button =
+
+                            '<div class="d-flex align-items-between">
+                            <button class="btn btn-sm bg-danger text-light me-1 fw-bold">
+                                  Inactive
+                            </span>
+                        </div>';
+                    }
+                    return $button;
+                })
+                ->addColumn('totalInteractions', function ($row) {
+                    $status = $row->content_status == 1 ? 'Active' : 'Inactive';
+                    $bg = $row->content_status == 1 ? 'badge bg-success text-light me-1 fw-bold mt-2' : 'badge bg-danger text-light me-1 fw-bold mt-2';
+                    $button =
+                        '<div class="">
+                            <button class="btn btn-sm bg-success-transparent text-primary me-1 fw-bold">
+                                 ' . $row->total_interactions . '
+                            </button>
+                            <br>
+                             <span>status: <span class="' . $bg . '">' . $status . '</span></span>
+                        </div>';
+
+                    return $button;
+                })
+                ->addColumn('interaction_type', function ($row) {
+                    $button =
+                        '<div class="">
+                    
+                            <button class="btn btn-sm bg-success-transparent text-primary me-1 fw-bold">
+                                 ' . strtoupper($row->interaction_type) . '
+                            </button>
+                            
+                           
+                        </div>';
+
+                    return $button;
+                })
+                ->addColumn('name', function ($row) {
+
+                    $button =
+                        '<span class="fw-bold">' . strtoupper($row->name) . ' </span>';
+
+                    return $button;
+                })
+                ->rawColumns(['action', 'status', 'totalInteractions', 'interaction_type', 'name'])
+                ->make(true);
+        }
+        return view('admin.contentUser.indexEnrolled', [
+            'datas' => $datas,
+        ]);
+    }
+
+    public function getContentDetail($content_id, $interaction_type)
+    {
+        // Ambil data berdasarkan content_id dan interaction_type
+        $contentDetail = DB::table('user_content as userContent')
+            ->join('contents', 'userContent.content_id', '=', 'contents.id')
+            ->join('users', 'userContent.user_id', '=', 'users.id')
+            ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
+            ->select(
+                'userContent.*',
+                'userContent.created_at	 as content_user_created_at',
+                'users.name as user_name',
+                'users.email as user_email',
+                'contents.*',
+                'contents.status as content_status',
+                'contents.created_at as content_created_at',
+                'interaction_type.type as interaction_type'
+            )
+            ->where('userContent.content_id', $content_id)
+            ->where('userContent.interaction_type_id', $interaction_type)
+            ->get();
+
+        // Kembalikan data sebagai response JSON atau dalam format lain
+        return response()->json($contentDetail);
+    }
 }

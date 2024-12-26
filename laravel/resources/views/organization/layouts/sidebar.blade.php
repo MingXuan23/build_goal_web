@@ -64,6 +64,21 @@
                 </li>
                 <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
+                        <i class='bx bxs-bar-chart-alt-2 side-menu__icon'></i>
+                        <span class="side-menu__label">Content Activity</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="/organization/content-user" class="side-menu__item">Viewed & Click Content</a>
+                        </li>
+                        <li class="slide">
+                            <a href="/organization/content-user-enrolled" class="side-menu__item">Enrolled Content</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="slide has-sub">
+                    <a href="javascript:void(0);" class="side-menu__item ">
                         <i class='bx bxs-notification side-menu__icon'></i>
                         <span class="side-menu__label">Notifications</span>
                         <i class="fe fe-chevron-right side-menu__angle"></i>

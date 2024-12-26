@@ -124,7 +124,7 @@
                         </li>
                         <li class="slide">
                            <a href="/jobstreet" class="side-menu__item">
-                               <span class="side-menu__label">Jobstreet</span>
+                               <span class="side-menu__label">Discover</span>
                            </a>
                        </li>
                         <!-- End::slide -->
