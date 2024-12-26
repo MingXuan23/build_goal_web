@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContentNotificationMail;
 use App\Models\Label;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use App\Models\Content;
-
+use Exception;
 use Illuminate\Support\Facades\Validator;
 
 class ContentController extends Controller
@@ -199,12 +200,13 @@ class ContentController extends Controller
 
     public function addContent(Request $request)
     {
-       
         $user = Auth::user();
-       
-        $org = DB::table('organization_user')->where('user_id',$user->id)->where('status',1)->first(); //should change in the future
-       
-        
+
+        $org = DB::table('organization_user')
+            ->where('user_id', $user->id)
+            ->where('status', 1)
+            ->first();
+
         // Validate form inputs
         $validated = $request->validate([
             'content_name' => 'required|string|max:255',
@@ -214,68 +216,208 @@ class ContentController extends Controller
             'place' => 'required|string|max:255',
             'participant_limit' => 'required|integer',
             'state' => 'required',
-            'content_type_id' => 'required|exists:content_types,id', // Validate foreign key
+            'content_type_id' => 'required|exists:content_types,id',
         ], [
             'state' => ', Please select at least 1 state',
         ], [
             'content_type_id' => 'Content Type'
         ]);
-        
-        $labels = explode(",",$request->labelIds);
-        $weight = $this->calVectorByLabel($labels);
-        // Insert data into the contents table
-        $content_id = DB::table('contents')->insertGetId([
-            'name' => $validated['content_name'],
-            'desc' => $validated['content_desc'],
-            'link' => $validated['content_link'],
-            'enrollment_price' => $validated['enrollment_price'],
-            'place' => $validated['place'],
-            'participant_limit' => $validated['participant_limit'],
-            'state' => json_encode([$validated['state']]),
-            'content_type_id' => $validated['content_type_id'], // Foreign key
-           
-            'user_id' => $user->id,
-            'org_id' => $org->organization_id,
-            'reason_phrase' => 'PENDING',
-            'category_weight' => json_encode($weight)
-        ]);
 
-        foreach($labels as $l){
-            $exist = DB::table('labels')->where('id',$l)->exists();
-            if($exist){
-                DB::table('content_label')->insert([
-                    'content_id'=>$content_id,
-                    'label_id'=>$l
+        $labels = explode(",", $request->labelIds);
+        $weight = $this->calVectorByLabel($labels);
+
+        try {
+            DB::transaction(function () use ($validated, $labels, $weight, $user, $org, $request) {
+                // Insert data into the contents table
+                $content_id = DB::table('contents')->insertGetId([
+                    'name' => $validated['content_name'],
+                    'desc' => $validated['content_desc'],
+                    'link' => $validated['content_link'],
+                    'enrollment_price' => $validated['enrollment_price'],
+                    'place' => $validated['place'],
+                    'participant_limit' => $validated['participant_limit'],
+                    'state' => json_encode([$validated['state']]),
+                    'content_type_id' => $validated['content_type_id'],
+                    'user_id' => $user->id,
+                    'org_id' => $org->organization_id,
+                    'reason_phrase' => 'PENDING',
+                    'category_weight' => json_encode($weight),
                 ]);
-            }
+
+                foreach ($labels as $l) {
+                    $exist = DB::table('labels')->where('id', $l)->exists();
+                    if ($exist) {
+                        DB::table('content_label')->insert([
+                            'content_id' => $content_id,
+                            'label_id' => $l,
+                        ]);
+                    }
+                }
+                $email_status = DB::table('email_status')->where('email', 'admin@xbug.online')->first();
+                if ($email_status && $email_status->status == 1) {
+                    $status = 1;
+                    $reject_reason = null;
+                    $name = $user->name;
+
+                    $logData = [
+                        'email_type' => 'APPLY CONTENT - PENDING',
+                        'recipient_email' => $user->email,
+                        'from_email' => 'admin@xbug.online',
+                        'name' => $user->name,
+                        'status' => 'SUCCESS',
+                        'response_data' => 'MESSAGE PENDING SEND',
+                        'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                        'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    ];
+
+                    DB::table('email_logs')->insert($logData);
+
+                    Mail::mailer('smtp')->to($user->email)->send(new ContentNotificationMail($status, $reject_reason, $name, $validated['content_name']));
+                }
+            });
+
+            return back()->with('success', 'Your Content Is Applied Successfully!');
+        } catch (Exception $e) {
+
+            $logData = [
+                'email_type' => 'APPLY CONTENT - PENDING',
+                'recipient_email' => $user->email,
+                'from_email' => 'admin@xbug.online',
+                'name' => $user->name,
+                'status' => 'FAILED',
+                'response_data' => 'ERROR',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
+
+            DB::table('email_logs')->insert($logData);
+
+            return back()->with('error', 'ERROR: ' . $e->getMessage());
         }
-     
-        // Redirect back with success message
-        return back()->with('success', 'Your Content Is Applied Successfully!');
     }
 
     public function approveContent($id)
     {
-        $content = Content::find($id);
-        if ($content) {
-            $content->reason_phrase = 'APPROVED'; // Set content as approved
-            $content->reject_reason = null; // Clear any rejection reason if it was previously set
-            $content->save();
-        }
+        try {
+            DB::transaction(function () use ($id) {
+                // Temukan konten berdasarkan ID
+                $content = Content::find($id);
 
-        return redirect()->back()->with('status', 'Content approved successfully!');
+                if (!$content) {
+                    return back()->with('error', 'Content Not Found!');
+                }
+
+                $content->reason_phrase = 'APPROVED'; // Set sebagai approved
+                $content->reject_reason = null; // Hapus alasan penolakan sebelumnya jika ada
+                $content->save();
+
+                $email_status = DB::table('email_status')->where('email', 'admin@xbug.online')->first();
+
+                if ($email_status && $email_status->status == 1) {
+                    $user = Auth::user();
+                    $status = 2; // Status untuk email
+                    $reject_reason = null; // Alasan penolakan kosong
+                    $name = $user->name;
+
+
+                    $logData = [
+                        'email_type' => 'APPLY CONTENT - APPROVED',
+                        'recipient_email' => $user->email,
+                        'from_email' => 'admin@xbug.online',
+                        'name' => $user->name,
+                        'status' => 'SUCCESS',
+                        'response_data' => 'MESSAGE APPROVE SEND',
+                        'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                        'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    ];
+
+                    DB::table('email_logs')->insert($logData);
+
+                    Mail::mailer('smtp')->to($user->email)->send(new ContentNotificationMail($status, $reject_reason, $name, $content->name));
+                }
+            });
+
+            return redirect()->back()->with('status', 'Content approved successfully!');
+        } catch (Exception $e) {
+            $logData = [
+                'email_type' => 'APPLY CONTENT - APPROVED',
+                'recipient_email' => Auth::user()->email,
+                'from_email' => 'admin@xbug.online',
+                'name' => Auth::user()->name,
+                'status' => 'FAILED',
+                'response_data' => 'ERROR',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
+
+            DB::table('email_logs')->insert($logData);
+            return back()->with('error', 'ERROR: ' . $e->getMessage());
+        }
     }
+
 
     public function rejectContent(Request $request, $id)
     {
-        $content = Content::find($id);
-        if ($content) {
-            $content->reason_phrase = 'REJECTED'; // Set content as rejected
-            $content->reject_reason = $request->input('rejection_reason'); // Save rejection reason
-            $content->save();
-        }
+        try {
+            DB::transaction(function () use ($request, $id) {
+                // Find the content by ID
+                $content = Content::find($id);
 
-        return back()->with('status', 'Content rejected successfully!');
+                if (!$content) {
+                    return back()->with('error', 'Content Not Found!');
+                }
+
+                // Update the content status to 'REJECTED'
+                $content->reason_phrase = 'REJECTED'; // Set content as rejected
+                $content->reject_reason = $request->input('rejection_reason'); // Save the rejection reason
+                $content->save();
+
+                // Check if email notifications are enabled
+                $email_status = DB::table('email_status')->where('email', 'admin@xbug.online')->first();
+
+                if ($email_status && $email_status->status == 1) {
+                    $user = Auth::user();
+                    $status = 3; // Status for rejection email
+                    $reject_reason = $content->reject_reason; // Pass the rejection reason
+                    $name = $user->name;
+
+                    // Log email data
+                    $logData = [
+                        'email_type' => 'APPLY CONTENT - REJECTED',
+                        'recipient_email' => $user->email,
+                        'from_email' => 'admin@xbug.online',
+                        'name' => $user->name,
+                        'status' => 'SUCCESS',
+                        'response_data' => 'MESSAGE REJECT SEND',
+                        'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                        'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    ];
+
+                    DB::table('email_logs')->insert($logData);
+
+                    // Send the rejection email
+                    Mail::mailer('smtp')->to($user->email)->send(new ContentNotificationMail($status, $reject_reason, $name, $content->name));
+                }
+            });
+
+            return redirect()->back()->with('status', 'Content rejected successfully!');
+        } catch (Exception $e) {
+            // Log failure in case of an error
+            $logData = [
+                'email_type' => 'APPLY CONTENT - REJECTED',
+                'recipient_email' => Auth::user()->email,
+                'from_email' => 'admin@xbug.online',
+                'name' => Auth::user()->name,
+                'status' => 'FAILED',
+                'response_data' => 'ERROR',
+                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+            ];
+
+            DB::table('email_logs')->insert($logData);
+
+            return back()->with('error', 'ERROR: ' . $e->getMessage());
+        }
     }
 
 
@@ -356,7 +498,7 @@ class ContentController extends Controller
 
         $selectedList = array_map(function ($item) {
             $label = DB::table('labels')->select('values')->where('id', $item)->first();
-            if($label == null){
+            if ($label == null) {
                 return array_fill(0, 8, 0);
             }
             return json_decode($label->values, true);
@@ -379,8 +521,8 @@ class ContentController extends Controller
         $finalLabel = $this->flattenValues($finalLabel, 2.5);
 
         $weight = '[' . implode(",", array_map(function ($v) {
-                return number_format($v, 3);
-            }, $finalLabel)) . ']';
+            return number_format($v, 3);
+        }, $finalLabel)) . ']';
 
         $weight = json_decode($weight);
 
@@ -403,8 +545,8 @@ class ContentController extends Controller
         // Handle the POST request when the form is submitted
         if ($request->isMethod('post')) {
             // Validate the form inputs
-          
-           
+
+
             $validatedData = $request->validate([
                 'content_name' => 'required|string|max:255', // Title
                 'content_desc' => 'required|string', // Description
@@ -413,7 +555,7 @@ class ContentController extends Controller
                 'labelIds' => 'required|string'
             ]);
 
-            $labels = explode(",",$request->labelIds);
+            $labels = explode(",", $request->labelIds);
             $weight = $this->calVectorByLabel($labels);
 
             // Handle the image upload
@@ -426,22 +568,22 @@ class ContentController extends Controller
                 'image' => $imagePath,  // Save image path
                 'content' => $validatedData['formattedContent'],  // Save combined sections (content)
                 'content_type_id' => 2, // Set content_type_id to 2
-               
+
                 'user_id' => $user->id,
                 'reason_phrase' => 'PENDING',
                 'category_weight' => json_encode($weight)
 
             ];
-          
-            // Insert the data into the contents table
-           $content_id =  DB::table('contents')->insertGetId($contentData);
 
-            foreach($labels as $l){
-                $exist = DB::table('labels')->where('id',$l)->exists();
-                if($exist){
+            // Insert the data into the contents table
+            $content_id =  DB::table('contents')->insertGetId($contentData);
+
+            foreach ($labels as $l) {
+                $exist = DB::table('labels')->where('id', $l)->exists();
+                if ($exist) {
                     DB::table('content_label')->insert([
-                        'content_id'=>$content_id,
-                        'label_id'=>$l
+                        'content_id' => $content_id,
+                        'label_id' => $l
                     ]);
                 }
             }
@@ -453,6 +595,102 @@ class ContentController extends Controller
         // Return the form view for GET requests (display the form)
         return view('organization.contentManagement.microLearning');
     }
+
+    public function uploadMicroLearningTESTESTESTESTEST(Request $request)
+    {
+        $user = Auth::user();
+
+        // Handle the POST request when the form is submitted
+        if ($request->isMethod('post')) {
+            try {
+                // Validate the form inputs
+                $validatedData = $request->validate([
+                    'content_name' => 'required|string|max:255', // Title
+                    'content_desc' => 'required|string', // Description
+                    'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Image
+                    'formattedContent' => 'required|string', // Combined sections
+                    'labelIds' => 'required|string' // Labels (IDs)
+                ]);
+
+                // Convert label IDs from string to array
+                $labels = explode(",", $request->labelIds);
+                $weight = $this->calVectorByLabel($labels);
+
+                // Handle the image upload and store it in the public folder
+                $imagePath = $request->file('image')->store('asset1/images', 'public');
+
+                // Prepare data for insertion into the contents table
+                $contentData = [
+                    'name' => $validatedData['content_name'], // Content title
+                    'desc' => $validatedData['content_desc'], // Content description
+                    'image' => $imagePath,  // Image path
+                    'content' => $validatedData['formattedContent'],  // Combined content sections
+                    'content_type_id' => 2, // Set content type to 2
+                    'user_id' => $user->id,
+                    'reason_phrase' => 'PENDING', // Set status as PENDING
+                    'category_weight' => json_encode($weight), // Save category weights as JSON
+                ];
+
+                // Insert content data into the database and get the inserted ID
+                $content_id = DB::table('contents')->insertGetId($contentData);
+
+                // Handle the relationship between content and labels
+                foreach ($labels as $labelId) {
+                    $exists = DB::table('labels')->where('id', $labelId)->exists();
+                    if ($exists) {
+                        DB::table('content_label')->insert([
+                            'content_id' => $content_id,
+                            'label_id' => $labelId
+                        ]);
+                    }
+                }
+
+                // Check if email notifications are enabled
+                $email_status = DB::table('email_status')->where('email', 'admin@xbug.online')->first();
+
+                if ($email_status && $email_status->status == 1) {
+                    // Log the success of content upload
+                    $logData = [
+                        'email_type' => 'UPLOAD CONTENT',
+                        'recipient_email' => $user->email,
+                        'from_email' => 'admin@xbug.online',
+                        'name' => $user->name,
+                        'status' => 'SUCCESS',
+                        'response_data' => 'Content uploaded successfully!',
+                        'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                        'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    ];
+                    DB::table('email_logs')->insert($logData);
+
+                    // Send the email if email status is enabled
+                    Mail::mailer('smtp')->to($user->email)->send(new ContentNotificationMail(1, null, $user->name, $validatedData['content_name']));
+                }
+
+                // Redirect with a success message
+                return redirect()->back()->with('success', 'Content uploaded successfully!');
+            } catch (Exception $e) {
+                // Log the failure in case of an error
+                $logData = [
+                    'email_type' => 'UPLOAD CONTENT',
+                    'recipient_email' => $user->email,
+                    'from_email' => 'admin@xbug.online',
+                    'name' => $user->name,
+                    'status' => 'FAILED',
+                    'response_data' => 'ERROR: ' . $e->getMessage(),
+                    'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                ];
+                DB::table('email_logs')->insert($logData);
+
+                // Return an error message if the process fails
+                return back()->with('error', 'ERROR: ' . $e->getMessage());
+            }
+        }
+
+        // Return the form view for GET requests (display the form)
+        return view('organization.contentManagement.microLearning');
+    }
+
 
     // public function getLabels(Request $request)
     // {
@@ -476,7 +714,7 @@ class ContentController extends Controller
         ]);
 
         if ($validator->fails()) {
-           
+
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -493,7 +731,7 @@ class ContentController extends Controller
         // Base price and base state
         $basePrice = $package->base_price;
         $baseState = $package->base_state;
-        
+
         // Get the number of selected states
         $n = count($request->states);
 
@@ -510,26 +748,26 @@ class ContentController extends Controller
         }
 
         $delete = DB::table('content_promotion')
-        ->whereNull('transaction_id')
-        ->where('status', 1)
-        ->whereNull('enrollment')
-        ->whereNull('views')
-    
-        ->whereNull('clicks')
-    
-        ->where('content_id', $content->id)
-        ->delete();
+            ->whereNull('transaction_id')
+            ->where('status', 1)
+            ->whereNull('enrollment')
+            ->whereNull('views')
+
+            ->whereNull('clicks')
+
+            ->where('content_id', $content->id)
+            ->delete();
 
         $exist = DB::table('content_promotion')
-                
-                ->whereNotNull('views')
-                ->whereNotNull('clicks')
-                ->where('status',1)
-                ->where('content_id',$content->id)
-                ->where('completed',0)
-                ->exists();
 
-        if($exist){
+            ->whereNotNull('views')
+            ->whereNotNull('clicks')
+            ->where('status', 1)
+            ->where('content_id', $content->id)
+            ->where('completed', 0)
+            ->exists();
+
+        if ($exist) {
             return back()->withError('You have an ongoing promotion. Please wait the current promotion to be completed first.');
         }
 
@@ -538,25 +776,24 @@ class ContentController extends Controller
             'views' => null,
             'clicks' => null,
             'enrollment' => null,
-            'target_audience' =>json_encode($request->states),
-            'estimate_reach'=> $package ->estimate_user,
+            'target_audience' => json_encode($request->states),
+            'estimate_reach' => $package->estimate_user,
             'promotion_price' => $calculatedPrice
 
         ]);
-        $cp_id =DB::table('content_promotion')->where('id',$id)->first();
+        $cp_id = DB::table('content_promotion')->where('id', $id)->first();
 
-        return view('content.payment', compact('content','cp_id','package'));
-
-       
+        return view('content.payment', compact('content', 'cp_id', 'package'));
     }
 
-    
-    public function getLabels(Request $request){
+
+    public function getLabels(Request $request)
+    {
         try {
             $query = $request->input('query'); // Get the query parameter from the request
 
             // Fetch labels that match the query (case-insensitive)
-            $labels = Label::where('name', 'like', '%' . $query . '%')->select('id','name')->orderByRaw('LENGTH(name) ASC')->limit(15)->get();
+            $labels = Label::where('name', 'like', '%' . $query . '%')->select('id', 'name')->orderByRaw('LENGTH(name) ASC')->limit(15)->get();
 
             // If labels are found, return them as a JSON response
             return response()->json($labels);
@@ -566,23 +803,23 @@ class ContentController extends Controller
                 'error' => 'Failed to fetch labels',
                 'message' => $e->getMessage()
             ], 500);
-        }  
+        }
     }
 
-    public function promoteContentReceipt($transaction_id){
-        $transaction = DB::table('transactions')->where('id',$transaction_id)->first();
+    public function promoteContentReceipt($transaction_id)
+    {
+        $transaction = DB::table('transactions')->where('id', $transaction_id)->first();
 
-        if($transaction == null){
+        if ($transaction == null) {
             return response()->json('Invalid Transaction');
-
         }
         $cp_id = DB::table('content_promotion')->where('transaction_id', $transaction->id)->first();
-        if(!isset($cp_id) ||$cp_id->views == null || $cp_id->clicks == null  ){
+        if (!isset($cp_id) || $cp_id->views == null || $cp_id->clicks == null) {
             return response()->json('Invalid Transaction');
         }
         $content = DB::table('contents')->where('id', $cp_id->content_id)->first();
 
-        if(!isset($content) ){
+        if (!isset($content)) {
             return response()->json('Invalid Transaction');
         }
 
@@ -591,20 +828,20 @@ class ContentController extends Controller
         if (!in_array(1, $userRoles) && Auth::id() != $content->user_id) {
             return response()->json(['message' => 'Unauthorized Action']);
         }
-       
 
-        return view('content.promote_content_receipt', compact('cp_id','content','transaction'));
 
+        return view('content.promote_content_receipt', compact('cp_id', 'content', 'transaction'));
     }
 
 
-    public function xbugStandReceipt($transaction_id){
-        $transaction = DB::table('transactions')->where('id',$transaction_id)->first();
+    public function xbugStandReceipt($transaction_id)
+    {
+        $transaction = DB::table('transactions')->where('id', $transaction_id)->first();
 
         $cp_id = DB::table('content_promotion')->where('transaction_id', $transaction->id)->first();
         $content = DB::table('contents')->where('id', $cp_id->content_id)->first();
 
-        if($cp_id->number_of_card == null || $cp_id->enrollment == null){
+        if ($cp_id->number_of_card == null || $cp_id->enrollment == null) {
             return response()->json('Invalid Transaction');
         }
 
@@ -613,10 +850,9 @@ class ContentController extends Controller
         if (!in_array(1, $userRoles) && Auth::id() != $content->user_id) {
             return response()->json(['message' => 'Unauthorized Action']);
         }
-       
 
-        return view('content.xbug_stand_receipt', compact('cp_id','content','transaction'));
 
+        return view('content.xbug_stand_receipt', compact('cp_id', 'content', 'transaction'));
     }
     public function addCard(Request $request, $card_id)
     {
@@ -648,7 +884,7 @@ class ContentController extends Controller
 
         $user_id = Auth::id();
 
-        $labels = explode(",",$request->labelIds);
+        $labels = explode(",", $request->labelIds);
         $weight = $this->calVectorByLabel($labels);
 
 
@@ -668,15 +904,15 @@ class ContentController extends Controller
 
 
         $delete = DB::table('content_promotion')
-        ->whereNull('transaction_id')
-        ->where('status', 1)
-        ->whereNull('enrollment')
-        ->whereNull('views')
+            ->whereNull('transaction_id')
+            ->where('status', 1)
+            ->whereNull('enrollment')
+            ->whereNull('views')
 
-        ->whereNull('clicks')
+            ->whereNull('clicks')
 
-        ->where('content_id', $content->id)
-        ->delete();
+            ->where('content_id', $content->id)
+            ->delete();
 
         $delete2 =  DB::table('content_card')->whereNull('transaction_id')->where('content_id', $content->id)->delete();
         // Attempt to update the promotion
@@ -716,5 +952,4 @@ class ContentController extends Controller
 
         return view('content.apply_stand', compact('content', 'stand_id', 'price'));
     }
-
 }

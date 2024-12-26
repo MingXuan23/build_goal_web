@@ -7,3 +7,4 @@
     <p>Thank you for choosing <strong>[xBug.online]</strong>!</p>
     <p>Best Regards,<br>[Admin xBug]</p>
 </div>
+ 

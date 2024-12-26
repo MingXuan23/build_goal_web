@@ -9,6 +9,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Exception;
 
 class AdminRouteController extends Controller
 {
@@ -530,7 +531,6 @@ class AdminRouteController extends Controller
 
     public function showPackage(Request $request)
     {
-
         $data = DB::table('package')
             ->orderby('id', 'asc')
             ->get();
@@ -707,7 +707,7 @@ class AdminRouteController extends Controller
         $datas = DB::table('user_content as userContent')
             ->join('contents', 'userContent.content_id', '=', 'contents.id')
             ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id')
-            ->join('users', 'userContent.user_id', '=', 'users.id') 
+            ->join('users', 'userContent.user_id', '=', 'users.id')
             ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
             ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
             ->whereIn('userContent.interaction_type_id', [1, 2])
@@ -722,10 +722,10 @@ class AdminRouteController extends Controller
                 DB::raw('MAX(userContent.verification_code) as verification_code'),
                 DB::raw('MAX(userContent.`desc`) as `desc`'),
                 DB::raw('MAX(userContent.created_at) as user_content_created_at'),
-                DB::raw('MAX(users.name) as user_name'), 
-                DB::raw('MAX(users.email) as user_email'), 
+                DB::raw('MAX(users.name) as user_name'),
+                DB::raw('MAX(users.email) as user_email'),
                 DB::raw('MAX(contentOwner.name) as content_owner_name'),
-                DB::raw('MAX(contentOwner.email) as content_owner_email'), 
+                DB::raw('MAX(contentOwner.email) as content_owner_email'),
                 DB::raw('MAX(contents.name) as name'),
                 DB::raw('MAX(contents.link) as link'),
                 DB::raw('MAX(contents.content) as content'),
@@ -749,7 +749,7 @@ class AdminRouteController extends Controller
                 DB::raw('COUNT(userContent.content_id) as total_interactions')
             )
             ->groupBy('userContent.content_id', 'userContent.interaction_type_id')
-            ->orderBy('content_created_at', 'desc') 
+            ->orderBy('content_created_at', 'desc')
             ->get();
 
         // $datass = DB::table('user_content as userContent')
@@ -850,8 +850,8 @@ class AdminRouteController extends Controller
     {
         $datas = DB::table('user_content as userContent')
             ->join('contents', 'userContent.content_id', '=', 'contents.id')
-            ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id') 
-            ->join('users', 'userContent.user_id', '=', 'users.id') 
+            ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id')
+            ->join('users', 'userContent.user_id', '=', 'users.id')
             ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
             ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
             ->whereIn('userContent.interaction_type_id', [3])
@@ -866,10 +866,10 @@ class AdminRouteController extends Controller
                 DB::raw('MAX(userContent.verification_code) as verification_code'),
                 DB::raw('MAX(userContent.`desc`) as `desc`'),
                 DB::raw('MAX(userContent.created_at) as user_content_created_at'),
-                DB::raw('MAX(users.name) as user_name'), 
-                DB::raw('MAX(users.email) as user_email'), 
-                DB::raw('MAX(contentOwner.name) as content_owner_name'), 
-                DB::raw('MAX(contentOwner.email) as content_owner_email'), 
+                DB::raw('MAX(users.name) as user_name'),
+                DB::raw('MAX(users.email) as user_email'),
+                DB::raw('MAX(contentOwner.name) as content_owner_name'),
+                DB::raw('MAX(contentOwner.email) as content_owner_email'),
                 DB::raw('MAX(contents.name) as name'),
                 DB::raw('MAX(contents.link) as link'),
                 DB::raw('MAX(contents.content) as content'),
@@ -893,7 +893,7 @@ class AdminRouteController extends Controller
                 DB::raw('COUNT(userContent.content_id) as total_interactions')
             )
             ->groupBy('userContent.content_id', 'userContent.interaction_type_id')
-            ->orderBy('content_created_at', 'desc') 
+            ->orderBy('content_created_at', 'desc')
             ->get();
 
         // $datass = DB::table('user_content as userContent')
@@ -1014,5 +1014,58 @@ class AdminRouteController extends Controller
 
         // Kembalikan data sebagai response JSON atau dalam format lain
         return response()->json($contentDetail);
+    }
+
+    public function emailStatus(Request $request)
+    {
+        $data = DB::table('email_status')->get();
+        if ($request->ajax()) {
+            $table = DataTables::of($data)->addIndexColumn();
+
+            $table->addColumn('active', function ($row) {
+                $messageActive = ($row->status === 1 ? 'ACTIVE' : 'INACTIVE');
+                $statusClass = ($row->status === 1) ? 'success' : 'danger';
+                $button = '
+                        <div class="d-flex justify-content-start">
+                        <span class=" text-' . $statusClass . ' p-2 me-1 fw-bold">
+                            <i class="bi bi-circle-fill"></i> ' . $messageActive . '
+                        </span>
+                        <button class="btn btn-icon btn-sm btn-warning-transparent rounded-pill " data-bs-toggle="modal" data-bs-target="#modalActive-' . $row->id . '">
+                            <i class="ri-edit-line fw-bold"></i>
+                        </button>
+                    </div>
+                                ';
+                return $button;
+            });
+            $table->addColumn('email_name', function ($row) {
+                $button = '<span class="btn btn-sm btn-success-transparent p-2">'.$row->email.'</span>';   
+                return $button;
+            });
+
+            $table->rawColumns(['active','email_name']);
+
+            return $table->make(true);
+        }
+
+        return view('admin.setting.emailStatus', [
+            'datas' => $data
+        ]);
+    }
+    public function emailStatusUpdate(Request $request,$id) {
+        DB::beginTransaction();
+        try {
+            $request->validate([
+                'status' => 'required|in:1,0',
+            ]);
+            $update = DB::table('email_status')
+                ->where('id', $id)
+                ->update(['status' => (int)$request->status]);
+            DB::commit();
+
+            return redirect()->route('emailStatus')->with('success', 'Email Status Updated Successfully!');
+        } catch (Exception $th) {
+            DB::rollBack();
+            return redirect()->route('emailStatus')->with('error', 'Failed to update Email Status!');
+        }
     }
 }

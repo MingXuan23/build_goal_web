@@ -131,6 +131,9 @@
                         <li class="slide">
                             <a href="/admin/package" class="side-menu__item">Package</a>
                         </li>
+                        <li class="slide">
+                            <a href="/admin/email-status" class="side-menu__item">Email Status</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="slide__category mt-4"><span class="category-name">xBug GPT</span></li>

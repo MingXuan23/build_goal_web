@@ -116,6 +116,8 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::post('/send-email', [emailController::class, 'sendEmail'])->name('sendEmail');
     Route::post('/send-email-to-all', [emailController::class, 'sendEmailToAll'])->name('sendEmailToAll');
     Route::get('/package', [AdminRouteController::class, 'showPackage'])->name('showPackage');
+    Route::get('/email-status', [AdminRouteController::class, 'emailStatus'])->name('emailStatus');
+    Route::post('/email-status/{id}', [AdminRouteController::class, 'emailStatusUpdate'])->name('emailStatusUpdate');
     
     
     Route::get('/card-logs', [EkycController::class, 'showCardLogs'])->name('showCardLogs');

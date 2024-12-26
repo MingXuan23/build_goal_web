@@ -251,7 +251,7 @@ class OrganizationRouteController extends Controller
                 'created_at'
             ])
             ->where('recipient_email', Auth::user()->email)
-            ->whereIn('email_type', ['NOTIFICATION USER', 'NOTIFICATION TO ALL USERS'])
+            ->whereIn('email_type', ['NOTIFICATION USER', 'NOTIFICATION TO ALL USERS','APPLY CONTENT - APPROVED','APPLY CONTENT - PENDING','APPLY CONTENT - REJECTED'])
             ->orderBy('id', 'desc')
             ->get();
         if ($request->ajax()) {

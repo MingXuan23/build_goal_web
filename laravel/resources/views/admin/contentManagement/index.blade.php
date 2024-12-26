@@ -26,6 +26,21 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
+            @if (session()->has('success'))
+                <div class="alert alert-success alert-dismissible d-flex align-items-center" role="alert">
+                    <i class="bi bi-check-circle-fill fs-4"></i>
+                    </svg>
+                    <div class="ms-3"> {{ session('success') }} </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if (session()->has('error'))
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                    <i class="bi bi-dash-circle-fill fs-4"></i>
+                    <div class="ms-3"> {!! session('error') !!} </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <div class="card custom-card">
                 <div class="card-header">
                     <div class="card-title">Applied Contents</div>
@@ -135,15 +150,14 @@
                                     style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
                                     @foreach ($states as $state)
                                         @php
-           
+
                                             $selectedStates = is_string($data->state)
                                                 ? json_decode($data->state, true)
                                                 : $data->state;
                                         @endphp
                                         <div class="form-check form-check-lg">
-                                            <input
-                                                class="form-check-input state-checkbox "
-                                                type="checkbox" name="states[]" value="{{ $state->name }}"
+                                            <input class="form-check-input state-checkbox " type="checkbox"
+                                                name="states[]" value="{{ $state->name }}"
                                                 id="state-{{ $state->name }}" disabled
                                                 @if (is_array($selectedStates) && in_array($state->name, $selectedStates)) checked @endif>
                                             <label class="form-check-label" for="state-{{ $state->name }}">
