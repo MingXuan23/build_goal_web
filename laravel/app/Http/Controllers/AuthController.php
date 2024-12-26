@@ -356,12 +356,10 @@ class AuthController extends Controller
             if (in_array(1, $roles)) {
                 return redirect('/admin/dashboard');
             } elseif (in_array(2, $roles)) {
-                return redirect('/staff/dashboard');
-            } elseif (in_array(3, $roles)) {
                 return redirect('/organization/dashboard');
-            } elseif (in_array(4, $roles)) {
+            } elseif (in_array(3, $roles)) {
                 return redirect('/content-creator/dashboard');
-            } elseif (in_array(5, $roles)) {
+            } elseif (in_array(4, $roles)) {
                 return back()->with('error', ' <span class="fw-bold">Your account is not for Web User. Please contact us at [help-center@xbug.online] to add you for new role for web</span>');
             }
         } else {
