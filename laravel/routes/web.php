@@ -194,7 +194,6 @@ Route::prefix('organization')->middleware(['auth', 'role:2'])->group(function ()
     Route::post('/MicroLearning', [ContentController::class, 'uploadMicroLearning'])->name('uploadMicroLearning');
     Route::post('/apply-content', [ContentController::class, 'addContent'])->name('addContentOrganization');
     Route::post('/apply-card/{content_id}', [ContentController::class, 'addCard'])->name('addCardOrganization');
-    Route::get('/apply-chatbot', [GPTChatBot::class, 'applyChatBot'])->name('applyChatBot');
 
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailOrganization'])->name('updateProfilePersonalDetailOrganization');
     Route::post('/profile/update-organization-Detail', [UserProfileController::class, 'updateProfileOrganizationDetail'])->name('updateProfileOrganizationDetail');
@@ -242,10 +241,14 @@ Route::prefix('promote-content')->middleware(['auth', 'role:1|3|4'])->group(func
 });
 
 Route::prefix('xbug-stand')->middleware(['auth', 'role:1|3|4'])->group(function () {
-   
     Route::get('/receipt/{t_id}', [ContentController::class, 'xbugStandReceipt'])->name('xbug-stand.receipt');
 
-    
+});
+
+Route::prefix('gpt-payment')->middleware(['auth', 'role:1|3|4'])->group(function () {
+    Route::post('/apply-chatbot', [GPTChatBot::class, 'applyChatBot'])->name('applyChatBot');
+    Route::get('/receipt/{id}', [GPTChatBot::class, 'xbugGptReceipt'])->name('xbugGptReceipt');
+
 });
 
 

@@ -11,6 +11,9 @@ use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 use Exception;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Str;
+use Ramsey\Uuid\Guid\Guid;
+
 
 class GPTChatBot extends Controller
 {
@@ -503,7 +506,8 @@ class GPTChatBot extends Controller
         }
         
     }
-    public function showGptLog(Request $request){
+    public function showGptLog(Request $request)
+    {
         $data = DB::table('gpt_log as gl')
         ->join('users as u', 'gl.user_id', '=', 'u.id')
         ->select('gl.*', 'u.name as user_name','u.email as user_email','u.icNo as user_icNo')
@@ -535,6 +539,39 @@ class GPTChatBot extends Controller
         }
 
             return view('admin.gpt.log');
+    }
+
+    public function applyChatBot(Request $request)
+    {
+        // dd(Auth::user()->id);
+        $price = 1;
+        $data = [
+            'title' => 'xBug AI Chatbot',
+            'uuid' => Guid::uuid4()->toString(),
+            'time' => Carbon::now('Asia/Kuala_Lumpur'),
+        ];
+        return view('gpt-payment.payment', compact('data', 'price'));
+    }
+
+    public function xbugGptReceipt($id)
+    {
+        $transaction = DB::table('transactions')->where('id', $id)->where('sellerOrderNo', 'like','%XBugGpt%')->first();
+        if(!$transaction){
+            return response()->json(['message' => 'Invalid Access, Your Action Will be Recorded'],500);
+        }
+
+        preg_match('/_(\d+)$/', $transaction->sellerOrderNo, $matches);
+
+
+        $user = Auth::user();
+        $userRoles = json_decode($user->role);
+        // dd(!in_array(1, $userRoles));
+        if (!in_array(1, $userRoles) && Auth::id() != $transaction->user_id) {
+            return response()->json(['message' => 'Unauthorized Action']);
+        }
+
+
+        return view('gpt-payment.gpt_receipt', compact('transaction'));
     }
     
 }

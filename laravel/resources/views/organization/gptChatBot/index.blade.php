@@ -3,7 +3,7 @@
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
-            <!-- Start::row-1 -->            
+            <!-- Start::row-1 -->
             <div class="main-chart-wrapper p-1 gap-1 d-lg-flex">
                 <div class="main-chat-area border">
                     <div class="d-flex align-items-center p-2 border-bottom">
@@ -14,12 +14,14 @@
                         </div>
                         <div class="flex-fill">
                             <p class="mb-0 fw-semibold fs-14">
-                                <a href="javascript:void(0);" class="chatnameperson responsive-userinfo-open">xBug GPT 
-                                @if (Auth::user()->is_gpt == 0)
-                                    <span class="badge bg-danger-transparent fw-bold">NOT ELIGIBLE</span>
-                                @endif
+                                <a href="javascript:void(0);" class="chatnameperson responsive-userinfo-open">xBug GPT
+                                    @if (Auth::user()->is_gpt == 0)
+                                        <span class="badge bg-danger-transparent fw-bold">NOT ELIGIBLE</span>
+                                    @endif
                                 </a>
-                                <p class="text-muted mb-0 chatpersonstatus {{($status_model == 1) ? 'text-success fw-bold' : 'text-danger fw-bold'}} ">{{($status_model == 1) ? 'online' : 'offline'}}</p>
+                            <p
+                                class="text-muted mb-0 chatpersonstatus {{ $status_model == 1 ? 'text-success fw-bold' : 'text-danger fw-bold' }} ">
+                                {{ $status_model == 1 ? 'online' : 'offline' }}</p>
                             </p>
                             <div id="loading-btn" class="text-center" style="display: none;">
                                 <button class="btn btn-success btn-loader mx-auto">
@@ -48,20 +50,24 @@
                                     </div>
                                     <div class="ms-3">
                                         <span class="chatting-user-info">
-                                            <span class="chatnameperson">xBug GPT</span> <span class="msg-sent-time">now</span>
+                                            <span class="chatnameperson">xBug GPT</span> <span
+                                                class="msg-sent-time">now</span>
                                         </span>
                                         @if ($status_model == 1)
-                                        <div class="main-chat-msg">
-                                            <div>
-                                                <p class="mb-0">Hi {{Auth::user()->name}}, how can I assist you today? &#128512;</p>
+                                            <div class="main-chat-msg">
+                                                <div>
+                                                    <p class="mb-0">Hi {{ Auth::user()->name }}, how can I assist you
+                                                        today? &#128512;</p>
+                                                </div>
                                             </div>
-                                        </div>
                                         @else
-                                        <div class="main-chat-msg">
-                                            <div class="bg-danger-transparent fw-bold">
-                                                <p class="mb-0">Hi {{Auth::user()->name}}, Sorry, xBug GPT is currently Unvailable. Contact Us By Email [help-center@xbug.online] For Information Or Inform Us</p>
+                                            <div class="main-chat-msg">
+                                                <div class="bg-danger-transparent fw-bold">
+                                                    <p class="mb-0">Hi {{ Auth::user()->name }}, Sorry, xBug GPT is
+                                                        currently Unvailable. Contact Us By Email [help-center@xbug.online]
+                                                        For Information Or Inform Us</p>
+                                                </div>
                                             </div>
-                                        </div>
                                         @endif
                                     </div>
                                 </div>
@@ -69,53 +75,56 @@
                         </ul>
                     </div>
                     <div class="chat-footer">
-                        <input id="chat-input" class="form-control" placeholder="Type your message or question here....." type="text">
+                        <input id="chat-input" class="form-control" placeholder="Type your message or question here....."
+                            type="text">
                         <button id="send-btn" class="btn btn-primary mx-2 btn-icon btn-send" type="submit">
                             <i class="ri-send-plane-2-line"></i>
                         </button>
-                    </div>                    
+                    </div>
                 </div>
 
             </div>
-                     
+
             <!--End::row-1 -->
         </div>
     </div>
 
     @if (Auth::user()->is_gpt == 0)
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
-        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h6 class="modal-title" id="staticBackdropLabel">xBug Premium Feature!
-                    </h6>
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <form action="{{ route('applyChatBot') }}" method="post">
+                @csrf
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title" id="staticBackdropLabel">xBug Premium Feature!
+                            </h6>
+                        </div>
+                        <div class="modal-body">
+                            <p>xBug now supports GPT Chatbot with premium plan.The GPT Chatbot is a feature that allows you
+                                to chat with xBug GPT. You can ask questions and get answers from xBug GPT. Join xBug now to
+                                unlock the GPT Chatbot feature with RM 200 for lifetime access.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Maybe Later</button>
+                            <button type="submit" class="btn btn-primary">Join Now</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <p>xBug now supports GPT Chatbot with premium plan.The GPT Chatbot is a feature that allows you to chat with xBug GPT. You can ask questions and get answers from xBug GPT. Join xBug now to unlock the GPT Chatbot feature with RM 200 for lifetime access.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger"
-                    data-bs-dismiss="modal">Maybe Later</button>
-                    <button type="button" class="btn btn-primary">Join Now</button>
-                </div>
-            </div>
+            </form>
         </div>
-    </div>
     @endif
 
     <script>
-
         $(document).ready(function() {
-          
+
             @if (Auth::user()->is_gpt == 0)
                 var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
                 myModal.show();
             @endif
         });
     </script>
-    
+
     <script>
         $(document).ready(function() {
             $('#send-btn').on('click', function(e) {
@@ -225,9 +234,9 @@
                                     </div>
                                 </li>
                             `);
-                            $('#main-chat-content').scrollTop($('#main-chat-content')[0].scrollHeight);
-                            displayResponse(formattedMessage);
-                            $('#loading-btn').hide();
+                        $('#main-chat-content').scrollTop($('#main-chat-content')[0].scrollHeight);
+                        displayResponse(formattedMessage);
+                        $('#loading-btn').hide();
 
 
                     }
@@ -240,9 +249,9 @@
                 let isTag = false;
                 let tagBuffer = '';
                 let currentTag = '';
-                let isBold = false; 
+                let isBold = false;
                 let boldTextBuffer = '';
-                let formattedMessage = ''; 
+                let formattedMessage = '';
 
                 responseContainer.html('');
 
@@ -250,36 +259,36 @@
                     let char = message.charAt(messageIndex);
                     messageIndex++;
 
-                
+
                     if (char === '<') {
                         isTag = true;
-                        tagBuffer = '<'; 
+                        tagBuffer = '<';
                         currentTag = '';
                     } else if (char === '>') {
                         isTag = false;
                         tagBuffer += '>';
-                        formattedMessage += tagBuffer; 
-                        tagBuffer = ''; 
+                        formattedMessage += tagBuffer;
+                        tagBuffer = '';
                     }
 
                     if (isTag) {
                         tagBuffer += char;
                     } else {
-                    
+
                         if (char === '*' && message.charAt(messageIndex) === '*') {
                             if (isBold) {
-                            
+
                                 formattedMessage += '<strong>' + boldTextBuffer + '</strong>';
                                 boldTextBuffer = '';
                             }
-                            isBold = !isBold; 
-                            messageIndex++; 
+                            isBold = !isBold;
+                            messageIndex++;
                         } else {
                             if (isBold) {
-                                boldTextBuffer += char; 
+                                boldTextBuffer += char;
                             } else {
                                 if (char === '\n') {
-            
+
                                     formattedMessage += '<br>';
                                 } else {
                                     formattedMessage += char;
@@ -289,14 +298,13 @@
                     }
                     responseContainer.html(formattedMessage);
 
-                    $('#main-chat-content').scrollTop($('#main-chat-content')[0].scrollHeight); 
+                    $('#main-chat-content').scrollTop($('#main-chat-content')[0].scrollHeight);
 
                     if (messageIndex >= message.length) {
                         clearInterval(intervalId);
                     }
-                }, 5); 
+                }, 5);
             }
         });
     </script>
-
 @endsection
