@@ -8,6 +8,9 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
+use Exception;
+use GuzzleHttp\Exception\RequestException;
 
 class GPTChatBot extends Controller
 {
