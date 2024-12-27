@@ -42,7 +42,7 @@ const normalNames = [...new Set(names)].sort();
     email: `${name}@xbug.online`,            // Example email
     status: 'ACTIVE',
     state: null,
-    role: JSON.stringify([roles[Math.min(index, 3)]]), // Random role from 2-4
+    role: JSON.stringify([roles[Math.min(index, 2)]]), // Random role from 2-4
     created_at: knex.fn.now(),
     updated_at: knex.fn.now(),
   }));

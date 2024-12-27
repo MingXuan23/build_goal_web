@@ -633,7 +633,7 @@ class AuthController extends Controller
         ]);
 
         $noPengenalan = $validatedData['icNo'];
-
+        
         $user = DB::table('users')->where('icNo', $noPengenalan)->first();
 
         if ($user) {
@@ -641,6 +641,7 @@ class AuthController extends Controller
         }
 
         $apiUrl = env('EKYC_VERIFY_USER_API');
+       // dd($apiUrl);
 
         try {
 

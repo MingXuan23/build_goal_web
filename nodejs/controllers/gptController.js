@@ -28,7 +28,7 @@ const fastResponse = async (req, res, next) => {
   if (estimateWords == -1) {
     final_prompt = `${prompt}. Response as short as possible.`;
   } else if (estimateWords == -2) {
-    final_prompt = `${prompt}. Try to no reply too long if not related to financial domain.`;
+    final_prompt = `${prompt}. If related to financial domain, response within 200 words. If not related to the financial domain or unrealistic question, response in 30 words`;
   } else {
     final_prompt = `${prompt}. Response in ${estimateWords} words.`;
   }

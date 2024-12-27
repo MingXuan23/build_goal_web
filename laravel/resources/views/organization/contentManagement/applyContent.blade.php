@@ -110,13 +110,13 @@
                          <div class="col-xl-12">
                            <label for="label-input">Search Labels:</label>
                            <input type="text" id="label-input" class="form-control" placeholder="Start typing..." autocomplete="off">
-                           <ul id="suggestions-list" class="list-group mt-2" style="display:none;"></ul>
+                           <ul id="suggestions-list" class="list-group mt-2" style="display:none;" ></ul>
                          </div>
 
                           <!-- Selected Labels -->
                         <div id="selected-labels" class="col-xl-12">
                            <p>Selected Labels:</p>
-                           <ul id="selected-labels-list" class="list-group"></ul>
+                           <ul id="selected-labels-list" class="list-group d-flex flex-wrap" style="display: flex; gap: 10px; list-style: none; padding: 0; flex-direction: initial"></ul>
                         </div>
                         <p id="error-message" class="text-danger" style="display: none;">Please select at least 5 labels.</p>
 
@@ -196,23 +196,23 @@
                   </div>
 
                    
-                  <div class="col-md-6">
+                  <!-- <div class="col-md-6">
             
-                  <div class="form-floating">
-                        <input type="text" id="label-input" class="form-control" placeholder="Start typing..." autocomplete="off">
-                        <label for="label-input">Related Labels</label>
-                        <ul id="suggestions-list" class="list-group mt-2" style="display:none;"></ul>
-                       <br>
-                  <div id="selected-labels" class="mb-3">
-                 
-                     <ul id="selected-labels-list" class="list-group d-flex flex-wrap" style="display: flex; gap: 10px; list-style: none; padding: 0; flex-direction: initial"></ul>
-                  </div>
+                              <div class="form-floating">
+                                    <input type="text" id="label-input" class="form-control" placeholder="Start typing..." autocomplete="off">
+                                    <label for="label-input">Related Labels</label>
+                                    <ul id="suggestions-list" class="list-group mt-2" style="display:none;"></ul>
+                                 <br>
+                              <div id="selected-labels" class="mb-3">
+                           
+                                 <ul id="selected-labels-list" class="list-group d-flex flex-wrap" style="display: flex; gap: 10px; list-style: none; padding: 0; flex-direction: initial"></ul>
+                              </div>
                            </div>
                        
                        
-                  </div>
+                  </div> -->
                 
-                  <p id="error-message" class="text-danger" style="display: none;">Please select at least 5 labels.</p>
+                  <!-- <p id="error-message" class="text-danger" style="display: none;">Please select at least 5 labels.</p> -->
                   <input type="hidden" id="labelIds" name="labelIds" value="">
 
                   <!-- Action Buttons -->
@@ -236,7 +236,7 @@
    <!--End::row-1 -->
    </div>
 
-   <script>
+   <!-- <script>
       $(document).ready(function() {
     var selectedLabels = []; // Array to store selected labels
 
@@ -294,11 +294,11 @@
             selectedLabelsContainer.empty(); // Clear current selected labels
 
             selectedLabels.forEach(function(label) {
-            console.log(label)
-//               var l = JSON.parse(label);
+           
+               var l = JSON.parse(label);
                    var tag = $(`
                            <div class="col-md-6" 
-                                 style="padding-bottom: 10px;"> <!-- Added padding here -->
+                                 style="padding-bottom: 10px;">
                               <li class="badge badge-info mr-2 p-2" 
                                     style="background-color: white; 
                                           color: black; 
@@ -366,7 +366,7 @@
             });
 
       });
-   </script>
+   </script> -->
 </div>
 
 <script>
