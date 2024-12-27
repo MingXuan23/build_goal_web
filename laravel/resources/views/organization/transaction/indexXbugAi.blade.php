@@ -1,4 +1,4 @@
-@extends('admin.layouts.main')
+@extends('organization.layouts.main')
 @section('container')
     <div class="main-content app-content">
         <div class="container">
@@ -52,7 +52,7 @@
                         <div class="p-4">
                             <div class="row">
                                 <div class="col-md-5">
-                                    <h6 class="mt-3 fw-bold d-flex align-items-center ">xBug CARD RECEIPT <span
+                                    <h6 class="mt-3 fw-bold d-flex align-items-center ">xBug AI RECEIPT <span
                                             class="ms-2 badge badge-sm bg-success text-sm">success</span></h6>
                                 </div>
                                 <div class="col-md-4 d-flex justify-content-end">
@@ -82,18 +82,8 @@
                                                 <p>Payment
                                                     To&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
                                                     <span class="fw-bold"></span> <span class="fw-bold">xBug inc</span></p>
-                                                <p>Payment For&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span
-                                                        class="fw-bold">xBug Stand Payment</span></p>
-                                                <p>Content Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span
-                                                        class="fw-bold">{{ $data->content_name }}</span></p>
-                                                <p>Content Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span
-                                                        class="fw-bold">{{ $data->content_type }}</span></p>
-                                                <p>Number Of Card&nbsp;&nbsp;&nbsp;: <span
-                                                        class="fw-bold">{{ $data->number_of_card }} Unit</span></p>
-                                                <p>Valid Start Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span
-                                                        class="fw-bold">{{ $data->startdate }}</span></p>
-                                                <p>Valid End Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span
-                                                        class="fw-bold">{{ $data->enddate }}</span></p>
+                                                    <p>Payment For&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span
+                                                        class="fw-bold">xBug AI Payment</span></p>
                                                 <p>Transaction ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span
                                                         class="fw-bold">{{ $data->transac_no }}</span></p>
                                                 <p>Trsanction Time&nbsp;&nbsp;&nbsp;&nbsp;: <span
@@ -143,7 +133,7 @@
             $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('showTransactionHistoryXbugCard') }}",
+                ajax: "{{ route('showTransactionHistoryXbugAiOrg') }}",
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',

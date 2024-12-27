@@ -1187,5 +1187,56 @@ class AdminRouteController extends Controller
             'datas' => $datas
         ]);
     }
+    public function showTransactionHistoryXbugAi(Request $request)
+    {
+        $datas = DB::table('transactions as t')
+            ->join('users', 't.user_id', '=', 'users.id')
+            ->select(
+                'users.name as user_name',
+                'users.email as user_email',
+                'users.telno as user_phone',
+                't.*',
+                'users.name as user_name',
+                'users.email as user_email',
+                't.status as transaction_status',
+            )
+            ->where('t.sellerOrderNo', 'like', '%XBugGpt%')
+            ->get();
+
+        // dd($datas);
+        
+        if ($request->ajax()) {
+
+            $table = DataTables::of($datas)->addIndexColumn();
+
+            $table->addColumn('status', function ($row) {
+                if ($row->transaction_status == 'Success') {
+                    $button = '<span class="badge bg-success p-2 fw-bold">SUCCESS</span>';
+                } elseif ($row->transaction_status == 'Pending') {
+                    $button = '<span class="badge bg-warning p-2 fw-bold">PENDING</span>';
+                } else {
+                    $button = '<span class="badge bg-danger p-2 fw-bold">FAILED</span>';
+                }
+                return $button;
+            });
+            $table->addColumn('action', function ($row) {
+                if ($row->transaction_status == 'Success') {
+                    $button = '<button class="btn btn-sm btn-primary-transparent me-2"
+                                data-bs-toggle="modal" data-bs-target="#modalReceipt-' . $row->id . '">
+                                View Receipt
+                            </button>';
+                } else {
+                    $button = '-';
+                }
+
+                return $button;
+            });
+            $table->rawColumns(['status', 'action']);
+            return $table->make(true);
+        }
+        return view('admin.transaction.indexXbugAi', [
+            'datas' => $datas
+        ]);
+    }
 
 }

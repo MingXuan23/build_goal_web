@@ -75,21 +75,25 @@
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <p>Payment From: <span class="fw-bold">{{$data->user_name}}</span></p>
-                                            <p>Phone Number: <span class="fw-bold">{{$data->user_phone}}</span></p>
-                                            <p>Email: <span class="fw-bold"> {{$data->user_email}}</span></p>
+                                            <p>Payment From: <span class="fw-bold">{{ $data->user_name }}</span></p>
+                                            <p>Phone Number: <span class="fw-bold">{{ $data->user_phone }}</span></p>
+                                            <p>Email: <span class="fw-bold"> {{ $data->user_email }}</span></p>
                                         </div>
                                         <div class="col-md-5">
                                             <p>Payment To: <span class="fw-bold"></span> <span class="fw-bold">xBug
                                                     inc</span></p>
-                                            <p>Content Name: <span class="fw-bold">{{$data->content_name}}</span></p>
-                                            <p>Content Type: <span class="fw-bold">{{$data->content_type}}</span></p>
-                                            <p>Estimated Reach: <span class="fw-bold">{{$data->estimate_reach}}</span></p>
-                                            <p>Selected States: <span class="fw-bold"> @foreach (json_decode($data->target_audience) as $state)
-                                                {{ $state }},
-                                            @endforeach</span></p>
-                                            <p>Transaction ID: <span class="fw-bold">{{$data->transac_no}}</span></p>
-                                            <p>Trsanction Time: <span class="fw-bold">{{$data->created_at}}
+                                            <p>Payment For :
+                                                <span class="fw-bold">Promote Content Payment</span></p>
+                                            <p>Content Name: <span class="fw-bold">{{ $data->content_name }}</span></p>
+                                            <p>Content Type: <span class="fw-bold">{{ $data->content_type }}</span></p>
+                                            <p>Estimated Reach: <span class="fw-bold">{{ $data->estimate_reach }}</span></p>
+                                            <p>Selected States: <span class="fw-bold">
+                                                    @foreach (json_decode($data->target_audience) as $state)
+                                                        {{ $state }},
+                                                    @endforeach
+                                                </span></p>
+                                            <p>Transaction ID: <span class="fw-bold">{{ $data->transac_no }}</span></p>
+                                            <p>Trsanction Time: <span class="fw-bold">{{ $data->created_at }}
                                                 </span></p>
                                         </div>
                                         <div style="border-bottom: 2px solid #eee; padding: 15px 0;"></div>
@@ -97,7 +101,7 @@
                                             <h6 class="m-0 fw-bold">TOTAL AMOUNT</h6>
                                         </div>
                                         <div class="col-md-6 mt-4">
-                                            <h6 class="fw-bold">RM {{$data->amount}}</h6>
+                                            <h6 class="fw-bold">RM {{ $data->amount }}</h6>
                                         </div>
                                         {{-- <div style="border-bottom: 2px solid #eee; padding: 15px 0;"></div> --}}
                                     </div>

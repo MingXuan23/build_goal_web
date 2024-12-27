@@ -91,6 +91,9 @@
                         <li class="slide">
                             <a href="/admin/transaction-history-xbug-card" class="side-menu__item">xBug Card</a>
                         </li>
+                        <li class="slide">
+                            <a href="/admin/transaction-history-xbug-ai" class="side-menu__item">xBug Ai</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="slide has-sub">

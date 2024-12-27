@@ -99,6 +99,7 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
 
     Route::get('/transaction-history-promote-content', [AdminRouteController::class, 'showTransactionHistoryPromoteContent'])->name('showTransactionHistoryPromoteContent');
     Route::get('/transaction-history-xbug-card', [AdminRouteController::class, 'showTransactionHistoryXbugCard'])->name('showTransactionHistoryXbugCard');
+    Route::get('/transaction-history-xbug-ai', [AdminRouteController::class, 'showTransactionHistoryXbugAi'])->name('showTransactionHistoryXbugAi');
 
 
 
@@ -187,6 +188,8 @@ Route::prefix('organization')->middleware(['auth', 'role:2'])->group(function ()
 
     Route::get('/transaction-history-promote-content', [OrganizationRouteController::class, 'showTransactionHistoryPromoteContentOrg'])->name('showTransactionHistoryPromoteContentOrg');
     Route::get('/transaction-history-xbug-card', [OrganizationRouteController::class, 'showTransactionHistoryXbugCardOrg'])->name('showTransactionHistoryXbugCardOrg');
+    Route::get('/transaction-history-xbug-ai', [OrganizationRouteController::class, 'showTransactionHistoryXbugAiOrg'])->name('showTransactionHistoryXbugAiOrg');
+
 
     // Route::middleware(['ekycCheck'])->group(function () {
     Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');
