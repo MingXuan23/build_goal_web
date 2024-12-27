@@ -15,9 +15,9 @@ exports.up = function(knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-    return knex.schema.table('email_status', function(table) {
-        table.dropColumn('created_at');
-        table.dropColumn('updated_at');
+    // return knex.schema.table('email_status', function(table) {
+    //     table.dropColumn('created_at');
+    //     table.dropColumn('updated_at');
 
-    });
+    // });
 };

@@ -27,5 +27,10 @@ exports.up = function(knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-    return knex.schema.dropTableIfExists('organization');
-};
+    return knex.schema
+    .dropTableIfExists('contents')  
+      .dropTableIfExists('content_types')  // First drop content_types
+          // Then drop contents
+      .dropTableIfExists('organization'); // Finally drop organization
+  };
+  

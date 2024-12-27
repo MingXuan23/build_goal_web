@@ -14,9 +14,9 @@ exports.up = function(knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-    return knex.schema.table('gpt_table', function(table) {
-        table.dropColumn('max_token');
+    // return knex.schema.table('gpt_table', function(table) {
+    //     table.dropColumn('max_token');
         
 
-    });
+    // });
 };
