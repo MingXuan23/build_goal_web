@@ -303,7 +303,7 @@
                                 class="rounded-circle">
                         </div>
                         <div class="d-sm-block d-none">
-                            <p class="fw-bold mb-0 lh-1">Khairul Adzhar</p>
+                            <p class="fw-bold mb-0 lh-1">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</p>
                             <span class="op-7 fw-semibold d-block fs-11">Organization</span>
                         </div>
                     </div>

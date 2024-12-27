@@ -94,6 +94,12 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::get('/content-user', [AdminRouteController::class, 'showContentUserClickedViewed'])->name('showContentUserClickedViewed');
     Route::get('/content-user-enrolled', [AdminRouteController::class, 'showContentUserEnrolled'])->name('showContentUserEnrolled');
     Route::get('/content-detail/{content_id}/{interaction_type}', [AdminRouteController::class, 'getContentDetail'])->name('content.detail');
+    Route::get('/transaction/{id}', [AdminRouteController::class, 'showReceipt'])->name('showReceipt');
+
+
+    Route::get('/transaction-history-promote-content', [AdminRouteController::class, 'showTransactionHistoryPromoteContent'])->name('showTransactionHistoryPromoteContent');
+    Route::get('/transaction-history-xbug-card', [AdminRouteController::class, 'showTransactionHistoryXbugCard'])->name('showTransactionHistoryXbugCard');
+
 
 
     Route::get('/content-cards/{contentId}', [AdminRouteController::class, 'getContentCards'])->name('admin.content-cards');
@@ -179,8 +185,8 @@ Route::prefix('organization')->middleware(['auth', 'role:2'])->group(function ()
     Route::get('/content-user-enrolled', [OrganizationRouteController::class, 'showContentUserEnrolledOrganization'])->name('showContentUserEnrolledOrganization');
     Route::get('/content-detail/{content_id}/{interaction_type}', [OrganizationRouteController::class, 'getContentDetailOrganization'])->name('getContentDetailOrganization');
 
-    
-
+    Route::get('/transaction-history-promote-content', [OrganizationRouteController::class, 'showTransactionHistoryPromoteContentOrg'])->name('showTransactionHistoryPromoteContentOrg');
+    Route::get('/transaction-history-xbug-card', [OrganizationRouteController::class, 'showTransactionHistoryXbugCardOrg'])->name('showTransactionHistoryXbugCardOrg');
 
     // Route::middleware(['ekycCheck'])->group(function () {
     Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');
@@ -235,7 +241,7 @@ Route::prefix('promote-content')->middleware(['auth', 'role:1|3|4'])->group(func
 
 Route::prefix('xbug-stand')->middleware(['auth', 'role:1|3|4'])->group(function () {
    
-    Route::get('/recepit/{t_id}', [ContentController::class, 'xbugStandReceipt'])->name('xbug-stand.receipt');
+    Route::get('/receipt/{t_id}', [ContentController::class, 'xbugStandReceipt'])->name('xbug-stand.receipt');
 
     
 });

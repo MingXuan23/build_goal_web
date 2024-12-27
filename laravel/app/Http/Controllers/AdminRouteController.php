@@ -1038,11 +1038,11 @@ class AdminRouteController extends Controller
                 return $button;
             });
             $table->addColumn('email_name', function ($row) {
-                $button = '<span class="btn btn-sm btn-success-transparent p-2">'.$row->email.'</span>';   
+                $button = '<span class="btn btn-sm btn-success-transparent p-2">' . $row->email . '</span>';
                 return $button;
             });
 
-            $table->rawColumns(['active','email_name']);
+            $table->rawColumns(['active', 'email_name']);
 
             return $table->make(true);
         }
@@ -1051,7 +1051,8 @@ class AdminRouteController extends Controller
             'datas' => $data
         ]);
     }
-    public function emailStatusUpdate(Request $request,$id) {
+    public function emailStatusUpdate(Request $request, $id)
+    {
         DB::beginTransaction();
         try {
             $request->validate([
@@ -1068,4 +1069,123 @@ class AdminRouteController extends Controller
             return redirect()->route('emailStatus')->with('error', 'Failed to update Email Status!');
         }
     }
+
+    public function showTransactionHistoryPromoteContent(Request $request)
+    {
+        $datas = DB::table('content_promotion as cp')
+            ->join('transactions as t', 'cp.transaction_id', '=', 't.id')
+            ->join('users', 't.user_id', '=', 'users.id')
+            ->join('contents', 'cp.content_id', '=', 'contents.id')
+            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+            ->select(
+                'users.name as user_name',
+                'users.email as user_email',
+                'users.telno as user_phone',
+                't.*',
+                'users.name as user_name',
+                'users.email as user_email',
+                't.status as transaction_status',
+                'contents.name as content_name',
+                'content_types.type as content_type',
+                'cp.target_audience as target_audience',
+                'cp.estimate_reach as estimate_reach'
+            )
+            ->where('t.sellerOrderNo', 'like', '%PromoteContent%')
+            ->get();
+
+        // dd($datas);
+        if ($request->ajax()) {
+
+            $table = DataTables::of($datas)->addIndexColumn();
+
+            $table->addColumn('status', function ($row) {
+                if ($row->transaction_status == 'Success') {
+                    $button = '<span class="badge bg-success p-2 fw-bold">SUCCESS</span>';
+                } elseif ($row->transaction_status == 'Pending') {
+                    $button = '<span class="badge bg-warning p-2 fw-bold">PENDING</span>';
+                } else {
+                    $button = '<span class="badge bg-danger p-2 fw-bold">FAILED</span>';
+                }
+                return $button;
+            });
+            $table->addColumn('action', function ($row) {
+                if ($row->transaction_status == 'Success') {
+                    $button = '<button class="btn btn-sm btn-primary-transparent me-2"
+                                data-bs-toggle="modal" data-bs-target="#modalReceipt-' . $row->id . '">
+                                View Receipt
+                            </button>';
+                } else {
+                    $button = '-';
+                }
+
+                return $button;
+            });
+            $table->rawColumns(['status', 'action']);
+            return $table->make(true);
+        }
+        return view('admin.transaction.index', [
+            'datas' => $datas
+        ]);
+    }
+    public function showTransactionHistoryXbugCard(Request $request)
+    {
+        $datas = DB::table('content_card as cc')
+            ->join('transactions as t', 'cc.transaction_id', '=', 't.id')
+            ->join('users', 't.user_id', '=', 'users.id')
+            ->join('content_promotion as cp', 'cp.transaction_id', '=', 't.id')
+            ->join('contents', 'cc.content_id', '=', 'contents.id')
+            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+            ->select(
+                'users.name as user_name',
+                'users.email as user_email',
+                'users.telno as user_phone',
+                't.*',
+                'users.name as user_name',
+                'users.email as user_email',
+                't.status as transaction_status',
+                'contents.name as content_name',
+                'content_types.type as content_type',
+                'cc.startdate as startdate',
+                'cc.enddate as enddate',
+                'cp.number_of_card as number_of_card',
+            )
+            ->where('t.sellerOrderNo', 'like', '%XBugStand%')
+            ->get();
+
+        // dd($datas);
+        
+        if ($request->ajax()) {
+
+            $table = DataTables::of($datas)->addIndexColumn();
+
+            $table->addColumn('status', function ($row) {
+                if ($row->transaction_status == 'Success') {
+                    $button = '<span class="badge bg-success p-2 fw-bold">SUCCESS</span>';
+                } elseif ($row->transaction_status == 'Pending') {
+                    $button = '<span class="badge bg-warning p-2 fw-bold">PENDING</span>';
+                } else {
+                    $button = '<span class="badge bg-danger p-2 fw-bold">FAILED</span>';
+                }
+                return $button;
+            });
+            $table->addColumn('action', function ($row) {
+                if ($row->transaction_status == 'Success') {
+                    $button = '<button class="btn btn-sm btn-primary-transparent me-2"
+                                data-bs-toggle="modal" data-bs-target="#modalReceipt-' . $row->id . '">
+                                View Receipt
+                            </button>';
+                } else {
+                    $button = '-';
+                }
+
+                return $button;
+            });
+            $table->rawColumns(['status', 'action']);
+            return $table->make(true);
+        }
+        return view('admin.transaction.indexXbugCard', [
+            'datas' => $datas
+        ]);
+    }
+
 }

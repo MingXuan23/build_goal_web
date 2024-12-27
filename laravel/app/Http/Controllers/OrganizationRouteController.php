@@ -191,7 +191,7 @@ class OrganizationRouteController extends Controller
 
             
             $table->addColumn('card', function ($row) {
-                if ($row->content_type_id == 1 || $row->content_type_id == 3 || $row->content_type_id == 5) {
+                if (($row->content_type_id == 1 || $row->content_type_id == 3 || $row->content_type_id == 5) && $row->reason_phrase === 'APPROVED') {
                     return '<div class="d-flex">
                         <button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2 smart-card-btn" 
                                 data-id="' . $row->id . '"
@@ -597,6 +597,128 @@ class OrganizationRouteController extends Controller
             ->get();
     
         return response()->json($contentDetail);
+    }
+
+    public function showTransactionHistoryPromoteContentOrg(Request $request)
+    {
+        $datas = DB::table('content_promotion as cp')
+            ->join('transactions as t', 'cp.transaction_id', '=', 't.id')
+            ->join('users', 't.user_id', '=', 'users.id')
+            ->join('contents', 'cp.content_id', '=', 'contents.id')
+            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+            ->where('t.user_id', Auth::user()->id)
+            ->where('t.status', 'Success')
+            ->select(
+                'users.name as user_name',
+                'users.email as user_email',
+                'users.telno as user_phone',
+                't.*',
+                'users.name as user_name',
+                'users.email as user_email',
+                't.status as transaction_status',
+                'contents.name as content_name',
+                'content_types.type as content_type',
+                'cp.target_audience as target_audience',
+                'cp.estimate_reach as estimate_reach'
+            )
+            ->where('t.sellerOrderNo', 'like', '%PromoteContent%')
+            ->get();
+
+        // dd($datas);
+        if ($request->ajax()) {
+
+            $table = DataTables::of($datas)->addIndexColumn();
+
+            $table->addColumn('status', function ($row) {
+                if ($row->transaction_status == 'Success') {
+                    $button = '<span class="badge bg-success p-2 fw-bold">SUCCESS</span>';
+                } elseif ($row->transaction_status == 'Pending') {
+                    $button = '<span class="badge bg-warning p-2 fw-bold">PENDING</span>';
+                } else {
+                    $button = '<span class="badge bg-danger p-2 fw-bold">FAILED</span>';
+                }
+                return $button;
+            });
+            $table->addColumn('action', function ($row) {
+                if ($row->transaction_status == 'Success') {
+                    $button = '<button class="btn btn-sm btn-primary-transparent me-2"
+                                data-bs-toggle="modal" data-bs-target="#modalReceipt-' . $row->id . '">
+                                View Receipt
+                            </button>';
+                } else {
+                    $button = '-';
+                }
+
+                return $button;
+            });
+            $table->rawColumns(['status', 'action']);
+            return $table->make(true);
+        }
+        return view('organization.transaction.index', [
+            'datas' => $datas
+        ]);
+    }
+    public function showTransactionHistoryXbugCardOrg(Request $request)
+    {
+        $datas = DB::table('content_card as cc')
+            ->join('transactions as t', 'cc.transaction_id', '=', 't.id')
+            ->join('users', 't.user_id', '=', 'users.id')
+            ->join('content_promotion as cp', 'cp.transaction_id', '=', 't.id')
+            ->join('contents', 'cc.content_id', '=', 'contents.id')
+            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+            ->where('t.user_id', Auth::user()->id)
+            ->where('t.status', 'Success')
+            ->select(
+                'users.name as user_name',
+                'users.email as user_email',
+                'users.telno as user_phone',
+                't.*',
+                'users.name as user_name',
+                'users.email as user_email',
+                't.status as transaction_status',
+                'contents.name as content_name',
+                'content_types.type as content_type',
+                'cc.startdate as startdate',
+                'cc.enddate as enddate',
+                'cp.number_of_card as number_of_card',
+            )
+            ->where('t.sellerOrderNo', 'like', '%XBugStand%')
+            ->get();
+
+        // dd($datas);
+        
+        if ($request->ajax()) {
+
+            $table = DataTables::of($datas)->addIndexColumn();
+
+            $table->addColumn('status', function ($row) {
+                if ($row->transaction_status == 'Success') {
+                    $button = '<span class="badge bg-success p-2 fw-bold">SUCCESS</span>';
+                } elseif ($row->transaction_status == 'Pending') {
+                    $button = '<span class="badge bg-warning p-2 fw-bold">PENDING</span>';
+                } else {
+                    $button = '<span class="badge bg-danger p-2 fw-bold">FAILED</span>';
+                }
+                return $button;
+            });
+            $table->addColumn('action', function ($row) {
+                if ($row->transaction_status == 'Success') {
+                    $button = '<button class="btn btn-sm btn-primary-transparent me-2"
+                                data-bs-toggle="modal" data-bs-target="#modalReceipt-' . $row->id . '">
+                                View Receipt
+                            </button>';
+                } else {
+                    $button = '-';
+                }
+
+                return $button;
+            });
+            $table->rawColumns(['status', 'action']);
+            return $table->make(true);
+        }
+        return view('organization.transaction.indexXbugCard', [
+            'datas' => $datas
+        ]);
     }
     
 }

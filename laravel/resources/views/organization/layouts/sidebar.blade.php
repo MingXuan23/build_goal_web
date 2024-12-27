@@ -79,6 +79,21 @@
                 </li>
                 <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
+                        <i class='bx bxs-bank side-menu__icon'></i>
+                        <span class="side-menu__label ">Transaction History</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="/organization/transaction-history-promote-content" class="side-menu__item">Promote Content</a>
+                        </li>
+                        <li class="slide">
+                            <a href="/organization/transaction-history-xbug-card" class="side-menu__item">xBug Card</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="slide has-sub">
+                    <a href="javascript:void(0);" class="side-menu__item ">
                         <i class='bx bxs-notification side-menu__icon'></i>
                         <span class="side-menu__label">Notifications</span>
                         <i class="fe fe-chevron-right side-menu__angle"></i>
