@@ -201,6 +201,8 @@
 
                         <!-- Read More Button -->
                         <div id="formattedContent" class="content-preview mt-3"></div>
+
+                        <a href="{{ url('/view-content/' . $microLearningSlug) }}" class="btn btn-primary">Back</a>
                     </div>
 
                     <!-- Card Footer -->
