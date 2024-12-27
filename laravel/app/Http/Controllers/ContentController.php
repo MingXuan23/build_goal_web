@@ -470,7 +470,7 @@ class ContentController extends Controller
 
         return array_map(function ($v) use ($totalSum, $average, $weight) {
             $val = 0;
-            if ($totalSum === 0 || $v === 0) {
+            if ($totalSum == 0 || $v == 0) {
                 $val = 0;
             } else {
                 $val = ($v / $totalSum) * $weight;
