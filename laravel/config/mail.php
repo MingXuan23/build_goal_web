@@ -60,6 +60,19 @@ return [
             ],
         ],
 
+        'smtp3' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST_3'),
+            'port' => env('MAIL_PORT_3'),
+            'username' => env('MAIL_USERNAME_3'),
+            'password' => env('MAIL_PASSWORD_3'),
+            'encryption' => env('MAIL_ENCRYPTION_3'),
+            'from' => [
+                'address' => env('MAIL_FROM_ADDRESS_3'),
+                'name' => env('MAIL_FROM_NAME_3'),
+            ],
+        ],
+
         'ses' => [
             'transport' => 'ses',
         ],

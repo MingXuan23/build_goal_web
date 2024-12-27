@@ -92,7 +92,6 @@
         }
     </style>
 @endsection
-
 @section('container')
     <div class="main-content app-content">
         <div class="container mt-5">

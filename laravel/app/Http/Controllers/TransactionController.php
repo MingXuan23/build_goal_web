@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\PaymentNotificationMail;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 use Exception;
 
@@ -216,8 +219,37 @@ class TransactionController extends Controller
                 ]);
 
                 $cp_id = DB::table('content_promotion')->where('transaction_id', $transaction->id)->first();
+                // dd($cp_id);
                 $content = DB::table('contents')->where('id', $cp_id->content_id)->first();
+
                 //send email
+
+                $email_status = DB::table('email_status')->where('email', 'payment@xbug.online')->first();
+                if ($email_status && $email_status->status == 1) {
+                    $logData = [
+                        'email_type' => 'PAYMENT - CONTENT PROMOTION',
+                        'recipient_email' => Auth::user()->email,
+                        'from_email' => 'payment@xbug.online',
+                        'name' => Auth::user()->name,
+                        'status' => 'SUCCESS',
+                        'response_data' => 'MESSAGE SUCCESS SEND',
+                        'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                        'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    ];
+
+                    DB::table('email_logs')->insert($logData);
+
+                    $name = Auth::user()->name;
+                    $type = 'Content Promotion';
+                    $contentt = $content->name;
+                    $amount = 'RM ' . $transaction->amount;
+                    $transaction_no = $transaction->transac_no;
+                    $created_at = $transaction->created_at;
+                    $card_quantity = null;
+
+                    Mail::mailer('smtp3')->to(Auth::user()->email)->send(new PaymentNotificationMail($type, $contentt, $amount, $transaction_no, $created_at, $name,$card_quantity));
+                }
+
                 return view('content.promote_content_receipt', compact('cp_id', 'content', 'transaction'));
             } else if ($parts[0] == 'XBugStand') {
                 DB::table('content_promotion')->where('transaction_id', $transaction->id)->update([
@@ -225,8 +257,36 @@ class TransactionController extends Controller
                 ]);
 
                 $cp_id = DB::table('content_promotion')->where('transaction_id', $transaction->id)->first();
+                // dd($cp_id);
                 $content = DB::table('contents')->where('id', $cp_id->content_id)->first();
+                // dd($content);
                 //send email
+                $email_status = DB::table('email_status')->where('email', 'payment@xbug.online')->first();
+                if ($email_status && $email_status->status == 1) {
+                    $logData = [
+                        'email_type' => 'PAYMENT - XBUG STAND',
+                        'recipient_email' => Auth::user()->email,
+                        'from_email' => 'payment@xbug.online',
+                        'name' => Auth::user()->name,
+                        'status' => 'SUCCESS',
+                        'response_data' => 'MESSAGE SUCCESS SEND',
+                        'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                        'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    ];
+
+                    DB::table('email_logs')->insert($logData);
+
+                    $name = Auth::user()->name;
+                    $type = 'xBug Stand';
+                    $contentt = $content->name;
+                    $amount = 'RM ' . $transaction->amount;
+                    $transaction_no = $transaction->transac_no;
+                    $created_at = $transaction->created_at;
+                    $card_quantity = $cp_id->number_of_card;
+
+                    Mail::mailer('smtp3')->to(Auth::user()->email)->send(new PaymentNotificationMail($type, $contentt, $amount, $transaction_no, $created_at, $name,$card_quantity));
+                }
+
                 return view('content.xbug_stand_receipt', compact('cp_id', 'content', 'transaction'));
             } else if ($parts[0] == 'XBugGpt') {
                 DB::table('users')->where('id', Auth::user()->id)->update([
@@ -234,6 +294,32 @@ class TransactionController extends Controller
                     'gpt_status' => 1
                 ]);
                 //send email
+
+                $email_status = DB::table('email_status')->where('email', 'payment@xbug.online')->first();
+                if ($email_status && $email_status->status == 1) {
+                    $logData = [
+                        'email_type' => 'PAYMENT - XBUG GPT',
+                        'recipient_email' => Auth::user()->email,
+                        'from_email' => 'payment@xbug.online',
+                        'name' => Auth::user()->name,
+                        'status' => 'SUCCESS',
+                        'response_data' => 'MESSAGE SUCCESS SEND',
+                        'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                        'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    ];
+
+                    DB::table('email_logs')->insert($logData);
+
+                    $name = Auth::user()->name;
+                    $type = 'xBug AI premium';
+                    $content = null;
+                    $amount = 'RM ' . $transaction->amount;
+                    $transaction_no = $transaction->transac_no;
+                    $created_at = $transaction->created_at;
+                    $card_quantity = null;
+
+                    Mail::mailer('smtp3')->to(Auth::user()->email)->send(new PaymentNotificationMail($type, $content, $amount, $transaction_no, $created_at, $name,$card_quantity));
+                }
                 return view('gpt-payment.gpt_receipt', compact('transaction'));
             }
 

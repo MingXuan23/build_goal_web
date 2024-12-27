@@ -153,7 +153,7 @@
                             <span class="fw-bold ms-1 ">Provided by <span class="fw-bold text-primary">Direct
                                     Pay</span>
                         </div>
-                        <h6 class="mt-3 fw-bold d-flex align-items-center ">PROMOTION
+                        <h6 class="mt-3 fw-bold d-flex align-items-center ">XBUG STAND
                             SUMMARY</h6>
                         {{-- <h5 class="text-muted mb-4">Order Summary</h5> --}}
 
