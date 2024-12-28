@@ -61,7 +61,7 @@ const sendVerificationEmail = async (userEmail, userName, verificationCode) => {
     from_email: process.env.SMTP_USER,
     name: userName.toUpperCase(),
     status: "SUCCESS",
-    response_data: "Verification code send",
+    response_data: "VERIFICATION CODE SEND",
     created_at: new Date(),
     updated_at: new Date(),
   });
@@ -102,7 +102,7 @@ const sendResetPasswordEmail = async (userEmail, userName, newPassword) => {
     from_email: process.env.SMTP_USER,
     name: userName.toUpperCase(),
     status: "SUCCESS",
-    response_data: "Resend reset password send",
+    response_data: "RESEND RESET PASSWORD SEND",
     created_at: new Date(),
     updated_at: new Date(),
   });
@@ -160,7 +160,7 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
       from_email: process.env.SMTP_USER,
       name: userName.toUpperCase(),
       status: "SUCCESS",
-      response_data: "Request Resend reset password send",
+      response_data: "REQUEST RESEND RESET PASSWORD SEND",
       created_at: new Date(),
       updated_at: new Date(),
     });
