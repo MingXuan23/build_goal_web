@@ -173,7 +173,7 @@ class AuthController extends Controller
                 'from_email' => 'admin@xbug.online',
                 'name' => $validatedData['fullname'],
                 'status' => 'SUCCESS',
-                'response_data' => 'Verification code has been sent',
+                'response_data' => 'Verification code send',
                 'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                 'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
             ];
@@ -277,7 +277,7 @@ class AuthController extends Controller
                 'from_email' => 'admin@xbug.online',
                 'name' => $validatedData['fullname'],
                 'status' => 'SUCCESS',
-                'response_data' => 'Verification code has been sent',
+                'response_data' => 'Verification code send',
                 'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                 'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
             ];
@@ -502,7 +502,7 @@ class AuthController extends Controller
                 'from_email' => 'admin@xbug.online',
                 'name' => $user->name,
                 'status' => 'SUCCESS',
-                'response_data' => 'Reset password has been sent',
+                'response_data' => 'Reset password send',
                 'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                 'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
             ];
@@ -559,7 +559,7 @@ class AuthController extends Controller
                 'from_email' => 'admin@xbug.online',
                 'name' => $user->name,
                 'status' => 'SUCCESS',
-                'response_data' => 'Resend reset password has been sent',
+                'response_data' => 'Resend reset password send',
                 'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                 'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
             ];

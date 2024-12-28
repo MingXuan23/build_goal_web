@@ -1,17 +1,22 @@
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
-const crypto = require('crypto');
-
-
-
+const crypto = require("crypto");
 
 require("dotenv").config();
 
-const knexConfig = require('../knexfile');
-const knex = require('knex')(knexConfig[process.env.NODE_ENV])
+const knexConfig = require("../knexfile");
+const knex = require("knex")(knexConfig[process.env.NODE_ENV]);
 
-const { registerSchema, loginSchema, forgetPasswordSchema, changePasswordSchema, validateSessionSchema, profileSchema, userPrivacySchema } = require("../validators/authValidator");
+const {
+  registerSchema,
+  loginSchema,
+  forgetPasswordSchema,
+  changePasswordSchema,
+  validateSessionSchema,
+  profileSchema,
+  userPrivacySchema,
+} = require("../validators/authValidator");
 const {
   getUserByEmail,
   createUser,
@@ -19,7 +24,7 @@ const {
   updateVerificationCode,
   updatePassword,
   getStaticToken,
-  updateUseProfile
+  updateUseProfile,
 } = require("../models/userModel");
 const { v4: uuidv4 } = require("uuid");
 const { create } = require("domain");
@@ -49,8 +54,18 @@ const sendVerificationEmail = async (userEmail, userName, verificationCode) => {
       <p>Best Regards,<br>[Admin xBug]</p>
     `,
   };
-  await transporter.sendMail(mailOptions);
-
+  const info = await transporter.sendMail(mailOptions);
+  await knex("email_logs").insert({
+    email_type: "REGISTER USER MOBILE",
+    recipient_email: userEmail,
+    from_email: process.env.SMTP_USER,
+    name: userName.toUpperCase(),
+    status: "SUCCESS",
+    response_data: "Verification code send",
+    created_at: new Date(),
+    updated_at: new Date(),
+  });
+  // await transporter.sendMail(mailOptions);
 };
 
 const sendResetPasswordEmail = async (userEmail, userName, newPassword) => {
@@ -80,7 +95,18 @@ const sendResetPasswordEmail = async (userEmail, userName, newPassword) => {
     `,
   };
 
-  await transporter.sendMail(mailOptions);
+  const info = await transporter.sendMail(mailOptions);
+  await knex("email_logs").insert({
+    email_type: "RESET PASSWORD CODE EMAIL MOBILE",
+    recipient_email: userEmail,
+    from_email: process.env.SMTP_USER,
+    name: userName.toUpperCase(),
+    status: "SUCCESS",
+    response_data: "Resend reset password send",
+    created_at: new Date(),
+    updated_at: new Date(),
+  });
+  // await transporter.sendMail(mailOptions);
 
 };
 
@@ -127,26 +153,41 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mailOptions);
+    await knex("email_logs").insert({
+      email_type: "REQUEST RESET PASSWORD CODE EMAIL MOBILE",
+      recipient_email: userEmail,
+      from_email: process.env.SMTP_USER,
+      name: userName.toUpperCase(),
+      status: "SUCCESS",
+      response_data: "Request Resend reset password send",
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+    // await transporter.sendMail(mailOptions);
     console.log(`Reset password email sent to ${userEmail}`);
-    return { success: true, message: "Reset password email sent successfully." };
+    return {
+      success: true,
+      message: "Reset password email sent successfully.",
+    };
   } catch (error) {
     console.error("Error sending reset password email:", error);
-    throw new Error("Something went wrong while sending the reset email. Please try again later.");
+    throw new Error(
+      "Something went wrong while sending the reset email. Please try again later."
+    );
   }
 };
 
-
-
 const register = async (req, res) => {
-
   try {
     const validatedData = registerSchema.parse(req.body);
     const { email, password, name, state, address, telno } = validatedData;
 
     const existingUser = await getUserByEmail(email);
     if (existingUser)
-      return res.status(403).json({ message: "Email already in use. Please complete previous registration!" });
+      return res.status(403).json({
+        message: "Email already in use. Please complete previous registration!",
+      });
 
     const uuid = uuidv4();
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -161,13 +202,11 @@ const register = async (req, res) => {
       role: JSON.stringify(role),
       success: success_acc,
       email_status: email_status,
-
     });
 
     if (result) {
-
-      await knex('user_privacy').insert({
-        user_id: result.id
+      await knex("user_privacy").insert({
+        user_id: result.id,
       });
       await sendVerificationEmail(email, name, verificationCode);
       const responseData = {
@@ -175,9 +214,11 @@ const register = async (req, res) => {
         telno: validatedData.telno,
         email: validatedData.email,
       };
-      res
-        .status(201)
-        .json({ success: true, message: "User registered successfully", data: responseData });
+      res.status(201).json({
+        success: true,
+        message: "User registered successfully",
+        data: responseData,
+      });
     }
   } catch (error) {
     console.log(error);
@@ -195,9 +236,19 @@ const getProfile = async (req, res) => {
   try {
     var user = req.user;
 
-    const user_privacy = await knex('user_privacy').where('user_id', user.id).select('detail').first();
+    const user_privacy = await knex("user_privacy")
+      .where("user_id", user.id)
+      .select("detail")
+      .first();
 
-    return res.status(200).json({ telno: user.telno, address: user.address, name: user.name, state: user.state, email: user.email, user_privacy: user_privacy });
+    return res.status(200).json({
+      telno: user.telno,
+      address: user.address,
+      name: user.name,
+      state: user.state,
+      email: user.email,
+      user_privacy: user_privacy,
+    });
   } catch (error) {
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);
@@ -207,28 +258,24 @@ const getProfile = async (req, res) => {
       res.status(500).json({ success: false, message: error.message });
     }
   }
-}
+};
 
 const updateProfile = async (req, res) => {
-
   try {
     const validatedData = profileSchema.parse(req.body);
     const { name, state, address, telno } = validatedData;
 
     const user = req.user;
 
-
-
     const result = await updateUseProfile({
       name,
       state,
       address,
       telno,
-      id: user.id
+      id: user.id,
     });
 
     if (result) {
-
       res
         .status(200)
         .json({ success: true, message: "Profile update successfully" });
@@ -242,8 +289,6 @@ const updateProfile = async (req, res) => {
       res.status(500).json({ success: false, message: error.message });
     }
   }
-
-
 };
 
 const updateUserPrivacy = async (req, res) => {
@@ -253,10 +298,8 @@ const updateUserPrivacy = async (req, res) => {
 
     const user = req.user;
 
-
-
-    const result = await knex('user_privacy').where('user_id', user.id).update({
-      'detail': user_privacy
+    const result = await knex("user_privacy").where("user_id", user.id).update({
+      detail: user_privacy,
     });
 
     res
@@ -271,7 +314,7 @@ const updateUserPrivacy = async (req, res) => {
       res.status(500).json({ success: false, message: error.message });
     }
   }
-}
+};
 
 const verifyCode = async (req, res) => {
   try {
@@ -282,24 +325,32 @@ const verifyCode = async (req, res) => {
     // console.log(user)
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     if (user.email_status === "VERIFY") {
-      return res.status(401).json({ success: false, message: "Your Account is Active" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Your Account is Active" });
     }
-
 
     if (user.verification_code !== code) {
-      return res.status(400).json({ success: false, message: "Invalid verification code" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid verification code" });
     }
-
 
     await updateUserStatus(email);
 
-    res.status(200).json({ success: true, message: "Account has successfully activated" });
+    res
+      .status(200)
+      .json({ success: true, message: "Account has successfully activated" });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error", error });
+    res
+      .status(500)
+      .json({ success: false, message: "Internal server error", error });
   }
 };
 
@@ -310,11 +361,15 @@ const resendVerificationCode = async (req, res) => {
     const user = await getUserByEmail(email);
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     if (user.email_status === "VERIFY") {
-      return res.status(401).json({ success: false, message: "Your Account is Already Active" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Your Account is Already Active" });
     }
 
     const newVerificationCode = Math.floor(100000 + Math.random() * 900000);
@@ -324,62 +379,63 @@ const resendVerificationCode = async (req, res) => {
       await sendVerificationEmail(email, user.name, newVerificationCode);
       res.status(200).json({
         success: true,
-        message: `Verification code resent successfully to email ${email}`
+        message: `Verification code resent successfully to email ${email}`,
       });
     }
-
-
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error", error });
+    res
+      .status(500)
+      .json({ success: false, message: "Internal server error", error });
   }
 };
 
 const getStates = async (req, res) => {
   try {
-    const states = await knex('states');
+    const states = await knex("states");
     return res.status(200).json(states);
   } catch (error) {
     return res.status(500).json(error);
-
   }
-
-}
+};
 const login = async (req, res) => {
-
-
   try {
     const validatedData = loginSchema.parse(req.body);
     const { email, password, device_token } = validatedData;
 
-
-
     const user = await getUserByEmail(email);
     // console.log(user);
-    if (!user || !(await bcrypt.compare(password, user.password.replace('$2y$', '$2b$')))) {
-      return res.status(401).json({ success: false, message: "Invalid credentials" });
-    }
-    else if (user.email_status === "NOT VERIFY") {
-      return res.status(401).json({ success: false, message: "Your Account is Not Active." });
-    }
-    else if (!user.active) {
+    if (
+      !user ||
+      !(await bcrypt.compare(password, user.password.replace("$2y$", "$2b$")))
+    ) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
+    } else if (user.email_status === "NOT VERIFY") {
+      return res
+        .status(401)
+        .json({ success: false, message: "Your Account is Not Active." });
+    } else if (!user.active) {
       console.log(user.active);
-      return res.status(401).json({ success: false, message: "Your Account is Suspended." });
-    }
-
-    else if (user.status != "ACTIVE") {
-      return res.status(401).json({ success: false, message: "Your Account is Suspended." });
+      return res
+        .status(401)
+        .json({ success: false, message: "Your Account is Suspended." });
+    } else if (user.status != "ACTIVE") {
+      return res
+        .status(401)
+        .json({ success: false, message: "Your Account is Suspended." });
     }
 
     console.log(req.applicationId);
 
     const token = getStaticToken(user.id, user.created_at);
 
+    const existingTokenRecord = await knex("user_token")
+      .where({ user_id: user.id })
+      .first();
 
-
-    const existingTokenRecord = await knex("user_token").where({ user_id: user.id }).first();
-
-
-    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;; // Get user's IP address
+    const ipAddress =
+      req.headers["x-forwarded-for"] || req.connection.remoteAddress; // Get user's IP address
 
     const rememberToken = crypto.randomBytes(30).toString("hex"); // Generate 40-char random token
     console.log(req.applicationId);
@@ -396,25 +452,22 @@ const login = async (req, res) => {
         token: token, // Use only the first 20 chars of the hash
         ip_address: ipAddress,
         created_at: knex.fn.now(),
-
       });
     } else {
       // If user_id exists, update the record
-      await knex("user_token")
-        .where({ user_id: user.id })
-        .update({
-          remember_token: rememberToken,
-          device_token: device_token,
-          ip_address: ipAddress,
-          token: token,
-          updated_at: knex.fn.now()
-
-        });
+      await knex("user_token").where({ user_id: user.id }).update({
+        remember_token: rememberToken,
+        device_token: device_token,
+        ip_address: ipAddress,
+        token: token,
+        updated_at: knex.fn.now(),
+      });
     }
     console.log(req.applicationId);
 
-    return res.status(200).json({ success: true, token, rememberToken, email: user.email });
-
+    return res
+      .status(200)
+      .json({ success: true, token, rememberToken, email: user.email });
   } catch (error) {
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);
@@ -426,15 +479,10 @@ const login = async (req, res) => {
   }
 };
 
-
 const validateSession = async (req, res) => {
-
-
   try {
     const validatedData = validateSessionSchema.parse(req.body);
     const { email, rememberToken } = validatedData;
-
-
 
     const existingTokenRecord = await knex("user_token as ut")
       .join("users as u", "ut.user_id", "u.id") // Use aliases for table names
@@ -443,27 +491,26 @@ const validateSession = async (req, res) => {
       .select("ut.*") // Select all fields from both tables using aliases
       .first(); // Get the first matching record
 
-
-    const ipAddress = req.header('x-forwarded-for') || req.connection.remoteAddress; // Get user's IP address
-    console.log( req.header('x-forwarded-for') , req.connection.remoteAddress)
+    const ipAddress =
+      req.header("x-forwarded-for") || req.connection.remoteAddress; // Get user's IP address
+    console.log(req.header("x-forwarded-for"), req.connection.remoteAddress);
     const newRememberToken = crypto.randomBytes(30).toString("hex"); // Generate 40-char random token
 
     // Generate bcrypt hash of user_id
 
-    await knex("user_token")
-      .where({ id: existingTokenRecord.id })
-      .update({
-        remember_token: newRememberToken,
-        updated_at: knex.fn.now(),
-        ip_address: ipAddress,
-
-      });
+    await knex("user_token").where({ id: existingTokenRecord.id }).update({
+      remember_token: newRememberToken,
+      updated_at: knex.fn.now(),
+      ip_address: ipAddress,
+    });
 
     res.status(200).json({ success: true, rememberToken: newRememberToken });
-
   } catch (error) {
-    res.status(400).json({ success: false, message: 'Your session is expired. Please login again.', error: error });
-
+    res.status(400).json({
+      success: false,
+      message: "Your session is expired. Please login again.",
+      error: error,
+    });
   }
 };
 
@@ -473,7 +520,6 @@ const generateRandomPassword = () => {
 
 const performForgetPassword = async (req, res) => {
   try {
-
     const by = req.query.by;
 
     const data = jwt.verify(by, process.env.JWT_SECRET);
@@ -482,17 +528,16 @@ const performForgetPassword = async (req, res) => {
 
     if (!user) {
       return res.status(404).json(`You have not Active Password Request now.`);
-
     }
 
-    const password_reset = await knex('user_password_reset')
-      .select('*') // Select all columns (or specify the columns you need)
+    const password_reset = await knex("user_password_reset")
+      .select("*") // Select all columns (or specify the columns you need)
       .where({ status: 1, user_id: user.id, unique_id: data.unique_id }) // Filter by status and user_id
-      .andWhere('expired_at', '>=', knex.fn.now())
+      .andWhere("expired_at", ">=", knex.fn.now())
       .first();
 
     if (!password_reset) {
-      console.log(user.id, data.unique_id)
+      console.log(user.id, data.unique_id);
       return res.status(404).json(`You have not Active Password Request now.`);
     }
 
@@ -502,19 +547,17 @@ const performForgetPassword = async (req, res) => {
     const result = await updatePassword(data.email, hashedPassword);
 
     if (result) {
-      await sendResetPasswordEmail(
-        data.email,
-        user.name,
-        newPassword
+      await sendResetPasswordEmail(data.email, user.name, newPassword);
+
+      await knex("user_password_reset")
+        .where({ status: true, user_id: user.id })
+        .update({
+          status: 0,
+          updated_at: knex.fn.now(),
+        });
+      return res.send(
+        `A new password has been sent to your email: ${data.email}`
       );
-
-
-      await knex('user_password_reset').where({ status: true, user_id: user.id }).update({
-        status: 0,
-        updated_at: knex.fn.now(),
-
-      });
-      return res.send(`A new password has been sent to your email: ${data.email}`);
     }
   } catch (error) {
     if (error.errors) {
@@ -527,26 +570,23 @@ const performForgetPassword = async (req, res) => {
   }
 };
 
-
-
-
-
 const forgetPassword = async (req, res) => {
   try {
-
     const validatedData = forgetPasswordSchema.parse(req.body);
     const { email } = validatedData;
 
     const user = await getUserByEmail(email);
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "Email not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Email not found" });
     }
 
-    const exists = await knex('user_password_reset')
-      .select('*') // Select all columns (or specify the columns you need)
+    const exists = await knex("user_password_reset")
+      .select("*") // Select all columns (or specify the columns you need)
       .where({ status: true, user_id: user.id }) // Filter by status and user_id
-      .andWhere('expired_at', '>=', knex.fn.now())
+      .andWhere("expired_at", ">=", knex.fn.now())
       .first();
 
     if (exists) {
@@ -557,78 +597,76 @@ const forgetPassword = async (req, res) => {
       return;
     }
 
-    const host = `${req.protocol}://${req.get('host')}`;
+    const host = `${req.protocol}://${req.get("host")}`;
 
     const unique_id = crypto.randomBytes(40).toString("hex");
 
     const expirationTime = new Date();
     expirationTime.setDate(expirationTime.getDate() + 1);
 
-
-    await knex('user_password_reset').insert({
+    await knex("user_password_reset").insert({
       unique_id: unique_id,
       status: 1,
       expired_at: expirationTime,
       user_id: user.id,
       created_at: knex.fn.now(),
       updated_at: knex.fn.now(),
-
     });
 
     // Prepare the data object
     const data = {
-
       unique_id: unique_id,
       email: email,
-      name: user.name
+      name: user.name,
     };
-    const content = jwt.sign(data, process.env.JWT_SECRET, { expiresIn: '24h' });
+    const content = jwt.sign(data, process.env.JWT_SECRET, {
+      expiresIn: "24h",
+    });
 
     // Construct the URL dynamically
-    const url = `${host}/api/auth/perform-forget-password?by=${encodeURIComponent(content)}`;
+    const url = `${host}/api/auth/perform-forget-password?by=${encodeURIComponent(
+      content
+    )}`;
 
-    await sendForgetPasswordRequestEmail(
-      email,
-      user.name,
-      url
-    );
+    await sendForgetPasswordRequestEmail(email, user.name, url);
 
     res.status(200).json({
       success: true,
       message: `Please check your email to perform forget password action.`,
     });
-
   } catch (error) {
-
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);
       const message = messages.join(", ");
       res.status(400).json({ success: false, message: message });
     } else {
-      res.status(200).json({ success: false, message: error.message, error: error });
-
+      res
+        .status(200)
+        .json({ success: false, message: error.message, error: error });
     }
   }
 };
 
-
 const changePassword = async (req, res) => {
   try {
-
-
-    const validatedData = changePasswordSchema.parse(req.body)
+    const validatedData = changePasswordSchema.parse(req.body);
     const { oldPassword, newPassword } = validatedData;
 
     const user = req.user;
 
     if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
-      return res.status(401).json({ success: false, message: "Your old password is inccorrect" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Your old password is inccorrect" });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     await updatePassword(user.email, hashedPassword);
-    res.status(200).json({ success: true, message: "Your password was successfully updated" });
+    res.status(200).json({
+      success: true,
+      message: "Your password was successfully updated",
+    });
   } catch (error) {
     if (error.errors) {
       const messages = error.errors.map((err) => err.message);
@@ -640,10 +678,18 @@ const changePassword = async (req, res) => {
   }
 };
 
-
-
-
 module.exports = {
-  register, login, verifyCode, resendVerificationCode, forgetPassword, changePassword, validateSession, sendForgetPasswordRequestEmail, performForgetPassword, getStates, updateProfile,
-  getProfile, updateUserPrivacy
+  register,
+  login,
+  verifyCode,
+  resendVerificationCode,
+  forgetPassword,
+  changePassword,
+  validateSession,
+  sendForgetPasswordRequestEmail,
+  performForgetPassword,
+  getStates,
+  updateProfile,
+  getProfile,
+  updateUserPrivacy,
 };
