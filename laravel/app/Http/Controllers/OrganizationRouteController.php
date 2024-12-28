@@ -78,6 +78,8 @@ class OrganizationRouteController extends Controller
                 'u.ekyc_status',
                 'u.ekyc_time',
                 'u.ekyc_signature',
+                'is_gpt',
+                'gpt_status',
                 'o.name',
                 'o.desc',
                 'o.status',

@@ -395,6 +395,8 @@ class AdminRouteController extends Controller
                 'u.ekyc_status',
                 'u.ekyc_signature',
                 'u.ekyc_time',
+                'is_gpt',
+                'gpt_status',
                 'o.name',
                 'o.desc',
                 'o.status',
