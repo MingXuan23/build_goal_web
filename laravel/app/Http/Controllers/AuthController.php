@@ -114,6 +114,22 @@ class AuthController extends Controller
             'otype' => 'Organization Type',
         ]);
 
+        $response = $request->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+
+        $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $response,
+        ]);
+
+        $verifyResult = $verifyResponse->json();
+
+        // dd($verifyResult);
+
+        if (!$verifyResult['success']) {
+            return back()->with(['error' => 'Please verify that you are not a robot.']);
+        }
+
         $validatedData['password'] = bcrypt(($validatedData['password']));
         $validatedData['phoneno'] = '+60' . $validatedData['phoneno'];
 
@@ -159,7 +175,7 @@ class AuthController extends Controller
             DB::table('organization_user')->insert([
                 'user_id' => $user,
                 'organization_id' => $organization,
-                'role_id' => 3,
+                'role_id' => 2,
                 'status' => 1,
                 'created_at' => now(),
                 'updated_at' => now()
@@ -228,6 +244,23 @@ class AuthController extends Controller
             'state' => 'State',
         ]);
 
+
+        $response = $request->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+
+        $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $response,
+        ]);
+
+        $verifyResult = $verifyResponse->json();
+
+        // dd($verifyResult);
+        
+        if (!$verifyResult['success']) {
+            return back()->with(['error' => 'Please verify that you are not a robot.']);
+        }
+
         $validatedData['password'] = bcrypt(($validatedData['password']));
         $validatedData['phoneno'] = '+60' . $validatedData['phoneno'];
 
@@ -264,7 +297,7 @@ class AuthController extends Controller
             Db::table('organization_user')->insert([
                 'user_id' => $user,
                 'organization_id' => $organization,
-                'role_id' => 4,
+                'role_id' => 3,
                 'status' => 1,
                 'created_at' => now(),
                 'updated_at' => now()
@@ -306,10 +339,26 @@ class AuthController extends Controller
     }
     public function login(Request $request)
     {
+        // dd($request->all());
         $validatedData =  $request->validate([
             'email' => 'required',
             'password' => 'required|min:5',
         ]);
+
+        $response = $request->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+
+        $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $response,
+        ]);
+
+        $verifyResult = $verifyResponse->json();
+
+
+        if (!$verifyResult['success']) {
+            return back()->with(['error' => 'Please verify that you are not a robot.']);
+        }
 
         $user = \App\Models\User::where('email', $validatedData['email'])->first();
 
@@ -476,6 +525,7 @@ class AuthController extends Controller
     }
     public function resetPassword(Request $request)
     {
+        // dd($request->all());
         $validator = $request->validate([
             'emailResetPassword' => 'required|email|exists:users,email',
         ], [
@@ -483,6 +533,22 @@ class AuthController extends Controller
             'emailResetPassword.email' => 'Please enter a valid email address.',
             'emailResetPassword.exists' => 'This email does not exist in our records.',
         ], []);
+
+        $response = $request->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+
+        $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $response,
+        ]);
+
+        $verifyResult = $verifyResponse->json();
+
+
+        if (!$verifyResult['success']) {
+            return back()->with(['error' => 'Please verify that you are not a robot.']);
+        }
+
         DB::beginTransaction();
         try {
             $user = DB::table('users')->where('email', $validator['emailResetPassword'])->first();
@@ -632,8 +698,23 @@ class AuthController extends Controller
             'icNo' => 'Identity Number',
         ]);
 
+        $response = $request->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+
+        $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $response,
+        ]);
+
+        $verifyResult = $verifyResponse->json();
+
+
+        if (!$verifyResult['success']) {
+            return back()->with(['error' => 'Please verify that you are not a robot.']);
+        }
+
         $noPengenalan = $validatedData['icNo'];
-        
+
         $user = DB::table('users')->where('icNo', $noPengenalan)->first();
 
         if ($user) {
@@ -641,7 +722,7 @@ class AuthController extends Controller
         }
 
         $apiUrl = env('EKYC_VERIFY_USER_API');
-       // dd($apiUrl);
+        // dd($apiUrl);
 
         try {
 
@@ -655,10 +736,9 @@ class AuthController extends Controller
                 return redirect()->route('viewOrganizationRegisterUser', ['data' => $encryptedData]);
             } else {
                 $apiData = $response->json();
-                if($apiData['error'] === 'TOO MANY REQUESTS, PLEASE TRY AGAIN LATER AFTER 10 MINUTES.'){
+                if ($apiData['error'] === 'TOO MANY REQUESTS, PLEASE TRY AGAIN LATER AFTER 10 MINUTES.') {
                     return back()->with('error', $apiData['error']);
-                }
-                else{
+                } else {
                     return back()->with('error', 'Your Identity Number is not valid. Please contact us at [help-center@xbug.online] for further assistance.');
                 }
             }
@@ -676,6 +756,21 @@ class AuthController extends Controller
         ], [], [
             'icNo' => 'Identity Number',
         ]);
+
+        $response = $request->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+
+        $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $response,
+        ]);
+
+        $verifyResult = $verifyResponse->json();
+
+
+        if (!$verifyResult['success']) {
+            return back()->with(['error' => 'Please verify that you are not a robot.']);
+        }
 
         $noPengenalan = $validatedData['icNo'];
 
@@ -700,10 +795,9 @@ class AuthController extends Controller
                 return redirect()->route('viewContentCreatorRegisterUser', ['data' => $encryptedData]);
             } else {
                 $apiData = $response->json();
-                if($apiData['error'] === 'TOO MANY REQUESTS, PLEASE TRY AGAIN LATER AFTER 10 MINUTES.'){
+                if ($apiData['error'] === 'TOO MANY REQUESTS, PLEASE TRY AGAIN LATER AFTER 10 MINUTES.') {
                     return back()->with('error', $apiData['error']);
-                }
-                else{
+                } else {
                     return back()->with('error', 'Your Identity Number is not valid. Please contact us at [help-center@xbug.online] for further assistance.');
                 }
             }

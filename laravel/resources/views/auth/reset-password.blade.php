@@ -28,6 +28,7 @@
 
     <!-- Icons Css -->
     <link href="../assets/css/icons.min.css" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 
 </head>
@@ -551,6 +552,13 @@
                                         </label>
                                     </div>
                                 </div>
+                                <center>
+                                    <div class="col-md-12 col-sm-12 col-xl-12 d-grid mt-3">
+                                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"
+                                            style="transform:scale(0.60);-webkit-transform:scale(0.90);transform-origin:0 0;-webkit-transform-origin:0 0;">
+                                        </div>
+                                    </div>
+                                </center>
                                 <div class="col-xl-12 d-grid mt-2">
                                     <input type="submit" class="btn btn-lg btn-primary" value="Reset Password"
                                         name="verify"></input>
@@ -584,6 +592,7 @@
         </div>
     </div>
 
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
    
     <!-- Bootstrap JS -->
     {{-- <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>

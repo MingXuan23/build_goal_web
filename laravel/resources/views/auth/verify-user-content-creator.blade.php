@@ -28,6 +28,7 @@
 
     <!-- Icons Css -->
     <link href="../assets/css/icons.min.css" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 
 </head>
@@ -553,8 +554,16 @@
                                             Enter without (-) eg: 950712091409
                                         </label>
                                     </div>
+                                    <center>
+                                        <div class="col-md-12 col-sm-12 col-xl-12 d-grid mt-3">
+                                            <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"
+                                                style="transform:scale(0.60);-webkit-transform:scale(0.90);transform-origin:0 0;-webkit-transform-origin:0 0;">
+                                            </div>
+
+                                        </div>
+                                    </center>
                                 </div>
-                                <div class="col-xl-12 d-grid mt-2">
+                                <div class="col-xl-12 d-grid">
                                     <button type="submit" class="btn btn-lg btn-primary"
                                         name="verify">Verify</button>
                                 </div>
@@ -575,7 +584,7 @@
         </div>
     </div>
 
-
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
     <!-- Bootstrap JS -->
     {{-- <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
 

@@ -11,8 +11,7 @@
     <title> xBug | Login </title>
     <meta name="Description" content="xBug">
     <meta name="Author" content="xBug Inc">
-    <meta name="keywords"
-        content="xBug, xBug Content, xbug">
+    <meta name="keywords" content="xBug, xBug Content, xbug">
 
     <!-- Favicon -->
     <link rel="icon" href="assets/images/brand-logos/favicon.ico" type="image/x-icon">
@@ -83,9 +82,6 @@
     <div class="container">
         <div class="row justify-content-center align-items-center authentication authentication-basic h-100">
             <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-8 col-sm-10 col-12">
-                <form action="" method="post">
-
-                </form>
 
                 @if (session()->has('success'))
                     <div class="alert alert-success alert-dismissible d-flex align-items-center" role="alert">
@@ -111,11 +107,11 @@
                 @endif
 
                 @if (request()->query('error'))
-                <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
-                    <i class="bi bi-dash-circle-fill fs-4"></i>
-                    <div class="ms-3 fw-bold">{{ request()->query('error') }} </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+                    <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                        <i class="bi bi-dash-circle-fill fs-4"></i>
+                        <div class="ms-3 fw-bold">{{ request()->query('error') }} </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 @endif
 
 
@@ -141,8 +137,8 @@
                                         <div class="form-floating">
                                             <input type="email"
                                                 class="form-control  @error('email') is-invalid @enderror"
-                                                id="floatingInputprimary" placeholder="name@example.com" name="email"
-                                                value="{{ old('email') }}">
+                                                id="floatingInputprimary" placeholder="name@example.com"
+                                                name="email" value="{{ old('email') }}">
                                             <label for="floatingInputprimary">Email Address</label>
                                             @error('email')
                                                 <span class="mb-1 text-danger">{{ $message }}</span>
@@ -153,9 +149,9 @@
                                         <div class="form-floating">
                                             <input type="password"
                                                 class="form-control  @error('password') is-invalid @enderror"
-                                                id="floatingInputprimary" placeholder="name@example.com"
+                                                id="floatingInputprimary1" placeholder="name@example.com"
                                                 name="password">
-                                            <label for="floatingInputprimary">Password</label>
+                                            <label for="floatingInputprimary1">Password</label>
                                             @error('password')
                                                 <span class="mb-1 text-danger">{{ $message }}</span>
                                             @enderror
@@ -167,10 +163,10 @@
 
                                     <center>
                                         <div class="col-md-12 col-sm-12 col-xl-12  d-grid">
-                                            <div class="g-recaptcha"
-                                                data-sitekey="6LdGRS8lAAAAAA8YQ0j2g6dWcykaaAIw2WnSRl1S"
+                                            <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"
                                                 style="transform:scale(0.60);-webkit-transform:scale(0.90);transform-origin:0 0;-webkit-transform-origin:0 0;">
                                             </div>
+
                                         </div>
                                     </center>
 

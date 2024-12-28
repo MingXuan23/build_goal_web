@@ -185,9 +185,8 @@
                                     </div>
 
                                     <center>
-                                        <div class="col-md-12 col-sm-12 col-xl-12 mt-3 d-grid">
-                                            <div class="g-recaptcha"
-                                                data-sitekey="6LdGRS8lAAAAAA8YQ0j2g6dWcykaaAIw2WnSRl1S"
+                                        <div class="col-md-12 col-sm-12 col-xl-12 d-grid mt-3">
+                                            <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"
                                                 style="transform:scale(0.60);-webkit-transform:scale(0.90);transform-origin:0 0;-webkit-transform-origin:0 0;">
                                             </div>
                                         </div>
