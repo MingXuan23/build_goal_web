@@ -259,7 +259,7 @@
                                                                                                 1 => 'admin',
                                                                                                 2 => 'organization',
                                                                                                 3 => 'content creator',
-                                                                                                4 => 'mobile user',
+                                                                                                5 => 'mobile user',
                                                                                             ];
                                                                                             $userRoles = is_string(
                                                                                                 Auth::user()->role,

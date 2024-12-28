@@ -139,7 +139,7 @@
                     1 => 'admin',
                     2 => 'organization',
                     3 => 'content-creator',
-                    4 => 'mobile user',
+                    5 => 'mobile user',
                 ];
 
                 $userRoles = is_string(Auth::user()->role) ? json_decode(Auth::user()->role, true) : Auth::user()->role;
@@ -159,6 +159,9 @@
                     $selectedRole = 1;
                 } elseif (str_contains($currentUrl, '/content-creator') && in_array(3, $userRoles)) {
                     $selectedRole = 3;
+                }
+                elseif (str_contains($currentUrl, '/mobile-user') && in_array(5, $userRoles)) {
+                    $selectedRole = 5;
                 }
             @endphp
 
@@ -195,7 +198,7 @@
                                     case 3:
                                         $roleClass = 'bg-info-transparent'; // Organization
                                         break;
-                                    case 4:
+                                    case 5:
                                         $roleClass = 'bg-success-transparent'; // Content Creator
                                         break;
                                 }

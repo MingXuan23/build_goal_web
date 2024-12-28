@@ -274,9 +274,8 @@
                                                                                             // Data peran
                                                                                             $rolesMap = [
                                                                                                 1 => 'admin',
-                                                                                                2 => 'staff',
-                                                                                                3 => 'organization',
-                                                                                                4 => 'content creator',
+                                                                                                2 => 'organization',
+                                                                                                3 => 'content creator',
                                                                                                 5 => 'mobile user',
                                                                                             ];
                                                                                             $userRoles = is_string(
