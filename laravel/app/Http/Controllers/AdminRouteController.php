@@ -33,7 +33,7 @@ class AdminRouteController extends Controller
                 'o.org_type',
                 DB::raw('GROUP_CONCAT(r.role) as role_names')
             )
-            ->whereRaw('NOT (JSON_LENGTH(u.role) = 1 AND JSON_CONTAINS(u.role, JSON_ARRAY(4)))')  // Exclude [5] only
+            ->whereRaw('NOT (JSON_LENGTH(u.role) = 1 AND JSON_CONTAINS(u.role, JSON_ARRAY(5)))')  // Exclude [5] only
             ->groupBy(
                 'u.id',
                 'u.name',
@@ -204,7 +204,7 @@ class AdminRouteController extends Controller
     public function showUserMobile(Request $request)
     {
         $data = DB::table('users')
-            ->whereRaw('JSON_LENGTH(role) = 1 AND JSON_CONTAINS(role, JSON_ARRAY(4))')  // Ensure role is [5] only
+            ->whereRaw('JSON_LENGTH(role) = 1 AND JSON_CONTAINS(role, JSON_ARRAY(5))')  // Ensure role is [5] only
             ->orderBy('created_at', 'asc')
             ->get();
 

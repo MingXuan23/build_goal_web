@@ -140,24 +140,24 @@ class UserManagementController extends Controller
             }
 
 
-            // $existingIC = DB::table('users')
-            //     ->where('icno', $request->icno)
-            //     ->where('id', '!=', $id)
-            //     ->first();
+            $existingIC = DB::table('users')
+                ->where('icno', $request->icno)
+                ->where('id', '!=', $id)
+                ->first();
 
-            // if ($existingIC) {
-            //     return back()->with('error', 'The IC Number already exists.');
-            // }
+            if ($existingIC) {
+                return back()->with('error', 'The IC Number already exists.');
+            }
 
 
-            // $existingEmail = DB::table('users')
-            //     ->where('email', $request->email)
-            //     ->where('id', '!=', $id)
-            //     ->first();
+            $existingEmail = DB::table('users')
+                ->where('email', $request->email)
+                ->where('id', '!=', $id)
+                ->first();
 
-            // if ($existingEmail) {
-            //     return back()->with('error', 'The Email already exists.');
-            // }
+            if ($existingEmail) {
+                return back()->with('error', 'The Email already exists.');
+            }
 
            
             $validatedData = $request->validate([
