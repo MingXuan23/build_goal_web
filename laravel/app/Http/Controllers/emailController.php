@@ -78,8 +78,9 @@ class emailController extends Controller
 
             return $table->make(true);
         }
+        $roles = DB::table('roles')->get();
 
-        return view('admin.email.index', ['datas' => $data]);
+        return view('admin.email.index', ['datas' => $data, 'roles' => $roles]);
     }
     public function sendEmail(Request $request)
     {
@@ -209,39 +210,37 @@ class emailController extends Controller
 
     public function sendEmailToAll(Request $request)
     {
-        dd($request->all());
+
         DB::beginTransaction();
+        try {
 
-        $request->validate([
-            'subject' => 'required|string',
-            'content' => 'required|string',
-        ]);
+            if ($request->subject === '' || $request->content === '' || $request->subject === null || $request->content === null || $request->roles === null) {
+                return back()->with('error', 'All fields are required for send email.');
+            }
 
-        $subject = $request->subject;
-        $content = $request->content;
+            $subject = $request->subject;
+            $content = $request->content;
+            $roles = $request->roles;
 
-        $users = DB::table('users')
+            $users = DB::table('users')
             ->where('status', 'ACTIVE')
             ->whereNotNull('email')
-            ->where('email', '<>', '') 
-            ->where(function ($query) {
-                $query->whereJsonDoesntContain('role', 1)
-                    ->whereJsonDoesntContain('role', 2)
-                    ->orWhere(function ($query) {
-                        $query->whereJsonContains('role', 3)
-                            ->orWhereJsonContains('role', 4);
-                    });
+            ->where('email', '<>', '')
+            ->where(function ($query) use ($roles) {
+                foreach ($roles as $role) {
+                    $query->orWhereJsonContains('role', (int)$role);
+                }
             })
             ->get();
 
-            dd($users);
+            // dd($users);
 
-        if ($users->isEmpty()) {
-            return back()->with('error', 'No active users with valid email found to send emails.');
-        }
+            if ($users->isEmpty()) {
+                return back()->with('error', 'No active users with valid email found to send emails.');
+            }
 
-        $total = 0;
-        try {
+            $total = 0;
+
             foreach ($users as $user) {
                 $toEmail = $user->email;
 

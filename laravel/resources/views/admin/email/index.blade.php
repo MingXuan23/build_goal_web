@@ -29,12 +29,21 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
+            @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                    <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                        <i class="bi bi-dash-circle-fill fs-4"></i>
+                        <div class="ms-3"> {{ $error }} </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endforeach
+            @endif
             <!-- Button to send email to all users -->
             <div class="card custom-card">
                 <div class="card-header d-flex justify-content-between">
                     <div class="card-title">Send New Notification Email</div>
-                    <button class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#modalSendToAll" disabled>
-                        Send Email to All Users
+                    <button class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#modalSendToAll">
+                        Send Email to Specific Roles
                     </button>
 
                 </div>
@@ -116,18 +125,32 @@
 
             <form action="{{ route('sendEmailToAll') }}" method="post">
                 @csrf
-                <div class="modal modal-lg fade" id="modalSendToAll" tabindex="-1" aria-labelledby="modalSendToAllLabel"
-                    aria-hidden="true">
+                <div class="modal modal-lg fade" id="modalSendToAll" tabindex="-1"
+                    aria-labelledby="modalSendToAllLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h6 class="modal-title" id="modalSendToAllLabel">Send Email To All Users
+                                <h6 class="modal-title" id="modalSendToAllLabel">Send Email To Specific Roles
                                 </h6>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body px-4">
                                 <div class="row">
+                                    <div class="mb-2">
+                                        <span class="mb-3 h6 fw-normal">Select Roles You Want to Send: </span>
+                                        <div class="form-check mb-3 form-check-lg d-flex">
+                                            @foreach ($roles as $role)
+                                                <input class="form-check-input" type="checkbox" name="roles[]"
+                                                    value="{{ $role->id }}"
+                                                    id="{{ $role->role }}-{{ $role->id }}">
+                                                <label class="form-check-label me-5"
+                                                    for="{{ $role->role }}-{{ $role->id }}">
+                                                    {{ ucfirst(str_replace('_', ' ', $role->role)) }}
+                                                </label>
+                                            @endforeach
+                                        </div>
+                                    </div>
                                     <div class="col-xl-12 mb-2">
                                         <div class="form-floating">
                                             <input type="text" class="form-control" placeholder="Enter Content Name"
