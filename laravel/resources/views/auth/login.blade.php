@@ -14,7 +14,7 @@
     <meta name="keywords" content="xBug, xBug Content, xbug">
 
     <!-- Favicon -->
-    <link rel="icon" href="assets/images/brand-logos/favicon.ico" type="image/x-icon">
+    
 
     <!-- Main Theme Js -->
     <script src="assets/js/authentication-main.js"></script>
@@ -34,7 +34,7 @@
     {{--  --}}
     {{--  --}}
 
-    <link rel="icon" href="assets/images/brand-logos/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../assets/images/logo.ico" type="image/x-icon">
 
     <!-- Choices JS -->
     <script src="assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
