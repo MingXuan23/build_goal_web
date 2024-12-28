@@ -7,10 +7,10 @@
       <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <title> xBug </title>
-      <meta name="Description" content="Bootstrap Responsive Admin Web Dashboard HTML5 Template">
-      <meta name="Author" content="Spruko Technologies Private Limited">
+      <meta name="Description" content="xBug">
+      <meta name="Author" content="xBug Inc">
       <!-- Favicon -->
-      <link rel="icon" href="../../assets/images/brand-logos/favicon.ico" type="image/x-icon">
+      <link rel="icon" href="../assets/images/logo.ico" type="image/x-icon">
       <!-- Bootstrap Css -->
       <link id="style" href="../../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
       <!-- Style Css -->
@@ -48,7 +48,7 @@
                   <div class="header-element">
                      <div class="horizontal-logo d-flex justify-content-center align-items-center">
                         <a href="#" class="header-logo">
-                        <span class="fw-bold text-primary">xBug</span>
+                           <img src="../assets/images/logo.png" width="55" height="50" alt="logo"></img>
                         </a>
                      </div>
                   </div>
@@ -92,8 +92,8 @@
                   <nav class="main-menu-container nav nav-pills sub-open">
                      <div class="landing-logo-container">
                         <div class="horizontal-logo">
-                           <a href="index.html" class="header-logo">
-                              <h4 class="text-primary fw-bold">xBug</h4>
+                           <a href="#" class="header-logo">
+                              <img src="../assets/images/logo.png" width="55" height="50" alt="logo"></img>
                            </a>
                         </div>
                      </div>
