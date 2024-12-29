@@ -569,13 +569,15 @@ class ContentController extends Controller
             $weight = $this->calVectorByLabel($labels);
 
             // Handle the image upload
-            $imagePath = $request->file('image')->store('asset1/images', 'public'); // Store image in the public/asset1/images folder
+            $imageName = Str::random(40) . '.' . $request->file('image')->getClientOriginalExtension();
+            $imagePath = $request->file('image')->move(public_path('asset1/images'), $imageName);
+            $imageUrl = 'asset1/images/' . $imageName;
 
             // Prepare data to be inserted into the contents table
             $contentData = [
                 'name' => $validatedData['content_name'], // Save title
                 'desc' => $validatedData['content_desc'], // Save description
-                'image' => $imagePath,  // Save image path
+                'image' => $imageUrl,  // Save image path
                 'content' => $validatedData['formattedContent'],  // Save combined sections (content)
                 'content_type_id' => 2, // Set content_type_id to 2
 
