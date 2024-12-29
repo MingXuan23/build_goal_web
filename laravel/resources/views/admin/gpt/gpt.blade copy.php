@@ -1,4 +1,4 @@
-@extends('organization.layouts.main')
+@extends('admin.layouts.main')
 @section('container')
     <!-- Start::app-content -->
     <div class="main-content app-content">
@@ -34,8 +34,7 @@
                                     <p class="text-muted fs-11 fw-semibold mb-2 op-7">ACTIVE GPT</p>
                                 </li>
                                 <li class="checkforactive">
-                                    <a href="javascript:void(0);"
-                                        onclick="changeTheInfo(this,'xBug Ai','5','online','eleibbe')">
+                                    <a href="javascript:void(0);" onclick="changeTheInfo(this,'xBug Ai','5','online')">
                                         <div class="d-flex align-items-top">
                                             <div class="me-1 lh-1">
                                                 <span class="avatar avatar-md online me-2 avatar-rounded">
@@ -71,11 +70,7 @@
                         </div>
                         <div class="flex-fill">
                             <p class="mb-0 fw-semibold fs-14">
-                                <a href="javascript:void(0);" class="chatnameperson responsive-userinfo-open">xBug Ai
-                                    {{-- @if (Auth::user()->is_gpt == 0)
-                                        <span class="badge bg-danger-transparent fw-bold">NOT ELIGIBLE</span>
-                                    @endif --}}
-                                </a>
+                                <a href="javascript:void(0);" class="chatnameperson responsive-userinfo-open">xBug Ai</a>
                             </p>
                             <p
                                 class="text-muted mb-0 chatpersonstatus {{ $status_model == 1 ? 'text-success fw-bold' : 'text-danger fw-bold' }}">
@@ -99,11 +94,9 @@
                                 </ul>
                             </div>
                             <button aria-label="button" type="button"
-                                class="btn btn-icon btn-outline-light my-1 ms-2 responsive-chat-close"
-                                id="close-chat-button">
+                                class="btn btn-icon btn-outline-light my-1 ms-2 responsive-chat-close">
                                 <i class="ri-close-line"></i>
                             </button>
-
                         </div>
                     </div>
                     <div class="chat-content" id="main-chat-content" style="overflow-y: scroll;">
@@ -115,8 +108,7 @@
                                 <div class="chat-list-inner">
                                     <div class="chat-user-profile">
                                         <span class="avatar avatar-md online avatar-rounded chatstatusperson">
-                                            <img class="chatimageperson" src="../../assets/images/gpt.png"
-                                                alt="img">
+                                            <img class="chatimageperson" src="../../assets/images/gpt.png" alt="img">
                                         </span>
                                     </div>
                                     <div class="ms-3">
@@ -145,7 +137,7 @@
                             </li>
                         </ul>
                     </div>
-
+                    
                     <div class="chat-footer">
                         <input class="form-control" id="chat-input" placeholder="Type your message or question here..."
                             type="text">
@@ -159,42 +151,6 @@
             <!--End::row-1 -->
         </div>
     </div>
-
-    @if (Auth::user()->is_gpt == 0)
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <form action="{{ route('applyChatBot') }}" method="post">
-                @csrf
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h6 class="modal-title" id="staticBackdropLabel">xBug Premium Feature!
-                            </h6>
-                        </div>
-                        <div class="modal-body">
-                            <p>xBug now supports GPT Chatbot with premium plan.The GPT Chatbot is a feature that allows you
-                                to chat with xBug GPT. You can ask questions and get answers from xBug GPT. Join xBug now to
-                                unlock the GPT Chatbot feature with RM 200 for lifetime access.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Maybe Later</button>
-                            <button type="submit" class="btn btn-primary">Join Now</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    @endif
-
-    <script>
-        $(document).ready(function() {
-
-            @if (Auth::user()->is_gpt == 0)
-                var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
-                myModal.show();
-            @endif
-        });
-    </script>
 
     <script>
         let changeTheInfo = (element, name, img, status) => {
@@ -215,6 +171,8 @@
                 ele.classList.remove("offline")
                 ele.classList.add(status)
             })
+
+
 
             document.querySelector(".chatpersonstatus").innerText = status
 
@@ -271,7 +229,7 @@
                 $('#main-chat-content').scrollTop($('#main-chat-content')[0].scrollHeight);
 
                 $.ajax({
-                    url: "{{ route('sendMessage') }}",
+                    url: "{{ route('sendMessageAdmin') }}",
                     method: "POST",
                     data: {
                         _token: "{{ csrf_token() }}",
@@ -401,32 +359,6 @@
                     }
                 }, 5);
             }
-        });
-    </script>
-    <script>
-        document.getElementById("close-chat-button").addEventListener("click", function() {
-            // Cari elemen tab pengguna aktif
-            const usersTab = document.getElementById("users-tab-pane");
-
-            // Hapus class "responsive-chat-open" untuk menyembunyikan chat utama (jika ada)
-            document.querySelector(".main-chart-wrapper").classList.remove("responsive-chat-open");
-
-            // Pastikan tab pengguna aktif terlihat
-            if (usersTab) {
-                usersTab.classList.add("show", "active");
-                usersTab.style.display = "block";
-            }
-
-            // Nonaktifkan tab lainnya (jika ada tab lain)
-            document.querySelectorAll(".tab-pane").forEach((pane) => {
-                if (pane !== usersTab) {
-                    pane.classList.remove("show", "active");
-                    pane.style.display = "none";
-                }
-            });
-
-            // Opsional: Geser scroll ke atas di tab pengguna aktif
-            document.getElementById("chat-msg-scroll").scrollTop = 0;
         });
     </script>
 @endsection

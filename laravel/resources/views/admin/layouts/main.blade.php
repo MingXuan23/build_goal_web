@@ -43,8 +43,6 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.bootstrap5.min.css">
 
-
-
 </head>
 
 <body>
@@ -198,7 +196,8 @@
     <script src="../../assets/js/custom.js"></script>
 
     <script src="../../assets/js/jQuery.js"></script>
-    <script src="../assets/js/hrm-dashboard.js"></script>
+    {{-- <script src="../assets/js/hrm-dashboard.js"></script> --}}
+    {{-- <script src="../../assets/js/chat.js"></script> --}}
 
     <!-- Internal Datatables JS -->
     <script src="../../assets/js/datatables.js"></script>
