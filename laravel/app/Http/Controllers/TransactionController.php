@@ -192,6 +192,7 @@ class TransactionController extends Controller
 
     public function directpayReceipt(Request $request)
     {
+        // return view('directpay.receipt');
         $case = explode("_", $request->Fpx_SellerOrderNo);
         //return response()->json(['request'=>'success']);
         if ($request->Fpx_DebitAuthCode == '00') {
