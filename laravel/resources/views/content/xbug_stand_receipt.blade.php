@@ -174,6 +174,23 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="detail-section mt-3">
+                        <div class="row ">
+                            @if(isset($content_cards) && count($content_cards)> 0)
+                                @foreach($content_cards as $card)
+                                <div class="col-md-6">
+                                    <p><strong>Card Id:</strong><br>{{ $card->card_id }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Tracking ID:</strong><br>{{ $card->tracking_id }}</p>
+                                </div>
+                                @endforeach
+                            @else
+                            <p>We are preparing your xBUG stand and the tracking id will available soon.</p>
+                            @endif
+                        </div>
+                        </div>
+                        
                         <div class="detail-section">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h6 class=" m-0 fw-bold">Amount Paid</h6>
@@ -184,6 +201,7 @@
                         <div class="secure-badge">
 
                         </div>
+                        <a href="/" class="btn btn-success">Return Home Page</a>
                         <div class=" d-flex align-items-center justify-content-center">
                             <div class="">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="#5cb85c" class="">

@@ -31,7 +31,7 @@ const normalNames = [...new Set(names)].sort();
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // Possible roles
-  const roles = [2,3,4];
+  const roles = [2,3,5];
 
   // Generate user data dynamically
   const users = normalNames.map((name, index) => ({

@@ -350,20 +350,28 @@
                 // Reset form
                 $('#smartCardForm')[0].reset();
 
+                
                 const today = new Date();
-                const yyyy = today.getFullYear();
-                const mm = String(today.getMonth() + 1).padStart(2, '0'); // Month (0-based, so +1)
-                const dd = String(today.getDate()).padStart(2, '0');
+
+                // Get the date one month from today
+                const nextMonth = new Date(today);
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                const yyyy = nextMonth.getFullYear();
+                const mm = String(nextMonth.getMonth() +1).padStart(2, '0'); // Month (0-based, so +1)
+                const dd = String(nextMonth.getDate()).padStart(2, '0');
 
                 // Start date and time
                 const startDate = `${yyyy}-${mm}-${dd}`;
                 const startTime = "08:00";
 
                 // End date (7 days after today)
-                const endDateObj = new Date();
-                endDateObj.setDate(today.getDate() + 7);
+                const endDateObj = new Date(nextMonth);
+                endDateObj.setMonth(nextMonth.getMonth()); // Set the month explicitly to handle overflow
+                endDateObj.setDate(nextMonth.getDate() + 7); // Add 7 days to the date
+
+                // Format the date to YYYY-MM-DD
                 const endYYYY = endDateObj.getFullYear();
-                const endMM = String(endDateObj.getMonth() + 1).padStart(2, '0');
+                const endMM = String(endDateObj.getMonth() + 1).padStart(2, '0'); // `getMonth` returns 0-indexed month
                 const endDD = String(endDateObj.getDate()).padStart(2, '0');
                 const endDate = `${endYYYY}-${endMM}-${endDD}`;
                 const endTime = "18:00";
@@ -373,6 +381,7 @@
                 $("#startTime").val(startTime);
                 $("#endDate").val(endDate);
                 $("#endTime").val(endTime);
+                document.getElementById("startDate").min = startDate;
                 
             });
 

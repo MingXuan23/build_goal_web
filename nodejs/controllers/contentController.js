@@ -123,6 +123,54 @@ const getContents = async (req, res) => {
     }
 };
 
+const getSum = (targetValues, sourceValues) => {
+    return targetValues.map((val, index) => val + (sourceValues[index] || 0));
+};
+
+// Function to flatten values based on weight
+const flattenValues = (values, weight) => {
+    const totalSum = values.reduce((sum, v) => sum + v, 0);
+    const average = totalSum / values.length || 0;
+
+    return values.map((v) => {
+        let val = 0;
+        if (totalSum === 0 || v === 0) {
+            val = 0;
+        } else {
+            val = (v / totalSum) * weight;
+        }
+
+        if (v >= average) {
+            val *= 1.5;
+        } else if (v < average * 0.2) {
+            val *= 0.8;
+        }
+
+        return parseFloat(Math.max(Math.min(val, 0.999), 0).toFixed(3));
+    });
+};
+
+const calUserVector = (origin, contents, learning_rate, weight) => {
+
+    let newValue = origin
+
+    if (contents.length == 0) {
+        return origin;
+    }
+    contents.forEach(c => {
+        newValue = getSum(newValue, c);
+    });
+
+    newValue = flattenValues(newValue, learning_rate);
+
+    origin = getSum(origin, newValue)
+    origin = flattenValues(origin, weight);
+
+    return Array.from(origin);
+
+}
+
+
 const saveContentEnrollment = async (req, res) => {
 
     try {
@@ -155,12 +203,17 @@ const saveContentEnrollment = async (req, res) => {
             .first();  // This will return the first matching record or null if not found
 
         if (existingRecord) {
+            const content = await knex('contents')
+            .select('link')
+            .where('id', card.content_id)
+            .first();
+        
             // If the record already exists, handle accordingly (e.g., return a response or message)
-            return res.status(200).json({ message: 'Enrollment already exists' });
+            return res.status(200).json({ message: 'Enrollment already exists', link:content.link });
         }
 
         // Proceed to insert the new record if no existing record is found
-        var res = await knex('user_content').insert({
+        var insert = await knex('user_content').insert({
             'user_id': user.id,
             'interaction_type_id': 3,
             'content_id': card.content_id,
@@ -168,7 +221,38 @@ const saveContentEnrollment = async (req, res) => {
             'verification_code': verification_code,
         });
 
-        return res.status(201).json({ message: 'Enrollment inserted successfully' });
+        const result = await knex('contents')
+        .select('category_weight')
+        .where('id', card.content_id)
+        .first();
+    
+        const like_list = [];
+        if (result) {
+            const value = typeof result.category_weight === 'string' 
+                ? JSON.parse(result.category_weight || '{}') 
+                : result.category_weight;
+        
+            // Use `push` to add the value to the array (not `add`, which is not valid for arrays)
+            like_list.push(value);
+        }
+    
+       
+        const user_vector = await knex('user_vector').select('*').where({ 'user_id': user.id }).first();
+        const values = user_vector.values;
+        const parseValues = typeof values === 'string' ? JSON.parse(values || '{}') : values;
+
+        let vector = calUserVector(parseValues, like_list, 0.5, 2);
+        await knex('user_vector').where({ 'user_id': user.id }).update({
+            'values': JSON.stringify(vector)
+        });
+
+        const content = await knex('contents')
+        .select('link')
+        .where('id', card.content_id)
+        .first();
+    
+
+        return res.status(201).json({ message: 'Enrollment inserted successfully', url:content.link  });
 
     } catch (error) {
         console.error(error)
@@ -255,7 +339,35 @@ const updateUserContent = async (req, res) => {
                 'interaction_type_id': interaction.id,
                 'ip_address': req.ip || req.connection.remoteAddress
             });
+            console.log(action);
+            if(action == 'clicked'){
+                const result = await knex('contents')
+                .select('category_weight')
+                .where('id', content_id)
+                .first();
+            
+                const like_list = [];
+                if (result) {
+                    const value = typeof result.category_weight === 'string' 
+                        ? JSON.parse(result.category_weight || '{}') 
+                        : result.category_weight;
+                
+                    // Use `push` to add the value to the array (not `add`, which is not valid for arrays)
+                    like_list.push(value);
+                }
+            
+               
+                const user_vector = await knex('user_vector').select('*').where({ 'user_id': user.id }).first();
+                const values = user_vector.values;
+                const parseValues = typeof values === 'string' ? JSON.parse(values || '{}') : values;
+        
+                let vector = calUserVector(parseValues, like_list, 0.1, 2);
+                await knex('user_vector').where({ 'user_id': user.id }).update({
+                    'values': JSON.stringify(vector)
+                });
 
+                console.log(vector);
+            }
             return res.status(201).json({
                 'message': 'Success'
             })

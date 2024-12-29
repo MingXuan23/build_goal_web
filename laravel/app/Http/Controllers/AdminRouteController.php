@@ -679,7 +679,8 @@ class AdminRouteController extends Controller
                     'startdate' => $card['start_date'] . ' ' . $card['start_time'],
                     'enddate' => $card['end_date'] . ' ' . $card['end_time'],
                     'verification_code' => $card['verification_code'],
-                    'card_id' => $card['card_id']
+                    'card_id' => $card['card_id'],
+                    'tracking_id' =>$card['tracking_id']
                 ]);
             } else {
                 // Create new card
@@ -689,7 +690,8 @@ class AdminRouteController extends Controller
                     'enddate' => $card['end_date'] . ' ' . $card['end_time'],
                     'verification_code' => $card['verification_code'],
                     'card_id' => $card['card_id'],
-                    'transaction_id' => $firstTransactionId
+                    'transaction_id' => $firstTransactionId,
+                    'tracking_id' =>$card['tracking_id']
 
                 ]);
             }

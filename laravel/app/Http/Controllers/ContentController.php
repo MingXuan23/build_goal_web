@@ -446,7 +446,17 @@ class ContentController extends Controller
             ->where('cc.card_id', $id)
             ->select('cc.card_id')
             ->first();
-
+        // dd($card, $today, DB::table('content_card as cc')
+        // ->join('contents as c', 'c.id', '=', 'cc.content_id')
+        // ->leftJoin('transactions as t', 't.id', '=', 'cc.transaction_id') // Ensure correct join key for transactions
+        // // ->where('t.status', 'Success')
+        // // ->where('cc.status', 1)
+        // // ->where('c.status', 1)
+        // ->whereDate('cc.startdate', '<=', $today)
+        // ->whereDate('cc.enddate', '>=', $today)
+        // ->where('cc.card_id', $id)
+        // ->select('cc.card_id')
+        // ->first());
         if ($card == null) {
             abort(404);
         }
@@ -845,6 +855,7 @@ class ContentController extends Controller
             return response()->json('Invalid Transaction');
         }
 
+        $content_cards = DB::table('content_card')->where('content_id',$content->id)->whereNotNull('card_id')->whereNotNull('tracking_id')->select('card_id','tracking_id')->get();
         $user = Auth::user();
         $userRoles = json_decode($user->role);
         if (!in_array(1, $userRoles) && Auth::id() != $content->user_id) {
@@ -852,7 +863,7 @@ class ContentController extends Controller
         }
 
 
-        return view('content.xbug_stand_receipt', compact('cp_id', 'content', 'transaction'));
+        return view('content.xbug_stand_receipt', compact('cp_id', 'content', 'transaction','content_cards'));
     }
     public function addCard(Request $request, $card_id)
     {

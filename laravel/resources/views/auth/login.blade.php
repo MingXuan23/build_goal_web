@@ -209,17 +209,17 @@
                             <p class="text-muted">
                                 Please select the type of account you would like to register for.
                                 Choose <strong>Organization</strong> if you represent a company or entity.
-                                Select <strong>Content Creator</strong> if you are an individual looking to showcase
-                                your creative work.
+                                <!-- Select <strong>Content Creator</strong> if you are an individual looking to showcase
+                                your creative work. -->
                             </p>
 
                             <div class="d-grid gap-2">
                                 <a class="btn btn-outline-primary" href='/verify-user-organization'>
                                     Register as Organization
                                 </a>
-                                <a class="btn btn-outline-success" href='/verify-user-content-creator'>
+                                <!-- <a class="btn btn-outline-success" href='/verify-user-content-creator'>
                                     Register as Content Creator
-                                </a>
+                                </a> -->
                             </div>
                         </div>
                         <div class="modal-footer">

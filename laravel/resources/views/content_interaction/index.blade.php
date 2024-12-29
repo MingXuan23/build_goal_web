@@ -54,7 +54,12 @@
           this.showDialog();
         } else {
           console.log('Not an Android device');
-          window.location.href = '/guest';  // Redirect to guest page if not an Android device
+          const currentUrl = window.location.href;
+
+// Extract the card_id from the URL
+          const urlParts = currentUrl.split('/');
+          const cardId = urlParts[urlParts.length - 1];
+          window.location.href = `/guest/${cardId}`;  // Redirect to guest page if not an Android device
         }
       }
 
@@ -70,7 +75,12 @@
 
         // Handle the "Continue as guest" button
         document.getElementById('continueAsGuestBtn').onclick = function() {
-          window.location.href = '/guest';  // Redirect to guest page
+          const currentUrl = window.location.href;
+
+// Extract the card_id from the URL
+          const urlParts = currentUrl.split('/');
+          const cardId = urlParts[urlParts.length - 1];
+          window.location.href = `/guest/${cardId}`;  // Redirect to guest page
         };
       }
 

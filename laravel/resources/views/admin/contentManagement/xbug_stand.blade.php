@@ -74,6 +74,7 @@
                                     <th>End Date</th>
                                     <th>End Time</th>
                                     <th>Card ID</th>
+                                    <th>Tracking Id</th>
                                     <th>Verification Code</th>
                                     <th>Action</th>
                                 </tr>
@@ -242,6 +243,9 @@
                     <input type="text" class="form-control card-id" value="${card.card_id || ''}" >
                 </td>
                 <td>
+                    <input type="text" class="form-control tracking-id" value="${card.tracking_id || ''}" >
+                </td>
+                <td>
                     <input type="text" class="form-control verification-code" value="${card.verification_code || ''}">
                 </td>
                 <td>
@@ -272,6 +276,7 @@
                         end_date: row.find('.end-date').val(),
                         start_time: row.find('.start-time').val(),
                         end_time: row.find('.end-time').val(),
+                        tracking_id: row.find('.tracking-id').val(),
                         verification_code: row.find('.verification-code').val()
                     });
                 });

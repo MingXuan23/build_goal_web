@@ -9,7 +9,7 @@ exports.seed = async function (knex) {
     { id:1,role: 'admin', desc: 'Administrator roles' },
     { id:2, role: 'organization', desc: 'organization role' },
     { id:3, role:  'content-creator', desc: 'Content creator role' },
-    { id:4, role: 'mobile user', desc: 'Mobile user role' },
+    { id:5, role: 'mobile user', desc: 'Mobile user role' },
   ];
 
   return Promise.all(
