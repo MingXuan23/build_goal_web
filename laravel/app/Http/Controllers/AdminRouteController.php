@@ -754,6 +754,62 @@ class AdminRouteController extends Controller
             ->orderBy('content_created_at', 'desc')
             ->get();
 
+        // $datas = DB::table('contents')
+        //     ->leftJoin('user_content as userContent', 'contents.id', '=', 'userContent.content_id')
+        //     ->leftJoin('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id')
+        //     ->leftJoin('users', 'userContent.user_id', '=', 'users.id')
+        //     ->leftJoin('content_promotion as cp', 'cp.content_id', '=', 'contents.id')
+        //     ->leftJoin('transactions as t', 't.id', '=', 'cp.transaction_id')
+        //     ->leftJoin('content_types', 'contents.content_type_id', '=', 'content_types.id')
+        //     ->leftJoin('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
+        //     ->where(function ($query) {
+        //         $query->whereNull('userContent.interaction_type_id') // Jika tidak ada data di user_content
+        //             ->orWhereIn('userContent.interaction_type_id', [1, 2]); // Jika ada data di user_content
+        //     })
+        //     ->where('t.status', '=', 'Success') // Hanya data dengan transaksi sukses
+        //     ->select(
+        //         'userContent.interaction_type_id', // Memisahkan data berdasarkan interaction_type_id
+        //         DB::raw('COUNT(DISTINCT userContent.id) as total_interactions'), // Menghitung jumlah unik interaksi
+        //         'contents.id as content_id',
+        //         'contents.name as name',
+        //         DB::raw('MAX(userContent.id) as id'),
+        //         DB::raw('MAX(userContent.user_id) as user_id'),
+        //         DB::raw('MAX(userContent.status) as status'),
+        //         DB::raw('MAX(userContent.content_id) as content_id'),
+        //         DB::raw('MAX(userContent.ip_address) as ip_address'),
+        //         DB::raw('MAX(userContent.token) as token'),
+        //         DB::raw('MAX(userContent.verification_code) as verification_code'),
+        //         DB::raw('MAX(userContent.`desc`) as `desc`'),
+        //         DB::raw('MAX(userContent.created_at) as user_content_created_at'),
+        //         DB::raw('MAX(users.name) as user_name'),
+        //         DB::raw('MAX(users.email) as user_email'),
+        //         DB::raw('MAX(contentOwner.name) as content_owner_name'),
+        //         DB::raw('MAX(contentOwner.email) as content_owner_email'),
+        //         DB::raw('MAX(contents.link) as link'),
+        //         DB::raw('MAX(contents.content) as content'),
+        //         DB::raw('MAX(contents.enrollment_price) as enrollment_price'),
+        //         DB::raw('MAX(contents.category_weight) as category_weight'),
+        //         DB::raw('MAX(contents.content_type_id) as content_type_id'),
+        //         DB::raw('MAX(contents.edit_from) as edit_from'),
+        //         DB::raw('MAX(contents.place) as place'),
+        //         DB::raw('MAX(contents.participant_limit) as participant_limit'),
+        //         DB::raw('MAX(contents.state) as state'),
+        //         DB::raw('MAX(contents.closed_at) as closed_at'),
+        //         DB::raw('MAX(contents.reason_phrase) as reason_phrase'),
+        //         DB::raw('MAX(contents.first_date) as first_date'),
+        //         DB::raw('MAX(contents.org_id) as org_id'),
+        //         DB::raw('MAX(contents.reject_reason) as reject_reason'),
+        //         DB::raw('MAX(contents.image) as image'),
+        //         DB::raw('MAX(contents.status) as content_status'),
+        //         DB::raw('MAX(contents.created_at) as content_created_at'),
+        //         DB::raw('MAX(interaction_type.type) as interaction_type'),
+        //         DB::raw('MAX(content_types.type) as content_type')
+        //     )
+        //     ->groupBy('contents.id', 'userContent.interaction_type_id', 'contents.name') // Group berdasarkan content_id dan interaction_type_id
+        //     ->orderBy('contents.created_at', 'desc') // Urutkan berdasarkan tanggal pembuatan konten
+        //     ->get();
+
+
         // $datass = DB::table('user_content as userContent')
         //     ->join('contents', 'userContent.content_id', '=', 'contents.id')
         //     ->join('users', 'userContent.user_id', '=', 'users.id')
@@ -1155,7 +1211,7 @@ class AdminRouteController extends Controller
             ->get();
 
         // dd($datas);
-        
+
         if ($request->ajax()) {
 
             $table = DataTables::of($datas)->addIndexColumn();
@@ -1206,7 +1262,7 @@ class AdminRouteController extends Controller
             ->get();
 
         // dd($datas);
-        
+
         if ($request->ajax()) {
 
             $table = DataTables::of($datas)->addIndexColumn();
@@ -1240,5 +1296,4 @@ class AdminRouteController extends Controller
             'datas' => $datas
         ]);
     }
-
 }

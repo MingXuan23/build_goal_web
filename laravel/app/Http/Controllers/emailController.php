@@ -47,6 +47,8 @@ class emailController extends Controller
                 'u.ekyc_status',
                 'u.ekyc_time',
                 'u.ekyc_signature',
+                'u.is_gpt',
+                'u.gpt_status',
             )
             ->orderby('u.created_at', 'asc')
             ->get();
