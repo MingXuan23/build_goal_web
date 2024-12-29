@@ -90,8 +90,10 @@ class OrganizationRouteController extends Controller
             )
             ->orderby('u.created_at', 'asc')
             ->get();
+            $state = DB::table('states')->select('id', 'name')->get();
         return view('organization.profile.index', [
-            'datas' => $data
+            'datas' => $data,
+            'states' => $state
         ]);
     }
 

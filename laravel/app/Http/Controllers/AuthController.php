@@ -88,7 +88,7 @@ class AuthController extends Controller
             'email' => [
                 'required',
                 'email',
-                Rule::unique('organization', 'email'),
+                // Rule::unique('organization', 'email'),
                 Rule::unique('users', 'email'),
             ],
             'phoneno' => 'required',
@@ -224,7 +224,7 @@ class AuthController extends Controller
             'email' => [
                 'required',
                 'email',
-                Rule::unique('organization', 'email'),
+                // Rule::unique('organization', 'email'),
                 Rule::unique('users', 'email'),
             ],
             'phoneno' => 'required',

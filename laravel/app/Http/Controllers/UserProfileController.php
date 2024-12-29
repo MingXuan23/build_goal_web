@@ -16,49 +16,32 @@ class UserProfileController extends Controller
 
         DB::beginTransaction();
         try {
-            $existingIC = DB::table('users')
-                ->where('icNo', $request->icNo)
-                ->where('id', '!=', Auth::user()->id)
-                ->first();
+            // $existingIC = DB::table('users')
+            //     ->where('icNo', $request->icNo)
+            //     ->where('id', '!=', Auth::user()->id)
+            //     ->first();
 
-            if ($existingIC) {
-                return back()->withErrors(['icNo' => 'The IC Number already exists.'])->withInput();
-            }
+            // if ($existingIC) {
+            //     return back()->withErrors(['icNo' => 'The IC Number already exists.'])->withInput();
+            // }
 
-            $existingEmail = DB::table('users')
-                ->where('email', $request->email)
-                ->where('id', '!=', Auth::user()->id)
-                ->first();
+            // $existingEmail = DB::table('users')
+            //     ->where('email', $request->email)
+            //     ->where('id', '!=', Auth::user()->id)
+            //     ->first();
 
-            if ($existingEmail) {
-                return back()->withErrors(['email' => 'The Email already exists.'])->withInput();
-            }
+            // if ($existingEmail) {
+            //     return back()->withErrors(['email' => 'The Email already exists.'])->withInput();
+            // }
 
 
             $validatedData = $request->validate([
-                'icNo' => 'required|digits:12',
-                'name' => 'required',
+                // 'icNo' => 'required|digits:12',
+                // 'name' => 'required',
                 'email' => 'required|email',
                 'telno' => 'required',
                 'address' => 'required',
-                'state' => [
-                    'required',
-                    Rule::in([
-                        'pahang',
-                        'perak',
-                        'terengganu',
-                        'perlis',
-                        'selangor',
-                        'negeri_sembilan',
-                        'johor',
-                        'kelantan',
-                        'kedah',
-                        'pulau_pinang',
-                        'melaka',
-                        'sabah',
-                        'sarawak'
-                    ]),
-                ],
+                'state' => 'required|exists:states,name',
 
             ], [
                 'ostate.in' => 'The selected state is invalid. Please choose a valid state.',
@@ -72,8 +55,8 @@ class UserProfileController extends Controller
             ]);
 
             DB::table('users')->where('id', Auth::user()->id)->update([
-                'icNo' => $validatedData['icNo'],
-                'name' => $validatedData['name'],
+                // 'icNo' => $validatedData['icNo'],
+                // 'name' => $validatedData['name'],
                 'email' => $validatedData['email'],
                 'telno' => $validatedData['telno'],
                 'address' => $validatedData['address'],
@@ -82,7 +65,7 @@ class UserProfileController extends Controller
 
             // Update data ke tabel `organizations`
             DB::table('organization as o')
-                ->join('organization_user as ou', 'o.id', 'ou.user_id')
+                ->join('organization_user as ou', 'o.id', 'ou.organization_id')
                 ->where('user_id', Auth::user()->id)->update([
                     'address' => $validatedData['address'],
                     'state' => $validatedData['state'],
@@ -420,29 +403,34 @@ class UserProfileController extends Controller
 
 
             $validatedData = $request->validate([
-                'icNo' => 'required|digits:12',
+                // 'icNo' => 'required|digits:12',
                 'name' => 'required',
                 'email' => 'required|email',
                 'telno' => 'required',
             ], [], [
-                'icNo' => 'IC Number',
+                // 'icNo' => 'IC Number',
                 'name' => 'Full Name',
                 'email' => 'Email',
                 'telno' => 'Phone Number',
             ]);
 
             DB::table('users')->where('id', Auth::user()->id)->update([
-                'icNo' => $validatedData['icNo'],
+                // 'icNo' => $validatedData['icNo'],
                 'name' => $validatedData['name'],
                 'email' => $validatedData['email'],
                 'telno' => $validatedData['telno'],
-                
             ]);
+
+            // $data = DB::table('organization as o')
+            // ->join('organization_user as ou', 'o.id', '=','ou.organization_id')
+            // ->where('ou.user_id', Auth::user()->id)->get();
+
+            // dd($data);
 
             // Update data ke tabel `organizations`
             DB::table('organization as o')
-                ->join('organization_user as ou', 'o.id', 'ou.user_id')
-                ->where('user_id', Auth::user()->id)->update([
+                ->join('organization_user as ou', 'o.id', '=', 'ou.organization_id')
+                ->where('ou.user_id', Auth::user()->id)->update([
                     'email' => $validatedData['email'],
 
                 ]);
@@ -465,47 +453,30 @@ class UserProfileController extends Controller
         // dd($request->all());
         DB::beginTransaction();
         try {
-            $existingIC = DB::table('users')
-                ->where('icNo', $request->icNo)
-                ->where('id', '!=', Auth::user()->id)
-                ->first();
+            // $existingIC = DB::table('users')
+            //     ->where('icNo', $request->icNo)
+            //     ->where('id', '!=', Auth::user()->id)
+            //     ->first();
 
-            if ($existingIC) {
-                return back()->withErrors(['icNo' => 'The IC Number already exists.'])->withInput();
-            }
+            // if ($existingIC) {
+            //     return back()->withErrors(['icNo' => 'The IC Number already exists.'])->withInput();
+            // }
 
-            $existingEmail = DB::table('users')
-                ->where('email', $request->email)
-                ->where('id', '!=', Auth::user()->id)
-                ->first();
+            // $existingEmail = DB::table('users')
+            //     ->where('email', $request->email)
+            //     ->where('id', '!=', Auth::user()->id)
+            //     ->first();
 
-            if ($existingEmail) {
-                return back()->withErrors(['email' => 'The Email already exists.'])->withInput();
-            }
+            // if ($existingEmail) {
+            //     return back()->withErrors(['email' => 'The Email already exists.'])->withInput();
+            // }
 
 
             $validatedData = $request->validate([
                 'oname' => 'required',
                 'oaddress' => 'required',
                 'odesc' => 'nullable',
-                'ostate' => [
-                    'required',
-                    Rule::in([
-                        'pahang',
-                        'perak',
-                        'terengganu',
-                        'perlis',
-                        'selangor',
-                        'negeri_sembilan',
-                        'johor',
-                        'kelantan',
-                        'kedah',
-                        'pulau_pinang',
-                        'melaka',
-                        'sabah',
-                        'sarawak'
-                    ]),
-                ],
+                'ostate' => 'required|exists:states,name',
                 'otype' => 'nullable|exists:organization_type,id',
 
             ], [
@@ -526,7 +497,7 @@ class UserProfileController extends Controller
                 ->first();
             // Update data ke tabel `organizations`
             DB::table('organization as o')
-                ->join('organization_user as ou', 'o.id', 'ou.user_id')
+                ->join('organization_user as ou', 'o.id', '=', 'ou.organization_id')
                 ->where('user_id', Auth::user()->id)->update([
                     'name' => $validatedData['oname'],
                     'address' => $validatedData['oaddress'],
@@ -535,6 +506,11 @@ class UserProfileController extends Controller
                     'desc' => $validatedData['odesc'],
 
                 ]);
+
+            DB::table('users')->where('id', Auth::user()->id)->update([
+                'address' => $validatedData['oaddress'],
+                'state' => $validatedData['ostate'],
+            ]);
 
             DB::commit();
 

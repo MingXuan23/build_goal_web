@@ -407,8 +407,10 @@ class AdminRouteController extends Controller
             )
             ->orderby('u.created_at', 'asc')
             ->get();
+            $states = DB::table('states')->select('id', 'name')->get();
         return view('admin.profile.index', [
-            'datas' => $data
+            'datas' => $data,
+            'states' => $states
         ]);
     }
 

@@ -101,7 +101,7 @@
                                                                                             id="floatingInput"
                                                                                             placeholder="Ic Number"
                                                                                             value="{{ Auth::user()->icNo }}"
-                                                                                            name="icNo">
+                                                                                            name="icNo" readonly>
                                                                                         <label for="floatingInput">Ic
                                                                                             Number</label>
                                                                                         @error('icNo')
@@ -117,7 +117,7 @@
                                                                                             id="floatingInput"
                                                                                             placeholder="Full Name"
                                                                                             value="{{ Auth::user()->name }}"
-                                                                                            name="name">
+                                                                                            name="name" readonly>
                                                                                         <label for="floatingInput">Full
                                                                                             Name</label>
                                                                                         @error('name')
@@ -193,55 +193,16 @@
                                                                                             id="floatingSelect"
                                                                                             aria-label="Floating label select example"
                                                                                             name="state">
-                                                                                            <option value=""
-                                                                                                selected>- Select State -
-                                                                                            </option>
-                                                                                            <option value="pahang"
-                                                                                                @selected($datas[0]->org_state == 'pahang')>
-                                                                                                Pahang
-                                                                                            </option>
-                                                                                            <option value="perak"
-                                                                                                @selected($datas[0]->org_state == 'perak')>
-                                                                                                Perak
-                                                                                            </option>
-                                                                                            <option value="terengganu"
-                                                                                                @selected($datas[0]->org_state == 'terengganu')>
-                                                                                                Terengganu</option>
-                                                                                            <option value="perlis"
-                                                                                                @selected($datas[0]->org_state == 'perlis')>
-                                                                                                Perlis
-                                                                                            </option>
-                                                                                            <option value="selangor"
-                                                                                                @selected($datas[0]->org_state == 'selangor')>
-                                                                                                Selangor</option>
-                                                                                            <option value="negeri_sembilan"
-                                                                                                @selected($datas[0]->org_state == 'negeri_sembilan')>
-                                                                                                Negeri Sembilan</option>
-                                                                                            <option value="johor"
-                                                                                                @selected($datas[0]->org_state == 'johor')>
-                                                                                                Johor
-                                                                                            </option>
-                                                                                            <option value="kelantan"
-                                                                                                @selected($datas[0]->org_state == 'kelantan')>
-                                                                                                Kelantan</option>
-                                                                                            <option value="kedah"
-                                                                                                @selected($datas[0]->org_state == 'kedah')>
-                                                                                                Kedah
-                                                                                            </option>
-                                                                                            <option value="pulau_pinang"
-                                                                                                @selected($datas[0]->org_state == 'pulau_pinang')>
-                                                                                                Pulau Pinang</option>
-                                                                                            <option value="melaka"
-                                                                                                @selected($datas[0]->org_state == 'melaka')>
-                                                                                                Melaka
-                                                                                            </option>
-                                                                                            <option value="sabah"
-                                                                                                @selected($datas[0]->org_state == 'sabah')>
-                                                                                                Sabah
-                                                                                            </option>
-                                                                                            <option value="sarawak"
-                                                                                                @selected($datas[0]->org_state == 'sarawak')>
-                                                                                                Sarawak</option>
+                                                                                            <option selected>- Select State
+                                                                                                -</option>
+                                                                                            @foreach ($states as $state)
+                                                                                                <option
+                                                                                                    value="{{ $state->name }}"
+                                                                                                    @if ($datas[0]->state == $state->name) selected @endif>
+                                                                                                    {{ $state->name }}
+                                                                                                </option>
+                                                                                            @endforeach
+
                                                                                         </select>
                                                                                         <label
                                                                                             for="floatingSelect">State</label>

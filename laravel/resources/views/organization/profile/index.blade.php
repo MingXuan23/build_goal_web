@@ -126,7 +126,7 @@
                                                                                             id="floatingInput"
                                                                                             placeholder="Ic Number"
                                                                                             value="{{ $datas[0]->icNo }}"
-                                                                                            name="icNo">
+                                                                                            name="icNo" readonly>
                                                                                         <label for="floatingInput">Ic
                                                                                             Number</label>
                                                                                         @error('icNo')
@@ -142,7 +142,7 @@
                                                                                             id="floatingInput"
                                                                                             placeholder="Full Name"
                                                                                             value="{{ $datas[0]->name }}"
-                                                                                            name="name">
+                                                                                            name="name" readonly>
                                                                                         <label for="floatingInput">Full
                                                                                             Name</label>
                                                                                         @error('name')
@@ -200,7 +200,7 @@
                                                                                         @php
                                                                                             // Data peran
                                                                                             $rolesMap = [
-                                                                                                1 => 'admin',                                                                                            
+                                                                                                1 => 'admin',
                                                                                                 2 => 'organization',
                                                                                                 3 => 'content creator',
                                                                                                 5 => 'mobile user',
@@ -359,55 +359,16 @@
                                                                                             id="floatingSelect"
                                                                                             aria-label="Floating label select example"
                                                                                             name="ostate">
-                                                                                            <option value=""
-                                                                                                disabled>-
-                                                                                                Select State -</option>
-                                                                                            <option value="pahang"
-                                                                                                @selected($datas[0]->org_state == 'pahang')>
-                                                                                                Pahang
-                                                                                            </option>
-                                                                                            <option value="perak"
-                                                                                                @selected($datas[0]->org_state == 'perak')>
-                                                                                                Perak
-                                                                                            </option>
-                                                                                            <option value="terengganu"
-                                                                                                @selected($datas[0]->org_state == 'terengganu')>
-                                                                                                Terengganu</option>
-                                                                                            <option value="perlis"
-                                                                                                @selected($datas[0]->org_state == 'perlis')>
-                                                                                                Perlis
-                                                                                            </option>
-                                                                                            <option value="selangor"
-                                                                                                @selected($datas[0]->org_state == 'selangor')>
-                                                                                                Selangor</option>
-                                                                                            <option value="negeri_sembilan"
-                                                                                                @selected($datas[0]->org_state == 'negeri_sembilan')>
-                                                                                                Negeri Sembilan</option>
-                                                                                            <option value="johor"
-                                                                                                @selected($datas[0]->org_state == 'johor')>
-                                                                                                Johor
-                                                                                            </option>
-                                                                                            <option value="kelantan"
-                                                                                                @selected($datas[0]->org_state == 'kelantan')>
-                                                                                                Kelantan</option>
-                                                                                            <option value="kedah"
-                                                                                                @selected($datas[0]->org_state == 'kedah')>
-                                                                                                Kedah
-                                                                                            </option>
-                                                                                            <option value="pulau_pinang"
-                                                                                                @selected($datas[0]->org_state == 'pulau_pinang')>
-                                                                                                Pulau Pinang</option>
-                                                                                            <option value="melaka"
-                                                                                                @selected($datas[0]->org_state == 'melaka')>
-                                                                                                Melaka
-                                                                                            </option>
-                                                                                            <option value="sabah"
-                                                                                                @selected($datas[0]->org_state == 'sabah')>
-                                                                                                Sabah
-                                                                                            </option>
-                                                                                            <option value="sarawak"
-                                                                                                @selected($datas[0]->org_state == 'sarawak')>
-                                                                                                Sarawak</option>
+                                                                                            <option selected>- Select State
+                                                                                                -</option>
+                                                                                            @foreach ($states as $state)
+                                                                                                <option
+                                                                                                    value="{{ $state->name }}"
+                                                                                                    @if ($datas[0]->state == $state->name) selected @endif>
+                                                                                                    {{ $state->name }}
+                                                                                                </option>
+                                                                                            @endforeach
+
                                                                                         </select>
                                                                                         <label
                                                                                             for="floatingSelect">State</label>
@@ -622,7 +583,10 @@
                                                                                                                         identity.
                                                                                                                         Click
                                                                                                                         start
-                                                                                                                        button at Dashboard Page
+                                                                                                                        button
+                                                                                                                        at
+                                                                                                                        Dashboard
+                                                                                                                        Page
                                                                                                                         to
                                                                                                                         get
                                                                                                                         started
@@ -682,7 +646,7 @@
                                                                                                                 </div>
                                                                                                             @endif
                                                                                                         </div>
-                                                                                                        
+
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -841,7 +805,7 @@
     </div>
     <script>
         document.getElementById('startButton').addEventListener('click', function() {
-            window.location.href = "/organization/card-verification"; 
+            window.location.href = "/organization/card-verification";
         });
     </script>
     <script>
