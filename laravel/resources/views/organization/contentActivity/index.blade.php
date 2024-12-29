@@ -24,8 +24,11 @@
             @endif
 
             <div class="card custom-card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <div class="card-title">List Content User (Clicked)</div>
+                    <button class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#viewAllContentClickedViewed">
+                        List Paid Content
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -70,7 +73,72 @@
         </div>
     @endforeach
 
+
+    <div class="modal fade" id="viewAllContentClickedViewed">
+        <div class="modal-dialog modal-dialog-centered text-center modal-xl modal-dialog-scrollable">
+            <div class="modal-content modal-content-demo">
+                <div class="modal-header">
+                    <h6 class="modal-title">Content Promotion Active</h6>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Table -->
+                    <table id="contentActiveTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Owner Name</th>
+                                <th>Content Name</th>
+                                <th>Content Type</th>
+                                <th>Payment Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Define your PHP variable to JavaScript
+            var dataContentActive = @json($dataContentActive);
+
+            // Populate the table dynamically
+            var tableBody = '';
+            dataContentActive.forEach(function(item, index) {
+                tableBody += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.user_name}</td>
+                        <td>${item.content_name}</td>
+                        <td>${item.content_type_name}</td>
+                        <td>${item.transaction_updated_at}</td>
+                    </tr>
+                `;
+            });
+
+            // Append rows to the table
+            $('#contentActiveTable tbody').html(tableBody);
+
+            // Initialize DataTables
+            $('#contentActiveTable').DataTable({
+                "autoWidth": false,
+                "columnDefs": [{
+                        "className": "text-start",
+                        "targets": "_all"
+                    } // Apply text-start to all columns
+                ]
+            });
+        });
+    </script>
 
 
     <script>
@@ -401,12 +469,12 @@
                                                     text: 'Click Count'
                                                 },
                                                 beginAtZero: true,
-                                                ticks: { 
+                                                ticks: {
                                                     stepSize: 1,
                                                     callback: function(value) {
                                                         return Math.round(
                                                             value
-                                                        ); 
+                                                        );
                                                     }
                                                 }
                                             }

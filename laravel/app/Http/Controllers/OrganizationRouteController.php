@@ -16,7 +16,7 @@ class OrganizationRouteController extends Controller
     public function showDashboard(Request $request)
     {
         $proposedContents = DB::table('contents')
-        ->where('user_id', Auth::user()->id)->count();
+            ->where('user_id', Auth::user()->id)->count();
         $approvedContents = DB::table('contents')
             ->where('user_id', Auth::user()->id)
             ->where('reason_phrase', 'APPROVED')
@@ -27,9 +27,9 @@ class OrganizationRouteController extends Controller
             ->count();
 
         $pendingContents = DB::table('contents')
-        ->where('user_id', Auth::user()->id)
-        ->where('reason_phrase', 'PENDING')
-        ->count();
+            ->where('user_id', Auth::user()->id)
+            ->where('reason_phrase', 'PENDING')
+            ->count();
 
         return view('organization.dashboard.index', [
             'proposedContents' => $proposedContents,
@@ -127,8 +127,8 @@ class OrganizationRouteController extends Controller
 
             $table->addColumn('action', function ($row) {
                 if ($row->reason_phrase == 'APPROVED') {
-                    $button = 
-                    '<div class="d-flex">
+                    $button =
+                        '<div class="d-flex">
                         <button class="btn btn-icon btn-sm btn-success-transparent rounded-pill me-2 view-content" 
                                 data-id="' . $row->id . '" 
                                 data-name="' . htmlspecialchars($row->name, ENT_QUOTES) . '" 
@@ -138,11 +138,10 @@ class OrganizationRouteController extends Controller
                                 data-bs-target="#dynamicModal">
                             <i class="bi bi-arrow-right-circle-fill"></i>
                         </button>';
-                
-               
-                
-                $button .= '</div>';
-                
+
+
+
+                    $button .= '</div>';
                 } elseif ($row->reason_phrase == 'PENDING') {
                     $button =
                         '<div class="d-flex justify-content-between">
@@ -162,7 +161,7 @@ class OrganizationRouteController extends Controller
                 }
                 return $button;
             });
-            
+
 
             $table->addColumn('status', function ($row) {
                 if ($row->reason_phrase == 'APPROVED') {
@@ -191,7 +190,7 @@ class OrganizationRouteController extends Controller
                 return $button;
             });
 
-            
+
             $table->addColumn('card', function ($row) {
                 if (($row->content_type_id == 1 || $row->content_type_id == 3 || $row->content_type_id == 5) && $row->reason_phrase === 'APPROVED') {
                     return '<div class="d-flex">
@@ -212,7 +211,7 @@ class OrganizationRouteController extends Controller
                 }
             });
 
-            $table->rawColumns(['status', 'action','card']);
+            $table->rawColumns(['status', 'action', 'card']);
             return $table->make(true);
         }
 
@@ -231,7 +230,7 @@ class OrganizationRouteController extends Controller
         $stateCitiesJson = file_get_contents(public_path('assets/json/states-cities.json'));
         $stateCities = json_decode($stateCitiesJson, true);
         $states = DB::table('states')->select('id', 'name')->get();
-        return view('organization.contentManagement.applyContent', compact('content_types', 'stateCities','states'));
+        return view('organization.contentManagement.applyContent', compact('content_types', 'stateCities', 'states'));
     }
 
     public function showMicroLearningForm()
@@ -253,7 +252,7 @@ class OrganizationRouteController extends Controller
                 'created_at'
             ])
             ->where('recipient_email', Auth::user()->email)
-            ->whereIn('email_type', ['NOTIFICATION USER', 'NOTIFICATION TO ALL USERS','APPLY CONTENT - APPROVED','APPLY CONTENT - PENDING','APPLY CONTENT - REJECTED'])
+            ->whereIn('email_type', ['NOTIFICATION USER', 'NOTIFICATION TO ALL USERS', 'APPLY CONTENT - APPROVED', 'APPLY CONTENT - PENDING', 'APPLY CONTENT - REJECTED'])
             ->orderBy('id', 'desc')
             ->get();
         if ($request->ajax()) {
@@ -288,14 +287,48 @@ class OrganizationRouteController extends Controller
 
     public function showContentUserClickedViewedOrganization(Request $request)
     {
-        $datas = DB::table('user_content as userContent')
-            ->join('contents', 'userContent.content_id', '=', 'contents.id')
-            ->where('contents.user_id', Auth::user()->id)
+        $dataContentActive = DB::table('content_promotion')
+            ->leftJoin('user_content', 'content_promotion.content_id', '=', 'user_content.content_id')
+            ->join('transactions', 'content_promotion.transaction_id', '=', 'transactions.id')
+            ->join('users', 'transactions.user_id', '=', 'users.id')
+            ->join('contents', 'content_promotion.content_id', '=', 'contents.id')
+            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
             ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id')
-            ->join('users', 'userContent.user_id', '=', 'users.id') 
+            ->where('transactions.status', "Success")
+            ->where('contents.user_id', Auth::user()->id)
+            ->whereNotNull('content_promotion.views')
+            ->whereNotNull('content_promotion.clicks')
+            ->select(
+                'contents.id as content_id',
+                'contents.name as content_name',
+                'content_types.type as content_type_name',
+                'users.name as user_name',
+                DB::raw('MAX(transactions.updated_at) as transaction_updated_at'), // Ambil data terakhir untuk transaksi
+                DB::raw('COUNT(content_promotion.id) as total_promotions') // Contoh agregasi (opsional)
+            )
+            ->groupBy('contents.id', 'contents.name', 'content_types.type', 'users.name') // Grouping berdasarkan content.id dan kolom lainnya
+            ->get();
+
+
+        // dd($dataContentActive);
+
+        $datas = DB::table('user_content as userContent')
+            // ->join('contents', 'userContent.content_id', '=', 'contents.id')
+            // ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id')
+            // ->join('users', 'userContent.user_id', '=', 'users.id')
+            // ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+            // ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
+            // ->whereIn('userContent.interaction_type_id', [1, 2])
+            ->join('contents', 'userContent.content_id', '=', 'contents.id')
+            ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id')
+            ->join('users', 'userContent.user_id', '=', 'users.id')
             ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
             ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
-            ->whereIn('userContent.interaction_type_id', [1,2])
+            ->join('content_promotion as cp', 'contents.id', '=', 'cp.content_id')
+            ->join('transactions', 'cp.transaction_id', '=', 'transactions.id')
+            ->whereIn('userContent.interaction_type_id', [1, 2])
+            ->where('contents.user_id', Auth::user()->id)
+            ->where('transactions.status', '=', 'Success')
             ->select(
                 DB::raw('MAX(userContent.id) as id'),
                 DB::raw('MAX(userContent.user_id) as user_id'),
@@ -307,10 +340,10 @@ class OrganizationRouteController extends Controller
                 DB::raw('MAX(userContent.verification_code) as verification_code'),
                 DB::raw('MAX(userContent.`desc`) as `desc`'),
                 DB::raw('MAX(userContent.created_at) as user_content_created_at'),
-                DB::raw('MAX(users.name) as user_name'), 
-                DB::raw('MAX(users.email) as user_email'), 
+                DB::raw('MAX(users.name) as user_name'),
+                DB::raw('MAX(users.email) as user_email'),
                 DB::raw('MAX(contentOwner.name) as content_owner_name'),
-                DB::raw('MAX(contentOwner.email) as content_owner_email'), 
+                DB::raw('MAX(contentOwner.email) as content_owner_email'),
                 DB::raw('MAX(contents.name) as name'),
                 DB::raw('MAX(contents.link) as link'),
                 DB::raw('MAX(contents.content) as content'),
@@ -334,7 +367,7 @@ class OrganizationRouteController extends Controller
                 DB::raw('COUNT(userContent.content_id) as total_interactions')
             )
             ->groupBy('userContent.content_id', 'userContent.interaction_type_id')
-            ->orderBy('content_created_at', 'desc') 
+            ->orderBy('content_created_at', 'desc')
             ->get();
 
         // $datass = DB::table('user_content as userContent')
@@ -369,7 +402,7 @@ class OrganizationRouteController extends Controller
                                 <i class="ri-eye-line fw-bold"></i>
                             </button>';
                 })
-                
+
                 ->addColumn('status', function ($row) {
                     if ($row->content_status == 1) {
 
@@ -429,18 +462,45 @@ class OrganizationRouteController extends Controller
         }
         return view('organization.contentActivity.index', [
             'datas' => $datas,
+            'dataContentActive' => $dataContentActive
         ]);
     }
     public function showContentUserEnrolledOrganization(Request $request)
     {
+        $dataContentActive = DB::table('content_promotion')
+            ->leftJoin('user_content', 'content_promotion.content_id', '=', 'user_content.content_id')
+            ->join('transactions', 'content_promotion.transaction_id', '=', 'transactions.id')
+            ->join('users', 'transactions.user_id', '=', 'users.id')
+            ->join('contents', 'content_promotion.content_id', '=', 'contents.id')
+            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+            ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id')
+            ->where('contents.user_id', Auth::user()->id)
+            ->where('transactions.status', "Success")
+            ->whereNotNull('content_promotion.enrollment')
+            ->select(
+                'contents.id as content_id', // Tambahkan content_id
+                'contents.name as content_name',
+                'content_types.type as content_type_name',
+                'users.name as user_name',
+                DB::raw('MAX(transactions.updated_at) as transaction_updated_at'), // Tanggal terakhir transaksi
+                DB::raw('COUNT(content_promotion.id) as total_promotions') // Total promosi
+            )
+            ->groupBy('contents.id', 'contents.name', 'content_types.type', 'users.name') // Group berdasarkan content_id
+            ->get();
+
+        // dd($dataContentActive);
+
         $datas = DB::table('user_content as userContent')
             ->join('contents', 'userContent.content_id', '=', 'contents.id')
-            ->where('contents.user_id', Auth::user()->id)
             ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id')
-            ->join('users', 'userContent.user_id', '=', 'users.id') 
+            ->join('users', 'userContent.user_id', '=', 'users.id')
             ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
             ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
+            ->join('content_promotion as cp', 'contents.id', '=', 'cp.content_id')
+            ->join('transactions', 'cp.transaction_id', '=', 'transactions.id')
+            ->where('contents.user_id', Auth::user()->id)
             ->whereIn('userContent.interaction_type_id', [3])
+            ->where('transactions.status', '=', 'Success')
             ->select(
                 DB::raw('MAX(userContent.id) as id'),
                 DB::raw('MAX(userContent.user_id) as user_id'),
@@ -452,10 +512,10 @@ class OrganizationRouteController extends Controller
                 DB::raw('MAX(userContent.verification_code) as verification_code'),
                 DB::raw('MAX(userContent.`desc`) as `desc`'),
                 DB::raw('MAX(userContent.created_at) as user_content_created_at'),
-                DB::raw('MAX(users.name) as user_name'), 
-                DB::raw('MAX(users.email) as user_email'), 
+                DB::raw('MAX(users.name) as user_name'),
+                DB::raw('MAX(users.email) as user_email'),
                 DB::raw('MAX(contentOwner.name) as content_owner_name'),
-                DB::raw('MAX(contentOwner.email) as content_owner_email'), 
+                DB::raw('MAX(contentOwner.email) as content_owner_email'),
                 DB::raw('MAX(contents.name) as name'),
                 DB::raw('MAX(contents.link) as link'),
                 DB::raw('MAX(contents.content) as content'),
@@ -479,27 +539,8 @@ class OrganizationRouteController extends Controller
                 DB::raw('COUNT(userContent.content_id) as total_interactions')
             )
             ->groupBy('userContent.content_id', 'userContent.interaction_type_id')
-            ->orderBy('content_created_at', 'desc') 
+            ->orderBy('content_created_at', 'desc')
             ->get();
-
-        // $datass = DB::table('user_content as userContent')
-        //     ->join('contents', 'userContent.content_id', '=', 'contents.id')
-        //     ->join('users', 'userContent.user_id', '=', 'users.id')
-        //     ->join('interaction_type', 'userContent.interaction_type_id', '=', 'interaction_type.id')
-        //     ->select(
-        //         'userContent.*',
-        //         'users.name as user_name',
-        //         'users.email as user_email',
-        //         'contents.*',
-        //         'contents.status as content_status',
-        //         'contents.created_at as content_created_at',
-        //         'interaction_type.type as interaction_type'
-        //     )
-        //     ->orderBy('contents.created_at', 'desc')
-        //     ->get();
-
-        // $combinedData = $datas->merge($datass);
-        // dd($combinedData);
 
 
 
@@ -514,7 +555,7 @@ class OrganizationRouteController extends Controller
                                 <i class="ri-eye-line fw-bold"></i>
                             </button>';
                 })
-                
+
                 ->addColumn('status', function ($row) {
                     if ($row->content_status == 1) {
 
@@ -574,6 +615,7 @@ class OrganizationRouteController extends Controller
         }
         return view('organization.contentActivity.indexEnrolled', [
             'datas' => $datas,
+            'dataContentActive' => $dataContentActive
         ]);
     }
 
@@ -597,7 +639,7 @@ class OrganizationRouteController extends Controller
             ->where('userContent.content_id', $content_id)
             ->where('userContent.interaction_type_id', $interaction_type)
             ->get();
-    
+
         return response()->json($contentDetail);
     }
 
@@ -688,7 +730,7 @@ class OrganizationRouteController extends Controller
             ->get();
 
         // dd($datas);
-        
+
         if ($request->ajax()) {
 
             $table = DataTables::of($datas)->addIndexColumn();
@@ -740,7 +782,7 @@ class OrganizationRouteController extends Controller
             ->get();
 
         // dd($datas);
-        
+
         if ($request->ajax()) {
 
             $table = DataTables::of($datas)->addIndexColumn();
