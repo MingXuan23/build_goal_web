@@ -1,5 +1,9 @@
 @extends('organization.layouts.main')
 @section('container')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
@@ -95,7 +99,9 @@
                                     <i class="ti ti-dots-vertical"></i>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="javascript:void(0);">Clear Chat</a></li>
+                                    <li>
+                                        <a class="dropdown-item clear-chat-btn" href="javascript:void(0);">Clear Chat</a>
+                                    </li>
                                 </ul>
                             </div>
                             <button aria-label="button" type="button"
@@ -223,6 +229,40 @@
     </script>
     <script>
         $(document).ready(function() {
+            const CHAT_STORAGE_KEY = "xBugChatHistory"; // Kunci penyimpanan local storage untuk chat history
+            loadChatHistory(); // Muat chat history dari local storage saat halaman dimuat
+
+            $('.clear-chat-btn').on('click', function(e) {
+                e.preventDefault();
+
+                // Gunakan SweetAlert untuk konfirmasi penghapusan
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This will clear all chat history except the default message and initial AI response!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, clear it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Hapus data chat dari localStorage
+                        localStorage.removeItem(CHAT_STORAGE_KEY);
+
+                        // Kosongkan elemen dinamis (pesan chat user dan AI respons tambahan) saja
+                        $('#main-chat-content ul li').not('.chat-day-label, .chat-item-start:first')
+                            .remove();
+
+                        // Tampilkan pesan sukses
+                        Swal.fire(
+                            'Cleared!',
+                            'Chat history has been cleared successfully, default message and initial AI response remain.',
+                            'success'
+                        );
+                    }
+                });
+            });
+
             $('#send-btn').on('click', function(e) {
                 e.preventDefault();
                 sendMessage();
@@ -244,32 +284,34 @@
                 $('#loading-btn').show();
 
                 // Tambahkan pesan user ke chat area
-                $('#main-chat-content ul').append(`
-                    <li class="chat-item-end">
-                        <div class="chat-list-inner">
-                            <div class="me-3">
-                                <span class="chatting-user-info">
-                                    <span class="msg-sent-time">Now</span> You
-                                </span>
-                                <div class="main-chat-msg">
-                                    <div>
-                                        <p class="mb-0">${message}</p>
-                                    </div>
+                const userMessageHtml = `
+                <li class="chat-item-end">
+                    <div class="chat-list-inner">
+                        <div class="me-3">
+                            <span class="chatting-user-info">
+                                <span class="msg-sent-time">Now</span> You
+                            </span>
+                            <div class="main-chat-msg">
+                                <div>
+                                    <p class="mb-0">${message}</p>
                                 </div>
                             </div>
-                            <div class="chat-user-profile">
-                                <span class="avatar avatar-md online avatar-rounded">
-                                    <img src="../../assets/images/user/avatar-1.jpg" alt="img">
-                                </span>
-                            </div>
                         </div>
-                    </li>
-                `);
+                        <div class="chat-user-profile">
+                            <span class="avatar avatar-md online avatar-rounded">
+                                <img src="../../assets/images/user/avatar-1.jpg" alt="img">
+                            </span>
+                        </div>
+                    </div>
+                </li>
+            `;
+                $('#main-chat-content ul').append(userMessageHtml);
 
+                saveMessageToStorage("user", message); // Simpan pesan user ke local storage
                 $('#chat-input').val('');
-
                 $('#main-chat-content').scrollTop($('#main-chat-content')[0].scrollHeight);
 
+                // Kirim pesan ke server
                 $.ajax({
                     url: "{{ route('sendMessage') }}",
                     method: "POST",
@@ -281,60 +323,65 @@
                         if (response.status === 'success') {
                             let formattedMessage = response.message;
 
-                            $('#main-chat-content ul').append(`
-                                <li class="chat-item-start">
-                                    <div class="chat-list-inner">
-                                        <div class="chat-user-profile">
-                                            <span class="avatar avatar-md online avatar-rounded chatstatusperson">
-                                                <img class="chatimageperson" src="../../assets/images/gpt.png" alt="img">
-                                            </span>
-                                        </div>
-                                        <div class="ms-3">
-                                            <span class="chatting-user-info">
-                                                <span class="chatnameperson">xBug GPT</span>
-                                                <span class="msg-sent-time">now</span>
-                                            </span>
-                                            <div class="main-chat-msg">
-                                                <div class="response-text"></div>
-                                            </div>
+                            const aiMessageHtml = `
+                            <li class="chat-item-start">
+                                <div class="chat-list-inner">
+                                    <div class="chat-user-profile">
+                                        <span class="avatar avatar-md online avatar-rounded chatstatusperson">
+                                            <img class="chatimageperson" src="../../assets/images/gpt.png" alt="img">
+                                        </span>
+                                    </div>
+                                    <div class="ms-3">
+                                        <span class="chatting-user-info">
+                                            <span class="chatnameperson">xBug Ai</span>
+                                            <span class="msg-sent-time">now</span>
+                                        </span>
+                                        <div class="main-chat-msg">
+                                            <div class="response-text"></div>
                                         </div>
                                     </div>
-                                </li>
-                            `);
-
+                                </div>
+                            </li>
+                        `;
+                            $('#main-chat-content ul').append(aiMessageHtml);
                             $('#main-chat-content').scrollTop($('#main-chat-content')[0].scrollHeight);
 
+                            saveMessageToStorage("ai",
+                                formattedMessage); // Simpan respons AI ke local storage
                             displayResponse(formattedMessage);
                             $('#loading-btn').hide();
                         }
                     },
                     error: function(response) {
-                        let formattedMessage = response.responseJSON.message;
-                        $('#main-chat-content ul').append(`
-                                <li class="chat-item-start">
-                                    <div class="chat-list-inner">
-                                        <div class="chat-user-profile">
-                                            <span class="avatar avatar-md online avatar-rounded chatstatusperson">
-                                                <img class="chatimageperson" src="../../assets/images/gpt.png" alt="img">
-                                            </span>
-                                        </div>
-                                        <div class="ms-3">
-                                            <span class="chatting-user-info">
-                                                <span class="chatnameperson">xBug Ai</span>
-                                                <span class="msg-sent-time">now</span>
-                                            </span>
-                                            <div class="main-chat-msg ">
-                                                <div class="response-text bg-danger-transparent fw-bold"><span class="text-danger"></span></div>
-                                            </div>
+                        let formattedMessage = response.responseJSON.message || "Something went wrong!";
+                        const errorHtml = `
+                        <li class="chat-item-start">
+                            <div class="chat-list-inner">
+                                <div class="chat-user-profile">
+                                    <span class="avatar avatar-md online avatar-rounded chatstatusperson">
+                                        <img class="chatimageperson" src="../../assets/images/gpt.png" alt="img">
+                                    </span>
+                                </div>
+                                <div class="ms-3">
+                                    <span class="chatting-user-info">
+                                        <span class="chatnameperson">xBug Ai</span>
+                                        <span class="msg-sent-time">now</span>
+                                    </span>
+                                    <div class="main-chat-msg">
+                                        <div class="response-text bg-danger-transparent fw-bold">
+                                            <span class="text-danger">${formattedMessage}</span>
                                         </div>
                                     </div>
-                                </li>
-                            `);
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                        $('#main-chat-content ul').append(errorHtml);
                         $('#main-chat-content').scrollTop($('#main-chat-content')[0].scrollHeight);
-                        displayResponse(formattedMessage);
+
+                        saveMessageToStorage("ai",
+                            formattedMessage); // Simpan respons error ke local storage
                         $('#loading-btn').hide();
-
-
                     }
                 });
             }
@@ -355,7 +402,6 @@
                     let char = message.charAt(messageIndex);
                     messageIndex++;
 
-
                     if (char === '<') {
                         isTag = true;
                         tagBuffer = '<';
@@ -370,10 +416,8 @@
                     if (isTag) {
                         tagBuffer += char;
                     } else {
-
                         if (char === '*' && message.charAt(messageIndex) === '*') {
                             if (isBold) {
-
                                 formattedMessage += '<strong>' + boldTextBuffer + '</strong>';
                                 boldTextBuffer = '';
                             }
@@ -384,7 +428,6 @@
                                 boldTextBuffer += char;
                             } else {
                                 if (char === '\n') {
-
                                     formattedMessage += '<br>';
                                 } else {
                                     formattedMessage += char;
@@ -393,13 +436,67 @@
                         }
                     }
                     responseContainer.html(formattedMessage);
-
                     $('#main-chat-content').scrollTop($('#main-chat-content')[0].scrollHeight);
 
                     if (messageIndex >= message.length) {
                         clearInterval(intervalId);
                     }
                 }, 5);
+            }
+
+            function saveMessageToStorage(sender, message) {
+                const chatHistory = JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY)) || [];
+                chatHistory.push({
+                    sender,
+                    message
+                });
+                localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory));
+            }
+
+            function loadChatHistory() {
+                const chatHistory = JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY)) || [];
+                chatHistory.forEach(chat => {
+                    const chatHtml = chat.sender === "user" ?
+                        `<li class="chat-item-end">
+                        <div class="chat-list-inner">
+                            <div class="me-3">
+                                <span class="chatting-user-info">
+                                    <span class="msg-sent-time">Previous</span> You
+                                </span>
+                                <div class="main-chat-msg">
+                                    <div>
+                                        <p class="mb-0">${chat.message}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-user-profile">
+                                <span class="avatar avatar-md online avatar-rounded">
+                                    <img src="../../assets/images/user/avatar-1.jpg" alt="img">
+                                </span>
+                            </div>
+                        </div>
+                    </li>` :
+                        `<li class="chat-item-start">
+                        <div class="chat-list-inner">
+                            <div class="chat-user-profile">
+                                <span class="avatar avatar-md online avatar-rounded chatstatusperson">
+                                    <img class="chatimageperson" src="../../assets/images/gpt.png" alt="img">
+                                </span>
+                            </div>
+                            <div class="ms-3">
+                                <span class="chatting-user-info">
+                                    <span class="chatnameperson">xBug Ai</span>
+                                    <span class="msg-sent-time">Previous</span>
+                                </span>
+                                <div class="main-chat-msg">
+                                    <div>${chat.message}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>`;
+                    $('#main-chat-content ul').append(chatHtml);
+                });
+                $('#main-chat-content').scrollTop($('#main-chat-content')[0].scrollHeight);
             }
         });
     </script>
