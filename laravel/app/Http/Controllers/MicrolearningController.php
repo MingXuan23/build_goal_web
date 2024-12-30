@@ -72,7 +72,7 @@ class MicrolearningController extends Controller
         ->count();
         $courseAndTrainingSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 1)->value('type'));
         $microLearningSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 2)->value('type'));
-        $eventSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 4)->value('type'));
+        $eventSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 5)->value('type'));
         $jobOfferingSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 4)->value('type'));
         
         
@@ -88,12 +88,12 @@ class MicrolearningController extends Controller
         ->count();
 
         $countContents_Event = DB::table('contents')
-        ->where('content_type_id', '=', 4)
+        ->where('content_type_id', '=', 5)
         ->where('reason_phrase', '=', 'APPROVED')
         ->count();
 
         $countContents_JobOffer = DB::table('contents')
-        ->where('content_type_id', '=', 5)
+        ->where('content_type_id', '=', 4)
         ->where('reason_phrase', '=', 'APPROVED')
         ->count();
 

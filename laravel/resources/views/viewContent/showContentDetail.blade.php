@@ -185,7 +185,11 @@
                                        <div class="card custom-card" style="width: 100%;">
                                           <!-- Display image or fallback -->
                                           @if($content->image)
-                                             <img src="{{ asset($content->image) }}" class="card-img-top" alt="{{ $content->name }}" style="height: 180px; object-fit: cover;">
+                                          <img src="{{ asset('storage/' . $content->image) }}" 
+                                             class="card-img-top" 
+                                             alt="{{ $content->name }}" 
+                                             onerror="console.log('Image failed to load:', this.src);" 
+                                             style="height: 180px; object-fit: cover;">
                                           @else
                                              <div class="d-flex align-items-center justify-content-center card-img-top bg-primary text-white" style="height: 180px; font-size: 48px; font-weight: bold;">
                                                    {{ strtoupper(substr($content->name, 0, 1)) }}
@@ -211,12 +215,16 @@
                                           <div class="card custom-card" style="width: 100%;">
                                              <!-- Display image or fallback -->
                                              @if($content->image)
-                                                <img src="{{ asset($content->image) }}" class="card-img-top" alt="{{ $content->name }}" style="height: 180px; object-fit: cover;">
-                                             @else
-                                                <div class="d-flex align-items-center justify-content-center card-img-top bg-primary text-white" style="height: 180px; font-size: 48px; font-weight: bold;">
-                                                      {{ strtoupper(substr($content->name, 0, 1)) }}
-                                                </div>
-                                             @endif
+                                          <img src="{{ asset('storage/' . $content->image) }}" 
+                                             class="card-img-top" 
+                                             alt="{{ $content->name }}" 
+                                             onerror="console.log('Image failed to load:', this.src);" 
+                                             style="height: 180px; object-fit: cover;">
+                                          @else
+                                             <div class="d-flex align-items-center justify-content-center card-img-top bg-primary text-white" style="height: 180px; font-size: 48px; font-weight: bold;">
+                                                   {{ strtoupper(substr($content->name, 0, 1)) }}
+                                             </div>
+                                          @endif
 
                                              <div class="card-body">
                                                 <h6 class="card-title fw-semibold">{{ $content->name }}</h6>

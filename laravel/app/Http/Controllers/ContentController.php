@@ -569,9 +569,13 @@ class ContentController extends Controller
             $weight = $this->calVectorByLabel($labels);
 
             // Handle the image upload
-            $imageName = Str::random(40) . '.' . $request->file('image')->getClientOriginalExtension();
-            $imagePath = $request->file('image')->move(public_path('asset1/images'), $imageName);
-            $imageUrl = 'asset1/images/' . $imageName;
+            // $imageName = Str::random(40) . '.' . $request->file('image')->getClientOriginalExtension();
+            // $imagePath = $request->file('image')->move(public_path('asset1/images'), $imageName);
+            // $imageUrl = 'asset1/images/' . $imageName;
+            // $imagePath = $request->file('image')->store('asset1/images', 'public'); 
+            $imagePath = $request->file('image')->store('public/asset1/images'); // Save the file
+            $imageUrl = str_replace('public/', '', $imagePath); // Generate the relative URL
+
 
             // Prepare data to be inserted into the contents table
             $contentData = [
