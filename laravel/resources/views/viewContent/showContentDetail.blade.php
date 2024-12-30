@@ -160,15 +160,47 @@
                      <div class="row justify-content-center text-center">
                         <div class="col-xxl-7 col-xl-7 col-lg-8">
                            <div class="">
-                              <h6 class="landing-banner-heading mb-3"><span class="text-secondary fw-bold">{{ $countContent}}+ </span>Content for Course and Tranning</h6>
-                              <p class="fs-18 mb-5 op-8 fw-normal text-fixed-white">Register &amp; get free access to create your content and <br>submit your content with few easy steps.</p>
-                              <div class="mb-3 custom-form-group">
-                                 <input type="text" class="form-control form-control-lg shadow-sm" placeholder="your keyword...." 
-                                    aria-label="Recipient's username">
-                                 <div class="custom-form-btn bg-transparent">
-                                    <button class="btn btn-primary border-0" type="button"><i class="bi bi-search me-sm-2"></i> <span>Search</span></button>
+                              @if($contentTypeId == 1)
+                                 <h6 class="landing-banner-heading mb-3"><span class="text-secondary fw-bold">{{ $countContents_CourseTraining}}+ </span>Contents for Course and Training</h6>
+                                 <p class="fs-18 mb-5 op-8 fw-normal text-fixed-white">Register &amp; get free access to create your content and <br>submit your content with few easy steps.</p>
+                                 <div class="mb-3 custom-form-group">
+                                    <input type="text" class="form-control form-control-lg shadow-sm" placeholder="your keyword...." 
+                                       aria-label="Recipient's username">
+                                    <div class="custom-form-btn bg-transparent">
+                                       <button class="btn btn-primary border-0" type="button"><i class="bi bi-search me-sm-2"></i> <span>Search</span></button>
+                                    </div>
                                  </div>
-                              </div>
+                              @elseif($contentTypeId == 2)
+                                 <h6 class="landing-banner-heading mb-3"><span class="text-secondary fw-bold">{{ $countContents_MicroLearning}}+ </span>Contents for MicroLearning Resource</h6>
+                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-white">Register &amp; get free access to create your content and <br>submit your content with few easy steps.</p>
+                                    <div class="mb-3 custom-form-group">
+                                       <input type="text" class="form-control form-control-lg shadow-sm" placeholder="your keyword...." 
+                                          aria-label="Recipient's username">
+                                       <div class="custom-form-btn bg-transparent">
+                                          <button class="btn btn-primary border-0" type="button"><i class="bi bi-search me-sm-2"></i> <span>Search</span></button>
+                                       </div>
+                                    </div>
+                              @elseif($contentTypeId == 5)
+                                 <h6 class="landing-banner-heading mb-3"><span class="text-secondary fw-bold">{{ $countContents_Event}}+ </span>Contents for Event</h6>
+                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-white">Register &amp; get free access to create your content and <br>submit your content with few easy steps.</p>
+                                    <div class="mb-3 custom-form-group">
+                                       <input type="text" class="form-control form-control-lg shadow-sm" placeholder="your keyword...." 
+                                          aria-label="Recipient's username">
+                                       <div class="custom-form-btn bg-transparent">
+                                          <button class="btn btn-primary border-0" type="button"><i class="bi bi-search me-sm-2"></i> <span>Search</span></button>
+                                       </div>
+                                    </div>
+                              @elseif($contentTypeId == 4)
+                                 <h6 class="landing-banner-heading mb-3"><span class="text-secondary fw-bold">{{ $countContents_JobOffer}}+ </span>Contents for Job and Offering</h6>
+                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-white">Register &amp; get free access to create your content and <br>submit your content with few easy steps.</p>
+                                    <div class="mb-3 custom-form-group">
+                                       <input type="text" class="form-control form-control-lg shadow-sm" placeholder="your keyword...." 
+                                          aria-label="Recipient's username">
+                                       <div class="custom-form-btn bg-transparent">
+                                          <button class="btn btn-primary border-0" type="button"><i class="bi bi-search me-sm-2"></i> <span>Search</span></button>
+                                       </div>
+                                    </div>
+                              @endif
                            </div>
                         </div>
                      </div>
@@ -233,7 +265,7 @@
                                                    class="btn btn-primary" 
                                                    data-bs-toggle="modal" 
                                                    data-bs-target="#contentModal" 
-                                                   onclick="showContentPreview('{{ $content->content }}', '{{ $content->name }}', '{{ $content->desc }}')">
+                                                   onclick="showContentPreview('{{ $content->content }}', '{{ $content->name }}', '{{ $content->desc }},''{{ $content->enrollment_price }}','{{ $content->participant_limit }}','{{ $content->place }}','{{ $content->link }}')">
                                                    Read More
                                                 </a>
 
@@ -360,7 +392,7 @@
       <script src="../../assets/js/sticky.js"></script>
 
       <script>
-         function showContentPreview(formattedContent, title, description) {
+         function showContentPreview(formattedContent, title, description, price, participant_limit, place, link) {
             // Update the modal title
             document.getElementById('contentModalLabel').innerText = title;
 

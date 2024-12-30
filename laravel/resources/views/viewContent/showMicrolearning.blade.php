@@ -161,7 +161,7 @@
                      <div class="row justify-content-center text-center">
                         <div class="col-xxl-7 col-xl-7 col-lg-8">
                            <div class="">
-                              <h6 class="landing-banner-heading mb-3"><span class="text-secondary fw-bold">14+ </span>Content for Course and Tranning</h6>
+                              <h6 class="landing-banner-heading mb-3"><span class="text-secondary fw-bold">+ </span>Content for Course and Tranning</h6>
                               <p class="fs-18 mb-5 op-8 fw-normal text-fixed-white">Register &amp; get free access to create your content and <br>submit your content with few easy steps.</p>
                               <div class="mb-3 custom-form-group">
                                  <input type="text" class="form-control form-control-lg shadow-sm" placeholder="your keyword...." 
@@ -189,7 +189,11 @@
                     <div class="card-body">
                         <!-- Display image or fallback -->
                         @if($contents->image)
-                            <img src="{{ asset($contents->image) }}" class="card-img-top mb-3" alt="{{ $contents->name }}" style="height: 200px; object-fit: cover;">
+                        <img src="{{ asset('storage/' . $contents->image) }}" 
+                                             class="card-img-top" 
+                                             alt="{{ $contents->name }}" 
+                                             onerror="console.log('Image failed to load:', this.src);" 
+                                             style="height: 180px; object-fit: cover;">
                         @else
                             <div class="d-flex align-items-center justify-content-center card-img-top bg-primary text-white mb-3" style="height: 200px; font-size: 48px; font-weight: bold;">
                                 {{ strtoupper(substr($contents->name, 0, 1)) }}

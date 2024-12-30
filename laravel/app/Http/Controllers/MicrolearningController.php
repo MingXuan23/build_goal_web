@@ -109,6 +109,26 @@ class MicrolearningController extends Controller
             ->where('reason_phrase', '=', 'APPROVED')
             ->count();
 
+            $countContents_CourseTraining = DB::table('contents')
+            ->where('content_type_id', '=', 1)
+            ->where('reason_phrase', '=', 'APPROVED')
+            ->count();
+
+            $countContents_MicroLearning = DB::table('contents')
+            ->where('content_type_id', '=', 2)
+            ->where('reason_phrase', '=', 'APPROVED')
+            ->count();
+
+            $countContents_Event = DB::table('contents')
+            ->where('content_type_id', '=', 5)
+            ->where('reason_phrase', '=', 'APPROVED')
+            ->count();
+
+            $countContents_JobOffer = DB::table('contents')
+            ->where('content_type_id', '=', 4)
+            ->where('reason_phrase', '=', 'APPROVED')
+            ->count();
+
             $microLearningSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 2)->value('type'));
             // Fetch the content type ID based on the slug (type)
             $contentTypeId = DB::table('content_types')
@@ -135,7 +155,11 @@ class MicrolearningController extends Controller
                     'c.created_at',
                     'c.reason_phrase',
                     'c.content',
-                    'c.desc'
+                    'c.desc',
+                    'c.enrollment_price',
+                    'c.participant_limit',
+                    'c.place',
+                    'c.link'
                 )
                 ->where('content_types.id', '=', $contentTypeId)  // Use content type ID to fetch contents
                 ->where('c.reason_phrase', '=', 'APPROVED')  // Filter only approved contents
@@ -146,7 +170,7 @@ class MicrolearningController extends Controller
                 'contents' => $contents,
                 'contentTypeId' => $contentTypeId
                 
-            ], compact('countContent','microLearningSlug'));
+            ], compact('countContent','microLearningSlug','countContents_CourseTraining','countContents_MicroLearning','countContents_Event','countContents_JobOffer'));
         }
 
         public function showMicrolearningDetail(Request $request, $slug, $name)
