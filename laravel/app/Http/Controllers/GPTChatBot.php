@@ -18,23 +18,25 @@ use Ramsey\Uuid\Guid\Guid;
 class GPTChatBot extends Controller
 {
     //
-    public function showChatBot(Request $request){
+    public function showChatBot(Request $request)
+    {
         $Model = DB::table('gpt_table')->where('status', 1)->first();
 
         if (!$Model) {
-            return view('organization.gptChatBot.index',[
+            return view('organization.gptChatBot.index', [
                 'status_model' => 0
             ]);
         }
-        return view('organization.gptChatBot.index',[
+        return view('organization.gptChatBot.index', [
             'status_model' => 1
         ]);
     }
-    public function showGptModel(Request $request){
+    public function showGptModel(Request $request)
+    {
 
         $datas = DB::table('gpt_table')
-        ->orderby('id', 'asc')
-        ->get();
+            ->orderby('id', 'asc')
+            ->get();
 
 
         if ($request->ajax()) {
@@ -62,41 +64,42 @@ class GPTChatBot extends Controller
             });
 
 
-            $table->rawColumns(['action','status']);
+            $table->rawColumns(['action', 'status']);
 
             return $table->make(true);
         }
 
-        return view('admin.gpt.model',[
+        return view('admin.gpt.model', [
             'datas' => $datas
         ]);
     }
-    public function updateGptModelStatus(Request $request, $id){
+    public function updateGptModelStatus(Request $request, $id)
+    {
         $validate = $request->validate([
             'status' => 'required|in:1,0',
         ]);
-    
+
         try {
             DB::beginTransaction();
-    
+
             if ($request->status == 1) {
                 DB::table('gpt_table')->update(['status' => 0]);
             }
-    
+
             DB::table('gpt_table')
                 ->where('id', $id)
                 ->update(['status' => $request->status]);
-    
+
             DB::commit();
-    
+
             return back()->with('success', 'Status has been updated!');
-    
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Failed to update status: ' . $e->getMessage());
         }
     }
-    public function updateGptModel(Request $request, $id){
+    public function updateGptModel(Request $request, $id)
+    {
         $validate = $request->validate([
             'model_name' => 'required',
             'provider' => 'required',
@@ -105,10 +108,10 @@ class GPTChatBot extends Controller
 
         try {
             DB::beginTransaction();
-    
+
             DB::table('gpt_table')
-            ->where('id', $id)
-            ->update(['model_name' => $request->model_name, 'provider' => $request->provider,'max_token' => $request->max_token]);
+                ->where('id', $id)
+                ->update(['model_name' => $request->model_name, 'provider' => $request->provider, 'max_token' => $request->max_token]);
 
             DB::commit();
             return back()->with('success', 'Model has been updated!');
@@ -117,16 +120,17 @@ class GPTChatBot extends Controller
             return back()->with('error', 'Failed to update status: ' . $e->getMessage());
         }
     }
-    public function showChatBotAdmin(Request $request){
+    public function showChatBotAdmin(Request $request)
+    {
         $Model = DB::table('gpt_table')->where('status', 1)->first();
 
         if (!$Model) {
-            return view('admin.gpt.gpt',[
+            return view('admin.gpt.gpt', [
                 'status_model' => 0
             ]);
         }
 
-        return view('admin.gpt.gpt',[
+        return view('admin.gpt.gpt', [
             'status_model' => 1
         ]);
     }
@@ -136,11 +140,11 @@ class GPTChatBot extends Controller
             $request->validate([
                 'message' => 'required|string|max:240',
             ]);
-    
+
             $userMessage = $request->input('message');
             $apiKey = env('OPENAI_API_KEY');
             $model = DB::table('gpt_table')->where('status', 1)->first();
-    
+
             if (Auth::user()->is_gpt == 0) {
                 DB::table('gpt_log')->insert([
                     'name' => 'GPT API',
@@ -199,42 +203,94 @@ class GPTChatBot extends Controller
                 ], 500);
             }
             $maxTokens = $model->max_token;
-    
+
+            // $response = Http::withHeaders([
+            //     'Authorization' => 'Bearer ' . $apiKey,
+            // ])->post('https://api.openai.com/v1/chat/completions', [
+            //     'model' => $model->model_name,
+            //     'messages' => [
+            //         [
+            //             'role' => 'system', 
+            //             'content' => "You are a helpful assistant. Please limit your response to approximately {$maxTokens} tokens."
+            //         ],
+            //         ['role' => 'user', 'content' => $userMessage],
+            //     ],
+            // ]);
+            // if ($response->successful()) {
+            //     $data = $response->json();
+            //     $reply = $data['choices'][0]['message']['content'] ?? 'No response from AI';
+
+
+            //     DB::table('gpt_log')->insert([
+            //         'name' => 'GPT API',
+            //         'model' => $model->model_name,
+            //         'provider' => $model->provider,
+            //         'user_id' => auth()->user()->id,
+            //         'status' => 1,
+            //         'prompt_tokens' => $data['usage']['prompt_tokens'],
+            //         'completion_tokens' => $data['usage']['completion_tokens'],
+            //         'total_tokens' => $data['usage']['total_tokens'],
+            //         'request' => $userMessage,
+            //         'created_at' => Carbon::now(),
+            //         'updated_at' => Carbon::now(),
+            //     ]);
+            //     return response()->json([
+            //         'status' => 'success',
+            //         'message' => $reply,
+            //     ]);
+            // }
+
+            $apiKey = env('GROQ_API_KEY');
+
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $apiKey,
-            ])->post('https://api.openai.com/v1/chat/completions', [
-                'model' => $model->model_name,
+                'Content-Type' => 'application/json',
+            ])->post('https://api.groq.com/openai/v1/chat/completions', [
+                'model' => 'llama3-8b-8192',
                 'messages' => [
                     [
-                        'role' => 'system', 
+                        'role' => 'system',
                         'content' => "You are a helpful assistant. Please limit your response to approximately {$maxTokens} tokens."
                     ],
-                    ['role' => 'user', 'content' => $userMessage],
+                    [
+                        'role' => 'user',
+                        'content' => $userMessage
+                    ],
                 ],
             ]);
+
             if ($response->successful()) {
                 $data = $response->json();
                 $reply = $data['choices'][0]['message']['content'] ?? 'No response from AI';
 
-
+                // Log the response into the database
                 DB::table('gpt_log')->insert([
-                    'name' => 'GPT API',
-                    'model' => $model->model_name,
-                    'provider' => $model->provider,
+                    'name' => 'Groq API',
+                    'model' => 'llama3-8b-8192',
+                    'provider' => 'Groq',
                     'user_id' => auth()->user()->id,
                     'status' => 1,
-                    'prompt_tokens' => $data['usage']['prompt_tokens'],
-                    'completion_tokens' => $data['usage']['completion_tokens'],
-                    'total_tokens' => $data['usage']['total_tokens'],
+                    'prompt_tokens' => $data['usage']['prompt_tokens'] ?? null,
+                    'completion_tokens' => $data['usage']['completion_tokens'] ?? null,
+                    'total_tokens' => $data['usage']['total_tokens'] ?? null,
                     'request' => $userMessage,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ]);
+
                 return response()->json([
                     'status' => 'success',
                     'message' => $reply,
                 ]);
+            } else {
+                // Handle error response
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $response->body(),
+                ]);
             }
+
+
 
             DB::table('gpt_log')->insert([
                 'name' => 'GPT API',
@@ -253,7 +309,6 @@ class GPTChatBot extends Controller
                 'status' => 'error',
                 'message' => 'Sorry, Something went wrong. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
             ], 500);
-    
         } catch (ValidationException $e) {
             DB::table('gpt_log')->insert([
                 'name' => 'GPT API',
@@ -309,18 +364,18 @@ class GPTChatBot extends Controller
                 'message' => 'An unexpected error occurred: ' . $e->getMessage(),
             ], 500);
         }
-    } 
+    }
     public function sendMessageAdmin(Request $request)
     {
         try {
             $request->validate([
                 'message' => 'required|string|max:240',
             ]);
-    
+
             $userMessage = $request->input('message');
             $apiKey = env('OPENAI_API_KEY');
             $model = DB::table('gpt_table')->where('status', 1)->first();
-    
+
             if (!$model) {
                 DB::table('gpt_log')->insert([
                     'name' => 'GPT API',
@@ -341,14 +396,14 @@ class GPTChatBot extends Controller
                 ], 500);
             }
             $maxTokens = $model->max_token;
-    
+
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $apiKey,
             ])->post('https://api.openai.com/v1/chat/completions', [
                 'model' => $model->model_name,
                 'messages' => [
                     [
-                        'role' => 'system', 
+                        'role' => 'system',
                         'content' => "You are a helpful assistant. Please limit your response to approximately {$maxTokens} tokens."
                     ],
                     ['role' => 'user', 'content' => $userMessage],
@@ -395,7 +450,6 @@ class GPTChatBot extends Controller
                 'status' => 'error',
                 'message' => 'Sorry, Something went wrong. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
             ], 500);
-    
         } catch (ValidationException $e) {
             DB::table('gpt_log')->insert([
                 'name' => 'GPT API',
@@ -451,18 +505,18 @@ class GPTChatBot extends Controller
                 'message' => 'An unexpected error occurred: ' . $e->getMessage(),
             ], 500);
         }
-    } 
+    }
     public function getUsage(Request $request)
     {
         try {
             $apiKey = env('OPEN_API_KEY_ADMIN');
             $startTime = time();
-    
+
             $costResponse = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $apiKey,
                 'Content-Type' => 'application/json',
             ])->get('https://api.openai.com/v1/organization/costs?start_time=' . $startTime . '&limit=7');
-            
+
             $apiKeysResponse = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $apiKey,
                 'Content-Type' => 'application/json',
@@ -471,7 +525,7 @@ class GPTChatBot extends Controller
             if ($costResponse->successful() && $apiKeysResponse->successful()) {
                 $costData = $costResponse->json()['data'] ?? [];
                 $apiKeysData = $apiKeysResponse->json() ?? [];
-    
+
                 if ($request->ajax()) {
                     $table = DataTables::of($costData)->addIndexColumn();
                     $table->addColumn('amount', function ($row) {
@@ -489,11 +543,11 @@ class GPTChatBot extends Controller
                     $table->addColumn('end_time', function ($row) {
                         return 'LATEST';
                     });
-                    $table->rawColumns(['amount', 'currency','start_time','end_time','name']);
-    
+                    $table->rawColumns(['amount', 'currency', 'start_time', 'end_time', 'name']);
+
                     return $table->make(true);
                 }
-    
+
                 return view('admin.gpt.index', [
                     'costs' => $costData,
                     'apiKeys' => $apiKeysData,
@@ -504,15 +558,14 @@ class GPTChatBot extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
-        
     }
     public function showGptLog(Request $request)
     {
         $data = DB::table('gpt_log as gl')
-        ->join('users as u', 'gl.user_id', '=', 'u.id')
-        ->select('gl.*', 'u.name as user_name','u.email as user_email','u.icNo as user_icNo')
-        ->orderby('gl.created_at', 'desc')
-        ->get();
+            ->join('users as u', 'gl.user_id', '=', 'u.id')
+            ->select('gl.*', 'u.name as user_name', 'u.email as user_email', 'u.icNo as user_icNo')
+            ->orderby('gl.created_at', 'desc')
+            ->get();
 
         if ($request->ajax()) {
             $table = DataTables::of($data)->addIndexColumn();
@@ -523,7 +576,7 @@ class GPTChatBot extends Controller
                 return $button;
             });
             $table->addColumn('model', function ($row) {
-                $button = '<span class="">' . $row->model . ' ['.$row->provider.']'.'</span>';
+                $button = '<span class="">' . $row->model . ' [' . $row->provider . ']' . '</span>';
                 return $button;
             });
             $table->addColumn('total_tokens', function ($row) {
@@ -534,11 +587,11 @@ class GPTChatBot extends Controller
             });
 
 
-            $table->rawColumns(['status','model','total_tokens']);
+            $table->rawColumns(['status', 'model', 'total_tokens']);
             return $table->make(true);
         }
 
-            return view('admin.gpt.log');
+        return view('admin.gpt.log');
     }
 
     public function applyChatBot(Request $request)
@@ -555,9 +608,9 @@ class GPTChatBot extends Controller
 
     public function xbugGptReceipt($id)
     {
-        $transaction = DB::table('transactions')->where('id', $id)->where('sellerOrderNo', 'like','%XBugGpt%')->first();
-        if(!$transaction){
-            return response()->json(['message' => 'Invalid Access, Your Action Will be Recorded'],500);
+        $transaction = DB::table('transactions')->where('id', $id)->where('sellerOrderNo', 'like', '%XBugGpt%')->first();
+        if (!$transaction) {
+            return response()->json(['message' => 'Invalid Access, Your Action Will be Recorded'], 500);
         }
 
         preg_match('/_(\d+)$/', $transaction->sellerOrderNo, $matches);
@@ -573,5 +626,4 @@ class GPTChatBot extends Controller
 
         return view('gpt-payment.gpt_receipt', compact('transaction'));
     }
-    
 }

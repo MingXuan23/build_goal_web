@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use App\Models\Content;
 use Exception;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class ContentController extends Controller
@@ -52,6 +53,23 @@ class ContentController extends Controller
             'address' => 'Organization Address',
             'state' => 'Organization state',
         ]);
+
+
+        $response = $request->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+
+        $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $response,
+        ]);
+
+        $verifyResult = $verifyResponse->json();
+
+        // dd($verifyResult);
+
+        if (!$verifyResult['success']) {
+            return back()->with(['error' => 'Please verify that you are not a robot.']);
+        }
 
         $password1 = Str::random(16);
         $password = bcrypt($password1);
