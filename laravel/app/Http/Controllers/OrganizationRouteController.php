@@ -330,7 +330,8 @@ class OrganizationRouteController extends Controller
             ->join('transactions', 'cp.transaction_id', '=', 'transactions.id')
             ->whereIn('userContent.interaction_type_id', [1, 2])
             ->where('contents.user_id', Auth::user()->id)
-            ->where('transactions.status', '=', 'Success')
+            ->whereNotNull('cp.views')
+            ->whereNotNull('cp.clicks')
             ->select(
                 DB::raw('MAX(userContent.id) as id'),
                 DB::raw('MAX(userContent.user_id) as user_id'),
@@ -502,7 +503,7 @@ class OrganizationRouteController extends Controller
             ->join('transactions', 'cp.transaction_id', '=', 'transactions.id')
             ->where('contents.user_id', Auth::user()->id)
             ->whereIn('userContent.interaction_type_id', [3])
-            ->where('transactions.status', '=', 'Success')
+            ->whereNotNull('cp.enrollment')
             ->select(
                 DB::raw('MAX(userContent.id) as id'),
                 DB::raw('MAX(userContent.user_id) as user_id'),

@@ -765,7 +765,8 @@ class AdminRouteController extends Controller
             ->join('content_promotion as cp', 'contents.id', '=', 'cp.content_id')
             ->join('transactions', 'cp.transaction_id', '=', 'transactions.id')
             ->whereIn('userContent.interaction_type_id', [1, 2])
-            ->where('transactions.status', '=', 'Success')
+            ->whereNotNull('cp.views')
+            ->whereNotNull('cp.clicks')
             ->select(
                 DB::raw('MAX(userContent.id) as id'),
                 DB::raw('MAX(userContent.user_id) as user_id'),
@@ -951,7 +952,7 @@ class AdminRouteController extends Controller
             ->join('content_promotion as cp', 'contents.id', '=', 'cp.content_id')
             ->join('transactions', 'cp.transaction_id', '=', 'transactions.id')
             ->whereIn('userContent.interaction_type_id', [3])
-            ->where('transactions.status', '=', 'Success')
+            ->whereNotNull('cp.enrollment')
             ->select(
                 DB::raw('MAX(userContent.id) as id'),
                 DB::raw('MAX(userContent.user_id) as user_id'),
