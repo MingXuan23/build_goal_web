@@ -434,7 +434,7 @@
 
          function showContentPreview(formattedContent, title, description, price, participant_limit, place, link) {
     // Update the modal title
-    document.getElementById('contentModalLabel').innerText = title;
+    document.getElementById('contentModalLabel').innerText = 'Content Information';
 
     // Build the preview content
     let contentHtml = `

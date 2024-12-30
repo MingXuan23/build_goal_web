@@ -44,7 +44,7 @@
                 </div>
             @endif
             
-   <form action="{{ route('addContentOrganization') }}" method="POST">
+   <form action="{{ route('addContentOrganization') }}" method="POST" enctype="multipart/form-data">
     @csrf
       <div class="row">
          <div class="card custom-card">
@@ -157,6 +157,17 @@
                               <input type="number" class="form-control @error('participant_limit') is-invalid @enderror" id="participant_limit" placeholder="Enter Participant Limit"  name="participant_limit">
                               <label for="participant_limit">Participant Limit</label>
                               @error('participant_limit')
+                                 <span class="mb-1 text-danger">{{ $message }}</span>
+                              @enderror
+                           </div>
+                        </div>
+
+                        <!--Add Image-->
+                        <div class="col-xl-12">
+                           <div class="form-floating">
+                              <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" placeholder="Upload Your Content Image"  name="image" >
+                              <label for="image" class="form-label">Upload Your Content Image</label>
+                              @error('image')
                                  <span class="mb-1 text-danger">{{ $message }}</span>
                               @enderror
                            </div>

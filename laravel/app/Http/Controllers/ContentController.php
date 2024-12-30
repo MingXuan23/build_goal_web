@@ -225,6 +225,8 @@ class ContentController extends Controller
             ->where('status', 1)
             ->first();
 
+        
+
         // Validate form inputs
         $validated = $request->validate([
             'content_name' => 'required|string|max:255',
@@ -235,6 +237,7 @@ class ContentController extends Controller
             'participant_limit' => 'required|integer',
             'state' => 'required',
             'content_type_id' => 'required|exists:content_types,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ], [
             'state' => ', Please select at least 1 state',
         ], [
@@ -244,8 +247,11 @@ class ContentController extends Controller
         $labels = explode(",", $request->labelIds);
         $weight = $this->calVectorByLabel($labels);
 
+        $imagePath = $request->file('image')->store('public/asset1/images'); // Save the file
+        $imageUrl = str_replace('public/', '', $imagePath); // Generate the relative URL
+
         try {
-            DB::transaction(function () use ($validated, $labels, $weight, $user, $org, $request) {
+            DB::transaction(function () use ($validated, $labels, $weight, $user, $org, $request, $imageUrl) {
                 // Insert data into the contents table
                 $content_id = DB::table('contents')->insertGetId([
                     'name' => $validated['content_name'],
@@ -260,6 +266,7 @@ class ContentController extends Controller
                     'org_id' => $org->organization_id,
                     'reason_phrase' => 'PENDING',
                     'category_weight' => json_encode($weight),
+                    'image' => $imageUrl
                 ]);
 
                 foreach ($labels as $l) {
