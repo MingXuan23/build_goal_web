@@ -261,13 +261,21 @@
                                              <div class="card-body">
                                                 <h6 class="card-title fw-semibold">{{ $content->name }}</h6>
                                                 <p class="card-text text-muted">{{ $content->content_type_name }}</p>
-                                                <a href="javascript:void(0);" 
+                                                <!-- <a href="javascript:void(0);" 
                                                    class="btn btn-primary" 
                                                    data-bs-toggle="modal" 
                                                    data-bs-target="#contentModal" 
                                                    onclick="showContentPreview('{{ $content->content }}', '{{ $content->name }}', '{{ $content->desc }},''{{ $content->enrollment_price }}','{{ $content->participant_limit }}','{{ $content->place }}','{{ $content->link }}')">
                                                    Read More
+                                                </a> -->
+                                                <a href="javascript:void(0);" 
+                                                   class="btn btn-primary" 
+                                                   data-bs-toggle="modal" 
+                                                   data-bs-target="#contentModal" 
+                                                   onclick="showContentPreview('{{ $content->content }}', '{{ $content->name }}', '{{ $content->desc }}','{{ $content->enrollment_price }}','{{ $content->participant_limit }}','{{ $content->place }}','{{ $content->link }}')">
+                                                   Read More
                                                 </a>
+                                                
 
                                              </div>
                                              <div class="card-footer">
@@ -392,37 +400,84 @@
       <script src="../../assets/js/sticky.js"></script>
 
       <script>
+         // function showContentPreview(formattedContent, title, description, price, participant_limit, place, link) {
+         //    // Update the modal title
+         //    document.getElementById('contentModalLabel').innerText = title;
+
+         //    // Build the preview content
+         //    let contentHtml = `
+         //       <h1>${title}</h1>
+         //       <p><em>${description}</em></p>
+         //       <hr>
+         //    `;
+
+         //    const contentSections = formattedContent.split('\n\n');
+         //    contentSections.forEach((section, index) => {
+         //       const headerMatch = section.match(/\*\*\*(.*?)\*\*\*/); // Match header in ***
+         //       if (headerMatch) {
+         //          const header = headerMatch[1]; // Extract header
+         //          const body = section.replace(/\*\*\*(.*?)\*\*\*/, '').trim(); // Remove header and extract body
+
+         //          // Append formatted section to preview
+         //          contentHtml += `
+         //             <div class="preview-section">
+         //                <h2>Step ${index + 1}: ${header}</h2>
+         //                <p>${body}</p>
+         //             </div>
+         //          `;
+         //       }
+         //    });
+
+         //    // Insert content into modal body
+         //    document.getElementById('modalContent').innerHTML = contentHtml;
+         // }
+
          function showContentPreview(formattedContent, title, description, price, participant_limit, place, link) {
-            // Update the modal title
-            document.getElementById('contentModalLabel').innerText = title;
+    // Update the modal title
+    document.getElementById('contentModalLabel').innerText = title;
 
-            // Build the preview content
-            let contentHtml = `
-               <h1>${title}</h1>
-               <p><em>${description}</em></p>
-               <hr>
+    // Build the preview content
+    let contentHtml = `
+       <h1>${title}</h1>
+       <p><em>${description}</em></p>
+       <hr>
+       <p><strong>Price:</strong> ${price ? `RM${price}` : 'N/A'}</p>
+       <p><strong>Participant Limit:</strong> ${participant_limit || 'Unlimited'}</p>
+       <p><strong>Place:</strong> ${place || 'N/A'}</p>
+       <hr>
+    `;
+
+    // Format the content sections
+    const contentSections = formattedContent.split('\n\n');
+    contentSections.forEach((section, index) => {
+        const headerMatch = section.match(/\*\*\*(.*?)\*\*\*/); // Match header in ***
+        if (headerMatch) {
+            const header = headerMatch[1]; // Extract header
+            const body = section.replace(/\*\*\*(.*?)\*\*\*/, '').trim(); // Remove header and extract body
+
+            // Append formatted section to preview
+            contentHtml += `
+                <div class="preview-section">
+                    <h2>Step ${index + 1}: ${header}</h2>
+                    <p>${body}</p>
+                </div>
             `;
+        }
+    });
 
-            const contentSections = formattedContent.split('\n\n');
-            contentSections.forEach((section, index) => {
-               const headerMatch = section.match(/\*\*\*(.*?)\*\*\*/); // Match header in ***
-               if (headerMatch) {
-                  const header = headerMatch[1]; // Extract header
-                  const body = section.replace(/\*\*\*(.*?)\*\*\*/, '').trim(); // Remove header and extract body
+    // Add external link if provided
+    if (link) {
+        contentHtml += `
+            <hr>
+            <p><strong>Interested? Click this button to learn more </strong><p>
+            <p><a href="${link}" target="_blank" class="btn btn-primary">Learn More</a></p>
+        `;
+    }
 
-                  // Append formatted section to preview
-                  contentHtml += `
-                     <div class="preview-section">
-                        <h2>Step ${index + 1}: ${header}</h2>
-                        <p>${body}</p>
-                     </div>
-                  `;
-               }
-            });
+    // Insert content into modal body
+    document.getElementById('modalContent').innerHTML = contentHtml;
+}
 
-            // Insert content into modal body
-            document.getElementById('modalContent').innerHTML = contentHtml;
-         }
 
       </script>
    </body>
