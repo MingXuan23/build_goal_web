@@ -59,8 +59,9 @@ class TransactionController extends Controller
 
                 $fpx_sellerTxnTime  = date('YmdHis');
                 $fpx_txnAmount      = $content_promotion->promotion_price;
-                $fpx_sellerExOrderNo  = "XBug"  . "_" . date('YmdHis') . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+                //$fpx_sellerExOrderNo  = "XBug"  . "_" . date('YmdHis') . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
                 $fpx_sellerOrderNo =  "PromoteContent_" . date('YmdHis') . "_" . $organization_id;
+                $fpx_sellerExOrderNo = $fpx_sellerOrderNo;
             } else if (!empty($request->stand_token)) {
                 $data = explode('-', $request->stand_token);
 
@@ -92,8 +93,9 @@ class TransactionController extends Controller
 
                 $fpx_sellerTxnTime  = date('YmdHis');
                 $fpx_txnAmount      = $content_promotion->promotion_price;
-                $fpx_sellerExOrderNo  = "XBug"  . "_" . date('YmdHis') . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+                //$fpx_sellerExOrderNo  = "XBug"  . "_" . date('YmdHis') . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
                 $fpx_sellerOrderNo =  "XBugStand_" . date('YmdHis') . "_" . $organization_id;
+                $fpx_sellerExOrderNo = $fpx_sellerOrderNo;
             } else if (!empty($request->gpt_token)) {
                 $price = 1;
                 $fpx_buyerEmail = $user->email;
@@ -111,8 +113,9 @@ class TransactionController extends Controller
 
                 $fpx_sellerTxnTime  = date('YmdHis');
                 $fpx_txnAmount      = $price;
-                $fpx_sellerExOrderNo  = "XBug"  . "_" . date('YmdHis') . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+               // $fpx_sellerExOrderNo  = "XBug"  . "_" . date('YmdHis') . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
                 $fpx_sellerOrderNo =  "XBugGpt_" . date('YmdHis') . "_" . $organization_id;
+                $fpx_sellerExOrderNo = $fpx_sellerOrderNo;
             }
             //other payment
             else {
@@ -122,8 +125,8 @@ class TransactionController extends Controller
                 $fpx_buyerName = $request->name;
 
                 $fpx_sellerOrderNo = $request->desc . "_" . date('YmdHis') . "_" . $organization_id;
-
-                $fpx_sellerExOrderNo  = "XBug"  . "_" . date('YmdHis') . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+                $fpx_sellerExOrderNo = $fpx_sellerOrderNo;
+                //$fpx_sellerExOrderNo  = "XBug"  . "_" . date('YmdHis') . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
 
                 $private_key = env('DIRECT_PAY_KEY', ''); //$organization->private_key;
 
