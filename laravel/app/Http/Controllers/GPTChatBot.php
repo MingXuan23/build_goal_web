@@ -82,9 +82,9 @@ class GPTChatBot extends Controller
         try {
             DB::beginTransaction();
 
-            if ($request->status == 1) {
-                DB::table('gpt_table')->update(['status' => 0]);
-            }
+            // if ($request->status == 1) {
+            //     DB::table('gpt_table')->update(['status' => 0]);
+            // }
 
             DB::table('gpt_table')
                 ->where('id', $id)
@@ -122,18 +122,16 @@ class GPTChatBot extends Controller
     }
     public function showChatBotAdmin(Request $request)
     {
-        $Model = DB::table('gpt_table')->where('status', 1)->first();
-
-        if (!$Model) {
-            return view('admin.gpt.gpt', [
-                'status_model' => 0
-            ]);
-        }
-
+        $Model_GPT = DB::table('gpt_table')->where('id', 1)->first();
+        $Model_Anal = DB::table('gpt_table')->where('id', 2)->first();
+    
         return view('admin.gpt.gpt', [
+            'status_gpt' => $Model_GPT ? $Model_GPT->status : 0, // default 0 jika tidak ditemukan
+            'status_analysis' => $Model_Anal ? $Model_Anal->status : 0 ,
             'status_model' => 1
         ]);
     }
+    
     public function sendMessage(Request $request)
     {
         try {
@@ -143,7 +141,7 @@ class GPTChatBot extends Controller
 
             $userMessage = $request->input('message');
             $apiKey = env('OPENAI_API_KEY');
-            $model = DB::table('gpt_table')->where('status', 1)->first();
+            $model = DB::table('gpt_table')->where('status', 1)->where('id', 1)->first();
 
             if (Auth::user()->is_gpt == 0) {
                 DB::table('gpt_log')->insert([
@@ -204,89 +202,39 @@ class GPTChatBot extends Controller
             }
             $maxTokens = $model->max_token;
 
-            // $response = Http::withHeaders([
-            //     'Authorization' => 'Bearer ' . $apiKey,
-            // ])->post('https://api.openai.com/v1/chat/completions', [
-            //     'model' => $model->model_name,
-            //     'messages' => [
-            //         [
-            //             'role' => 'system', 
-            //             'content' => "You are a helpful assistant. Please limit your response to approximately {$maxTokens} tokens."
-            //         ],
-            //         ['role' => 'user', 'content' => $userMessage],
-            //     ],
-            // ]);
-            // if ($response->successful()) {
-            //     $data = $response->json();
-            //     $reply = $data['choices'][0]['message']['content'] ?? 'No response from AI';
-
-
-            //     DB::table('gpt_log')->insert([
-            //         'name' => 'GPT API',
-            //         'model' => $model->model_name,
-            //         'provider' => $model->provider,
-            //         'user_id' => auth()->user()->id,
-            //         'status' => 1,
-            //         'prompt_tokens' => $data['usage']['prompt_tokens'],
-            //         'completion_tokens' => $data['usage']['completion_tokens'],
-            //         'total_tokens' => $data['usage']['total_tokens'],
-            //         'request' => $userMessage,
-            //         'created_at' => Carbon::now(),
-            //         'updated_at' => Carbon::now(),
-            //     ]);
-            //     return response()->json([
-            //         'status' => 'success',
-            //         'message' => $reply,
-            //     ]);
-            // }
-
-            $apiKey = env('GROQ_API_KEY');
-
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $apiKey,
-                'Content-Type' => 'application/json',
-            ])->post('https://api.groq.com/openai/v1/chat/completions', [
-                'model' => 'llama3-8b-8192',
+            ])->post('https://api.openai.com/v1/chat/completions', [
+                'model' => $model->model_name,
                 'messages' => [
                     [
                         'role' => 'system',
                         'content' => "You are a helpful assistant. Please limit your response to approximately {$maxTokens} tokens."
                     ],
-                    [
-                        'role' => 'user',
-                        'content' => $userMessage
-                    ],
+                    ['role' => 'user', 'content' => $userMessage],
                 ],
             ]);
-
             if ($response->successful()) {
                 $data = $response->json();
                 $reply = $data['choices'][0]['message']['content'] ?? 'No response from AI';
 
-                // Log the response into the database
+
                 DB::table('gpt_log')->insert([
-                    'name' => 'Groq API',
-                    'model' => 'llama3-8b-8192',
-                    'provider' => 'Groq',
+                    'name' => 'GPT API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
                     'user_id' => auth()->user()->id,
                     'status' => 1,
-                    'prompt_tokens' => $data['usage']['prompt_tokens'] ?? null,
-                    'completion_tokens' => $data['usage']['completion_tokens'] ?? null,
-                    'total_tokens' => $data['usage']['total_tokens'] ?? null,
+                    'prompt_tokens' => $data['usage']['prompt_tokens'],
+                    'completion_tokens' => $data['usage']['completion_tokens'],
+                    'total_tokens' => $data['usage']['total_tokens'],
                     'request' => $userMessage,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ]);
-
                 return response()->json([
                     'status' => 'success',
                     'message' => $reply,
-                ]);
-            } else {
-                // Handle error response
-                return response()->json([
-                    'status' => 'error',
-                    'message' => $response->body(),
                 ]);
             }
 
@@ -374,7 +322,7 @@ class GPTChatBot extends Controller
 
             $userMessage = $request->input('message');
             $apiKey = env('OPENAI_API_KEY');
-            $model = DB::table('gpt_table')->where('status', 1)->first();
+            $model = DB::table('gpt_table')->where('status', 1)->where('id', 1)->first();
 
             if (!$model) {
                 DB::table('gpt_log')->insert([
@@ -489,6 +437,161 @@ class GPTChatBot extends Controller
         } catch (Exception $e) {
             DB::table('gpt_log')->insert([
                 'name' => 'GPT API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '',
+                'completion_tokens' => '',
+                'total_tokens' => 'UNEXPECTED ERROR 500',
+                'request' => $userMessage,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An unexpected error occurred: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function sendMessageAdminAnalysis(Request $request)
+    {
+        try {
+            $request->validate([
+                'message' => 'required|string|max:240',
+            ]);
+
+            $userMessage = $request->input('message');
+            $model = DB::table('gpt_table')->where('status', 1)->where('id', 2)->first();
+
+            if (!$model) {
+                DB::table('gpt_log')->insert([
+                    'name' => 'GROQ API',
+                    'model' => 'N/A',
+                    'provider' => 'N/A',
+                    'user_id' => auth()->user()->id,
+                    'status' => 0,
+                    'prompt_tokens' => '',
+                    'completion_tokens' => '',
+                    'total_tokens' => 'MODEL UNAVAILABLE',
+                    'request' => $userMessage,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sorry, Model is Currently Unavailable. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
+                ], 500);
+            }
+            $maxTokens = $model->max_token;
+
+            $apiKey = env('GROQ_API_KEY');
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $apiKey,
+                'Content-Type' => 'application/json',
+            ])->post('https://api.groq.com/openai/v1/chat/completions', [
+                'model' => 'llama3-8b-8192',
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => "You are a helpful assistant. Please limit your response to approximately {$maxTokens} tokens."
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $userMessage
+                    ],
+                ],
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $reply = $data['choices'][0]['message']['content'] ?? 'No response from AI';
+
+
+                DB::table('gpt_log')->insert([
+                    'name' => 'GROQ API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
+                    'user_id' => auth()->user()->id,
+                    'status' => 1,
+                    'prompt_tokens' => $data['usage']['prompt_tokens'] ?? null,
+                    'completion_tokens' => $data['usage']['completion_tokens'] ?? null,
+                    'total_tokens' => $data['usage']['total_tokens'] ?? null,
+                    'request' => $userMessage,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => $reply,
+                ]);
+            } else {
+                // Handle error response
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $response->body(),
+                ]);
+            }
+
+            DB::table('gpt_log')->insert([
+                'name' => 'GROQ API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '',
+                'completion_tokens' => '',
+                'total_tokens' => 'API CALL ERROR 500',
+                'request' => $userMessage,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Sorry, Something went wrong. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
+            ], 500);
+        } catch (ValidationException $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'GROQ API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '',
+                'completion_tokens' => '',
+                'total_tokens' => 'VALIDATION ERROR 422',
+                'request' => $userMessage,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error: ' . $e->getMessage(),
+            ], 422);
+        } catch (RequestException $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'GROQ API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '',
+                'completion_tokens' => '',
+                'total_tokens' => 'REQUEST ERROR 500',
+                'request' => $userMessage,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Request error: ' . $e->getMessage(),
+            ], 500);
+        } catch (Exception $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'GROQ API',
                 'model' => $model->model_name,
                 'provider' => $model->provider,
                 'user_id' => auth()->user()->id,

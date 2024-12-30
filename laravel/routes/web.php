@@ -118,6 +118,7 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::get('/gpt-model', [GPTChatBot::class, 'showGptModel'])->name('showGptModel');
     Route::get('/email-notification-logs', [emailController::class, 'showNotificationLogs'])->name('showNotificationLogs');
     Route::post('/chatbot/send', [GPTChatBot::class, 'sendMessageAdmin'])->name('sendMessageAdmin');
+    Route::post('/chatbot-analysis/send', [GPTChatBot::class, 'sendMessageAdminAnalysis'])->name('sendMessageAdminAnalysis');
     
     Route::get('/email', [emailController::class, 'showEmail'])->name('showEmail');
     Route::post('/send-email', [emailController::class, 'sendEmail'])->name('sendEmail');

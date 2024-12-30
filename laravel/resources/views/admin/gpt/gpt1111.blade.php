@@ -41,7 +41,7 @@
                                 <!-- Pilihan xBug Ai -->
                                 <!-- Pilihan xBug Ai -->
                                 <li class="checkforactive">
-                                    <a href="javascript:void(0);" id="xbug-ai-link"
+                                    <a href="javascript:void(0);"
                                         onclick="changeTheInfo(
             this, 
             'xBug Ai', 
@@ -73,7 +73,7 @@
                                 <!-- Pilihan xBug Analysis Ai -->
                                 <li class="checkforactive">
                                     <a href="javascript:void(0);"
-                                        onclick="changeTheInfo(
+                                            onclick="changeTheInfo(
                                         this, 
                                         'xBug Analysis Ai', 
                                         'analysiss_ai.png', 
@@ -116,23 +116,13 @@
                             </span>
                         </div>
                         <div class="flex-fill">
-                            <!-- Snippet status untuk xBug Ai -->
-                            <div id="status-xbug-gpt" style="display: none;">
-                                <p class="mb-0 fw-semibold fs-14">xBug Ai</p>
-                                <p
-                                    class="text-muted mb-0 chatpersonstatus {{ $status_gpt == 1 ? 'text-success fw-bold' : 'text-danger fw-bold' }}">
-                                    {{ $status_gpt == 1 ? 'online' : 'offline' }}
-                                </p>
-                            </div>
-
-                            <!-- Snippet status untuk xBug Analysis Ai -->
-                            <div id="status-xbug-analysis" style="display: none;">
-                                <p class="mb-0 fw-semibold fs-14">xBug Analysis Ai</p>
-                                <p
-                                    class="text-muted mb-0 chatpersonstatus {{ $status_analysis == 1 ? 'text-success fw-bold' : 'text-danger fw-bold' }}">
-                                    {{ $status_analysis == 1 ? 'online' : 'offline' }}
-                                </p>
-                            </div>
+                            <p class="mb-0 fw-semibold fs-14">
+                                <a href="javascript:void(0);" class="chatnameperson responsive-userinfo-open">xBug Ai</a>
+                            </p>
+                            <p
+                                class="text-muted mb-0 chatpersonstatus {{ $status_gpt == 1 ? 'text-success fw-bold' : 'text-danger fw-bold' }}">
+                                {{ $status_gpt == 1 ? 'online' : 'offline' }}
+                            </p>
                         </div>
                         <div id="loading-btn" class="text-center" style="display: none;">
                             <button class="btn btn-success btn-loader mx-auto">
@@ -165,9 +155,7 @@
                             <li class="chat-day-label">
                                 <span>Recent</span>
                             </li>
-                            <!-- Default message untuk xBug Ai -->
-                            <li class="chat-item-start default-ai-message" id="default-gpt"
-                                style="{{ $status_gpt == 1 ? '' : 'display:none;' }}">
+                            <li class="chat-item-start default-ai-message">
                                 <div class="chat-list-inner">
                                     <div class="chat-user-profile">
                                         <span class="avatar avatar-md online avatar-rounded chatstatusperson">
@@ -184,53 +172,21 @@
                                             <div class="main-chat-msg">
                                                 <div>
                                                     <p class="mb-0">Hi {{ Auth::user()->name }}, how can I assist you
-                                                        today?</p>
+                                                        today? &#128512;</p>
                                                 </div>
                                             </div>
                                         @else
                                             <div class="main-chat-msg">
                                                 <div class="bg-danger-transparent fw-bold">
-                                                    <p class="mb-0">Hi {{ Auth::user()->name }}, Sorry, xBug GPT is Currently Unavailable. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.</p>
+                                                    <p class="mb-0">Hi {{ Auth::user()->name }}, Sorry, xBug GPT is
+                                                        currently unavailable. Contact us by email [help-center@xbug.online]
+                                                        for more information.</p>
                                                 </div>
                                             </div>
                                         @endif
                                     </div>
                                 </div>
                             </li>
-
-                            <!-- Default message untuk xBug Analysis Ai -->
-                            <li class="chat-item-start default-ai-message" id="default-analysis"
-                                style="{{ $status_analysis == 1 ? 'display:none;' : '' }}">
-                                <div class="chat-list-inner">
-                                    <div class="chat-user-profile">
-                                        <span class="avatar avatar-md online avatar-rounded chatstatusperson">
-                                            <img class="chatimageperson" src="../../assets/images/analysiss_ai.png"
-                                                alt="img">
-                                        </span>
-                                    </div>
-                                    <div class="ms-3">
-                                        <span class="chatting-user-info">
-                                            <span class="chatnameperson">xBug Analysis Ai</span>
-                                            <span class="msg-sent-time">now</span>
-                                        </span>
-                                        @if ($status_analysis == 1)
-                                            <div class="main-chat-msg">
-                                                <div>
-                                                    <p class="mb-0">Hi {{ Auth::user()->name }}, how can I assist you
-                                                        today?</p>
-                                                </div>
-                                            </div>
-                                        @else
-                                            <div class="main-chat-msg">
-                                                <div class="bg-danger-transparent fw-bold">
-                                                    <p class="mb-0">Hi {{ Auth::user()->name }}, Sorry, xBug Analysis is Currently Unavailable. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.</p>
-                                                </div>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </li>
-
                         </ul>
                     </div>
 
@@ -326,21 +282,6 @@
             document.querySelectorAll(".chatnameperson").forEach((ele) => {
                 ele.innerText = name;
             });
-
-            if (name === 'xBug Ai') {
-                document.getElementById('default-gpt').style.display = 'block';
-                document.getElementById('default-analysis').style.display = 'none';
-            } else if (name === 'xBug Analysis Ai') {
-                document.getElementById('default-gpt').style.display = 'none';
-                document.getElementById('default-analysis').style.display = 'block';
-            }
-            if (name === "xBug Ai") {
-                document.getElementById("status-xbug-gpt").style.display = "block";
-                document.getElementById("status-xbug-analysis").style.display = "none";
-            } else if (name === "xBug Analysis Ai") {
-                document.getElementById("status-xbug-gpt").style.display = "none";
-                document.getElementById("status-xbug-analysis").style.display = "block";
-            }
             document.querySelectorAll(".chatimageperson").forEach((ele) => {
                 ele.src = "../../assets/images/" + img;
             });
@@ -348,15 +289,6 @@
                 ele.classList.remove("online", "offline");
                 ele.classList.add(status);
             });
-
-            const chatInput = document.getElementById("chat-input");
-
-            // Jika status adalah "offline", maka disable. Jika "online", enable
-            if (status === "online") {
-                chatInput.disabled = false;
-            } else {
-                chatInput.disabled = true;
-            }
             document.querySelector(".chatpersonstatus").innerText = status;
             document.querySelector(".main-chart-wrapper").classList.add("responsive-chat-open")
 
@@ -376,10 +308,6 @@
 
         $(document).ready(function() {
             // Muat histori default
-            const xbugAiLink = document.getElementById('xbug-ai-link');
-            if (xbugAiLink) {
-                xbugAiLink.click();
-            }
             loadChatHistory(currentAI);
 
             $('.clear-chat-btn').on('click', function(e) {
