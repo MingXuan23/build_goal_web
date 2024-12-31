@@ -190,7 +190,9 @@
                                         @else
                                             <div class="main-chat-msg">
                                                 <div class="bg-danger-transparent fw-bold">
-                                                    <p class="mb-0">Hi {{ Auth::user()->name }}, Sorry, xBug GPT is Currently Unavailable. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.</p>
+                                                    <p class="mb-0">Hi {{ Auth::user()->name }}, Sorry, xBug GPT is
+                                                        Currently Unavailable. Please Contact Us By Email
+                                                        [help-center@xbug.online] Inform Us or To Get Support.</p>
                                                 </div>
                                             </div>
                                         @endif
@@ -223,7 +225,9 @@
                                         @else
                                             <div class="main-chat-msg">
                                                 <div class="bg-danger-transparent fw-bold">
-                                                    <p class="mb-0">Hi {{ Auth::user()->name }}, Sorry, xBug Analysis is Currently Unavailable. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.</p>
+                                                    <p class="mb-0">Hi {{ Auth::user()->name }}, Sorry, xBug Analysis is
+                                                        Currently Unavailable. Please Contact Us By Email
+                                                        [help-center@xbug.online] Inform Us or To Get Support.</p>
                                                 </div>
                                             </div>
                                         @endif
@@ -536,23 +540,59 @@
             }
 
             function displayResponse(message) {
-                const responseContainer = $('#chat-ul li:last-child .response-text');
-                if (responseContainer.length === 0) {
-                    console.error('Response container not found!');
-                    return;
-                }
+                const responseContainer = $('#main-chat-content ul li:last-child .response-text');
+                let messageIndex = 0;
+                let isTag = false;
+                let tagBuffer = '';
+                let currentTag = '';
+                let isBold = false;
+                let boldTextBuffer = '';
+                let formattedMessage = '';
 
-                let index = 0;
-                let typedMsg = '';
                 responseContainer.html('');
 
-                const typeInterval = setInterval(() => {
-                    typedMsg += message.charAt(index++);
-                    responseContainer.html(typedMsg);
+                const intervalId = setInterval(function() {
+                    let char = message.charAt(messageIndex);
+                    messageIndex++;
+
+                    if (char === '<') {
+                        isTag = true;
+                        tagBuffer = '<';
+                        currentTag = '';
+                    } else if (char === '>') {
+                        isTag = false;
+                        tagBuffer += '>';
+                        formattedMessage += tagBuffer;
+                        tagBuffer = '';
+                    }
+
+                    if (isTag) {
+                        tagBuffer += char;
+                    } else {
+                        if (char === '*' && message.charAt(messageIndex) === '*') {
+                            if (isBold) {
+                                formattedMessage += '<strong>' + boldTextBuffer + '</strong>';
+                                boldTextBuffer = '';
+                            }
+                            isBold = !isBold;
+                            messageIndex++;
+                        } else {
+                            if (isBold) {
+                                boldTextBuffer += char;
+                            } else {
+                                if (char === '\n') {
+                                    formattedMessage += '<br>';
+                                } else {
+                                    formattedMessage += char;
+                                }
+                            }
+                        }
+                    }
+                    responseContainer.html(formattedMessage);
                     $('#main-chat-content').scrollTop($('#main-chat-content')[0].scrollHeight);
 
-                    if (index >= message.length) {
-                        clearInterval(typeInterval);
+                    if (messageIndex >= message.length) {
+                        clearInterval(intervalId);
                     }
                 }, 5);
             }
