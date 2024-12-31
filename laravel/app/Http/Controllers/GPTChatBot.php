@@ -529,7 +529,7 @@ class GPTChatBot extends Controller
                         'staff','workforce','user data','user record','user info','user details','member data',
                         'member record','profile data','profile info','account info','account data','login',
                         'account holder','human','humans','member list','user list','list of users','list of members',
-                        'registered user','registered member','registered account','people table','user table'
+                        'registered user','registered member','registered account','people table','user table','who',
                     ],
                     [
                         // --- Tambahan ratusan sinonim yang merujuk ke kolom "id" ---
@@ -607,7 +607,7 @@ class GPTChatBot extends Controller
                         'blog','blog post','text','texts','data','info','information','knowledge','knowledge base',
                         'training','training material','training module','ebook','pdf','document set','content data',
                         'content table','content item','content listing','content database','content record','content info',
-                        'content detail','module data','course data','lesson data'
+                        'content detail','module data','course data','lesson data','who',
                     ],
                     [
                         // --- Kolom "id" (untuk table contents) ---
@@ -1060,7 +1060,7 @@ class GPTChatBot extends Controller
                     [
                         'role'    => 'system',
                         'content' =>
-                        "Current Date is: " . now()
+                        "Current Date is: " . Carbon::now()->setTimezone('Asia/Kuala_Lumpur')
                             . ". Here is the data from the relevant tables based on your request: "
                             . $jsonData
                             . ". Use only this data to answer the user's questions. "
