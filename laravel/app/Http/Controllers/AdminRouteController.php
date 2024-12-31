@@ -339,6 +339,76 @@ class AdminRouteController extends Controller
         $rejectedCount = $contentCounts->where('reason_phrase', 'REJECTED')->first()->count ?? 0;
         $pendingCount = $contentCounts->where('reason_phrase', 'PENDING')->first()->count ?? 0;
 
+        // Yearly Transactions
+        $yearlyTransactions = DB::table('transactions')
+        ->selectRaw('YEAR(created_at) as year, COUNT(*) as count, SUM(amount) as total_amount')
+        ->where('status', 'SUCCESS')
+        ->groupBy('year')
+        ->pluck('total_amount', 'year');
+
+        $yearlyTransactionCounts = DB::table('transactions')
+            ->selectRaw('YEAR(created_at) as year, COUNT(*) as count')
+            ->where('status', 'SUCCESS')
+            ->groupBy('year')
+            ->pluck('count', 'year');
+
+        // Monthly Transactions
+        $monthlyTransactions = DB::table('transactions')
+            ->selectRaw('MONTH(created_at) as month, COUNT(*) as count, SUM(amount) as total_amount')
+            ->whereYear('created_at', now()->year)
+            ->where('status', 'SUCCESS')
+            ->groupBy('month')
+            ->pluck('total_amount', 'month');
+
+        $monthlyTransactionCounts = DB::table('transactions')
+            ->selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+            ->whereYear('created_at', now()->year)
+            ->where('status', 'SUCCESS')
+            ->groupBy('month')
+            ->pluck('count', 'month');
+
+        // Weekly Transactions
+        $weeklyTransactions = DB::table('transactions')
+            ->selectRaw('DAYNAME(created_at) as day, COUNT(*) as count, SUM(amount) as total_amount')
+            ->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])
+            ->where('status', 'SUCCESS')
+            ->groupBy('day')
+            ->orderByRaw("FIELD(day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')")
+            ->pluck('total_amount', 'day');
+
+        $weeklyTransactionCounts = DB::table('transactions')
+            ->selectRaw('DAYNAME(created_at) as day, COUNT(*) as count')
+            ->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])
+            ->where('status', 'SUCCESS')
+            ->groupBy('day')
+            ->orderByRaw("FIELD(day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')")
+            ->pluck('count', 'day');
+
+        // Daily Transactions
+        $dailyTransactions = DB::table('transactions')
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as count, SUM(amount) as total_amount')
+            ->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()])
+            ->where('status', 'SUCCESS')
+            ->groupBy('date')
+            ->pluck('total_amount', 'date');
+
+        $dailyTransactionCounts = DB::table('transactions')
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->whereBetween('created_at', [now()->startOfDay(), now()->endOfDay()])
+            ->where('status', 'SUCCESS')
+            ->groupBy('date')
+            ->pluck('count', 'date');
+
+        $totalYearlyAmount = $yearlyTransactions->sum();
+        $totalMonthlyAmount = $monthlyTransactions->sum();
+        $totalWeeklyAmount = $weeklyTransactions->sum();
+        $totalDailyAmount = $dailyTransactions->sum();
+
+        $totalYearlyTransactions = $yearlyTransactionCounts->sum();
+        $totalMonthlyTransactions = $monthlyTransactionCounts->sum();
+        $totalWeeklyTransactions = $weeklyTransactionCounts->sum();
+        $totalDailyTransactions = $dailyTransactionCounts->sum();
+
         return view('admin.dashboard.index', compact(
             'userCounts',
             'totalContents',
@@ -352,7 +422,19 @@ class AdminRouteController extends Controller
             'totalUsers',
             'yearData',
             'monthData',
-            'weekData'
+            'weekData',
+            'yearlyTransactions',
+            'monthlyTransactions',
+            'weeklyTransactions',
+            'dailyTransactions',
+            'totalYearlyAmount',
+            'totalMonthlyAmount',
+            'totalWeeklyAmount',
+            'totalDailyAmount',
+            'totalYearlyTransactions',
+            'totalMonthlyTransactions',
+            'totalWeeklyTransactions',
+            'totalDailyTransactions'
         ));
     }
     public function showProfile(Request $request)

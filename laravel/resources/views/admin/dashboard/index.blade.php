@@ -36,22 +36,80 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-xl-6 col-lg-6 col-md-12">
                     <div class="card custom-card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="card-title">Registration Statistics</h5>
-                            <div>
-                                <button class="btn btn-primary btn-sm" id="weekBtn">Week</button>
-                                <button class="btn btn-secondary btn-sm" id="monthBtn">Month</button>
-                                <button class="btn btn-secondary btn-sm" id="yearBtn">Year</button>
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title">Registration Statistics</h5>
+                                <div>
+                                    <button class="btn btn-primary btn-sm" id="weekBtn">Week</button>
+                                    <button class="btn btn-secondary btn-sm" id="monthBtn">Month</button>
+                                    <button class="btn btn-secondary btn-sm" id="yearBtn">Year</button>
+                                </div>
+                            </div>
+                            
+                            <div class="card-body">
+                                <canvas id="registrationsChart"></canvas>
                             </div>
                         </div>
-                        
-                        <div class="card-body">
-                            <canvas id="registrationsChart"></canvas>
+
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12">
+                    
+                    <div class="card custom-card">
+                        <div class="card-header">
+                            <h5 class="card-title">Transaction Summary</h5>
                         </div>
-                    </div>
+                        <div class="card-body">
+                            <ul class="nav nav-tabs" id="transactionTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link" id="day-tab" data-bs-toggle="tab" href="#day" role="tab" aria-controls="day" aria-selected="false">Day</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="week-tab" data-bs-toggle="tab" href="#week" role="tab" aria-controls="week" aria-selected="false">Week</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="month-tab" data-bs-toggle="tab" href="#month" role="tab" aria-controls="month" aria-selected="false">Month</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="year-tab" data-bs-toggle="tab" href="#year" role="tab" aria-controls="year" aria-selected="true">Year</a>
+                                </li>
+
+                            </ul>
+                            <div class="tab-content mt-4">
+                                <!-- Day Chart -->
+                                <div class="tab-pane fade" id="day" role="tabpanel" aria-labelledby="day-tab">
+                                    <canvas id="dayTransactionChart"></canvas>
+                                    <div class="mt-3">
+                                        <p><strong>Total Transactions:</strong> {{ $totalDailyTransactions }}</p>
+                                        <p><strong>Total Amount Received:</strong> RM{{ number_format($totalDailyAmount, 2) }}</p>
+                                    </div>
+                                </div>
+                                <!-- Week Chart -->
+                                <div class="tab-pane fade" id="week" role="tabpanel" aria-labelledby="week-tab">
+                                    <canvas id="weekTransactionChart"></canvas>
+                                    <div class="mt-3">
+                                        <p><strong>Total Transactions:</strong> {{ $totalWeeklyTransactions }}</p>
+                                        <p><strong>Total Amount Received:</strong> RM{{ number_format($totalWeeklyAmount, 2) }}</p>
+                                    </div>
+                                </div>
+                                <!-- Month Chart -->
+                                <div class="tab-pane fade" id="month" role="tabpanel" aria-labelledby="month-tab">
+                                    <canvas id="monthTransactionChart"></canvas>
+                                    <div class="mt-3">
+                                        <p><strong>Total Transactions:</strong> {{ $totalMonthlyTransactions }}</p>
+                                        <p><strong>Total Amount Received:</strong> RM{{ number_format($totalMonthlyAmount, 2) }}</p>
+                                    </div>
+                                </div>
+                                <!-- Year Chart -->
+                                <div class="tab-pane fade show active" id="year" role="tabpanel" aria-labelledby="year-tab">
+                                    <canvas id="yearTransactionChart"></canvas>
+                                    <div class="mt-3">
+                                        <p><strong>Total Transactions:</strong> {{ $totalYearlyTransactions }}</p>
+                                        <p><strong>Total Amount Received:</strong> RM{{ number_format($totalYearlyAmount, 2) }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                 </div>
             </div>
       <!-- End::row 1 -->
@@ -328,6 +386,79 @@
 
         // Set the default active button (week) on page load
         setActiveButton('weekBtn');
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Yearly Data
+        const yearlyTransactionData = @json($yearlyTransactions);
+        const yearlyLabels = Object.keys(yearlyTransactionData);
+        const yearlyCounts = Object.values(yearlyTransactionData);
+
+        // Monthly Data
+        const monthlyTransactionData = @json($monthlyTransactions);
+        const monthlyLabels = Object.keys(monthlyTransactionData).map(month => new Date(2023, month - 1, 1).toLocaleString('default', { month: 'long' }));
+        const monthlyCounts = Object.values(monthlyTransactionData);
+
+        // Weekly Data
+        const weeklyTransactionData = @json($weeklyTransactions);
+        const weeklyLabels = Object.keys(weeklyTransactionData);
+        const weeklyCounts = Object.values(weeklyTransactionData);
+
+         // Daily Data
+        const dailyTransactionData = @json($dailyTransactions);
+        const dailyLabels = Object.keys(dailyTransactionData);
+        const dailyCounts = Object.values(dailyTransactionData);
+
+        // Yearly Transactions Chart
+        new Chart(document.getElementById('yearTransactionChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: yearlyLabels,
+                datasets: [{
+                    label: 'Transactions',
+                    data: yearlyCounts,
+                    backgroundColor: '#28a745',
+                }]
+            }
+        });
+
+        // Monthly Transactions Chart
+        new Chart(document.getElementById('monthTransactionChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: monthlyLabels,
+                datasets: [{
+                    label: 'Transactions',
+                    data: monthlyCounts,
+                    backgroundColor: '#28a745',
+                }]
+            }
+        });
+
+        // Weekly Transactions Chart
+        new Chart(document.getElementById('weekTransactionChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: weeklyLabels,
+                datasets: [{
+                    label: 'Transactions',
+                    data: weeklyCounts,
+                    backgroundColor: '#28a745',
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('dayTransactionChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: dailyLabels,
+                datasets: [{
+                    label: 'Transactions',
+                    data: dailyCounts,
+                    backgroundColor: '#28a745',
+                }]
+            }
+        });
     });
 </script>
    
