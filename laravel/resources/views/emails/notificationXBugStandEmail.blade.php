@@ -1,23 +1,10 @@
-<?php
-// $status = 3; 
-// $reason = "Your application did not meet the required criteria."; 
-// $name = 'khai';
-$headerColor = '';
-if ($status == 1) {
-    $headerColor = 'rgba(0, 0, 255, 0.2)';
-} elseif ($status == 2) {
-    $headerColor = 'rgba(0, 128, 0, 0.2)';
-} elseif ($status == 3) {
-    $headerColor = 'rgba(255, 0, 0, 0.2)'; 
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[xBug] - Content Notification</title>
+    <title>[xBug Stand] - Notification</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,6 +25,7 @@ if ($status == 1) {
         .email-header {
             text-align: center;
             padding: 30px;
+            background-color: rgba(0, 128, 0, 0.1);
         }
 
         .email-header h1 {
@@ -57,6 +45,11 @@ if ($status == 1) {
             color: #333333;
         }
 
+        .email-body a {
+            color: rgb(90, 90, 209);
+            text-decoration: none;
+        }
+
         .email-footer {
             text-align: center;
             padding: 10px;
@@ -69,23 +62,16 @@ if ($status == 1) {
 
 <body>
     <div class="email-container">
-        <div class="email-header" style="background-color: <?php echo $headerColor; ?>;">
-            <h1>[xBug] - Content Notification</h1>
+        <div class="email-header">
+            <h1>[xBug Stand] - Content Update Notification</h1>
         </div>
         <div class="email-body">
-            <p>Dear {{strToUpper($name)}},</p>
-            <?php if ($status == 1): ?>
-                <p>Your Content - <span style="font-weight: bold"><?php echo strToUpper($content_name); ?></span> is currently <strong style="color: rgb(90, 90, 209);font-weight: bold">PENDING</strong>. We are reviewing your information, and the verification process is underway.</p>
-                <p>Please be patient during this process. If you have any urgent concerns or questions, feel free to contact our support team at [help-center@xbug.online].</p>
-            <?php elseif ($status == 2): ?>
-                <p>Congratulations! Your Content - <span style="font-weight: bold"><?php echo strToUpper($content_name); ?></span> has been <strong style="color: rgb(87, 205, 120);font-weight: bold">APPROVED</strong>. Thank you for your patience during the review process. You can login to <a href="https://xbug.online/login">xbug.online</a> for the next process.</p>
-            <?php elseif ($status == 3): ?>
-                <p>We regret to inform you that your Content - <span style="font-weight: bold"><?php echo strToUpper($content_name); ?></span> has been <strong style="color: rgb(226, 85, 85);font-weight: bold">REJECTED</strong>.</p>
-                <p style="font-weight: bold"><span style="color: rgb(226, 85, 85);font-weight: bold">REASON: </span><?php echo $reject_reason; ?></p>
-                <p>You can login to <a href="https://xbug.online/login">xbug.online</a> for information. If you have any questions or need further clarification, feel free to reach out to our support team at [help-center@xbug.online].</p>
-            <?php endif; ?>
+            <p>Dear <strong>{{ strtoupper($name) }}</strong>,</p>
+            <p>We are excited to inform you that your content titled <span style="font-weight: bold">{{ strtoupper($content_name) }}</span> has been successfully <strong style="color: rgb(87, 205, 120); font-weight: bold;">UPDATED</strong> on the <strong>xBug Stand</strong> platform.</p>
+            <p>You can now check the updated details by logging in to your account at <a href="https://xbug.online/login">xBug Stand</a>.</p>
+            <p>If you have any further questions or need assistance, please do not hesitate to contact our support team at <a href="mailto:help-center@xbug.online">help-center@xbug.online</a>.</p>
             <p>Best regards,</p>
-            <p>[xBug Team]</p>
+            <p><strong>[xBug Stand Team]</strong></p>
         </div>
         <div class="email-footer">
             <p>This is an automated message. Please do not reply.</p>

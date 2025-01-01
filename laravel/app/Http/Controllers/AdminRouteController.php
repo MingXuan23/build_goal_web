@@ -715,11 +715,45 @@ class AdminRouteController extends Controller
         DB::table('content_card')->whereIn('id', $deletedCardIds)->update([
             'status' => 0
         ]);
-        $content = DB::table('contents')->where('id', $contentId)
-        // ->join('users', 'contents.user_id', '=', 'users.id')->select('users.name','users.email')->first();
+        $content = DB::table('contents')->where('contents.id', $contentId)
+            ->join('users', 'contents.user_id', '=', 'users.id')->select('users.name', 'users.email', 'contents.name as content_name')->first();
         // dd($content);
+        $email_status = DB::table('email_status')->where('email', 'admin@xbug.online')->first();
+        if ($email_status && $email_status->status == 1) {
+            try {
+                $logData = [
+                    'email_type' => 'XBUG STAND',
+                    'recipient_email' => $content->email,
+                    'from_email' => 'admin@xbug.online',
+                    'name' => $content->name,
+                    'status' => 'SUCCESS',
+                    'response_data' => 'MESSAGE NOTIFICATION SEND',
+                    'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                ];
 
-        // Mail::mailer('smtp')->to()->send(new NotificationXBugStandMail($content->name));
+                DB::table('email_logs')->insert($logData);
+
+                Mail::mailer('smtp')->to($content->email)->send(new NotificationXBugStandMail($content->name, $content->content_name));
+                return response()->json(['message' => 'Cards saved successfully.']);
+            } catch (\Throwable $th) {
+
+                $logData = [
+                    'email_type' => 'XBUG STAND',
+                    'recipient_email' => $content->email,
+                    'from_email' => 'admin@xbug.online',
+                    'name' => $content->name,
+                    'status' => 'FAILED',
+                    'response_data' => 'ERROR',
+                    'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                ];
+
+                DB::table('email_logs')->insert($logData);
+
+                return response()->json(['message' => 'ERROR']);
+            }
+        }
         return response()->json(['message' => 'Cards saved successfully.']);
     }
 

@@ -12,13 +12,16 @@ use Illuminate\Queue\SerializesModels;
 class NotificationXBugStandMail extends Mailable
 {
     use Queueable, SerializesModels;
-
+    public $name;
+    public $content_name;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($name, $content_name)
     {
         //
+        $this->name = $name;
+        $this->content_name = $content_name;
     }
 
     /**
@@ -27,7 +30,7 @@ class NotificationXBugStandMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Notification X Bug Stand Mail',
+            subject: 'XBugStand Notification',
         );
     }
 
@@ -37,7 +40,7 @@ class NotificationXBugStandMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.notificationXBugStandEmail',
         );
     }
 
