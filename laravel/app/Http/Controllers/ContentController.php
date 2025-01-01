@@ -323,6 +323,7 @@ class ContentController extends Controller
 
     public function approveContent($id)
     {
+
         try {
             DB::transaction(function () use ($id) {
                 // Temukan konten berdasarkan ID
@@ -338,12 +339,16 @@ class ContentController extends Controller
 
                 $email_status = DB::table('email_status')->where('email', 'admin@xbug.online')->first();
 
+                // dd($user);
+
                 if ($email_status && $email_status->status == 1) {
-                    $user = Auth::user();
+                    $user = DB::table('contents')
+                    ->join('users', 'contents.user_id', '=', 'users.id')
+                    ->where('contents.id', $id)->select('users.name', 'users.email','contents.name as content_name')
+                    ->first();
                     $status = 2; // Status untuk email
                     $reject_reason = null; // Alasan penolakan kosong
                     $name = $user->name;
-
 
                     $logData = [
                         'email_type' => 'APPLY CONTENT - APPROVED',
@@ -366,9 +371,9 @@ class ContentController extends Controller
         } catch (Exception $e) {
             $logData = [
                 'email_type' => 'APPLY CONTENT - APPROVED',
-                'recipient_email' => Auth::user()->email,
+                'recipient_email' => $user->email,
                 'from_email' => 'admin@xbug.online',
-                'name' => Auth::user()->name,
+                'name' => $user->name,
                 'status' => 'FAILED',
                 'response_data' => 'ERROR',
                 'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
@@ -401,7 +406,10 @@ class ContentController extends Controller
                 $email_status = DB::table('email_status')->where('email', 'admin@xbug.online')->first();
 
                 if ($email_status && $email_status->status == 1) {
-                    $user = Auth::user();
+                    $user = DB::table('contents')
+                    ->join('users', 'contents.user_id', '=', 'users.id')
+                    ->where('contents.id', $id)->select('users.name', 'users.email','contents.name as content_name')
+                    ->first();
                     $status = 3; // Status for rejection email
                     $reject_reason = $content->reject_reason; // Pass the rejection reason
                     $name = $user->name;
@@ -430,9 +438,9 @@ class ContentController extends Controller
             // Log failure in case of an error
             $logData = [
                 'email_type' => 'APPLY CONTENT - REJECTED',
-                'recipient_email' => Auth::user()->email,
+                'recipient_email' => $user->email,
                 'from_email' => 'admin@xbug.online',
-                'name' => Auth::user()->name,
+                'name' => $user->name,
                 'status' => 'FAILED',
                 'response_data' => 'ERROR',
                 'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
