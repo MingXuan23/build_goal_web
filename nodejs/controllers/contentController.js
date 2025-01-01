@@ -13,6 +13,34 @@ const axios = require('axios');
 const HOST_URL = process.env.VECTOR_HOST;// Replace with your actual host URL
 const API_KEY = process.env.VECTOR_API_KEY;
 
+
+function getTopAttributes(values, topCount = 3) {
+    // Create an array of indices and values
+    const reference = new Map([
+        [0, "Education and Self Improvement"],
+        [1, "Entertainment and Health Fitness"],
+        [2, "Financial and Business"],
+        [3, "Technology and Digital"],
+        [4, "Fashion and Art"],
+        [5, "Production and Construction"],
+        [6, "Transportation and Logistics"],
+        [7, "Social and Personal Services"]
+    ]);
+
+    console.log(values);
+    const indexedValues = values.map((value, index) => ({ index, value }));
+
+    // Sort the array in descending order of values
+    indexedValues.sort((a, b) => b.value - a.value);
+
+    // Extract the top attributes based on the sorted values
+    const topAttributes = indexedValues
+        .slice(0, topCount) // Get the top `topCount` items
+        .map(item => reference.get(item.index)); // Map indices to category names
+
+    return topAttributes;
+}
+
 const getContentByVector = async (values, m_id) => {
     const parseValues = typeof values === 'string' ? JSON.parse(values || '{}') : values;
 
@@ -114,8 +142,11 @@ const getContents = async (req, res) => {
 
         contentList.forEach((content) => content.link = content.link || 'https://xbug.online/');
 
+        var values =  typeof user_vector.values === 'string' ? JSON.parse(user_vector.values || '{}') : user_vector.values;
+        //console.log(values,user_vector.values)
+        const recommendations = getTopAttributes(values);
 
-        return res.status(200).json({ contentList: contentList.sort(() => Math.random() - 0.5), microlearning_id: m_id.id });
+        return res.status(200).json({ contentList: contentList, microlearning_id: m_id.id ,recommendations:recommendations });
 
     } catch (error) {
         console.error(error);

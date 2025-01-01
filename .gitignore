@@ -18,3 +18,4 @@ yarn-error.log
 /.vscode
 
 /qdrant_data
+.codegpt
