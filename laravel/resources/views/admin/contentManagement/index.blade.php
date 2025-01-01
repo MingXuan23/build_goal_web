@@ -293,6 +293,7 @@
                 serverSide: true,
                 responsive: true,
                 pageLength: 50,
+                columnDefs: [{ width: '5%', targets: 0 },{ width: '15%', targets: 1 }]
                 ajax: "{{ route('showContentAdmin') }}",
                 columns: [{
                         data: 'DT_RowIndex',
