@@ -1,6 +1,5 @@
 @extends('admin.layouts.main')
 @section('container')
-    {{-- @dd($totalUserHaveOneRole); --}}
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
@@ -20,7 +19,9 @@
             <!-- Start::row 1 -->
             <div class="row">
                 <div class="col-md-6">
+
                     <div class="row">
+
                         <div class="col-xl-4 col-lg-4 col-md-4">
                             <div class="card custom-card">
                                 <div class="card-body">
@@ -72,66 +73,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-xl-6 col-lg-6 col-md-12">
-                    <div class="row">
-                        <div class="col-xl-4 col-lg-4 col-md-4">
-                            <div class="card custom-card">
-                                <div class="card-body">
-                                    <div class="d-flex flex-wrap align-items-top">
-                                        <div class="flex-fill">
-                                            <p class="mb-0 text-muted">Total Users GPT</p>
-                                        </div>
-                                        <div class="ms-2">
-                                            <span class="avatar avatar-md bg-info fs-18">
-                                                <i class="bi bi-person-square"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <h4 class="fw-bold text-center text-info">{{ $totalGpt }}</h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-4 col-lg-4 col-md-4">
-                            <div class="card custom-card">
-                                <div class="card-body">
-                                    <div class="d-flex flex-wrap align-items-top">
-                                        <div class="flex-fill">
-                                            <p class="mb-0 text-muted">Total Ban GPT</p>
-                                        </div>
-                                        <div class="ms-2">
-                                            <span class="avatar avatar-md bg-dark fs-18">
-                                                <i class="bi bi-person-square"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <h4 class="fw-bold text-dark text-center">{{ $totalGptBlock }}</h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-4 col-lg-4 col-md-4">
-                            <div class="card custom-card">
-                                <div class="card-body">
-                                    <div class="d-flex flex-wrap align-items-top">
-                                        <div class="flex-fill">
-                                            <p class="mb-0 text-muted">User More Role</p>
-                                        </div>
-                                        <div class="ms-2">
-                                            <span class="avatar avatar-md bg-warning fs-18">
-                                                <i class="bi bi-person-square"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <h4 class="fw-bold text-warning text-center">{{ $totalUserHaveOneRole }}</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-12 col-lg-12 col-md-12">
-                    <div class="row">
                         <div class="col-md-12">
                             <div class="card custom-card">
                                 <div class="card-body p-0">
@@ -193,7 +134,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="col-xl-6 col-lg-6 col-md-12">
@@ -221,122 +161,121 @@
                     </div>
                 </div>
 
-                <div class="col-xl-6 col-lg-6 col-md-12">
+                <div class="row">
+                    <!-- Users by Role Chart -->
+                    <div class="col-lg-6">
+                        <div class="card custom-card overflow-hidden">
+                            <div class="card-body p-0">
+                                <div class="p-2">
+                                    <div class="ms-2 d-flex align-items-center mt-2">
+                                        <span class="avatar avatar-md avatar-rounded bg-primary me-2">
+                                            <i class="bi bi-receipt fs-16"></i>
+                                        </span>
+                                        <p class="mb-0 flex-fill text-muted">List Role Registred</p>
+                                    </div>
 
-                    <div class="card custom-card overflow-hidden">
-                        <div class="card-body p-0">
-                            <div class="p-2">
-                                <div class="ms-2 d-flex align-items-center mt-2">
-                                    <span class="avatar avatar-md avatar-rounded bg-primary me-2">
-                                        <i class="bi bi-receipt fs-16"></i>
-                                    </span>
-                                    <p class="mb-0 flex-fill text-muted">e-KYC Statistics</p>
                                 </div>
-
-                            </div>
-                            <div class="card-body">
-                                <canvas id="ekycChart" width="500" height="180"></canvas>
+                                <div class="card-body">
+                                    <canvas id="userRoleChart" width="500" height="180"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="col-lg-3">
+                        <div class="card custom-card overflow-hidden">
+                            <div class="card-body p-0">
+                                <div class="p-2">
+                                    <div class="ms-2 d-flex align-items-center mt-2">
+                                        <span class="avatar avatar-md avatar-rounded bg-primary me-2">
+                                            <i class="bi bi-receipt fs-16"></i>
+                                        </span>
+                                        <p class="mb-0 flex-fill text-muted">e-KYC Statistics</p>
+                                    </div>
 
-                <div class="col-xl-6 col-lg-6 col-md-6">
-                    <div class="card custom-card overflow-hidden">
-                        <div class="card-body p-0">
-                            <div class="p-2">
-                                <div class="ms-2 d-flex align-items-center mt-2">
-                                    <span class="avatar avatar-md avatar-rounded bg-primary me-2">
-                                        <i class="bi bi-receipt fs-16"></i>
-                                    </span>
-                                    <p class="mb-0 flex-fill text-muted">List Role Registred</p>
                                 </div>
-
-                            </div>
-                            <div class="card-body">
-                                <canvas id="userRoleChart" width="500" height="180"></canvas>
+                                <div class="card-body">
+                                    <canvas id="ekycChart" width="500" height="180"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="col-lg-3">
+                        <div class="card custom-card overflow-hidden">
+                            <div class="card-body p-0">
+                                <div class="p-2">
+                                    <div class="ms-2 d-flex align-items-center mt-2">
+                                        <span class="avatar avatar-md avatar-rounded bg-primary me-2">
+                                            <i class="bi bi-receipt fs-16"></i>
+                                        </span>
+                                        <p class="mb-0 flex-fill text-muted">Email Verification Statistics</p>
+                                    </div>
 
-                <!-- Users by Role Chart -->
-                <div class="col-xl-6 col-lg-6 col-md-6">
-
-                    <div class="card custom-card overflow-hidden">
-                        <div class="card-body p-0">
-                            <div class="p-2">
-                                <div class="ms-2 d-flex align-items-center mt-2">
-                                    <span class="avatar avatar-md avatar-rounded bg-primary me-2">
-                                        <i class="bi bi-receipt fs-16"></i>
-                                    </span>
-                                    <p class="mb-0 flex-fill text-muted">Email Verification Statistics</p>
                                 </div>
-
-                            </div>
-                            <div class="card-body">
-                                <canvas id="userStatsChart" width="500" height="180"></canvas>
+                                <div class="card-body">
+                                    <canvas id="userStatsChart" width="500" height="180"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                 <div class="col-xl-12 col-lg-12 col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <!-- Tombol untuk memilih jenis transaksi -->
-                            <div class="d-flex justify-content-between mb-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="d-flex align-items-center">
-                                            <div class="me-3">
-                                                <div class="input-group">
-                                                    <label for="start_date" class="form-label mt-2 me-2">Start
-                                                        Date:</label>
-                                                    <div class="input-group-text text-muted">
-                                                        <i class="ri-calendar-line"></i>
+                    <div class="col-xl-12 col-lg-12 col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Tombol untuk memilih jenis transaksi -->
+                                <div class="d-flex justify-content-between mb-4">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-3">
+                                                    <div class="input-group">
+                                                        <label for="start_date" class="form-label mt-2 me-2">Start
+                                                            Date:</label>
+                                                        <div class="input-group-text text-muted">
+                                                            <i class="ri-calendar-line"></i>
+                                                        </div>
+                                                        <input type="text" class="form-control" id="start_date"
+                                                            placeholder="Choose start date">
                                                     </div>
-                                                    <input type="text" class="form-control" id="start_date"
-                                                        placeholder="Choose start date">
                                                 </div>
-                                            </div>
 
-                                            <div class="me-3">
-                                                <div class="input-group">
-                                                    <label for="end_date" class="form-label mt-2 me-2">End
-                                                        Date:</label>
-                                                    <div class="input-group-text text-muted">
-                                                        <i class="ri-calendar-line"></i>
+                                                <div class="me-3">
+                                                    <div class="input-group">
+                                                        <label for="end_date" class="form-label mt-2 me-2">End
+                                                            Date:</label>
+                                                        <div class="input-group-text text-muted">
+                                                            <i class="ri-calendar-line"></i>
+                                                        </div>
+                                                        <input type="text" class="form-control" id="end_date"
+                                                            placeholder="Choose end date">
                                                     </div>
-                                                    <input type="text" class="form-control" id="end_date"
-                                                        placeholder="Choose end date">
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <button class="btn btn-primary px-4 mx-2"
-                                                        id="filterBtn">Filter</button>
-                                                    <button class="btn btn-secondary mx-2 mt-1"
-                                                        id="viewWeekly">Weekly</button>
-                                                    <button class="btn btn-secondary mx-2 mt-1"
-                                                        id="viewMonthly">Monthly</button>
-                                                    <button class="btn btn-secondary mx-2 mt-1"
-                                                        id="viewYearly">Yearly</button>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <button class="btn btn-primary px-4 mx-2"
+                                                            id="filterBtn">Filter</button>
+                                                        <button class="btn btn-secondary mx-2 mt-1"
+                                                            id="viewWeekly">Weekly</button>
+                                                        <button class="btn btn-secondary mx-2 mt-1"
+                                                            id="viewMonthly">Monthly</button>
+                                                        <button class="btn btn-secondary mx-2 mt-1"
+                                                            id="viewYearly">Yearly</button>
+                                                    </div>
                                                 </div>
-                                            </div>
 
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
 
-                            </div>
-
-                            <!-- Container untuk grafik -->
-                            <div id="chart-container">
-                                <canvas id="transactionChart" width="250" height="100"></canvas>
+                                <!-- Container untuk grafik -->
+                                <div id="chart-container">
+                                    <canvas id="transactionChart" width="250" height="100"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
                 <!-- End::row 3-->
             </div>
@@ -346,7 +285,6 @@
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
         <script>
-
             document.addEventListener('DOMContentLoaded', function() {
                 // Data dari backend
                 const userChartData = @json($userCounts);
@@ -985,4 +923,255 @@
             });
         </script>
 
+
+        {{-- <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const ctx = document.getElementById('registrationsChart').getContext('2d');
+
+                // Data dari backend
+                const yearData = @json($yearData);
+                const monthData = @json($monthData);
+                const weekData = @json($weekData);
+
+                // Pemetaan warna untuk setiap hari
+                const dayColors = {
+                    'Monday': {
+                        background: 'rgba(54, 162, 235, 0.2)', // Biru
+                        border: 'rgba(54, 162, 235, 1)'
+                    },
+                    'Tuesday': {
+                        background: 'rgba(255, 99, 132, 0.2)', // Merah
+                        border: 'rgba(255, 99, 132, 1)'
+                    },
+                    'Wednesday': {
+                        background: 'rgba(255, 206, 86, 0.2)', // Kuning
+                        border: 'rgba(255, 206, 86, 1)'
+                    },
+                    'Thursday': {
+                        background: 'rgba(75, 192, 192, 0.2)', // Hijau
+                        border: 'rgba(75, 192, 192, 1)'
+                    },
+                    'Friday': {
+                        background: 'rgba(153, 102, 255, 0.2)', // Ungu
+                        border: 'rgba(153, 102, 255, 1)'
+                    },
+                    'Saturday': {
+                        background: 'rgba(255, 159, 64, 0.2)', // Oranye
+                        border: 'rgba(255, 159, 64, 1)'
+                    },
+                    'Sunday': {
+                        background: 'rgba(201, 203, 207, 0.2)', // Abu-abu
+                        border: 'rgba(201, 203, 207, 1)'
+                    }
+                };
+
+                // Warna default untuk label yang tidak memiliki pemetaan khusus
+                const defaultColors = {
+                    background: 'rgba(0, 0, 0, 0.1)', // Abu-abu muda
+                    border: 'rgba(0, 0, 0, 1)' // Abu-abu gelap
+                };
+
+                // Array warna tambahan untuk bulan dan tahun (opsional)
+                const additionalColors = [{
+                        background: 'rgba(255, 99, 132, 0.2)', // Merah
+                        border: 'rgba(255, 99, 132, 1)'
+                    },
+                    {
+                        background: 'rgba(54, 162, 235, 0.2)', // Biru
+                        border: 'rgba(54, 162, 235, 1)'
+                    },
+                    {
+                        background: 'rgba(255, 206, 86, 0.2)', // Kuning
+                        border: 'rgba(255, 206, 86, 1)'
+                    },
+                    {
+                        background: 'rgba(75, 192, 192, 0.2)', // Hijau
+                        border: 'rgba(75, 192, 192, 1)'
+                    },
+                    {
+                        background: 'rgba(153, 102, 255, 0.2)', // Ungu
+                        border: 'rgba(153, 102, 255, 1)'
+                    },
+                    {
+                        background: 'rgba(255, 159, 64, 0.2)', // Oranye
+                        border: 'rgba(255, 159, 64, 1)'
+                    }
+                ];
+
+                // Fungsi untuk menetapkan warna berdasarkan label
+                function assignColors(labels) {
+                    const backgroundColor = [];
+                    const borderColor = [];
+
+                    labels.forEach((label, index) => {
+                        if (dayColors[label]) {
+                            backgroundColor.push(dayColors[label].background);
+                            borderColor.push(dayColors[label].border);
+                        } else {
+                            // Untuk label yang tidak memiliki pemetaan khusus (misalnya bulan atau tahun)
+                            // Kita bisa memilih warna dari additionalColors secara berurutan atau acak
+                            // Berikut ini memilih secara berurutan:
+                            const color = additionalColors[index % additionalColors.length];
+                            backgroundColor.push(color.background);
+                            borderColor.push(color.border);
+                        }
+                    });
+
+                    return {
+                        backgroundColor,
+                        borderColor
+                    };
+                }
+
+                // Fungsi untuk membuat legenda kustom
+                function createCustomLegend(labels) {
+                    // const legendContainer = document.getElementById('customLegend');
+                    // legendContainer.innerHTML = ''; // Kosongkan kontainer
+
+                    // labels.forEach((label, index) => {
+                    //     const legendItem = document.createElement('div');
+                    //     legendItem.classList.add('legend-item');
+
+                    //     const colorBox = document.createElement('div');
+                    //     colorBox.classList.add('legend-color-box');
+
+                    //     // Tentukan warna berdasarkan label
+                    //     if (dayColors[label]) {
+                    //         colorBox.style.backgroundColor = dayColors[label].background;
+                    //         colorBox.style.borderColor = dayColors[label].border;
+                    //     } else {
+                    //         const color = additionalColors[index % additionalColors.length];
+                    //         colorBox.style.backgroundColor = color.background;
+                    //         colorBox.style.borderColor = color.border;
+                    //     }
+
+                    //     const labelText = document.createElement('span');
+                    //     labelText.textContent = label;
+
+                    //     // legendItem.appendChild(colorBox);
+                    //     // legendItem.appendChild(labelText);
+                    //     // legendContainer.appendChild(legendItem);
+                    // });
+                }
+
+                // Inisialisasi Chart dengan data mingguan sebagai default
+                let currentRange = 'week';
+                let labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                let data = labels.map(day => weekData[day] || 0);
+
+                const {
+                    backgroundColor,
+                    borderColor
+                } = assignColors(labels);
+
+                const registrationsChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Jumlah Pengguna Terdaftar',
+                            data: data,
+                            backgroundColor: backgroundColor,
+                            borderColor: borderColor,
+                            borderWidth: 1,
+                            borderRadius: 5, // Opsional: Menambahkan radius pada batang
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false // Menonaktifkan legenda default
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0 // Angka bulat saja
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Membuat legenda kustom pada inisialisasi chart
+                createCustomLegend(labels);
+
+                // Penanganan klik tombol
+                document.getElementById('weekBtn').addEventListener('click', function() {
+                    if (currentRange !== 'week') {
+                        updateChart('week', weekData);
+                        setActiveButton('weekBtn');
+                    }
+                });
+
+                document.getElementById('monthBtn').addEventListener('click', function() {
+                    if (currentRange !== 'month') {
+                        updateChart('month', monthData);
+                        setActiveButton('monthBtn');
+                    }
+                });
+
+                document.getElementById('yearBtn').addEventListener('click', function() {
+                    if (currentRange !== 'year') {
+                        updateChart('year', yearData);
+                        setActiveButton('yearBtn');
+                    }
+                });
+
+                // Fungsi untuk memperbarui data chart
+                function updateChart(range, dataSet) {
+                    let newLabels, newData;
+
+                    if (range === 'week') {
+                        newLabels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                        newData = newLabels.map(day => dataSet[day] || 0);
+                    } else if (range === 'month') {
+                        newLabels = [
+                            'January', 'February', 'March', 'April', 'May', 'June',
+                            'July', 'August', 'September', 'October', 'November', 'December'
+                        ];
+                        newData = newLabels.map((_, i) => dataSet[i + 1] || 0); // Bulan diindeks 1-12
+                    } else if (range === 'year') {
+                        newLabels = Object.keys(dataSet).sort();
+                        newData = newLabels.map(year => dataSet[year]);
+                    }
+
+                    const {
+                        backgroundColor,
+                        borderColor
+                    } = assignColors(newLabels);
+
+                    registrationsChart.data.labels = newLabels;
+                    registrationsChart.data.datasets[0].data = newData;
+                    registrationsChart.data.datasets[0].backgroundColor = backgroundColor;
+                    registrationsChart.data.datasets[0].borderColor = borderColor;
+                    registrationsChart.update();
+
+                    // Membuat legenda kustom untuk label baru
+                    createCustomLegend(newLabels);
+
+                    currentRange = range;
+                }
+
+                // Fungsi untuk menyorot tombol aktif
+                function setActiveButton(activeId) {
+                    ['weekBtn', 'monthBtn', 'yearBtn'].forEach(id => {
+                        const button = document.getElementById(id);
+                        if (id === activeId) {
+                            button.classList.add('btn-primary');
+                            button.classList.remove('btn-secondary');
+                        } else {
+                            button.classList.add('btn-secondary');
+                            button.classList.remove('btn-primary');
+                        }
+                    });
+                }
+
+                // Set tombol default aktif (week) saat halaman dimuat
+                setActiveButton('weekBtn');
+            });
+        </script> --}}
     @endsection

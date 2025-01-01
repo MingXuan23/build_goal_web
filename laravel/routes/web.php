@@ -86,6 +86,7 @@ Route::get('/generate-qrcode', [EkycController::class, 'GenerateQrCode'])->name(
 Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
 
     Route::get('/dashboard', [AdminRouteController::class, 'showDashboard'])->name('showDashboardAdmin');
+    Route::get('/dashboard/transaction-data', [AdminRouteController::class, 'getTransactionData']);
     Route::get('/user', [AdminRouteController::class, 'showUser'])->name('showUserAdmin');
     Route::get('/user-mobile', [AdminRouteController::class, 'showUserMobile'])->name('showUserMobile');
     Route::get('/add-user', [AdminRouteController::class, 'showAddUser'])->name('showAddUser');
