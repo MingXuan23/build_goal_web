@@ -2632,7 +2632,7 @@ class GPTChatBot extends Controller
                 'Authorization' => 'Bearer ' . $apiKey,
                 'Content-Type'  => 'application/json',
             ])->post('https://api.groq.com/openai/v1/chat/completions', [
-                // Silakan sesuaikan 'model' jika ada
+
                 'model'    => 'llama3-8b-8192',
                 'messages' => [
                     [

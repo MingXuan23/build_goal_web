@@ -117,7 +117,6 @@ class EkycController extends Controller
 
     public function showCardLogs(Request $request)
     {
-        // Ambil data dari API
         $response = Http::withHeaders([
             'Authorization' => env("EKYC_API_KEY"),
         ])->get(env('API_EKYC_URL').'/card-logs');   

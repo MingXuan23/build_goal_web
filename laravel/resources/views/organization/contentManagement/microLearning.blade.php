@@ -40,9 +40,11 @@
          </ul>
       </div>
       @endif
-      <div class="card">
-         <div class="card-header">
-            <h5>MicroLearning Content</h5>
+      <div class="card custom-card">
+         <div class="card-header justify-content-between m-0 col-md-12">
+            <div class="card-title col-md-12">
+               MicroLearning Content
+            </div>
          </div>
          <div class="card-body">
             <form action="{{ route('uploadMicroLearning') }}" method="POST" enctype="multipart/form-data">
@@ -102,6 +104,9 @@
          </div>
       </div>
    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
    <script>
       let formattedString = '';
       
@@ -137,7 +142,15 @@
         // Hide the section input form
         document.getElementById('sectionInput').style.display = 'none';
       } else {
-        alert('Please fill out both the Section Header and Body.');
+      //   alert('Please fill out both the Section Header and Body.');
+        Swal.fire({
+                  icon: 'error',
+                  title: 'Please fill out both the Section Header and Body.',
+                  customClass: {
+                     title: 'custom-title',
+                     content: 'custom-content'
+                  }
+               });
       }
       }
       
@@ -298,7 +311,15 @@
                   selectedLabels.push(selectedLabel); // Add the label to the selected labels array
                   updateSelectedLabels(); // Update the displayed selected labels
               } else {
-                  alert('This label has been selected');
+                  // alert('This label has been selected');
+                  Swal.fire({
+                  icon: 'error',
+                  title: 'This label has been selected',
+                  customClass: {
+                     title: 'custom-title',
+                     content: 'custom-content'
+                  }
+               });
               }
               $('#label-input').val(''); // Clear the input field
               $('#suggestions-list').hide(); // Hide the suggestions
@@ -381,7 +402,15 @@
                   this.submit();
               } catch (error) {
                   console.error('Error fetching weights:', error);
-                  alert('An error occurred while processing your request. Please try again.');
+                  // alert('An error occurred while processing your request. Please try again.');
+                  Swal.fire({
+                  icon: 'error',
+                  title: 'An error occurred while processing your request. Please try again.',
+                  customClass: {
+                     title: 'custom-title',
+                     content: 'custom-content'
+                  }
+               });
               }
           });
       

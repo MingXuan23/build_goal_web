@@ -69,7 +69,7 @@
     @foreach ($content_data as $data)
         <div class="modal fade" id="modalView-{{ $data->id }}" ria-labelledby="exampleModalScrollable"
             data-bs-keyboard="false" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered text-center modal-md modal-dialog-scrollable">
+            <div class="modal-dialog modal-dialog-centered text-center modal-xl modal-dialog-scrollable">
                 <div class="modal-content modal-content-demo">
                     <div class="modal-header">
                         <h6 class="modal-title">CONTENT DETAIL - {{ $data->name }} </h6>
@@ -95,10 +95,11 @@
                             <div class="mb-2">
                                 <div class="col-xl-12">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" placeholder="Enter Content Name"
-                                            value="{{ $data->desc }}" readonly>
+                                        <textarea name="" readonly class="form-control" id="" style="min-height: 150px;" cols="30"
+                                            rows="10" readonly>{{ $data->desc }}</textarea>
                                         <label for="contentName">Content Description</label>
                                     </div>
+
                                 </div>
                             </div>
 
@@ -293,7 +294,13 @@
                 serverSide: true,
                 responsive: true,
                 pageLength: 50,
-                columnDefs: [{ width: '5%', targets: 0 },{ width: '15%', targets: 1 }],
+                columnDefs: [{
+                    width: '5%',
+                    targets: 0
+                }, {
+                    width: '15%',
+                    targets: 1
+                }],
                 ajax: "{{ route('showContentAdmin') }}",
                 columns: [{
                         data: 'DT_RowIndex',

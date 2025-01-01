@@ -73,13 +73,14 @@
                         <!-- Content Description -->
                         <div class="col-xl-12">
                            <div class="form-floating">
-                              <input type="text" class="form-control @error('content_desc') is-invalid @enderror" id="contentDescription" placeholder="Enter Content Description"  name="content_desc" value="{{ old('content_desc') }}">
+                              <textarea class="form-control @error('content_desc') is-invalid @enderror" id="contentDescription" placeholder="Enter Content Description" name="content_desc" style="height: 150px;">{{ old('content_desc') }}</textarea>
                               <label for="contentDescription">Content Description</label>
                               @error('content_desc')
                                  <span class="mb-1 text-danger">{{ $message }}</span>
                               @enderror
                            </div>
                         </div>
+                        
                         <!-- Links -->
                         <div class="col-xl-12">
                            <div class="form-floating">
@@ -379,6 +380,7 @@
       });
    </script> -->
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
    
@@ -430,7 +432,15 @@
                   selectedLabels.push(selectedLabel); // Add the label to the selected labels array
                   updateSelectedLabels(); // Update the displayed selected labels
             }else{
-               alert('This label has been selected');
+               // alert('This label has been selected');
+               Swal.fire({
+                  icon: 'error',
+                  title: 'This label has been selected',
+                  customClass: {
+                     title: 'custom-title',
+                     content: 'custom-content'
+                  }
+               });
             }
             $('#label-input').val(''); // Clear the input field
             $('#suggestions-list').hide(); // Hide the suggestions
@@ -496,7 +506,15 @@
                   this.submit();
                } catch (error) {
                   console.error('Error fetching weights:', error);
-                  alert('An error occurred while processing your request. Please try again.');
+                  // alert('An error occurred while processing your request. Please try again.');
+                  Swal.fire({
+                  icon: 'error',
+                  title: 'An error occurred while processing your request. Please try again.',
+                  customClass: {
+                     title: 'custom-title',
+                     content: 'custom-content'
+                  }
+               });
                }
             });
 
