@@ -42,14 +42,14 @@
       @endif
       <div class="card">
          <div class="card-header">
-            <h2>MicroLearning Content</h2>
+            <h5>MicroLearning Content</h5>
          </div>
          <div class="card-body">
             <form action="{{ route('uploadMicroLearning') }}" method="POST" enctype="multipart/form-data">
                @csrf
                <div class="mb-3">
                   <label for="content_name" class="form-label">Title</label>
-                  <input type="text" class="form-control" id="content_name" name="content_name" required>
+                  <input type="text" class="form-control" id="content_name" name="content_name" required value="{{ old('content_name') }}">
                </div>
                <div class="mb-3">
                   <label for="image" class="form-label">Thumbnail (Image)</label>
@@ -57,7 +57,7 @@
                </div>
                <div class="mb-3">
                   <label for="content_desc" class="form-label">Description</label>
-                  <textarea class="form-control" id="content_desc" name="content_desc" rows="5" required></textarea>
+                  <textarea class="form-control" id="content_desc" name="content_desc" rows="5" required>{{ old('content_desc') }}</textarea>
                </div>
                <div class="col-md-6">
                   <label for="label-input">Search Labels:</label>

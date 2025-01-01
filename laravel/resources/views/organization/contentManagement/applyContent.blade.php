@@ -63,7 +63,7 @@
                         <!-- Content Name -->
                         <div class="col-xl-12">
                            <div class="form-floating">
-                              <input type="text" class="form-control @error('content_name') is-invalid @enderror" id="contentName" placeholder="Enter Content Name" name="content_name">
+                              <input type="text" class="form-control @error('content_name') is-invalid @enderror" id="contentName" placeholder="Enter Content Name" name="content_name" value="{{ old('content_name') }}">
                               <label for="contentName">Content Name</label>
                               @error('content_name')
                                  <span class="mb-1 text-danger">{{ $message }}</span>
@@ -73,7 +73,7 @@
                         <!-- Content Description -->
                         <div class="col-xl-12">
                            <div class="form-floating">
-                              <input type="text" class="form-control @error('content_desc') is-invalid @enderror" id="contentDescription" placeholder="Enter Content Description"  name="content_desc">
+                              <input type="text" class="form-control @error('content_desc') is-invalid @enderror" id="contentDescription" placeholder="Enter Content Description"  name="content_desc" value="{{ old('content_desc') }}">
                               <label for="contentDescription">Content Description</label>
                               @error('content_desc')
                                  <span class="mb-1 text-danger">{{ $message }}</span>
@@ -83,7 +83,7 @@
                         <!-- Links -->
                         <div class="col-xl-12">
                            <div class="form-floating">
-                              <input type="url" class="form-control @error('content_link') is-invalid @enderror" id="contentLink" placeholder="Enter Related Link"  name="content_link">
+                              <input type="url" class="form-control @error('content_link') is-invalid @enderror" id="contentLink" placeholder="Enter Related Link"  name="content_link" value="{{ old('content_link') }}">
                               <label for="contentLink">Content Link</label>
                               @error('content_link')
                                  <span class="mb-1 text-danger">{{ $message }}</span>
@@ -96,7 +96,7 @@
                               <select class="form-select @error('content_type_id') is-invalid @enderror" id="content_types" name="content_type_id" >
                                  <option value="" disabled selected>Select Content Type</option>
                                  @foreach ($content_types as $content_type)
-                                 <option value="{{ $content_type->id }}">{{ $content_type->type }}</option>
+                                 <option value="{{ $content_type->id }}" @selected(old('content_type_id') == $content_type->id)>{{ $content_type->type }}</option>
                                  @endforeach
                               </select>
                               <label for="content_type_id">Content Type</label>
@@ -134,7 +134,7 @@
                         <!-- Enrollment Price -->
                         <div class="col-xl-12">
                            <div class="form-floating">
-                              <input type="number" class="form-control @error('enrollment_price') is-invalid @enderror" id="enrollment_price" placeholder="Enter Enrollment Price"  name="enrollment_price">
+                              <input type="number" class="form-control @error('enrollment_price') is-invalid @enderror" id="enrollment_price" placeholder="Enter Enrollment Price"  name="enrollment_price" value="{{ old('enrollment_price') }}">
                               <label for="enrollmentPrice">Enrollment Price (in RM)</label>
                               @error('enrollment_price')
                                  <span class="mb-1 text-danger">{{ $message }}</span>
@@ -144,7 +144,7 @@
                         <!-- Place -->
                         <div class="col-xl-12">
                            <div class="form-floating">
-                              <input type="text" class="form-control form-control @error('place') is-invalid @enderror" id="place" placeholder="Enter Place"  name="place">
+                              <input type="text" class="form-control form-control @error('place') is-invalid @enderror" id="place" placeholder="Enter Place"  name="place" value="{{ old('place') }}">
                               <label for="place">Place</label>
                               @error('place')
                                  <span class="mb-1 text-danger">{{ $message }}</span>
@@ -154,7 +154,7 @@
                         <!-- Participant Limit -->
                         <div class="col-xl-12">
                            <div class="form-floating">
-                              <input type="number" class="form-control @error('participant_limit') is-invalid @enderror" id="participant_limit" placeholder="Enter Participant Limit"  name="participant_limit">
+                              <input type="number" class="form-control @error('participant_limit') is-invalid @enderror" id="participant_limit" placeholder="Enter Participant Limit"  name="participant_limit" value="{{ old('participant_limit') }}">
                               <label for="participant_limit">Participant Limit</label>
                               @error('participant_limit')
                                  <span class="mb-1 text-danger">{{ $message }}</span>
