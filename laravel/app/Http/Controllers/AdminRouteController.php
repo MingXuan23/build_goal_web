@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NotificationXBugStandMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -10,6 +11,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Mail;
 
 class AdminRouteController extends Controller
 {
@@ -287,9 +289,9 @@ class AdminRouteController extends Controller
         //Total Users and Active Users
         $totalUsers = DB::table('users')->count();
         $activeUsers = DB::table('users')->where('active', 1)->count();
-        $totalUserBan= DB::table('users')->where('active', 0)->count();
-        $totalGpt= DB::table('users')->where('is_gpt', 1)->count();
-        $totalGptBlock= DB::table('users')->where('gpt_status', 1)->count();
+        $totalUserBan = DB::table('users')->where('active', 0)->count();
+        $totalGpt = DB::table('users')->where('is_gpt', 1)->count();
+        $totalGptBlock = DB::table('users')->where('gpt_status', 1)->count();
         $totalUserHaveOneRole = DB::table('users')->whereRaw('JSON_LENGTH(role) > 1')->count();
 
         //Registration Statistic
@@ -650,7 +652,7 @@ class AdminRouteController extends Controller
 
     public function saveContentCards(Request $request)
     {
-
+        // dd($request->all());
         $contentId = $request->input('content_id');
 
 
@@ -713,7 +715,11 @@ class AdminRouteController extends Controller
         DB::table('content_card')->whereIn('id', $deletedCardIds)->update([
             'status' => 0
         ]);
+        $content = DB::table('contents')->where('id', $contentId)
+        // ->join('users', 'contents.user_id', '=', 'users.id')->select('users.name','users.email')->first();
+        // dd($content);
 
+        // Mail::mailer('smtp')->to()->send(new NotificationXBugStandMail($content->name));
         return response()->json(['message' => 'Cards saved successfully.']);
     }
 
