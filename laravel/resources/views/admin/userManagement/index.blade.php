@@ -1,6 +1,11 @@
 @extends('admin.layouts.main')
 @section('container')
-
+<style>
+    .wrap-text {
+        white-space: normal !important;
+        word-wrap: break-word;
+    }
+</style>
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
@@ -823,9 +828,9 @@
                     {
                         data: 'name',
                         name: 'name',
-                        render: ((data, type, row) => {
-                            return data.toUpperCase();
-                        })
+                        render: (data, type, row) => {
+                            return `<div class="wrap-text">${data.toUpperCase()}</div>`;
+                        }
 
                     },
                     {

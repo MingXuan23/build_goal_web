@@ -1,5 +1,12 @@
 @extends('admin.layouts.main')
 @section('container')
+    <style>
+        .wrap-text {
+            white-space: normal !important;
+            word-wrap: break-word;
+        }
+    </style>
+
     {{-- @dd($content_data); --}}
     <!-- Start::app-content -->
     <div class="main-content app-content">
@@ -110,14 +117,15 @@
                                             <strong>Content Image</strong>
                                         </div>
                                         <div class="card-body">
-                                            @if($data->image)
-                                                <img src="{{ asset('storage/' . $data->image) }}" alt="{{ $data->name }}" class="img-fluid rounded" style="max-width: 300px; height: auto;">
+                                            @if ($data->image)
+                                                <img src="{{ asset('storage/' . $data->image) }}" alt="{{ $data->name }}"
+                                                    class="img-fluid rounded" style="max-width: 300px; height: auto;">
                                             @else
                                                 <p class="text-muted">No image available</p>
                                             @endif
                                         </div>
                                     </div>
-                                        
+
                                 </div>
                             </div>
 
@@ -193,8 +201,8 @@
                                     <div>
                                         <label for="contentLabels" class="form-label">Selected Labels</label>
                                         <ul id="contentLabels" style="list-style-type: disc; padding-left: 20px;">
-                                            @if($data->labels)
-                                                @foreach(explode(',', $data->labels) as $label)
+                                            @if ($data->labels)
+                                                @foreach (explode(',', $data->labels) as $label)
                                                     <li>{{ $label }}</li>
                                                 @endforeach
                                             @else
@@ -346,14 +354,13 @@
                         data: 'name',
                         name: 'name',
                         // visible:false
+                        render: (data, type, row) => {
+                            return `<div class="wrap-text">${data.toUpperCase()}</div>`;
+                        }
                     },
                     {
                         data: 'created_at',
                         name: 'created_at',
-                        // render: ((data, type, row) => {
-                        //     return data.toUpperCase();
-                        // })
-
                     },
                     {
                         data: 'action',
@@ -415,11 +422,3 @@
         })
     </script>
 @endsection
-
-
-{{-- <div class="d-flex justify-content-between"><span class="badge bg-' . $statusClass . '-transparent p-2 me-1">' .
-        $messageActive . '</span><button class="btn btn-icon btn-sm btn-warning-transparent rounded-pill "
-        data-bs-toggle="modal" data-bs-target="#modalEkyc-' . $row->id . '">
-        <i class="ri-edit-line"></i>
-    </button>
-</div> --}}

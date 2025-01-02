@@ -291,7 +291,7 @@ class AdminRouteController extends Controller
         $activeUsers = DB::table('users')->where('active', 1)->count();
         $totalUserBan = DB::table('users')->where('active', 0)->count();
         $totalGpt = DB::table('users')->where('is_gpt', 1)->count();
-        $totalGptBlock = DB::table('users')->where('gpt_status', 1)->count();
+        $totalGptBlock = DB::table('users')->where('gpt_status', 0)->where('is_gpt', 1)->count();
         $totalUserHaveOneRole = DB::table('users')->whereRaw('JSON_LENGTH(role) > 1')->count();
 
         //Registration Statistic

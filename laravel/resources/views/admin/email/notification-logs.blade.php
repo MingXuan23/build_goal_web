@@ -1,5 +1,11 @@
 @extends('admin.layouts.main')
 @section('container')
+<style>
+    .wrap-text {
+        white-space: normal !important;
+        word-wrap: break-word;
+    }
+</style>
     <div class="main-content app-content">
         <div class="container">
             <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
@@ -102,9 +108,8 @@
                     {
                         data: 'name',
                         name: 'name',
-                        render: function(data, type, row) {
-                            return data ? data.toUpperCase() :
-                            ''; 
+                        render: (data, type, row) => {
+                            return `<div class="wrap-text fw-bold">${data.toUpperCase()}</div>`;
                         }
                     },
                     {

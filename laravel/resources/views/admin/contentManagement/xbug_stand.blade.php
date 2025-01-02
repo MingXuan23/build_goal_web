@@ -7,6 +7,12 @@
             /* Adjust this value as needed */
         }
     </style>
+    <style>
+        .wrap-text {
+            white-space: normal !important;
+            word-wrap: break-word;
+        }
+    </style>
 @endsection
 @section('container')
     <div class="main-content app-content">
@@ -57,7 +63,7 @@
 
     <div class="modal fade" id="contentCardsModal" tabindex="-1" aria-labelledby="contentCardsModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-fullscreen">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="contentCardsModalLabel">Content Cards</h5>
@@ -111,7 +117,10 @@
                     }, // Fixed ID for numbering
                     {
                         data: 'name',
-                        name: 'name'
+                        name: 'name',
+                        render: (data, type, row) => {
+                            return `<div class="wrap-text">${data.toUpperCase()}</div>`;
+                        }
                     }, // Content Name
                     {
                         data: 'created_at',
@@ -168,7 +177,7 @@
                 var contentId = $(this).data('content-id');
 
                 $('#contentCardsModal').data('content-id',
-                contentId); // Update contentId in modal's data attribute
+                    contentId); // Update contentId in modal's data attribute
                 loadContentCards(contentId);
             });
 
@@ -309,7 +318,7 @@
                         console.log(xhr);
                         var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr
                             .responseJSON.message : 'Error saving cards. Please try again.';
-                            Swal.fire({
+                        Swal.fire({
                             icon: 'error',
                             title: errorMessage,
                             customClass: {
