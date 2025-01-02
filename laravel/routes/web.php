@@ -117,6 +117,7 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     
     Route::get('/chatbot', [GPTChatBot::class, 'showChatBotAdmin'])->name('showChatBotAdmin');
     Route::get('/gpt-model', [GPTChatBot::class, 'showGptModel'])->name('showGptModel');
+
     Route::get('/email-notification-logs', [emailController::class, 'showNotificationLogs'])->name('showNotificationLogs');
     Route::post('/chatbot/send', [GPTChatBot::class, 'sendMessageAdmin'])->name('sendMessageAdmin');
     Route::post('/chatbot-analysis/send', [GPTChatBot::class, 'sendMessageAdminAnalysis'])->name('sendMessageAdminAnalysis');
@@ -192,7 +193,9 @@ Route::prefix('organization')->middleware(['auth', 'role:2'])->group(function ()
     Route::get('/transaction-history-xbug-card', [OrganizationRouteController::class, 'showTransactionHistoryXbugCardOrg'])->name('showTransactionHistoryXbugCardOrg');
     Route::get('/transaction-history-xbug-ai', [OrganizationRouteController::class, 'showTransactionHistoryXbugAiOrg'])->name('showTransactionHistoryXbugAiOrg');
 
-
+    Route::post('/generate-description-content', [GPTChatBot::class, 'generateDescription'])->name('generateDescription');
+    Route::post('/generate-description-micro', [GPTChatBot::class, 'generateDescriptionMicro'])->name('generateDescriptionMicro');
+    
     // Route::middleware(['ekycCheck'])->group(function () {
     Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');
     Route::get('/apply-content', [OrganizationRouteController::class, 'showAddContent'])->name('showAddContent');

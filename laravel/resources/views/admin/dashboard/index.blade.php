@@ -221,26 +221,6 @@
                     </div>
                 </div>
 
-                <div class="col-xl-6 col-lg-6 col-md-12">
-
-                    <div class="card custom-card overflow-hidden">
-                        <div class="card-body p-0">
-                            <div class="p-2">
-                                <div class="ms-2 d-flex align-items-center mt-2">
-                                    <span class="avatar avatar-md avatar-rounded bg-primary me-2">
-                                        <i class="bi bi-receipt fs-16"></i>
-                                    </span>
-                                    <p class="mb-0 flex-fill text-muted">e-KYC Statistics</p>
-                                </div>
-
-                            </div>
-                            <div class="card-body">
-                                <canvas id="ekycChart" width="500" height="180"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="col-xl-6 col-lg-6 col-md-6">
                     <div class="card custom-card overflow-hidden">
                         <div class="card-body p-0">
@@ -255,6 +235,25 @@
                             </div>
                             <div class="card-body">
                                 <canvas id="userRoleChart" width="500" height="180"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-6 col-lg-6 col-md-12">
+                    <div class="card custom-card overflow-hidden">
+                        <div class="card-body p-0">
+                            <div class="p-2">
+                                <div class="ms-2 d-flex align-items-center mt-2">
+                                    <span class="avatar avatar-md avatar-rounded bg-primary me-2">
+                                        <i class="bi bi-receipt fs-16"></i>
+                                    </span>
+                                    <p class="mb-0 flex-fill text-muted">e-KYC Statistics</p>
+                                </div>
+
+                            </div>
+                            <div class="card-body">
+                                <canvas id="ekycChart" width="500" height="180"></canvas>
                             </div>
                         </div>
                     </div>
@@ -281,7 +280,7 @@
                     </div>
                 </div>
 
-                 <div class="col-xl-12 col-lg-12 col-md-12">
+                <div class="col-xl-12 col-lg-12 col-md-12">
                     <div class="card">
                         <div class="card-body">
                             <!-- Tombol untuk memilih jenis transaksi -->
@@ -346,7 +345,6 @@
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
         <script>
-
             document.addEventListener('DOMContentLoaded', function() {
                 // Data dari backend
                 const userChartData = @json($userCounts);
@@ -984,5 +982,4 @@
                 });
             });
         </script>
-
     @endsection

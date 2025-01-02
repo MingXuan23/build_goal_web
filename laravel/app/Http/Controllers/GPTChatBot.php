@@ -238,8 +238,6 @@ class GPTChatBot extends Controller
                 ]);
             }
 
-
-
             DB::table('gpt_log')->insert([
                 'name' => 'GPT API',
                 'model' => $model->model_name,
@@ -313,6 +311,376 @@ class GPTChatBot extends Controller
             ], 500);
         }
     }
+    public function sendGenerateSuggestion(Request $request)
+    {
+        try {
+            $request->validate([
+                'message' => 'required|string|max:240',
+            ]);
+
+            $userMessage = $request->input('message');
+            $apiKey = env('OPENAI_API_KEY');
+            $model = DB::table('gpt_table')->where('status', 1)->where('id', 1)->first();
+
+            if (Auth::user()->is_gpt == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sorry, Please Upgrade Your Account To Premium User First.',
+                ], 500);
+            }
+            if (Auth::user()->gpt_status == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sorry, Your Account Is Currently Banned. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
+                ], 500);
+            }
+            if (!$model) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sorry, Model is Currently Unavailable. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
+                ], 500);
+            }
+            $maxTokens = $model->max_token;
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $apiKey,
+            ])->post('https://api.openai.com/v1/chat/completions', [
+                'model' => $model->model_name,
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => "You are a helpful assistant. Please limit your response to approximately {$maxTokens} tokens."
+                    ],
+                    ['role' => 'user', 'content' => $userMessage],
+                ],
+            ]);
+            if ($response->successful()) {
+                $data = $response->json();
+                $reply = $data['choices'][0]['message']['content'] ?? 'No response from AI';
+                return response()->json([
+                    'status' => 'success',
+                    'message' => $reply,
+                ]);
+            }
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Sorry, Something went wrong. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An unexpected error occurred: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function generateDescription(Request $request)
+    {
+        try {
+            $request->validate([
+                'content_name' => 'required|string|max:240',
+            ]);
+
+            $contentName = $request->input('content_name');
+            $apiKey = env('OPENAI_API_KEY');
+            $model = DB::table('gpt_table')->where('status', 1)->where('id', 1)->first();
+
+            if (!$model) {
+                DB::table('gpt_log')->insert([
+                    'name' => 'CONTENT SUGGESTION API',
+                    'model' => 'N/A',
+                    'provider' => 'N/A',
+                    'user_id' => auth()->user()->id,
+                    'status' => 0,
+                    'prompt_tokens' => '-',
+                    'completion_tokens' => '-',
+                    'total_tokens' => 'MODEL UNAVAILABLE',
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Model is currently unavailable. Please try again later.',
+                ], 500);
+            }
+            if (Auth::user()->is_gpt == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBug AI.',
+                ], 500);
+            }
+            if (Auth::user()->gpt_status == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sorry, Your Account Is Currently Banned For AI Purpose. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
+                ], 500);
+            }
+            $maxTokens = $model->max_token;
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $apiKey,
+            ])->post('https://api.openai.com/v1/chat/completions', [
+                'model' => $model->model_name,
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => "You are a content generator. Create a detailed and professional description for the content name provided. Give the word not more than {$maxTokens} tokens."
+                    ],
+                    ['role' => 'user', 'content' => $contentName],
+                ],
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $description = $data['choices'][0]['message']['content'] ?? 'No description generated.';
+                $cleanDescription = preg_replace('/\*\*/', '', $description);
+
+                DB::table('gpt_log')->insert([
+                    'name' => 'CONTENT SUGGESTION API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
+                    'user_id' => auth()->user()->id,
+                    'status' => 1,
+                    'prompt_tokens' => $data['usage']['prompt_tokens'],
+                    'completion_tokens' => $data['usage']['completion_tokens'],
+                    'total_tokens' => $data['usage']['total_tokens'],
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+                return response()->json([
+                    'status' => 'success',
+                    'description' => $cleanDescription,
+                ]);
+            }
+            DB::table('gpt_log')->insert([
+                'name' => 'CONTENT SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'API CALL ERROR 500',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to generate description. Please try again.',
+            ], 500);
+        } catch (ValidationException $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'CONTENT SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'VALIDATION ERROR 422',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error: ' . $e->getMessage(),
+            ], 422);
+        } catch (RequestException $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'CONTENT SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'REQUEST ERROR 500',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Request error: ' . $e->getMessage(),
+            ], 500);
+        } catch (Exception $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'CONTENT SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'UNEXPECTED ERROR 500',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An unexpected error occurred: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+    public function generateDescriptionMicro(Request $request)
+    {
+        try {
+            $request->validate([
+                'content_name' => 'required|string|max:240',
+            ]);
+
+            $contentName = $request->input('content_name');
+            $apiKey = env('OPENAI_API_KEY');
+            $model = DB::table('gpt_table')->where('status', 1)->where('id', 1)->first();
+
+            if (!$model) {
+                DB::table('gpt_log')->insert([
+                    'name' => 'MICRO SUGGESTION API',
+                    'model' => 'N/A',
+                    'provider' => 'N/A',
+                    'user_id' => auth()->user()->id,
+                    'status' => 0,
+                    'prompt_tokens' => '-',
+                    'completion_tokens' => '-',
+                    'total_tokens' => 'MODEL UNAVAILABLE',
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Model is currently unavailable. Please try again later.',
+                ], 500);
+            }
+            if (Auth::user()->is_gpt == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBug AI.',
+                ], 500);
+            }
+            if (Auth::user()->gpt_status == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sorry, Your Account Is Currently Banned For AI Purpose. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
+                ], 500);
+            }
+            $maxTokens = $model->max_token;
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $apiKey,
+            ])->post('https://api.openai.com/v1/chat/completions', [
+                'model' => $model->model_name,
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => "You are a content generator. Create a detailed and professional description for the content name provided. Give the word not more than {$maxTokens} tokens."
+                    ],
+                    ['role' => 'user', 'content' => $contentName],
+                ],
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $description = $data['choices'][0]['message']['content'] ?? 'No description generated.';
+                $cleanDescription = preg_replace('/\*\*/', '', $description);
+
+                DB::table('gpt_log')->insert([
+                    'name' => 'MICRO SUGGESTION API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
+                    'user_id' => auth()->user()->id,
+                    'status' => 1,
+                    'prompt_tokens' => $data['usage']['prompt_tokens'],
+                    'completion_tokens' => $data['usage']['completion_tokens'],
+                    'total_tokens' => $data['usage']['total_tokens'],
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+                return response()->json([
+                    'status' => 'success',
+                    'description' => $cleanDescription,
+                ]);
+            }
+            DB::table('gpt_log')->insert([
+                'name' => 'MICRO SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'API CALL ERROR 500',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to generate description. Please try again.',
+            ], 500);
+        } catch (ValidationException $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'MICRO SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'VALIDATION ERROR 422',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error: ' . $e->getMessage(),
+            ], 422);
+        } catch (RequestException $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'MICRO SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'REQUEST ERROR 500',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Request error: ' . $e->getMessage(),
+            ], 500);
+        } catch (Exception $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'MICRO SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'UNEXPECTED ERROR 500',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An unexpected error occurred: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function sendMessageAdmin(Request $request)
     {
         try {
@@ -2822,6 +3190,8 @@ class GPTChatBot extends Controller
             ->select('gl.*', 'u.name as user_name', 'u.email as user_email', 'u.icNo as user_icNo')
             ->orderby('gl.created_at', 'desc')
             ->get();
+
+        // dd($data);
 
         if ($request->ajax()) {
             $table = DataTables::of($data)->addIndexColumn();

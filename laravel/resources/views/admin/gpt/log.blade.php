@@ -1,5 +1,11 @@
 @extends('admin.layouts.main')
 @section('container')
+    <style>
+        .wrap-text {
+            white-space: normal !important;
+            word-wrap: break-word;
+        }
+    </style>
     <div class="main-content app-content">
         <div class="container">
             <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
@@ -26,7 +32,7 @@
                             <thead>
                                 <tr>
                                     <th>No.</th>
-                                    {{-- <th>Name</th> --}}
+                                    <th>Name</th>
                                     <th>Model</th>
                                     <th>Request By</th>
                                     <th>P (T)</th>
@@ -50,25 +56,69 @@
             $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('showGptLog') }}",  // Update with your correct route
-                columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false},
-                    // { data: 'name', name: 'name' },
-                    { data: 'model', name: 'model' },
-                    { data: 'user_name', name: 'user_name' },
-                    { data: 'prompt_tokens', name: 'prompt_tokens' },
-                    { data: 'completion_tokens', name: 'completion_tokens' },
-                    { data: 'total_tokens', name: 'total_tokens' },
-                    { data: 'status', name: 'status' },
-                    { data: 'created_at', name: 'created_at' },
+                ajax: "{{ route('showGptLog') }}", // Update with your correct route
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        searchable: false
+                    },
+                    {
+                        data: 'name',
+                        name: 'name',
+                        render: (data, type, row) => {
+                            return `<div class="wrap-text fw-bold">${data.toUpperCase()}</div>`;
+                        }
+                    },
+                    {
+                        data: 'model',
+                        name: 'model'
+                    },
+                    {
+                        data: 'user_name',
+                        name: 'user_name'
+                    },
+                    {
+                        data: 'prompt_tokens',
+                        name: 'prompt_tokens'
+                    },
+                    {
+                        data: 'completion_tokens',
+                        name: 'completion_tokens'
+                    },
+                    {
+                        data: 'total_tokens',
+                        name: 'total_tokens'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
                 ],
                 dom: 'Bfrtip',
-                buttons: [
-                    { extend: 'copy', text: 'Copy Data' },
-                    { extend: 'csv', text: 'Export CSV' },
-                    { extend: 'excel', text: 'Export Excel' },
-                    { extend: 'pdf', text: 'Export PDF' },
-                    { extend: 'print', text: 'Print Data' }
+                buttons: [{
+                        extend: 'copy',
+                        text: 'Copy Data'
+                    },
+                    {
+                        extend: 'csv',
+                        text: 'Export CSV'
+                    },
+                    {
+                        extend: 'excel',
+                        text: 'Export Excel'
+                    },
+                    {
+                        extend: 'pdf',
+                        text: 'Export PDF'
+                    },
+                    {
+                        extend: 'print',
+                        text: 'Print Data'
+                    }
                 ],
                 language: {
                     emptyTable: "No Data available"
