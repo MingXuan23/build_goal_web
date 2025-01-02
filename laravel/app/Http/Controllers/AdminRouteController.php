@@ -430,28 +430,51 @@ class AdminRouteController extends Controller
         // $stateCitiesJson = file_get_contents(public_path('assets/json/states-cities.json'));
         // $stateCities = json_decode($stateCitiesJson, true);
         $datas = DB::table('contents as contents')
-            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
-            ->join('organization_user', 'contents.user_id', '=', 'organization_user.user_id')
-            ->join('organization', 'organization_user.organization_id', '=', 'organization.id')
-            ->select(
-                'contents.id',
-                'contents.name',
-                'contents.desc',
-                'contents.created_at',
-                'contents.link',
-                'contents.status',
-                'contents.user_id',
-                'contents.enrollment_price',
-                'contents.place',
-                'contents.state',
-                'contents.reason_phrase',
-                'contents.reject_reason',
-                'contents.participant_limit',
-                'content_types.type as content_type_name',
-                'organization.name as organization_name'  // This is the organization name we will display
-            )
-            ->orderBy('contents.created_at', 'desc')
-            ->get();
+        ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+        ->join('organization_user', 'contents.user_id', '=', 'organization_user.user_id')
+        ->join('organization', 'organization_user.organization_id', '=', 'organization.id')
+        ->leftJoin('content_label', 'contents.id', '=', 'content_label.content_id')
+        ->leftJoin('labels', 'content_label.label_id', '=', 'labels.id')
+        ->select(
+            'contents.id',
+            'contents.name',
+            'contents.desc',
+            'contents.image',
+            'contents.created_at',
+            'contents.link',
+            'contents.status',
+            'contents.user_id',
+            'contents.enrollment_price',
+            'contents.place',
+            'contents.state',
+            'contents.reason_phrase',
+            'contents.reject_reason',
+            'contents.participant_limit',
+            'content_types.type as content_type_name',
+            'organization.name as organization_name',
+            DB::raw('GROUP_CONCAT(labels.name) as labels')
+        )
+        ->groupBy(
+            'contents.id',
+            'contents.name',
+            'contents.desc',
+            'contents.image',
+            'contents.created_at',
+            'contents.link',
+            'contents.status',
+            'contents.user_id',
+            'contents.enrollment_price',
+            'contents.place',
+            'contents.state',
+            'contents.reason_phrase',
+            'contents.reject_reason',
+            'contents.participant_limit',
+            'content_types.type',
+            'organization.name'
+        )
+        ->orderBy('contents.created_at', 'desc')
+        ->get();
+    
 
         if ($request->ajax()) {
             return DataTables::of($datas)

@@ -167,65 +167,63 @@
                 </div>
             @else
                 <div class="row">
-                    <div class="col-xl-12">
-                        <div class="card custom-card">
-                            <div class="card-header">
-                                <div class="card-title">Content Summary</div>
-                            </div>
-                            <div class="card-body">
-                                <div class="row gy-md-0 gy-3">
-                                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-12">
-                                        <div class="d-flex align-items-top">
-                                            <div class="me-3">
-                                                <span class="avatar avatar-rounded bg-light text-primary">
-                                                    <i class="ti ti-files fs-18"></i>
-                                                </span>
+                    <div class="col-xl-12 col-lg-12 col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card custom-card">
+                                    <div class="card-body p-0">
+                                        <div class="row g-0">
+                                            <div class="col-xl-3 border-end border-inline-end-dashed">
+                                                <div class="d-flex flex-wrap align-items-top p-4">
+                                                    <div class="me-3 lh-1">
+                                                        <span class="avatar avatar-md avatar-rounded bg-primary shadow-sm">
+                                                            <i class="ti ti-files fs-18"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-fill mt-1">
+                                                        <h5 class="fw-semibold mb-1">{{ $proposedContents }}</h5>
+                                                        <p class="text-muted mb-0 fs-12">Total Contents</p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <span class="d-block mb-1 text-muted">Contents Proposed</span>
-                                                <h6 class="fw-semibold mb-0">{{ $proposedContents }}</h6>
+                                            <div class="col-xl-3 border-end border-inline-end-dashed">
+                                                <div class="d-flex flex-wrap align-items-top p-4">
+                                                    <div class="me-3 lh-1">
+                                                        <span class="avatar avatar-md avatar-rounded bg-success shadow-sm">
+                                                            <i class="ti ti-file-check fs-18"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-fill mt-1">
+                                                        <h5 class="fw-semibold mb-1">{{ $approvedContents }}</h5>
+                                                        <p class="text-muted mb-0 fs-12">Approved Contents</p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <!-- Pending Contents -->
-                                    <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-12">
-                                        <div class="d-flex align-items-top">
-                                            <div class="me-3">
-                                                <span class="avatar avatar-rounded bg-light text-warning">
-                                                <i class="ti ti-file fs-18"></i>
-                                                </span>
+                                            <div class="col-xl-3 border-end border-inline-end-dashed">
+                                                <div class="d-flex flex-wrap align-items-top p-4">
+                                                    <div class="me-3 lh-1">
+                                                        <span class="avatar avatar-md avatar-rounded bg-warning shadow-sm">
+                                                            <i class="ti ti-file fs-18"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-fill mt-1">
+                                                        <h5 class="fw-semibold mb-1">{{ $pendingContents }}</h5>
+                                                        <p class="text-muted mb-0 fs-12">Pending Contents</p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <span class="d-block mb-1 text-muted">Pending Contents</span>
-                                                <h6 class="fw-semibold mb-0 text-warning">{{ $pendingContents }}</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Rejected Contents -->
-                                    <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-12">
-                                        <div class="d-flex align-items-top">
-                                            <div class="me-3">
-                                                <span class="avatar avatar-rounded bg-light text-danger">
-                                                    <i class="ti ti-file-dislike fs-18"></i>
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <span class="d-block mb-1 text-muted">Rejected Contents</span>
-                                                <h6 class="fw-semibold mb-0 text-danger">{{ $rejectedContents }}</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                     <!-- Approve Contents -->
-                                     <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-12">
-                                        <div class="d-flex align-items-top">
-                                            <div class="me-3">
-                                                <span class="avatar avatar-rounded bg-light text-success">
-                                                    <i class="ti ti-file-check fs-18"></i>
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <span class="d-block mb-1 text-muted">Approved Contents</span>
-                                                <h6 class="fw-semibold mb-0 text-success">{{ $approvedContents }}</h6>
+                                            <div class="col-xl-3">
+                                                <div class="d-flex flex-wrap align-items-top p-4">
+                                                    <div class="me-3 lh-1">
+                                                        <span class="avatar avatar-md avatar-rounded bg-danger shadow-sm ">
+                                                            <i class="ti ti-file-dislike fs-18"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-fill mt-1">
+                                                        <h5 class="fw-semibold mb-1">{{ $rejectedContents }}</h5>
+                                                        <p class="text-muted mb-0 fs-12">Rejected Contents</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -233,6 +231,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
 
 
                 </div>

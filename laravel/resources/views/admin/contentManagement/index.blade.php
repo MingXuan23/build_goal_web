@@ -104,6 +104,24 @@
                             </div>
 
                             <div class="mb-2">
+                                <div class="col-xl-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <strong>Content Image</strong>
+                                        </div>
+                                        <div class="card-body">
+                                            @if($data->image)
+                                                <img src="{{ asset('storage/' . $data->image) }}" alt="{{ $data->name }}" class="img-fluid rounded" style="max-width: 300px; height: auto;">
+                                            @else
+                                                <p class="text-muted">No image available</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                        
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
                                 <div class="col-xl-12">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" placeholder="Enter Content Name"
@@ -167,6 +185,23 @@
 
                                         </div>
                                     @endforeach
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="col-xl-12">
+                                    <div>
+                                        <label for="contentLabels" class="form-label">Selected Labels</label>
+                                        <ul id="contentLabels" style="list-style-type: disc; padding-left: 20px;">
+                                            @if($data->labels)
+                                                @foreach(explode(',', $data->labels) as $label)
+                                                    <li>{{ $label }}</li>
+                                                @endforeach
+                                            @else
+                                                <li class="text-muted">No labels assigned</li>
+                                            @endif
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
 
