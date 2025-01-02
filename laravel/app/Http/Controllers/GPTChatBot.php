@@ -2053,6 +2053,8 @@ class GPTChatBot extends Controller
                 'organization_user' => array_merge(
                     [
                         'organization_user',
+                        'organizaion user',
+                        // 'organization',
                         'org_user',
                         'org member',
                         'org users',
@@ -2090,7 +2092,8 @@ class GPTChatBot extends Controller
                         'organization-user relationship',
                         'org-user relationship',
                         'user affiliation',
-                        'organization affiliation'
+                        'organization affiliation',
+                        'company',
                     ],
                     [
                         // ... (500+ entri tambahan menyinggung "id", "user_id", "organization_id", "created_at")
@@ -2614,6 +2617,7 @@ class GPTChatBot extends Controller
 
             // 5. Ambil data hanya dari tabel relevan
             $allData = [];
+            $tableMatch = '';
             foreach ($tablesNeeded as $tableName) {
                 // Pastikan tabel ada di $tablesWithColumns
                 if (isset($tablesWithColumns[$tableName])) {
@@ -2621,8 +2625,9 @@ class GPTChatBot extends Controller
                     $tableData = DB::table($tableName)->select($columns)->get();
                     $allData[$tableName] = $tableData->toArray();
                 }
+                $tableMatch .= '' . $tableName . ':';
             }
-
+            $tableMatch = strtoupper($tableMatch);
             // 6. Encode data ke JSON
             $jsonData = json_encode($allData);
 
@@ -2667,7 +2672,7 @@ class GPTChatBot extends Controller
                     'status' => 1,
                     'prompt_tokens' => $data['usage']['prompt_tokens'] ?? null,
                     'completion_tokens' => $data['usage']['completion_tokens'] ?? null,
-                    'total_tokens' => $data['usage']['total_tokens'] ?? null,
+                    'total_tokens' => $tableMatch . $data['usage']['total_tokens'] ?? null,
                     'request' => $userMessage,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
