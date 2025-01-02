@@ -316,8 +316,8 @@ class AdminRouteController extends Controller
             ->pluck('count', 'day');
 
         //EKYC Status
-        $ekycVerified = DB::table('users')->where('eKYC_status', 1)->count();
-        $ekycNotVerified = DB::table('users')->where('eKYC_status', 0)->count();
+        $ekycVerified = DB::table('users')->where('eKYC_status', 1)->whereRaw('NOT (JSON_LENGTH(role) = 1 AND JSON_CONTAINS(role, JSON_ARRAY(5)))')->count();
+        $ekycNotVerified = DB::table('users')->where('eKYC_status', 0)->whereRaw('NOT (JSON_LENGTH(role) = 1 AND JSON_CONTAINS(role, JSON_ARRAY(5)))')->count();
 
         //Verified Email
         $emailVerified = DB::table('users')->where('email_status', 'VERIFY')->count();

@@ -354,45 +354,33 @@
 
                 // Definisikan palet warna yang lebih besar untuk menangani banyak peran
                 const colorPalette = [{
-                        background: 'rgba(231, 76, 60, 0.6)',
-                        border: 'rgba(231, 76, 60, 1)'
+                        background: 'rgba(255, 99, 132, 0.2)', // Merah
+                        border: 'rgba(255, 99, 132, 1)'
                     }, // Red
                     {
-                        background: 'rgba(46, 204, 113, 0.6)',
-                        border: 'rgba(46, 204, 113, 1)'
+                         background: 'rgba(75, 192, 192, 0.2)', // Hijau
+                        border: 'rgba(75, 192, 192, 1)'
                     }, // Green
                     {
-                        background: 'rgba(52, 152, 219, 0.6)',
-                        border: 'rgba(52, 152, 219, 1)'
+                        background: 'rgba(54, 162, 235, 0.2)', // Biru
+                        border: 'rgba(54, 162, 235, 1)'
                     }, // Blue
                     {
-                        background: 'rgba(155, 89, 182, 0.6)',
-                        border: 'rgba(155, 89, 182, 1)'
+                         background: 'rgba(153, 102, 255, 0.2)', // Ungu
+                        border: 'rgba(153, 102, 255, 1)'
                     }, // Purple
                     {
-                        background: 'rgba(241, 196, 15, 0.6)',
-                        border: 'rgba(241, 196, 15, 1)'
+                          background: 'rgba(255, 206, 86, 0.2)', // Kuning
+                        border: 'rgba(255, 206, 86, 1)'
                     }, // Yellow
                     {
-                        background: 'rgba(52, 73, 94, 0.6)',
-                        border: 'rgba(52, 73, 94, 1)'
-                    }, // Dark Blue
-                    {
-                        background: 'rgba(149, 165, 166, 0.6)',
-                        border: 'rgba(149, 165, 166, 1)'
+                        background: 'rgba(201, 203, 207, 0.2)', // Abu-abu
+                        border: 'rgba(201, 203, 207, 1)'
                     }, // Grey
                     {
-                        background: 'rgba(243, 156, 18, 0.6)',
-                        border: 'rgba(243, 156, 18, 1)'
-                    }, // Orange
-                    {
-                        background: 'rgba(39, 174, 96, 0.6)',
-                        border: 'rgba(39, 174, 96, 1)'
-                    }, // Emerald
-                    {
-                        background: 'rgba(211, 84, 0, 0.6)',
-                        border: 'rgba(211, 84, 0, 1)'
-                    } // Dark Orange
+                        background: 'rgba(255, 159, 64, 0.2)', // Oranye
+                        border: 'rgba(255, 159, 64, 1)'
+                    } // Orange
                     // Tambahkan lebih banyak warna jika diperlukan
                 ];
 
@@ -415,7 +403,8 @@
                             data: userCounts,
                             backgroundColor: backgroundColors,
                             borderColor: borderColors,
-                            borderWidth: 1
+                            borderWidth: 1,
+                            borderRadius: 5,
                         }]
                     },
                     options: {
