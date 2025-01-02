@@ -126,7 +126,7 @@ class JobScraperController extends Controller
                 'total_jobs' => $totalJobs,
             ]);
         }
-        } catch (Exception $th) {
+        } catch (\Exception $th) {
             return response()->json(['message' => $th->getMessage()], 500);
         }
     
