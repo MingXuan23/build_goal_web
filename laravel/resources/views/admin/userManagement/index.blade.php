@@ -836,6 +836,9 @@
                     {
                         data: 'role_names',
                         name: 'role_names',
+                        // render: (data, type, row) => {
+                        //     return `<div class="wrap-text">${data.toUpperCase()}</div>`;
+                        // }
 
                     },
                     {

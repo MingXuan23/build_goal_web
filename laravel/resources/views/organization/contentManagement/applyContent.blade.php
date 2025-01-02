@@ -173,12 +173,13 @@
                                             </div>
                                         </div>
                                         <div class="col-xl-12">
-                                            <div class="form-floating">
+                                            <label for="image" class="form-label mt-1">Upload Your Content Image</label>
+                                            <div class="">
                                                 <input type="file"
                                                     class="form-control @error('image') is-invalid @enderror"
                                                     id="image" placeholder="Upload Your Content Image"
                                                     name="image">
-                                                <label for="image" class="form-label">Upload Your Content Image</label>
+                                               
                                                 @error('image')
                                                     <span class="mb-1 text-danger">{{ $message }}</span>
                                                 @enderror

@@ -407,7 +407,7 @@ class GPTChatBot extends Controller
             if (Auth::user()->is_gpt == 0) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBug AI.',
+                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBug GPT.',
                 ], 500);
             }
             if (Auth::user()->gpt_status == 0) {
@@ -560,7 +560,7 @@ class GPTChatBot extends Controller
             if (Auth::user()->is_gpt == 0) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBug AI.',
+                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBug GPT.',
                 ], 500);
             }
             if (Auth::user()->gpt_status == 0) {

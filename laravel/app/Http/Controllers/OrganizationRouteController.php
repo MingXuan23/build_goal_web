@@ -186,12 +186,14 @@ class OrganizationRouteController extends Controller
 
 
             $table->addColumn('status', function ($row) {
+                $status = $row->status == 1 ? ' Active ' : ' Inactive ';
+                $color = $row->status == 1 ? 'success' : 'danger';
                 if ($row->reason_phrase == 'APPROVED') {
 
                     $button =
                         '<div class="d-flex">
                         <span class=" text-success p-2 me-1 fw-bold">
-                             <i class="bi bi-circle-fill"></i> APPROVED
+                             <i class="bi bi-circle-fill"></i> APPROVED <span class="fw-bold text-'.$color.'">['. $status  .']</span>
                         </span>
                     </div>';
                 } elseif ($row->reason_phrase == 'PENDING') {
@@ -206,6 +208,28 @@ class OrganizationRouteController extends Controller
                         '<div class="d-flex">
                           <span class=" text-danger p-2 me-1 fw-bold">
                              <i class="bi bi-circle-fill"></i> REJECTED
+                        </span>
+                    </div>';
+                }
+                return $button;
+            });
+
+            $table->addColumn('action_update', function ($row) {
+                if ($row->reason_phrase == 'APPROVED') {
+
+                    $button =
+                        '<div class="d-flex">
+                            <button class="btn btn-icon btn-sm btn-primary-transparent rounded-pill me-2"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#update-' . $row->id . '">
+                                <i class="ri-edit-line fw-bold"></i>
+                            </button>
+                        </div>';
+                } else {
+                    $button =
+                        '<div class="d-flex">
+                          <span class=" text-primary p-2 me-1 fw-bold">
+                            -
                         </span>
                     </div>';
                 }
@@ -284,7 +308,7 @@ class OrganizationRouteController extends Controller
 
 
 
-            $table->rawColumns(['status', 'action', 'card']);
+            $table->rawColumns(['status', 'action', 'card','action_update']);
             return $table->make(true);
         }
 
@@ -889,5 +913,25 @@ class OrganizationRouteController extends Controller
         return view('organization.transaction.indexXbugAi', [
             'datas' => $datas
         ]);
+    }
+
+
+    public function updateStatusContent(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $request->validate([
+                'status' => 'required|in:1,0',
+            ]);
+            $update = DB::table('contents')
+                ->where('id', $id)
+                ->update(['status' => (int)$request->status]);
+            DB::commit();
+
+            return back()->with('success', 'Content Status Updated Successfully!');
+        } catch (Exception $th) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to update Content Status!');
+        }
     }
 }

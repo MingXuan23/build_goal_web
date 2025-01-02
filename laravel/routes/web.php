@@ -107,6 +107,9 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::get('/content-cards/{contentId}', [AdminRouteController::class, 'getContentCards'])->name('admin.content-cards');
     Route::post('/save-content-cards', [AdminRouteController::class, 'saveContentCards'])->name('admin.save-content-cards');
 
+    Route::post('/content-update-status-admin/{id}', [AdminRouteController::class, 'updateStatusContentAdmin'])->name('updateStatusContentAdmin');
+
+
 
     Route::get('/profile',  [AdminRouteController::class, 'showProfile'])->name('showProfileAdmin');
     Route::get('/email-logs',  [AdminRouteController::class, 'showEmailLogs'])->name('showEmailLogs');
@@ -183,6 +186,7 @@ Route::prefix('organization')->middleware(['auth', 'role:2'])->group(function ()
     Route::get('/MicroLearning', [OrganizationRouteController::class, 'showMicroLearningForm'])->name('showMicroLearningForm');
     Route::get('/chatbot', [GPTChatBot::class, 'showChatBot'])->name('showChatBot');
     Route::get('/notifications', [OrganizationRouteController::class, 'showNotification'])->name('showNotification');
+    Route::post('/content-update-status/{id}', [OrganizationRouteController::class, 'updateStatusContent'])->name('updateStatusContent');
     Route::get('/api/getLabels', [ContentController::class, 'getLabels'])->name('getLabels');
     Route::post('/chatbot/send', [GPTChatBot::class, 'sendMessage'])->name('sendMessage');
     Route::get('/content-user', [OrganizationRouteController::class, 'showContentUserClickedViewedOrganization'])->name('showContentUserClickedViewedOrganization');

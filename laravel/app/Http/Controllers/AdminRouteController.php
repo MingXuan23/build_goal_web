@@ -430,71 +430,72 @@ class AdminRouteController extends Controller
         // $stateCitiesJson = file_get_contents(public_path('assets/json/states-cities.json'));
         // $stateCities = json_decode($stateCitiesJson, true);
         $datas = DB::table('contents as contents')
-        ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
-        ->join('organization_user', 'contents.user_id', '=', 'organization_user.user_id')
-        ->join('organization', 'organization_user.organization_id', '=', 'organization.id')
-        ->leftJoin('content_label', 'contents.id', '=', 'content_label.content_id')
-        ->leftJoin('labels', 'content_label.label_id', '=', 'labels.id')
-        ->select(
-            'contents.id',
-            'contents.name',
-            'contents.desc',
-            'contents.image',
-            'contents.created_at',
-            'contents.link',
-            'contents.status',
-            'contents.user_id',
-            'contents.enrollment_price',
-            'contents.place',
-            'contents.state',
-            'contents.reason_phrase',
-            'contents.reject_reason',
-            'contents.participant_limit',
-            'content_types.type as content_type_name',
-            'organization.name as organization_name',
-            DB::raw('GROUP_CONCAT(labels.name) as labels')
-        )
-        ->groupBy(
-            'contents.id',
-            'contents.name',
-            'contents.desc',
-            'contents.image',
-            'contents.created_at',
-            'contents.link',
-            'contents.status',
-            'contents.user_id',
-            'contents.enrollment_price',
-            'contents.place',
-            'contents.state',
-            'contents.reason_phrase',
-            'contents.reject_reason',
-            'contents.participant_limit',
-            'content_types.type',
-            'organization.name'
-        )
-        ->orderBy('contents.created_at', 'desc')
-        ->get();
-    
+            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+            ->join('organization_user', 'contents.user_id', '=', 'organization_user.user_id')
+            ->join('organization', 'organization_user.organization_id', '=', 'organization.id')
+            ->leftJoin('content_label', 'contents.id', '=', 'content_label.content_id')
+            ->leftJoin('labels', 'content_label.label_id', '=', 'labels.id')
+            ->select(
+                'contents.id',
+                'contents.name',
+                'contents.desc',
+                'contents.image',
+                'contents.created_at',
+                'contents.link',
+                'contents.status',
+                'contents.user_id',
+                'contents.enrollment_price',
+                'contents.place',
+                'contents.state',
+                'contents.reason_phrase',
+                'contents.reject_reason',
+                'contents.participant_limit',
+                'content_types.type as content_type_name',
+                'organization.name as organization_name',
+                DB::raw('GROUP_CONCAT(labels.name) as labels')
+            )
+            ->groupBy(
+                'contents.id',
+                'contents.name',
+                'contents.desc',
+                'contents.image',
+                'contents.created_at',
+                'contents.link',
+                'contents.status',
+                'contents.user_id',
+                'contents.enrollment_price',
+                'contents.place',
+                'contents.state',
+                'contents.reason_phrase',
+                'contents.reject_reason',
+                'contents.participant_limit',
+                'content_types.type',
+                'organization.name'
+            )
+            ->orderBy('contents.created_at', 'desc')
+            ->get();
+
 
         if ($request->ajax()) {
-            return DataTables::of($datas)
-                ->addIndexColumn()
-                ->addColumn('action', function ($row) {
-                    return '<button class="btn btn-primary-transparent" data-bs-toggle="modal" data-bs-target="#modalView-' . $row->id . '">View Details</button>';
-                })
-                ->addColumn('approve', function ($row) {
-                    if ($row->reason_phrase == 'APPROVED') {
+            $table = DataTables::of($datas)->addIndexColumn();
 
-                        $button =
-                            '<div class="d-flex justify-content-between">
+            $table->addColumn('action', function ($row) {
+                return '<button class="btn btn-primary-transparent" data-bs-toggle="modal" data-bs-target="#modalView-' . $row->id . '">View Details</button>';
+            });
+            $table->addColumn('approve', function ($row) {
+                $status = $row->status == 1 ? ' Active ' : ' Inactive ';
+                $color = $row->status == 1 ? 'success' : 'danger';
+                if ($row->reason_phrase == 'APPROVED') {
+                    $button =
+                        '<div class="d-flex justify-content-between">
                             <span class=" text-success p-2 me-1 fw-bold">
-                                 <i class="bi bi-circle-fill"></i> APPROVED
+                                     <i class="bi bi-circle-fill"></i> APPROVED <span class="fw-bold text-'.$color.'">['. $status  .']</span>
                             </span>
                         </div>';
-                    } elseif ($row->reason_phrase == 'REJECTED') {
-                        $button =
+                } elseif ($row->reason_phrase == 'REJECTED') {
+                    $button =
 
-                            '<div class="d-flex align-items-center">
+                        '<div class="d-flex align-items-center">
                             <span class=" text-danger p-2 me-1 fw-bold">
                                  <i class="bi bi-circle-fill"></i> REJECTED
                             </span>
@@ -503,10 +504,10 @@ class AdminRouteController extends Controller
                                          <i class="ri-eye-line fw-bold"></i>
                                 </button>
                         </div>';
-                    } else {
-                        $button =
+                } else {
+                    $button =
 
-                            '<div class="d-flex align-items-center">
+                        '<div class="d-flex align-items-center">
                                  <span class=" text-warning p-2 me-1 fw-bold">
                                  <i class="bi bi-circle-fill"></i> PENDING
                             </span>
@@ -515,14 +516,38 @@ class AdminRouteController extends Controller
                                          <i class="ri-edit-line fw-bold"></i>
                                 </button>
                                 </div>';
-                    }
-                    return $button;
-                })
-                ->addColumn('user_id', function ($row) {
-                    return $row->organization_name;  // Use organization_name instead of user_id
-                })
-                ->rawColumns(['action', 'approve'])
-                ->make(true);
+                }
+                return $button;
+            });
+
+            $table->addColumn('user_id', function ($row) {
+                return $row->organization_name;  // Use organization_name instead of user_id
+            });
+
+            $table->addColumn('action_update', function ($row) {
+                if ($row->reason_phrase == 'APPROVED') {
+
+                    $button =
+                        '<div class="d-flex">
+                            <button class="btn btn-icon btn-sm btn-primary-transparent rounded-pill me-2"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#update-' . $row->id . '">
+                                <i class="ri-edit-line fw-bold"></i>
+                            </button>
+                        </div>';
+                } else {
+                    $button =
+                        '<div class="d-flex">
+                          <span class=" text-primary p-2 me-1 fw-bold">
+                            -
+                        </span>
+                    </div>';
+                }
+                return $button;
+            });
+
+            $table->rawColumns(['action', 'approve','action_update']);
+            return $table->make(true);
         }
         $states = DB::table('states')->select('id', 'name')->get();
         return view('admin.contentManagement.index', [
@@ -1530,5 +1555,24 @@ class AdminRouteController extends Controller
             'pendingTransactions' => $pendingTransactions,
             'failedTransactions' => $failedTransactions,
         ]);
+    }
+
+    public function updateStatusContentAdmin(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $request->validate([
+                'status' => 'required|in:1,0',
+            ]);
+            $update = DB::table('contents')
+                ->where('id', $id)
+                ->update(['status' => (int)$request->status]);
+            DB::commit();
+
+            return back()->with('success', 'Content Status Updated Successfully!');
+        } catch (Exception $th) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to update Content Status!');
+        }
     }
 }

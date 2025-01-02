@@ -1,11 +1,11 @@
 @extends('organization.layouts.main')
 @section('container')
-<style>
-    .wrap-text {
-        white-space: normal !important;
-        word-wrap: break-word;
-    }
-</style>
+    <style>
+        .wrap-text {
+            white-space: normal !important;
+            word-wrap: break-word;
+        }
+    </style>
     <!-- Start::app-content -->
     <div class="main-content app-content">
         <div class="container">
@@ -68,6 +68,8 @@
                                             <th scope="col">Promote Content</th>
 
                                             <th scope="col">xBUG Stand</th>
+                                            <th scope="col">Action</th>
+
                                         </tr>
                                     </thead>
                                 </table>
@@ -161,12 +163,14 @@
 
 
             <!-- Smart Card Modal -->
-            <div class="modal fade" id="smartCardModal" tabindex="-1" aria-labelledby="smartCardModalLabel" aria-hidden="true">
+            <div class="modal fade" id="smartCardModal" tabindex="-1" aria-labelledby="smartCardModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog modal-md">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h6 class="modal-title" id="smartCardModalLabel">Apply xBUG Stand</h6>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
                         <form id="smartCardForm" action="" method="post">
                             @csrf
@@ -175,25 +179,32 @@
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <div class="form-floating">
-                                                <input type="date" class="form-control" id="startDate" name="startDate">
+                                                <input type="date" class="form-control" id="startDate"
+                                                    name="startDate">
                                                 <label for="startDate">Start Date</label>
                                             </div>
                                             <div class="form-floating mt-3">
-                                                <input type="time" class="form-control" id="startTime" name="startTime">
+                                                <input type="time" class="form-control" id="startTime"
+                                                    name="startTime">
                                                 <label for="startTime">Start Time</label>
                                             </div>
                                             <div class="form-floating mt-3">
-                                                <input type="date" class="form-control" id="endDate" name="endDate">
+                                                <input type="date" class="form-control" id="endDate"
+                                                    name="endDate">
                                                 <label for="endDate">End Date</label>
                                             </div>
                                             <div class="form-floating mt-3">
-                                                <input type="time" class="form-control" id="endTime" name="endTime">
+                                                <input type="time" class="form-control" id="endTime"
+                                                    name="endTime">
                                                 <label for="endTime">End Time</label>
                                             </div>
                                             <div class="form-floating mt-3">
-                                                <input type="number" class="form-control" id="numXbugStand" name="numXbugStand" min="1" max="10" value="1">
+                                                <input type="number" class="form-control" id="numXbugStand"
+                                                    name="numXbugStand" min="1" max="10" value="1">
                                                 <label for="numXbugStand">Number of the xBUG Stand</label>
-                                                <div id="xbugStandHelp" class="form-text">Maximum of 10 stands. For larger requests, please email <a href="mailto:admin@xbug.online">admin@xbug.online</a>.</div>
+                                                <div id="xbugStandHelp" class="form-text">Maximum of 10 stands. For larger
+                                                    requests, please email <a
+                                                        href="mailto:admin@xbug.online">admin@xbug.online</a>.</div>
                                             </div>
                                         </div>
                                     </div>
@@ -207,59 +218,99 @@
                     </div>
                 </div>
             </div>
-<!-- 
+
+
             @foreach ($content_data as $data)
-                <form action="{{ route('addCardOrganization', $data->id) }}" method="post">
-                    @csrf
-                    <div class="modal fade" id="modalAddCard-{{ $data->id }}" aria-labelledby="addCard">
-                        <div class="modal-dialog modal-md">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h6 class="modal-title" id="addCard">Apply Smart Card For - {{ $data->name }}
-                                    </h6>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                <div class="modal fade" id="update-{{ $data->id }}">
+                    <div class="modal-dialog modal-dialog-centered text-center">
+                        <div class="modal-content modal-content-demo">
+                            <div class="modal-header">
+                                <h6 class="modal-title">Update Status Content</h6><button
+                                    aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <form action="{{ route('updateStatusContent', $data->id) }}" method="POST">
+                                @csrf
+                                <div class="modal-body text-start">
+
+                                    <div class="col-sm-12">
+                                        <div class="form-floating">
+                                            <select class="form-select" id="floatingSelect"
+                                                aria-label="Floating label select example" name="status" required>
+                                                <option value="1" @if ($data->status === 1) selected @endif>
+                                                    ACTIVE</option>
+                                                <option value="0" @if ($data->status !== 1) selected @endif>
+                                                    INACTIVE</option>
+                                            </select>
+                                            <label for="floatingSelect">Email Status</label>
+                                        </div>
+                                    </div>
+
                                 </div>
-                                <div class="modal-body">
-                                    <div class="row ">
-                                        <div class="col-md-12">
-                                            <div class="mb-3">
-                                                <div class="form-floating">
-                                                    <input type="date" class="form-control" id="floatingInputprimary"
-                                                        name="startDate" value="">
-                                                    <label for="floatingInputprimary">Start Date</label>
-                                                </div>
-                                                <div class="form-floating mt-3">
-                                                    <input type="time" class="form-control" id="floatingInputprimary"
-                                                        name="startTime" value="">
-                                                    <label for="floatingInputprimary">Start Time</label>
-                                                </div>
-                                                <div class="form-floating mt-3">
-                                                    <input type="date" class="form-control" id="floatingInputprimary"
-                                                      name="endDate" value="">
-                                                    <label for="floatingInputprimary">End Date</label>
-                                                </div>
-                                                <div class="form-floating mt-3">
-                                                    <input type="time" class="form-control" id="floatingInputprimary"
-                                                         name="endTime" value="">
-                                                    <label for="floatingInputprimary">End Time</label>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+                <!--
+                @foreach ($content_data as $data)
+                    <form action="{{ route('addCardOrganization', $data->id) }}" method="post">
+                        @csrf
+                        <div class="modal fade" id="modalAddCard-{{ $data->id }}" aria-labelledby="addCard">
+                            <div class="modal-dialog modal-md">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 class="modal-title" id="addCard">Apply Smart Card For - {{ $data->name }}
+                                        </h6>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row ">
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+                                                    <div class="form-floating">
+                                                        <input type="date" class="form-control" id="floatingInputprimary"
+                                                            name="startDate" value="">
+                                                        <label for="floatingInputprimary">Start Date</label>
+                                                    </div>
+                                                    <div class="form-floating mt-3">
+                                                        <input type="time" class="form-control" id="floatingInputprimary"
+                                                            name="startTime" value="">
+                                                        <label for="floatingInputprimary">Start Time</label>
+                                                    </div>
+                                                    <div class="form-floating mt-3">
+                                                        <input type="date" class="form-control" id="floatingInputprimary"
+                                                          name="endDate" value="">
+                                                        <label for="floatingInputprimary">End Date</label>
+                                                    </div>
+                                                    <div class="form-floating mt-3">
+                                                        <input type="time" class="form-control" id="floatingInputprimary"
+                                                             name="endTime" value="">
+                                                        <label for="floatingInputprimary">End Time</label>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-12 d-flex justify-content-end">
-                                            <button class="btn btn-danger me-3" data-bs-dismiss="modal"
-                                                aria-label="Close">Cancel</button>
-                                            <button type="submit" class="btn btn-primary">
-                                                Payment Now
-                                            </button>
+                                            <div class="col-md-12 d-flex justify-content-end">
+                                                <button class="btn btn-danger me-3" data-bs-dismiss="modal"
+                                                    aria-label="Close">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">
+                                                    Payment Now
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            @endforeach -->
+                    </form>
+                @endforeach -->
 
         </div>
     </div>
@@ -267,8 +318,8 @@
     <script>
         $(document).ready(function() {
 
-            
-            
+
+
             var table = $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -303,7 +354,11 @@
                         data: 'card',
                         name: 'card'
                     },
-                   
+                    {
+                        data: 'action_update',
+                        name: 'action_update'
+                    },
+
                 ],
             });
 
@@ -344,7 +399,7 @@
                 $('#finalPrice').val('RM 0.00'); // Reset the final price
 
                 // Recalculate final price when state checkboxes or package dropdown change
-               
+
             });
 
             $(document).on('click', '.smart-card-btn', function() {
@@ -359,14 +414,14 @@
                 // Reset form
                 $('#smartCardForm')[0].reset();
 
-                
+
                 const today = new Date();
 
                 // Get the date one month from today
                 const nextMonth = new Date(today);
                 nextMonth.setMonth(nextMonth.getMonth() + 1);
                 const yyyy = nextMonth.getFullYear();
-                const mm = String(nextMonth.getMonth() +1).padStart(2, '0'); // Month (0-based, so +1)
+                const mm = String(nextMonth.getMonth() + 1).padStart(2, '0'); // Month (0-based, so +1)
                 const dd = String(nextMonth.getDate()).padStart(2, '0');
 
                 // Start date and time
@@ -380,7 +435,8 @@
 
                 // Format the date to YYYY-MM-DD
                 const endYYYY = endDateObj.getFullYear();
-                const endMM = String(endDateObj.getMonth() + 1).padStart(2, '0'); // `getMonth` returns 0-indexed month
+                const endMM = String(endDateObj.getMonth() + 1).padStart(2,
+                '0'); // `getMonth` returns 0-indexed month
                 const endDD = String(endDateObj.getDate()).padStart(2, '0');
                 const endDate = `${endYYYY}-${endMM}-${endDD}`;
                 const endTime = "18:00";
@@ -391,7 +447,7 @@
                 $("#endDate").val(endDate);
                 $("#endTime").val(endTime);
                 document.getElementById("startDate").min = startDate;
-                
+
             });
 
             $('.state-checkbox').off('change').on('change', calculateFinalPrice);

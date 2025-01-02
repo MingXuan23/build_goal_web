@@ -64,6 +64,7 @@
                                     <th scope="col">Details</th>
                                     <th scope="col">Organization</th>
                                     <th scope="col">Status</th>
+                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
                         </table>
@@ -330,6 +331,45 @@
         </div>
     @endforeach
 
+    @foreach ($content_data as $data)
+        <div class="modal fade" id="update-{{ $data->id }}">
+            <div class="modal-dialog modal-dialog-centered text-center">
+                <div class="modal-content modal-content-demo">
+                    <div class="modal-header">
+                        <h6 class="modal-title">Update Status Content</h6><button aria-label="Close" class="btn-close"
+                            data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <form action="{{ route('updateStatusContentAdmin', $data->id) }}" method="POST">
+                        @csrf
+                        <div class="modal-body text-start">
+
+                            <div class="col-sm-12">
+                                <div class="form-floating">
+                                    <select class="form-select" id="floatingSelect"
+                                        aria-label="Floating label select example" name="status" required>
+                                        <option value="1" @if ($data->status === 1) selected @endif>
+                                            ACTIVE</option>
+                                        <option value="0" @if ($data->status !== 1) selected @endif>
+                                            INACTIVE</option>
+                                    </select>
+                                    <label for="floatingSelect">Email Status</label>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    @endforeach
+
     <script>
         $(document).ready(function() {
             var table = $('.data-table').DataTable({
@@ -375,7 +415,10 @@
                     {
                         data: 'approve',
                         name: 'approve',
-
+                    },
+                    {
+                        data: 'action_update',
+                        name: 'action_update',
                     },
 
 
