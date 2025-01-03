@@ -379,16 +379,16 @@
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="contentModalLabel">Content Details</h5>
+                            <h6 class="modal-title" id="contentModalLabel">Content Details</h6>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body" id="modalContent">
                             <!-- Content preview will be dynamically inserted here -->
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
+                        {{-- <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -462,11 +462,11 @@
 
         function showContentPreview(formattedContent, title, description, price, participant_limit, place, link) {
             // Update the modal title
-            document.getElementById('contentModalLabel').innerText = 'Content Information';
+            document.getElementById('contentModalLabel').innerText = 'CONTENT INFORMATION';
 
             // Bangun konten preview
-            let contentHtml = `
-               <h1>${title}</h1>
+            let contentHtml = `<div class="p-3">
+               <h4 class="text-center fw-bold">${title}</h4>
                <p><em>${description}</em></p>
                <hr>
                <p><strong>Price:</strong> ${price ? `RM${price}` : 'N/A'}</p>
@@ -498,7 +498,7 @@
                 contentHtml += `
             <hr>
             <p><strong>Interested? Click this button to learn more </strong><p>
-            <p><a href="${link}" target="_blank" class="btn btn-primary">Learn More</a></p>
+            <p class="text-end"><a href="${link}" target="_blank" class="btn btn-primary">Learn More</a></p></div>
         `;
             }
 

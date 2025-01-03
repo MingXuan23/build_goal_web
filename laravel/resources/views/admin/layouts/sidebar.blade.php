@@ -29,7 +29,7 @@
                 </li>
                 <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
-                        <i class='bx bxs-user-detail side-menu__icon' ></i>
+                        <i class='bx bxs-user-detail side-menu__icon'></i>
                         <span class="side-menu__label">User Management</span>
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
@@ -92,7 +92,8 @@
                     </a>
                     <ul class="slide-menu child1">
                         <li class="slide">
-                            <a href="/admin/transaction-history-promote-content" class="side-menu__item">Promote Content</a>
+                            <a href="/admin/transaction-history-promote-content" class="side-menu__item">Promote
+                                Content</a>
                         </li>
                         <li class="slide">
                             <a href="/admin/transaction-history-xbug-card" class="side-menu__item">xBug Card</a>
@@ -152,11 +153,20 @@
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
-                        <li class="slide">
+                        {{-- <li class="slide">
                             <a href="/admin/package" class="side-menu__item">Package</a>
-                        </li>
+                        </li> --}}
                         <li class="slide">
                             <a href="/admin/email-status" class="side-menu__item">Email Status</a>
+                        </li>
+                        <li class="slide">
+                            <a href="/admin/gpt-model" class="side-menu__item">GPT Model</a>
+                        </li>
+                        <li class="slide">
+                            <a href="/admin/gpt-usage" class="side-menu__item">GPT Usage</a>
+                        </li>
+                        <li class="slide">
+                            <a href="/admin/gpt-log" class="side-menu__item">GPT Logs</a>
                         </li>
                     </ul>
                 </li>
@@ -173,7 +183,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="slide has-sub">
+                {{-- <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
                         <i class='bx bxs-cog side-menu__icon mx-1'></i>
                         <span class="side-menu__label mx-2">setting</span>
@@ -181,16 +191,16 @@
                     </a>
                     <ul class="slide-menu child1">
                         <li class="slide">
-                            <a href="/admin/gpt-model" class="side-menu__item">Model</a>
+                            <a href="/admin/gpt-model" class="side-menu__item">GPT Model</a>
                         </li>
                         <li class="slide">
-                            <a href="/admin/gpt-usage" class="side-menu__item">Usage</a>
+                            <a href="/admin/gpt-usage" class="side-menu__item">GPT Usage</a>
                         </li>
                         <li class="slide">
-                            <a href="/admin/gpt-log" class="side-menu__item">Logs</a>
+                            <a href="/admin/gpt-log" class="side-menu__item">GPT Logs</a>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
             </ul>
             <div class="slide-right" id="slide-right">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24"
