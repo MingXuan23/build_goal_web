@@ -157,9 +157,9 @@
                                         <div class="col-md-8">
 
                                         </div>
-                                        <div class="col-md-2 text-end">
+                                        <div class="col-md-1 text-end">
                                         </div>
-                                        <div class="col-md-2 text-end">
+                                        <div class="col-md-3 text-end">
                                             <button type="submit" class="btn btn-success mt-5 px-4" name="AddAdmin">Add
                                                 New User Mobile</button>
                                         </div>

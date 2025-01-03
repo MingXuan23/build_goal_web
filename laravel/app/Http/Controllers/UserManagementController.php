@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AdminRegistrationUserMail;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class UserManagementController extends Controller
 {
@@ -406,12 +409,11 @@ class UserManagementController extends Controller
             'address' => 'required',
             'state' => 'required|exists:states,name',
         ], [], []);
+        $passwordToSend = $validatedData['password'];
         $validatedData['password'] = bcrypt(($validatedData['password']));
         $validatedData['phone'] = '+6' . $validatedData['phone'];
         DB::beginTransaction();
         try {
-
-            $verificationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
             $user = DB::table('users')->insertGetId([
                 'name' => $validatedData['name'],
                 'password' => $validatedData['password'],
@@ -455,9 +457,24 @@ class UserManagementController extends Controller
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
-
             DB::commit();
+            $email_status = DB::table('email_status')->where('name', 'NOTIFICATION-REGISTER-USER-ADMIN')->first();
+            if ($email_status && $email_status->status == 1) {
+                $register_type = "Admin";
+                $logData = [
+                    'email_type' => 'REGISTER ADMIN - ADMIN',
+                    'recipient_email' => $validatedData['email'],
+                    'from_email' => 'admin@xbug.online',
+                    'name' => $validatedData['name'],
+                    'status' => 'SUCCESS',
+                    'response_data' => 'PASSWORD HAS BEEN SEND',
+                    'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                ];
+                DB::table('email_logs')->insert($logData);
 
+                Mail::mailer('smtp')->to($validatedData['email'])->send(new AdminRegistrationUserMail($validatedData['name'], $register_type, $passwordToSend,$validatedData['email']));
+            }
             return back()->with('success', 'Admin user has been created Successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -487,7 +504,7 @@ class UserManagementController extends Controller
         ], [
             'icno' => 'IC Number',
             'fullname' => 'Full Name',
-            'oemail' => 'Email',
+            'email' => 'Email',
             'phoneno' => 'Phone Number',
             'password' => 'Password',
             'cpassword' => 'Confirm Passowrd',
@@ -496,7 +513,7 @@ class UserManagementController extends Controller
             'ostate' => 'Organization state',
             'otype' => 'Organization Type',
         ]);
-
+        $passwordToSend = $validatedData['password'];
         $validatedData['password'] = bcrypt(($validatedData['password']));
         $validatedData['phone'] = '+6' . $validatedData['phone'];
 
@@ -549,6 +566,22 @@ class UserManagementController extends Controller
                 'updated_at' => now()
             ]);
             DB::commit();
+            $email_status = DB::table('email_status')->where('name', 'NOTIFICATION-REGISTER-USER-ADMIN')->first();
+            if ($email_status && $email_status->status == 1) {
+                $register_type = "Organization";
+                $logData = [
+                    'email_type' => 'REGISTER ORGANIZATION - ADMIN',
+                    'recipient_email' => $validatedData['email'],
+                    'from_email' => 'admin@xbug.online',
+                    'name' => $validatedData['fullname'],
+                    'status' => 'SUCCESS',
+                    'response_data' => 'PASSWORD HAS BEEN SEND',
+                    'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                ];
+                DB::table('email_logs')->insert($logData);
+                Mail::mailer('smtp')->to($validatedData['email'])->send(new AdminRegistrationUserMail($validatedData['fullname'], $register_type, $passwordToSend,$validatedData['email']));
+            }
             return back()->with('success', 'Organization user has been created successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -572,6 +605,8 @@ class UserManagementController extends Controller
             'address' => 'required',
             'state' => 'required|exists:states,name',
         ], [], []);
+        $passwordToSend = $validatedData['password'];
+
         $validatedData['password'] = bcrypt(($validatedData['password']));
         $validatedData['phone'] = '+6' . $validatedData['phone'];
         DB::beginTransaction();
@@ -599,7 +634,22 @@ class UserManagementController extends Controller
             ]);
 
             DB::commit();
-
+            $email_status = DB::table('email_status')->where('name', 'NOTIFICATION-REGISTER-USER-ADMIN')->first();
+            if ($email_status && $email_status->status == 1) {
+                $register_type = "Mobile User";
+                $logData = [
+                    'email_type' => 'REGISTER MOBILE - ADMIN',
+                    'recipient_email' => $validatedData['email'],
+                    'from_email' => 'admin@xbug.online',
+                    'name' => $validatedData['name'],
+                    'status' => 'SUCCESS',
+                    'response_data' => 'PASSWORD HAS BEEN SEND',
+                    'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                ];
+                DB::table('email_logs')->insert($logData);
+                Mail::mailer('smtp')->to($validatedData['email'])->send(new AdminRegistrationUserMail($validatedData['name'], $register_type, $passwordToSend,$validatedData['email']));
+            }
             return back()->with('success', 'Mobile user has been created Successfully!');
         } catch (\Exception $e) {
             DB::rollBack();

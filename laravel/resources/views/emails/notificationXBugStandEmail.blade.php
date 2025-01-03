@@ -63,13 +63,19 @@
 <body>
     <div class="email-container">
         <div class="email-header">
+            <img src="https://xbug.online/assets/images/logo.png" alt="LOGO" width="80">
             <h1>[xBug Stand] - Content Update Notification</h1>
         </div>
         <div class="email-body">
             <p>Dear <strong>{{ strtoupper($name) }}</strong>,</p>
-            <p>We are excited to inform you that your content titled <span style="font-weight: bold">{{ strtoupper($content_name) }}</span> has been successfully <strong style="color: rgb(87, 205, 120); font-weight: bold;">UPDATED</strong> on the <strong>xBug Stand</strong> platform.</p>
-            <p>You can now check the updated details by logging in to your account at <a href="https://xbug.online/login">xBug Stand</a>.</p>
-            <p>If you have any further questions or need assistance, please do not hesitate to contact our support team at <a href="mailto:help-center@xbug.online">help-center@xbug.online</a>.</p>
+            <p>We are excited to inform you that your content titled <span
+                    style="font-weight: bold">{{ strtoupper($content_name) }}</span> has been successfully <strong
+                    style="color: rgb(87, 205, 120); font-weight: bold;">UPDATED</strong> on the <strong>xBug
+                    Stand</strong> platform.</p>
+            <p>You can now check the updated details by logging in to your account at <a
+                    href="https://xbug.online/login">xBug Stand</a>.</p>
+            <p>If you have any further questions or need assistance, please do not hesitate to contact our support team
+                at <a href="mailto:help-center@xbug.online">help-center@xbug.online</a>.</p>
             <p>Best regards,</p>
             <p><strong>[xBug Stand Team]</strong></p>
         </div>

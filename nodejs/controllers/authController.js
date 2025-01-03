@@ -45,13 +45,216 @@ const sendVerificationEmail = async (userEmail, userName, verificationCode) => {
     to: userEmail,
     subject: "Account Verification - xBug.Online",
     html: `
-      <p>Hey ${userName},</p>
-      <p>Welcome to [xBug.online]! We’re excited to have you on board. To complete your account setup, please use the verification code below:</p>
-      <h2>Verification Code: ${verificationCode}</h2>
-      <p>Please enter this code in the verification section of your account settings to activate your account. If you didn’t sign up for [xBug.online], you can ignore this email.</p>
-      <br>
-      <p>Thank you for choosing [xBug.online]!</p>
-      <p>Best Regards,<br>[Admin xBug]</p>
+    <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[xBug] - Account Verification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Gaya dasar untuk email */
+        body {
+            Margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        /* Gaya untuk email container */
+        .email-container {
+            max-width: 600px;
+            Margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Gaya untuk header */
+        .email-header {
+            background-color: #4f46e5; /* Biru tua */
+            padding: 30px 20px;
+            text-align: center;
+            color: #ffffff;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .email-header img {
+            width: 100px;
+            margin-bottom: 15px;
+        }
+
+        .email-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .email-header p {
+            font-size: 14px;
+            margin-top: 0;
+        }
+
+        /* Gaya untuk body */
+        .email-body {
+            padding: 30px 25px;
+            font-family: 'Poppins', sans-serif;
+            color: #333333;
+        }
+
+        .email-body h2 {
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #4f46e5; /* Biru tua */
+        }
+
+        .email-body p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* Gaya untuk verification code */
+        .verification-code {
+            text-align: center;
+            background-color: #e0e7ff;
+            padding: 15px;
+            border-left: 4px solid #4f46e5; /* Biru tua */
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .verification-code span {
+            font-size: 20px;
+            font-weight: 700;
+            color: #4f46e5; /* Biru tua */
+        }
+
+        /* Gaya untuk tombol CTA */
+        .cta-button {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 14px 0;
+            background-color: #4f46e5; /* Biru tua */
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #4338ca; /* Biru lebih gelap */
+            transform: translateY(-2px);
+        }
+
+        /* Gaya untuk footer */
+        .email-footer {
+            padding: 20px 25px;
+            text-align: center;
+            font-size: 14px;
+            color: #888888;
+            background-color: #f9f9f9;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            border-top: 1px solid #e5e7eb;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .email-footer a {
+            color: #4f46e5; /* Biru tua */
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .email-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsivitas */
+        @media (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+                margin: 10px !important;
+            }
+
+            .email-header h1 {
+                font-size: 20px;
+            }
+
+            .email-body h2 {
+                font-size: 18px;
+            }
+
+            .email-body p,
+            .verification-code span,
+            .email-footer p {
+                font-size: 14px;
+            }
+
+            .cta-button {
+                font-size: 15px;
+                padding: 12px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center">
+                <table class="email-container" width="600" cellpadding="0" cellspacing="0" role="presentation">
+                    <!-- Header -->
+                    <tr>
+                        <td class="email-header">
+                            <img src="https://xbug.online/assets/images/logo.png" alt="xBug Logo">
+                            <h1>[xBug] - Account Verification</h1>
+                            <p>Verify Your Account</p>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td class="email-body">
+                            <p>Hey <strong>${userName}</strong>,</p>
+                            <p>Welcome to <strong>xBug.online</strong>! We’re excited to have you on board. To complete your account setup, please use the verification code below:</p>
+
+                            <div class="verification-code">
+                                <span>${verificationCode}</span>
+                            </div>
+
+                            <p>Please enter this code in the verification section to activate your account. If you didn’t sign up for <strong>xBug.online</strong>, you can ignore this email.</p>
+
+                            <p>Thank you for choosing <strong>xBug.online</strong>!</p>
+                            <p>Best Regards,<br>Admin xBug</p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td class="email-footer">
+                            <p>If you have any questions or need assistance, feel free to contact us at <a href="mailto:help-center@xbug.online">help-center@xbug.online</a>.</p>
+                            <p>&copy; 2025 xBug. All rights reserved.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
     `,
   };
   const info = await transporter.sendMail(mailOptions);
@@ -84,14 +287,222 @@ const sendResetPasswordEmail = async (userEmail, userName, newPassword) => {
     to: userEmail,
     subject: "Your New Password - xBug.Online",
     html: `
-      <p>Hi ${userName},</p>
-      <p>We’ve reset your password as requested. Below is your new password:</p>
-      <h3>Password: ${newPassword}</h3>
-      <p>We recommend that you change this password after logging in for security purposes.</p>
-      <br>
-      <p>If you did not request a password reset, please contact support immediately.</p>
-      <p>Thank you for choosing [xBug.online]!</p>
-      <p>Best Regards,<br>[Admin xBug]</p>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[xBug] - Password Reset</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Gaya dasar untuk email */
+        body {
+            Margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        /* Gaya untuk email container */
+        .email-container {
+            max-width: 600px;
+            Margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Gaya untuk header */
+        .email-header {
+            background-color: #4f46e5; /* Biru tua */
+            padding: 30px 20px;
+            text-align: center;
+            color: #ffffff;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .email-header img {
+            width: 100px;
+            margin-bottom: 15px;
+        }
+
+        .email-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .email-header p {
+            font-size: 14px;
+            margin-top: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Gaya untuk body */
+        .email-body {
+            padding: 30px 25px;
+            font-family: 'Poppins', sans-serif;
+            color: #333333;
+        }
+
+        .email-body h3 {
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #4f46e5; /* Biru tua */
+        }
+
+        .email-body p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Gaya untuk new password section */
+        .new-password {
+            text-align: center;
+            background-color: #e0e7ff;
+            padding: 15px;
+            border-left: 4px solid #4f46e5; /* Biru tua */
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .new-password span {
+            font-size: 20px;
+            font-weight: 700;
+            color: #4f46e5; /* Biru tua */
+        }
+
+        /* Gaya untuk tombol CTA */
+        .cta-button {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 14px 0;
+            background-color: #4f46e5; /* Biru tua */
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .cta-button:hover {
+            background-color: #4338ca; /* Biru lebih gelap */
+            transform: translateY(-2px);
+        }
+
+        /* Gaya untuk footer */
+        .email-footer {
+            padding: 20px 25px;
+            text-align: center;
+            font-size: 14px;
+            color: #888888;
+            background-color: #f9f9f9;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            border-top: 1px solid #e5e7eb;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .email-footer a {
+            color: #4f46e5; /* Biru tua */
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .email-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsivitas */
+        @media (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+                margin: 10px !important;
+            }
+
+            .email-header h1 {
+                font-size: 20px;
+            }
+
+            .email-body h3 {
+                font-size: 18px;
+            }
+
+            .email-body p,
+            .new-password span,
+            .email-footer p {
+                font-size: 14px;
+            }
+
+            .cta-button {
+                font-size: 15px;
+                padding: 12px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center">
+                <table class="email-container" width="600" cellpadding="0" cellspacing="0" role="presentation">
+                    <!-- Header -->
+                    <tr>
+                        <td class="email-header">
+                            <img src="https://xbug.online/assets/images/logo.png" alt="xBug Logo">
+                            <h1>[xBug] - Password Reset</h1>
+                            <p>Reset Your Password</p>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td class="email-body">
+                            <p>Hi <strong>${userName}</strong>,</p>
+                            <p>We’ve reset your password as requested. Below is your new password:</p>
+
+                            <div class="new-password">
+                                <span>${newPassword}</span>
+                            </div>
+
+                            <p>We recommend that you change this password after logging in for security purposes. If you did not request a password reset, please contact support immediately.</p>
+
+                            <p>Thank you for choosing <strong>xBug.online</strong>!</p>
+                            <p>Best Regards,<br>Admin xBug</p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td class="email-footer">
+                            <p>If you have any questions or need assistance, feel free to contact us at <a href="mailto:help-center@xbug.online">help-center@xbug.online</a>.</p>
+                            <p>&copy; 2025 xBug. All rights reserved.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
+
     `,
   };
 
@@ -107,7 +518,6 @@ const sendResetPasswordEmail = async (userEmail, userName, newPassword) => {
     updated_at: new Date(),
   });
   // await transporter.sendMail(mailOptions);
-
 };
 
 const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
@@ -126,29 +536,226 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
     to: userEmail,
     subject: "Your Forget Password Request - xBug.Online",
     html: `
-      <p>Hi ${userName},</p>
-      <p>We’ve received your forget password request. Please click the button below to validate the action:</p>
-      <table cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 20px 0;">
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[xBug] - Password Reset</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Gaya dasar untuk email */
+        body {
+            Margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        /* Gaya untuk email container */
+        .email-container {
+            max-width: 600px;
+            Margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Gaya untuk header */
+        .email-header {
+            background-color: #007bff; /* Biru tua */
+            padding: 30px 20px;
+            text-align: center;
+            color: #ffffff;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .email-header img {
+            width: 100px;
+            margin-bottom: 15px;
+        }
+
+        .email-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .email-header p {
+            font-size: 14px;
+            margin-top: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Gaya untuk body */
+        .email-body {
+            padding: 30px 25px;
+            font-family: 'Poppins', sans-serif;
+            color: #333333;
+        }
+
+        .email-body h3 {
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff; /* Biru tua */
+        }
+
+        .email-body p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Gaya untuk reset password section */
+        .reset-password {
+            text-align: center;
+            background-color: #e0e7ff;
+            padding: 15px;
+            border-left: 4px solid #007bff; /* Biru tua */
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .reset-password span {
+            font-size: 20px;
+            font-weight: 700;
+            color: #007bff; /* Biru tua */
+        }
+
+        /* Gaya untuk tombol CTA */
+        .cta-button {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 14px 0;
+            background-color: #007bff; /* Biru tua */
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .cta-button:hover {
+            background-color: #0056b3; /* Biru lebih gelap */
+            transform: translateY(-2px);
+        }
+
+        /* Gaya untuk footer */
+        .email-footer {
+            padding: 20px 25px;
+            text-align: center;
+            font-size: 14px;
+            color: #888888;
+            background-color: #f9f9f9;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            border-top: 1px solid #e5e7eb;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .email-footer a {
+            color: #007bff; /* Biru tua */
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .email-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsivitas */
+        @media (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+                margin: 10px !important;
+            }
+
+            .email-header h1 {
+                font-size: 20px;
+            }
+
+            .email-body h3 {
+                font-size: 18px;
+            }
+
+            .email-body p,
+            .reset-password span,
+            .email-footer p {
+                font-size: 14px;
+            }
+
+            .cta-button {
+                font-size: 15px;
+                padding: 12px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
-          <td align="center" bgcolor="#007bff" style="border-radius: 5px; background-color: #007bff;">
-            <a href="${link}" 
-               style="display: inline-block; font-family: Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; border: 1px solid #007bff;">
-              Reset Password
-            </a>
-          </td>
+            <td align="center">
+                <table class="email-container" width="600" cellpadding="0" cellspacing="0" role="presentation">
+                    <!-- Header -->
+                    <tr>
+                        <td class="email-header">
+                            <img src="https://xbug.online/assets/images/logo.png" alt="xBug Logo">
+                            <h1>[xBug] - Password Reset</h1>
+                            <p>Reset Your Password</p>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td class="email-body">
+                            <p>Hi <strong>${userName}</strong>,</p>
+                            <p>We’ve received your forget password request. Please click the button below to validate the action:</p>
+
+                            <!-- Call to Action Button -->
+                            <a href="${link}" class="cta-button">Reset Password</a>
+
+                            <!-- Clickable link text for copying -->
+                            <p>If you are unable to click the button, copy and paste the link below into your browser:</p>
+                            <p>
+                                <a href="${link}" style="color: #007bff; text-decoration: none;">${link}</a>
+                            </p>
+
+                            <p>If you did not request a password reset, please contact support immediately.</p>
+                            <p>Thank you for choosing <strong>xBug.online</strong>!</p>
+                            <p>Best Regards,<br>Admin xBug</p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td class="email-footer">
+                            <p>If you have any questions or need assistance, feel free to contact us at <a href="mailto:help-center@xbug.online">help-center@xbug.online</a>.</p>
+                            <p>&copy; 2025 xBug. All rights reserved.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
         </tr>
-      </table>
-  
-      <!-- Clickable link text for copying -->
-      <p>If you are unable to click the button, copy and paste the link below into your browser:</p>
-      <p>
-        <a href="${link}" style="color: #007bff; text-decoration: none;">${link}</a>
-      </p>
-  
-      <p>If you did not request a password reset, please ignore this email or contact support immediately.</p>
-      <br>
-      <p>Thank you for choosing xBug.online!</p>
-      <p>Best Regards,<br>Admin xBug</p>
+    </table>
+</body>
+
+</html>
+
     `,
   };
 

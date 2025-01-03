@@ -16,9 +16,18 @@ class AdminRegistrationUserMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+
+     public $name_user;
+     public $register_type;
+     public $password;
+     public $email;
+    public function __construct($name_user,$register_type,$password,$email)
     {
         //
+        $this->name_user = $name_user;
+        $this->register_type = $register_type;
+        $this->password = $password;
+        $this->email = $email;
     }
 
     /**
@@ -27,7 +36,7 @@ class AdminRegistrationUserMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Admin Registration User Mail',
+            subject: '[xBug.online] Account Registration',
         );
     }
 
@@ -37,7 +46,7 @@ class AdminRegistrationUserMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.AdminRegistrationUserMail',
         );
     }
 
