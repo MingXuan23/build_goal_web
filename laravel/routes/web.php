@@ -89,7 +89,9 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::get('/dashboard/transaction-data', [AdminRouteController::class, 'getTransactionData']);
     Route::get('/user', [AdminRouteController::class, 'showUser'])->name('showUserAdmin');
     Route::get('/user-mobile', [AdminRouteController::class, 'showUserMobile'])->name('showUserMobile');
-    Route::get('/add-user', [AdminRouteController::class, 'showAddUser'])->name('showAddUser');
+    Route::get('/add-user-admin', [AdminRouteController::class, 'showAddUserAdmin'])->name('showAddUserAdmin');
+    Route::get('/add-user-organization', [AdminRouteController::class, 'showAddUserOrganization'])->name('showAddUserOrganization');
+    Route::get('/add-user-mobile', [AdminRouteController::class, 'showAddUserMobile'])->name('showAddUserMobile');
     Route::get('/view-content', [AdminRouteController::class, 'showContentAdmin'])->name('showContentAdmin');
     Route::get('/view-xbug-stand', [AdminRouteController::class, 'showxBugStandAdmin'])->name('showxBugStandAdmin');
     Route::get('/content-user', [AdminRouteController::class, 'showContentUserClickedViewed'])->name('showContentUserClickedViewed');
@@ -97,19 +99,14 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::get('/content-detail/{content_id}/{interaction_type}', [AdminRouteController::class, 'getContentDetail'])->name('content.detail');
     Route::get('/transaction/{id}', [AdminRouteController::class, 'showReceipt'])->name('showReceipt');
 
-
     Route::get('/transaction-history-promote-content', [AdminRouteController::class, 'showTransactionHistoryPromoteContent'])->name('showTransactionHistoryPromoteContent');
     Route::get('/transaction-history-xbug-card', [AdminRouteController::class, 'showTransactionHistoryXbugCard'])->name('showTransactionHistoryXbugCard');
     Route::get('/transaction-history-xbug-ai', [AdminRouteController::class, 'showTransactionHistoryXbugAi'])->name('showTransactionHistoryXbugAi');
-
-
 
     Route::get('/content-cards/{contentId}', [AdminRouteController::class, 'getContentCards'])->name('admin.content-cards');
     Route::post('/save-content-cards', [AdminRouteController::class, 'saveContentCards'])->name('admin.save-content-cards');
 
     Route::post('/content-update-status-admin/{id}', [AdminRouteController::class, 'updateStatusContentAdmin'])->name('updateStatusContentAdmin');
-
-
 
     Route::get('/profile',  [AdminRouteController::class, 'showProfile'])->name('showProfileAdmin');
     Route::get('/email-logs',  [AdminRouteController::class, 'showEmailLogs'])->name('showEmailLogs');
@@ -152,6 +149,11 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::post('/update-account-status/{id}', [UserManagementController::class, 'updateAccountStatus'])->name('updateAccountStatus');
     Route::post('/profile/update-personal-detail', [UserProfileController::class, 'updateProfilePersonalDetailAdmin'])->name('updateProfilePersonalDetailAdmin');
     Route::post('/profile/update-password', [UserProfileController::class, 'updatePasswordAdmin'])->name('updatePasswordAdmin');
+
+
+    Route::post('/user-add/admin', [UserManagementController::class, 'addUserAdmin'])->name('addUserAdmin');
+    Route::post('/user-add/organization', [UserManagementController::class, 'addUserOgranization'])->name('addUserOgranization');
+    Route::post('/user-add/mobile', [UserManagementController::class, 'addUserMobile'])->name('addUserMobile');
 
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('admin.logout');
 });
@@ -199,6 +201,8 @@ Route::prefix('organization')->middleware(['auth', 'role:2'])->group(function ()
 
     Route::post('/generate-description-content', [GPTChatBot::class, 'generateDescription'])->name('generateDescription');
     Route::post('/generate-description-micro', [GPTChatBot::class, 'generateDescriptionMicro'])->name('generateDescriptionMicro');
+    Route::post('/generate-description-micro-1', [GPTChatBot::class, 'generateDescriptionGroq'])->name('generateDescriptionGroq');
+    Route::post('/generate-description-micro-2', [GPTChatBot::class, 'generateDescriptionGroqMicro'])->name('generateDescriptionGroqMicro');
     
     // Route::middleware(['ekycCheck'])->group(function () {
     Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');

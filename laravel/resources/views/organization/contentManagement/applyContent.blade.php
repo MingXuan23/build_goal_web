@@ -76,7 +76,7 @@
                                                 <div class="col-md-12">
                                                     <div class="form-floating">
                                                         <textarea class="form-control @error('content_desc') is-invalid @enderror" id="contentDescription"
-                                                            placeholder="Enter Content Description" name="content_desc" style="height: 150px;">{{ old('content_desc') }}</textarea>
+                                                            placeholder="Enter Content Description" name="content_desc" style="height: 170px;">{{ old('content_desc') }}</textarea>
                                                         <label for="contentDescription">Content Description</label>
                                                         @error('content_desc')
                                                             <span class="mb-1 text-danger">{{ $message }}</span>
@@ -93,22 +93,6 @@
                                                     value="{{ old('content_link') }}">
                                                 <label for="contentLink">Content Link</label>
                                                 @error('content_link')
-                                                    <span class="mb-1 text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-12">
-                                            <div class="form-floating">
-                                                <select class="form-select @error('content_type_id') is-invalid @enderror"
-                                                    id="content_types" name="content_type_id">
-                                                    <option value="" disabled selected>Select Content Type</option>
-                                                    @foreach ($content_types as $content_type)
-                                                        <option value="{{ $content_type->id }}"
-                                                            @selected(old('content_type_id') == $content_type->id)>{{ $content_type->type }}</option>
-                                                    @endforeach
-                                                </select>
-                                                <label for="content_type_id">Content Type</label>
-                                                @error('content_type_id')
                                                     <span class="mb-1 text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
@@ -136,6 +120,22 @@
                                     <p class="fw-semibold mt-2">Content Information</p>
                                     <hr>
                                     <div class="row gy-2">
+                                        <div class="col-xl-12">
+                                            <div class="form-floating">
+                                                <select class="form-select @error('content_type_id') is-invalid @enderror"
+                                                    id="content_types" name="content_type_id">
+                                                    <option value="" disabled selected>Select Content Type</option>
+                                                    @foreach ($content_types as $content_type)
+                                                        <option value="{{ $content_type->id }}"
+                                                            @selected(old('content_type_id') == $content_type->id)>{{ $content_type->type }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <label for="content_type_id">Content Type</label>
+                                                @error('content_type_id')
+                                                    <span class="mb-1 text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
                                         <div class="col-xl-12">
                                             <div class="form-floating">
                                                 <input type="number"
@@ -173,13 +173,14 @@
                                             </div>
                                         </div>
                                         <div class="col-xl-12">
-                                            <label for="image" class="form-label mt-1">Upload Your Content Image</label>
+                                            <label for="image" class="form-label mt-1">Upload Your Content
+                                                Image</label>
                                             <div class="">
                                                 <input type="file"
                                                     class="form-control @error('image') is-invalid @enderror"
                                                     id="image" placeholder="Upload Your Content Image"
                                                     name="image">
-                                               
+
                                                 @error('image')
                                                     <span class="mb-1 text-danger">{{ $message }}</span>
                                                 @enderror
@@ -443,7 +444,7 @@
                 });
 
                 $.ajax({
-                    url: '{{ route('generateDescription') }}',
+                    url: '{{ route('generateDescriptionGroq') }}',
                     method: 'POST',
                     data: {
                         content_name: contentName,
@@ -454,11 +455,11 @@
                         if (response.status === 'success') {
                             // $('#contentDescription').val(response.description);
 
-                           //  Swal.fire({
-                           //      icon: 'success',
-                           //      title: 'Description Generated',
-                           //      text: 'The description has been successfully generated.',
-                           //  });
+                            //  Swal.fire({
+                            //      icon: 'success',
+                            //      title: 'Description Generated',
+                            //      text: 'The description has been successfully generated.',
+                            //  });
                             displayResponseInTextarea(response.description,
                                 'contentDescription');
                         } else {

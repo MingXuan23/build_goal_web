@@ -41,7 +41,13 @@
                             <a href="/admin/user-mobile" class="side-menu__item">User Mobile</a>
                         </li>
                         <li class="slide">
-                            <a href="/admin/add-user" class="side-menu__item">Add User</a>
+                            <a href="/admin/add-user-admin" class="side-menu__item">Add Admin</a>
+                        </li>
+                        <li class="slide">
+                            <a href="/admin/add-user-organization" class="side-menu__item">Add Organization</a>
+                        </li>
+                        <li class="slide">
+                            <a href="/admin/add-user-mobile" class="side-menu__item">Add Mobile User</a>
                         </li>
                     </ul>
                 </li>

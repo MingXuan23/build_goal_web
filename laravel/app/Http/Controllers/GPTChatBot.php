@@ -527,6 +527,320 @@ class GPTChatBot extends Controller
             ], 500);
         }
     }
+    public function generateDescriptionGroq(Request $request)
+    {
+        try {
+            $request->validate([
+                'content_name' => 'required|string|max:240',
+            ]);
+
+            $contentName = $request->input('content_name');
+            $model = DB::table('gpt_table')->where('status', 1)->where('id', 2)->first();
+
+            if (!$model) {
+                DB::table('gpt_log')->insert([
+                    'name' => 'CONTENT SUGGESTION API',
+                    'model' => 'N/A',
+                    'provider' => 'N/A',
+                    'user_id' => auth()->user()->id,
+                    'status' => 0,
+                    'prompt_tokens' => '-',
+                    'completion_tokens' => '-',
+                    'total_tokens' => 'MODEL UNAVAILABLE',
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Model is currently unavailable. Please try again later.',
+                ], 500);
+            }
+            if (Auth::user()->is_gpt == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBug GPT.',
+                ], 500);
+            }
+            if (Auth::user()->gpt_status == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sorry, Your Account Is Currently Banned For AI Purpose. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
+                ], 500);
+            }
+            $maxTokens = $model->max_token;
+
+            $apiKey = env('GROQ_API_KEY');
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $apiKey,
+                'Content-Type'  => 'application/json',
+            ])->post('https://api.groq.com/openai/v1/chat/completions', [
+                'model' => $model->model_name,
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => "You are a content generator. Create a detailed and professional description for the content name provided. Give the word not more than {$maxTokens} tokens. Give answers related to the name of the content that has been given only. Directly give the description without sentences like in 'Here is a professional description for the content name'."
+                    ],
+                    ['role' => 'user', 'content' => $contentName],
+                ],
+            ]);
+
+            // 8. Proses respon dari Groq/OpenAI
+            if ($response->successful()) {
+                $data = $response->json();
+                $reply = $data['choices'][0]['message']['content'] ?? 'No response from AI';
+                $cleanDescription = preg_replace('/\*\*/', '', $reply);
+                DB::table('gpt_log')->insert([
+                    'name' => 'CONTENT SUGGESTION API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
+                    'user_id' => auth()->user()->id,
+                    'status' => 1,
+                    'prompt_tokens' => $data['usage']['prompt_tokens'] ?? null,
+                    'completion_tokens' => $data['usage']['completion_tokens'] ?? null,
+                    'total_tokens' => $data['usage']['total_tokens'] ?? null,
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+                return response()->json([
+                    'status'  => 'success',
+                    'description' => $cleanDescription,
+                ]);
+            }
+
+            DB::table('gpt_log')->insert([
+                'name' => 'CONTENT SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '',
+                'completion_tokens' => '',
+                'total_tokens' => 'API CALL ERROR 500',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+
+            // Jika request ke Groq/OpenAI gagal
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Request to Groq failed or returned an error.',
+            ], 500);
+        } catch (ValidationException $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'CONTENT SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'VALIDATION ERROR 422',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error: ' . $e->getMessage(),
+            ], 422);
+        } catch (RequestException $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'CONTENT SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'REQUEST ERROR 500',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Request error: ' . $e->getMessage(),
+            ], 500);
+        } catch (Exception $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'CONTENT SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'UNEXPECTED ERROR 500',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An unexpected error occurred: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+    public function generateDescriptionGroqMicro(Request $request)
+    {
+        try {
+            $request->validate([
+                'content_name' => 'required|string|max:240',
+            ]);
+
+            $contentName = $request->input('content_name');
+            $model = DB::table('gpt_table')->where('status', 1)->where('id', 2)->first();
+
+            if (!$model) {
+                DB::table('gpt_log')->insert([
+                    'name' => 'CONTENT SUGGESTION API',
+                    'model' => 'N/A',
+                    'provider' => 'N/A',
+                    'user_id' => auth()->user()->id,
+                    'status' => 0,
+                    'prompt_tokens' => '-',
+                    'completion_tokens' => '-',
+                    'total_tokens' => 'MODEL UNAVAILABLE',
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Model is currently unavailable. Please try again later.',
+                ], 500);
+            }
+            if (Auth::user()->is_gpt == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBug GPT.',
+                ], 500);
+            }
+            if (Auth::user()->gpt_status == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sorry, Your Account Is Currently Banned For AI Purpose. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
+                ], 500);
+            }
+            $maxTokens = $model->max_token;
+
+            $apiKey = env('GROQ_API_KEY');
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $apiKey,
+                'Content-Type'  => 'application/json',
+            ])->post('https://api.groq.com/openai/v1/chat/completions', [
+                'model' => $model->model_name,
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => "You are a content generator. Create a detailed and professional description for the content name provided. Give the word not more than {$maxTokens} tokens. Give answers related to the name of the content that has been given only. Directly give the description without sentences like in 'Here is a professional description for the content name'."
+                    ],
+                    ['role' => 'user', 'content' => $contentName],
+                ],
+            ]);
+
+            // 8. Proses respon dari Groq/OpenAI
+            if ($response->successful()) {
+                $data = $response->json();
+                $reply = $data['choices'][0]['message']['content'] ?? 'No response from AI';
+                $cleanDescription = preg_replace('/\*\*/', '', $reply);
+                DB::table('gpt_log')->insert([
+                    'name' => 'CONTENT SUGGESTION API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
+                    'user_id' => auth()->user()->id,
+                    'status' => 1,
+                    'prompt_tokens' => $data['usage']['prompt_tokens'] ?? null,
+                    'completion_tokens' => $data['usage']['completion_tokens'] ?? null,
+                    'total_tokens' => $data['usage']['total_tokens'] ?? null,
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+                return response()->json([
+                    'status'  => 'success',
+                    'description' => $cleanDescription,
+                ]);
+            }
+
+            DB::table('gpt_log')->insert([
+                'name' => 'CONTENT SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '',
+                'completion_tokens' => '',
+                'total_tokens' => 'API CALL ERROR 500',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+
+            // Jika request ke Groq/OpenAI gagal
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Request to Groq failed or returned an error.',
+            ], 500);
+        } catch (ValidationException $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'CONTENT SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'VALIDATION ERROR 422',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error: ' . $e->getMessage(),
+            ], 422);
+        } catch (RequestException $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'CONTENT SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'REQUEST ERROR 500',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Request error: ' . $e->getMessage(),
+            ], 500);
+        } catch (Exception $e) {
+            DB::table('gpt_log')->insert([
+                'name' => 'CONTENT SUGGESTION API',
+                'model' => $model->model_name,
+                'provider' => $model->provider,
+                'user_id' => auth()->user()->id,
+                'status' => 0,
+                'prompt_tokens' => '-',
+                'completion_tokens' => '-',
+                'total_tokens' => 'UNEXPECTED ERROR 500',
+                'request' => $contentName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An unexpected error occurred: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
     public function generateDescriptionMicro(Request $request)
     {
         try {
@@ -835,7 +1149,7 @@ class GPTChatBot extends Controller
 
             if (!$model) {
                 DB::table('gpt_log')->insert([
-                    'name' => 'GROQ API',
+                    'name' => 'ANALYSIS GROQ API',
                     'model' => 'N/A',
                     'provider' => 'N/A',
                     'user_id' => auth()->user()->id,
@@ -2959,27 +3273,42 @@ class GPTChatBot extends Controller
 
             // dd($tablesNeeded);
 
+
+
             // 2. Jika tidak ada kecocokan
-            if (empty($tablesNeeded)) {
+            if (
+                str_contains(strtolower($userMessage), 'report') ||
+                str_contains(strtolower($userMessage), 'summary') ||
+                str_contains(strtolower($userMessage), 'analysis')
+            ) {
+                $tablesNeeded = ['users', 'contents', 'content_card', 'content_promotion', 'content_types', 'interaction_type', 'organization', 'organization_user', 'roles', 'transactions', 'user_content'];
+            } else {
+                if (empty($tablesNeeded)) {
+                    DB::table('gpt_log')->insert([
+                        'name' => 'ANALYSIS GROQ API',
+                        'model' => $model->model_name,
+                        'provider' => $model->provider,
+                        'user_id' => auth()->user()->id,
+                        'status' => 1,
+                        'prompt_tokens' => 'TABLE NOT FOUND',
+                        'completion_tokens' => '',
+                        'total_tokens' => '',
+                        'request' => $userMessage,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]);
 
-                DB::table('gpt_log')->insert([
-                    'name' => 'GROQ API',
-                    'model' => $model->model_name,
-                    'provider' => $model->provider,
-                    'user_id' => auth()->user()->id,
-                    'status' => 1,
-                    'prompt_tokens' => 'TABLE NOT FOUND',
-                    'completion_tokens' => '',
-                    'total_tokens' => '',
-                    'request' => $userMessage,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ]);
+                    return response()->json([
+                        'status'  => 'success',
+                        'message' => "No relevant data found for your query: '$userMessage'."
+                    ]);
+                }
+            }
 
-                return response()->json([
-                    'status'  => 'success',
-                    'message' => "No relevant data found for your query: '$userMessage'."
-                ]);
+            if (in_array('users', $tablesNeeded)) {
+                if (!in_array('roles', $tablesNeeded)) {
+                    $tablesNeeded[] = 'roles'; // Tambahkan 'roles' jika belum ada
+                }
             }
 
 
@@ -3014,10 +3343,10 @@ class GPTChatBot extends Controller
                         "Current Date is: " . Carbon::now()->setTimezone('Asia/Kuala_Lumpur')
                             . ". Here is the data from the relevant tables based on your request: "
                             . $jsonData
-                            . ". Use only this data to answer the user's questions. "
-                            . "If relevant, provide suggestions or additional insights based on the data. "
+                            . ". Use only this data to answer the user's questions. If the data is 1 like status : 1 in json, it mean active"
+                            . "If relevant, provide suggestions or additional insights based on the data. If, data is empty, give suggestions base on the user's request. "
                             . "Make sure your suggestions are useful and grounded in the provided data. "
-                            . "Do not share unnecessary details about the database structure. "
+                            . "Do not share unnecessary details about the database structure or design. "
                             . "Do not answer out of topic or unrelated to the data. "
                             . "Please follow these instructions strictly."
                     ],
@@ -3033,7 +3362,7 @@ class GPTChatBot extends Controller
                 $data = $response->json();
                 $reply = $data['choices'][0]['message']['content'] ?? 'No response from AI';
                 DB::table('gpt_log')->insert([
-                    'name' => 'GROQ API',
+                    'name' => 'ANALYSIS GROQ API',
                     'model' => $model->model_name,
                     'provider' => $model->provider,
                     'user_id' => auth()->user()->id,
@@ -3052,7 +3381,7 @@ class GPTChatBot extends Controller
             }
 
             DB::table('gpt_log')->insert([
-                'name' => 'GROQ API',
+                'name' => 'ANALYSIS GROQ API',
                 'model' => $model->model_name,
                 'provider' => $model->provider,
                 'user_id' => auth()->user()->id,
@@ -3076,7 +3405,7 @@ class GPTChatBot extends Controller
             // ], 500);
         } catch (ValidationException $e) {
             DB::table('gpt_log')->insert([
-                'name' => 'GROQ API',
+                'name' => 'ANALYSIS GROQ API',
                 'model' => $model->model_name,
                 'provider' => $model->provider,
                 'user_id' => auth()->user()->id,
@@ -3094,7 +3423,7 @@ class GPTChatBot extends Controller
             ], 422);
         } catch (RequestException $e) {
             DB::table('gpt_log')->insert([
-                'name' => 'GROQ API',
+                'name' => 'ANALYSIS GROQ API',
                 'model' => $model->model_name,
                 'provider' => $model->provider,
                 'user_id' => auth()->user()->id,
@@ -3112,7 +3441,7 @@ class GPTChatBot extends Controller
             ], 500);
         } catch (Exception $e) {
             DB::table('gpt_log')->insert([
-                'name' => 'GROQ API',
+                'name' => 'ANALYSIS GROQ API',
                 'model' => $model->model_name,
                 'provider' => $model->provider,
                 'user_id' => auth()->user()->id,

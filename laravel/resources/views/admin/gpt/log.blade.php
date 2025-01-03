@@ -87,7 +87,7 @@
                     },
                     {
                         data: 'total_tokens',
-                        name: 'total_tokens'
+                        name: 'total_tokens',
                     },
                     {
                         data: 'status',

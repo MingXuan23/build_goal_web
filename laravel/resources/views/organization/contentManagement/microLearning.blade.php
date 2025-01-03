@@ -64,7 +64,7 @@
                                 <span class="text-success text-end fw-bold" id="generate-description">Generate
                                     suggestions</span><i class='bx bx-loader text-success fw-bold'></i>
                             </div>
-                            <textarea class="form-control" id="content_desc" name="content_desc" rows="5" required>{{ old('content_desc') }}</textarea>
+                            <textarea class="form-control" id="content_desc" name="content_desc" rows="10" required>{{ old('content_desc') }}</textarea>
                         </div>
                         <div class="col-md-6">
                             <label for="label-input">Search Labels:</label>
@@ -449,7 +449,7 @@
                     });
 
                     $.ajax({
-                        url: '/organization/generate-description-micro', // Route ke API Anda
+                        url: '{{route('generateDescriptionGroqMicro')}}', // Route ke API Anda
                         method: 'POST',
                         data: {
                             content_name: contentName,

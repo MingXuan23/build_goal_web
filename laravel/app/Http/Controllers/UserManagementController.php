@@ -15,7 +15,7 @@ class UserManagementController extends Controller
 
     public function updateUser(Request $request, $id)
     {
-        
+
         // dd($id);
         DB::beginTransaction();
         try {
@@ -23,7 +23,7 @@ class UserManagementController extends Controller
             $user = DB::table('users')->where('id', $id)->first();
 
             if (!$user) {
-                return back()->with('error','User not found. Please make sure your user ID is correct.');
+                return back()->with('error', 'User not found. Please make sure your user ID is correct.');
             }
 
 
@@ -46,7 +46,7 @@ class UserManagementController extends Controller
                 return back()->with('error', 'The Email already exists.');
             }
 
-           
+
             $validatedData = $request->validate([
                 'icno' => 'required|digits:12',
                 'fullname' => 'required',
@@ -73,14 +73,14 @@ class UserManagementController extends Controller
                 'ostate' => 'Organization State',
                 'otype' => 'Organization Type',
             ]);
-        
-            
-            
+
+
+
             $newPassword = $user->password;
             if (!empty($request->password)) {
                 $newPassword = bcrypt(($validatedData['password']));;
             }
-            
+
             DB::table('users')->where('id', $id)->update([
                 'icNo' => $validatedData['icno'],
                 'name' => $validatedData['fullname'],
@@ -91,7 +91,7 @@ class UserManagementController extends Controller
                 'password' => $newPassword,
                 'updated_at' => now(),
             ]);
-            
+
             $orgType = $validatedData['otype'] ?? null;
 
 
@@ -105,9 +105,8 @@ class UserManagementController extends Controller
 
             $name = $validatedData['oname'] ?? $validatedData['fullname'];
             $getOrganizationUser = DB::table('organization_user')->where('user_id', $id)->select('organization_id')->first();
-            
-            if ($getOrganizationUser) {
-               ;
+
+            if ($getOrganizationUser) {;
                 DB::table('organization')->where('id', $getOrganizationUser->organization_id)->update([
                     'name' => $name,
                     'address' => $validatedData['oaddress'],
@@ -115,11 +114,10 @@ class UserManagementController extends Controller
                     'email' => $validatedData['email'],
                     'org_type' => $org_type_data ? $org_type_data->type : null, // If no type is found, set to null
                     'updated_at' => now(),
-                ]);
-              ;
+                ]);;
             }
-            
-           
+
+
             DB::commit();
             return back()->with('success', 'User updated successfully!');
         } catch (Exception $e) {
@@ -129,14 +127,14 @@ class UserManagementController extends Controller
     }
     public function updateUserMobile(Request $request, $id)
     {
-        
+
         DB::beginTransaction();
         try {
 
             $user = DB::table('users')->where('id', $id)->first();
 
             if (!$user) {
-                return back()->with('error','User not found. Please make sure your user ID is correct.');
+                return back()->with('error', 'User not found. Please make sure your user ID is correct.');
             }
 
 
@@ -159,7 +157,7 @@ class UserManagementController extends Controller
                 return back()->with('error', 'The Email already exists.');
             }
 
-           
+
             $validatedData = $request->validate([
                 'icno' => 'required|digits:12',
                 'fullname' => 'required',
@@ -182,14 +180,14 @@ class UserManagementController extends Controller
                 'address' => 'Organization Address',
                 'state' => 'Organization State',
             ]);
-        
-            
-            
+
+
+
             $newPassword = $user->password;
             if (!empty($request->password)) {
                 $newPassword = bcrypt(($validatedData['password']));;
             }
-            
+
             DB::table('users')->where('id', $id)->update([
                 'icNo' => $validatedData['icno'],
                 'name' => $validatedData['fullname'],
@@ -200,8 +198,8 @@ class UserManagementController extends Controller
                 'password' => $newPassword,
                 'updated_at' => now(),
             ]);
-            
-        
+
+
             DB::commit();
             return back()->with('success', 'User updated successfully!');
         } catch (Exception $e) {
@@ -273,20 +271,20 @@ class UserManagementController extends Controller
 
     public function updateGptAccount(Request $request, $id)
     {
-        
+
         DB::beginTransaction();
         try {
             $request->validate([
                 'status' => 'required|in:1,0',
             ]);
-            if($request->status == 1){
+            if ($request->status == 1) {
                 $gpt_status = 1;
-            }else{
+            } else {
                 $gpt_status = 0;
             }
             $update = DB::table('users')
                 ->where('id', $id)
-                ->update(['is_gpt' => (int)$request->status,'gpt_status' => $gpt_status]);
+                ->update(['is_gpt' => (int)$request->status, 'gpt_status' => $gpt_status]);
             DB::commit();
 
             return redirect()->route('showUserAdmin')->with('success', 'Gpt Account Updated Successfully!');
@@ -369,11 +367,11 @@ class UserManagementController extends Controller
         }
     }
 
-    public function userDeleteAdmin(Request $request,$id)
+    public function userDeleteAdmin(Request $request, $id)
     {
         DB::beginTransaction();
         try {
-      
+
             $user = DB::table('users')->where('id', $id)->first();
 
             if (!$user) {
@@ -384,6 +382,225 @@ class UserManagementController extends Controller
             DB::commit();
 
             return back()->with('success', 'User has been deleted successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+
+    public function addUserAdmin(Request $request)
+    {
+        // dd($request->all());
+
+        $validatedData = $request->validate([
+            'icNo' => 'required|digits:12|unique:users',
+            'name' => 'required',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email'),
+            ],
+            'phone' => 'required',
+            'password' => 'required|min:5',
+            'cpassword' => 'required|min:5|same:password',
+            'address' => 'required',
+            'state' => 'required|exists:states,name',
+        ], [], []);
+        $validatedData['password'] = bcrypt(($validatedData['password']));
+        $validatedData['phone'] = '+6' . $validatedData['phone'];
+        DB::beginTransaction();
+        try {
+
+            $verificationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            $user = DB::table('users')->insertGetId([
+                'name' => $validatedData['name'],
+                'password' => $validatedData['password'],
+                'telno' => $validatedData['phone'],
+                'icNo' => $validatedData['icNo'],
+                'address' => $validatedData['address'],
+                'state' => $validatedData['state'],
+                'email' => $validatedData['email'],
+                'status' => 'ACTIVE',
+                'role' => json_encode([1]),
+                'active' => 1,
+                'is_gpt' => 0,
+                'gpt_status' => 0,
+                'email_status' => 'VERIFY',
+                'ekyc_status' => 0,
+                'verification_code' => '000000',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            $org_type = DB::table('organization_type')
+                ->where('id', 2)
+                ->select('type')
+                ->first();
+
+            $organization = DB::table('organization')->insertGetId([
+                'name' => $validatedData['name'],
+                'address' => $validatedData['address'],
+                'state' => $validatedData['state'],
+                'email' => $validatedData['email'],
+                'org_type' => $org_type->type,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            DB::table('organization_user')->insert([
+                'user_id' => $user,
+                'organization_id' => $organization,
+                'role_id' => 1,
+                'status' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', 'Admin user has been created Successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+    public function addUserOgranization(Request $request)
+    {
+        $validatedData = $request->validate([
+            'icno' => 'required|digits:12|unique:users',
+            'fullname' => 'required',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email'),
+            ],
+            'phone' => 'required',
+            'password' => 'required|min:5',
+            'cpassword' => 'required|min:5|same:password',
+            'oname' => 'required',
+            'oaddress' => 'required',
+            'ostate' => 'required|exists:states,name',
+            'otype' => 'required|exists:organization_type,id',
+        ], [
+            'otype.in' => 'The selected organization type is invalid. Please choose a valid organization type.',
+            'ostate.in' => 'The selected state is invalid. Please choose a valid state.',
+        ], [
+            'icno' => 'IC Number',
+            'fullname' => 'Full Name',
+            'oemail' => 'Email',
+            'phoneno' => 'Phone Number',
+            'password' => 'Password',
+            'cpassword' => 'Confirm Passowrd',
+            'oname' => 'Organization Name',
+            'oaddress' => 'Organization Address',
+            'ostate' => 'Organization state',
+            'otype' => 'Organization Type',
+        ]);
+
+        $validatedData['password'] = bcrypt(($validatedData['password']));
+        $validatedData['phone'] = '+6' . $validatedData['phone'];
+
+        DB::beginTransaction();
+        try {
+
+            $user = DB::table('users')->insertGetId([
+                'name' => $validatedData['fullname'],
+                'password' => $validatedData['password'],
+                'telno' => $validatedData['phone'],
+                'icNo' => $validatedData['icno'],
+                'address' => $validatedData['oaddress'],
+                'state' => $validatedData['ostate'],
+                'email' => $validatedData['email'],
+                'status' => 'ACTIVE',
+                'role' => json_encode([2]),
+                'active' => 1,
+                'email_status' => 'VERIFY',
+                'is_gpt' => 0,
+                'gpt_status' => 0,
+                'ekyc_status' => 0,
+                'verification_code' => '000000',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+
+            $validatedData['otype'] = (int) $validatedData['otype'];
+            $org_type = DB::table('organization_type')
+                ->where('id', $validatedData['otype'])
+                ->select('type')
+                ->first();
+
+            $organization = DB::table('organization')->insertGetId([
+                'name' => $validatedData['oname'],
+                'address' => $validatedData['oaddress'],
+                'state' => $validatedData['ostate'],
+                'email' => $validatedData['email'],
+                'org_type' => $org_type->type,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            DB::table('organization_user')->insert([
+                'user_id' => $user,
+                'organization_id' => $organization,
+                'role_id' => 2,
+                'status' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+            DB::commit();
+            return back()->with('success', 'Organization user has been created successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+    public function addUserMobile(Request $request)
+    {
+        // dd($request->all());
+        $validatedData = $request->validate([
+            'icNo' => 'required|digits:12|unique:users',
+            'name' => 'required',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email'),
+            ],
+            'phone' => 'required',
+            'password' => 'required|min:5',
+            'cpassword' => 'required|min:5|same:password',
+            'address' => 'required',
+            'state' => 'required|exists:states,name',
+        ], [], []);
+        $validatedData['password'] = bcrypt(($validatedData['password']));
+        $validatedData['phone'] = '+6' . $validatedData['phone'];
+        DB::beginTransaction();
+        try {
+
+            $verificationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            $user = DB::table('users')->insertGetId([
+                'name' => $validatedData['name'],
+                'password' => $validatedData['password'],
+                'telno' => $validatedData['phone'],
+                'icNo' => $validatedData['icNo'],
+                'address' => $validatedData['address'],
+                'state' => $validatedData['state'],
+                'email' => $validatedData['email'],
+                'status' => 'ACTIVE',
+                'role' => json_encode([5]),
+                'active' => 1,
+                'is_gpt' => 0,
+                'gpt_status' => 0,
+                'email_status' => 'VERIFY',
+                'ekyc_status' => 0,
+                'verification_code' => '000000',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', 'Mobile user has been created Successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Error: ' . $e->getMessage());

@@ -279,10 +279,28 @@ class AdminRouteController extends Controller
         ]);
     }
 
-    public function showAddUser(Request $request)
+    public function showAddUserAdmin(Request $request)
     {
-
-        return view('admin.userManagement.addUser');
+        $state = DB::table('states')->select('id', 'name')->get();
+        return view('admin.userManagement.addUserAdmin', [
+            'states' => $state
+        ]);
+    }
+    public function showAddUserOrganization(Request $request)
+    {
+        $state = DB::table('states')->select('id', 'name')->get();
+        $organization_type = DB::table('organization_type')->select('id', 'type')->get();
+        return view('admin.userManagement.addUserOrganization', [
+            'states' => $state,
+            'organization_types' => $organization_type
+        ]);
+    }
+    public function showAddUserMobile(Request $request)
+    {
+        $state = DB::table('states')->select('id', 'name')->get();
+        return view('admin.userManagement.addUserMobile', [
+            'states' => $state
+        ]);
     }
     public function showDashboard(Request $request)
     {
