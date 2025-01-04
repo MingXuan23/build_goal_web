@@ -323,7 +323,7 @@ class OrganizationRouteController extends Controller
 
     public function showAddContent(Request $request)
     {
-        $content_types = DB::table('content_types')->where('status', true)->where('type', '<>', 'Micro Entrepreneurship')->get();
+        $content_types = DB::table('content_types')->where('status', true)->where('type', '<>', 'MicroLearning Resource')->get();
         $stateCitiesJson = file_get_contents(public_path('assets/json/states-cities.json'));
         $stateCities = json_decode($stateCitiesJson, true);
         $states = DB::table('states')->select('id', 'name')->get();

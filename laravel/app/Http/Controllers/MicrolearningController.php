@@ -80,21 +80,25 @@ class MicrolearningController extends Controller
         $countContents_CourseTraining = DB::table('contents')
         ->where('content_type_id', '=', 1)
         ->where('reason_phrase', '=', 'APPROVED')
+        ->where('status', '=', 1)
         ->count();
 
         $countContents_MicroLearning = DB::table('contents')
         ->where('content_type_id', '=', 2)
         ->where('reason_phrase', '=', 'APPROVED')
+        ->where('status', '=', 1)
         ->count();
 
         $countContents_Event = DB::table('contents')
         ->where('content_type_id', '=', 5)
         ->where('reason_phrase', '=', 'APPROVED')
+        ->where('status', '=', 1)
         ->count();
 
         $countContents_JobOffer = DB::table('contents')
         ->where('content_type_id', '=', 4)
         ->where('reason_phrase', '=', 'APPROVED')
+        ->where('status', '=', 1)
         ->count();
 
         return view('viewContent.indexContent', compact('countContent','countContents_CourseTraining','countContents_MicroLearning', 'countContents_Event', 'countContents_JobOffer','courseAndTrainingSlug','microLearningSlug','eventSlug','jobOfferingSlug'));
@@ -107,26 +111,31 @@ class MicrolearningController extends Controller
             $contentType = str_replace('-', ' ', $slug); 
             $countContent = DB::table('contents')
             ->where('reason_phrase', '=', 'APPROVED')
+            ->where('status', '=', 1)
             ->count();
 
             $countContents_CourseTraining = DB::table('contents')
             ->where('content_type_id', '=', 1)
             ->where('reason_phrase', '=', 'APPROVED')
+            ->where('status', '=', 1)
             ->count();
 
             $countContents_MicroLearning = DB::table('contents')
             ->where('content_type_id', '=', 2)
             ->where('reason_phrase', '=', 'APPROVED')
+            ->where('status', '=', 1)
             ->count();
 
             $countContents_Event = DB::table('contents')
             ->where('content_type_id', '=', 5)
             ->where('reason_phrase', '=', 'APPROVED')
+            ->where('status', '=', 1)
             ->count();
 
             $countContents_JobOffer = DB::table('contents')
             ->where('content_type_id', '=', 4)
             ->where('reason_phrase', '=', 'APPROVED')
+            ->where('status', '=', 1)
             ->count();
 
             $microLearningSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 2)->value('type'));
@@ -159,10 +168,12 @@ class MicrolearningController extends Controller
                     'c.enrollment_price',
                     'c.participant_limit',
                     'c.place',
-                    'c.link'
+                    'c.link',
+                    'c.status'
                 )
                 ->where('content_types.id', '=', $contentTypeId)  // Use content type ID to fetch contents
                 ->where('c.reason_phrase', '=', 'APPROVED')  // Filter only approved contents
+                ->where('c.status', '=', 1)
                 ->get();
 
             // Return the view with the fetched content
@@ -176,7 +187,11 @@ class MicrolearningController extends Controller
         public function showMicrolearningDetail(Request $request, $slug, $name)
         {
             // Convert slug back to content name with spaces
-            $name = str_replace('-', ' ', $name);
+            $originalName = str_replace('~', ' ', $name); // Replace hyphen with space
+
+            // Optional: Decode URL-encoded characters (if necessary)
+            $originalName = urldecode($originalName);
+            
             // dd($name);
             $microLearningSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 2)->value('type'));
             // Fetch the content type ID for 'MicroLearning' (or similar)
@@ -198,6 +213,7 @@ class MicrolearningController extends Controller
                     'c.id',
                     'c.name',
                     'c.image',
+                    'c.status',
                     'content_types.type as content_type_name',
                     'c.created_at',
                     'c.reason_phrase',
@@ -205,13 +221,16 @@ class MicrolearningController extends Controller
                     'c.desc'
                 )
                 ->where('content_types.id', '=', $contentTypeId)
-                ->where('c.name', '=', $name)
+                ->whereRaw('LOWER(c.name) = ?', [strtolower($originalName)]) // Case-insensitive match
                 ->where('c.reason_phrase', '=', 'APPROVED')
+                ->where('c.status', '=', 1)
                 ->first();
 
             if (!$contents) {
                 abort(404, 'Content not found');
             }
+
+            // dd($contents);
 
             return view('viewContent.showMicrolearning', [
                 'contents' => $contents

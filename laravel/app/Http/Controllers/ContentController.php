@@ -240,7 +240,10 @@ class ContentController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ], [
             'state' => ', Please select at least 1 state',
-        ], [
+        ],[
+            'content_name.not_regex' => 'Try not to insert any emojis to the title field.',
+            'content_desc.not_regex' => 'Try not to insert any emojis to the description field.',
+        ],[
             'content_type_id' => 'Content Type'
         ]);
 

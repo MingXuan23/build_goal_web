@@ -98,7 +98,7 @@
                                         <div class="card-body">
                                             <h6 class="card-title fw-semibold">{{ $content->name }}</h6>
                                             <p class="card-text text-muted">{{ $content->content_type_name }}</p>
-                                            <a href="{{ url('/view-content/' . $microLearningSlug . '/' . str_replace(' ', '-', $content->name)) }}"
+                                            <a href="{{ url('/view-content/' . $microLearningSlug . '/' . str_replace(' ', '~', $content->name)) }}"
                                                 class="btn btn-primary">
                                                 Read More
                                             </a>

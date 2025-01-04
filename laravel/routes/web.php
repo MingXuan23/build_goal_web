@@ -274,9 +274,9 @@ Route::prefix('gpt-payment')->middleware(['auth', 'role:1|2|3'])->group(function
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Route::get('/microlearning/upload', [MicrolearningController::class, 'upload']);
-Route::get('/microlearning', [MicrolearningController::class, 'index']);
-Route::get('/content/{id}', [MicrolearningController::class, 'show']);
+// Route::get('/microlearning/upload', [MicrolearningController::class, 'upload']);
+// Route::get('/microlearning', [MicrolearningController::class, 'index']);
+// Route::get('/content/{id}', [MicrolearningController::class, 'show']);
 // Route::get('/view-microlearning', [MicrolearningController::class, 'showMicrolearning'])->name('showMicrolearning');
 // Route::get('/view-microlearning/{id}', [MicrolearningController::class, 'showMicrolearningDetail'])->name('showMicrolearningDetail');
 
