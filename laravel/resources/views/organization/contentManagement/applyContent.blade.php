@@ -424,12 +424,14 @@
         $(document).ready(function() {
             $('#generate-suggestions').on('click', function() {
                 const contentName = $('#contentName').val();
+                const contentTypeId = $('#content_types').val();
 
-                if (!contentName) {
+                // Validasi bahwa kedua field telah diisi
+                if (!contentName || !contentTypeId) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Content Name is required',
-                        text: 'Please provide a Content Name to generate suggestions.',
+                        title: 'Content Name  and Content Type is required',
+                        text: 'Please provide a Content Name and Content Type to generate suggestions.',
                     });
                     return;
                 }
@@ -448,18 +450,12 @@
                     method: 'POST',
                     data: {
                         content_name: contentName,
+                        content_type_id: contentTypeId, // Sertakan Content Type
                         _token: '{{ csrf_token() }}',
                     },
                     success: function(response) {
                         Swal.close();
                         if (response.status === 'success') {
-                            // $('#contentDescription').val(response.description);
-
-                            //  Swal.fire({
-                            //      icon: 'success',
-                            //      title: 'Description Generated',
-                            //      text: 'The description has been successfully generated.',
-                            //  });
                             displayResponseInTextarea(response.description,
                                 'contentDescription');
                         } else {
@@ -483,4 +479,5 @@
             });
         });
     </script>
+
 @endsection

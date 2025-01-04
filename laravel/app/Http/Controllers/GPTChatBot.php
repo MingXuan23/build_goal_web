@@ -376,14 +376,17 @@ class GPTChatBot extends Controller
 
     public function generateDescription(Request $request)
     {
+        $model = DB::table('gpt_table')->where('status', 1)->where('id', 1)->first();
+        $contentName = $request->input('content_name');
         try {
             $request->validate([
                 'content_name' => 'required|string|max:240',
+                'content_type_id' => 'required|exists:content_types,id',
             ]);
 
-            $contentName = $request->input('content_name');
             $apiKey = env('OPENAI_API_KEY');
-            $model = DB::table('gpt_table')->where('status', 1)->where('id', 1)->first();
+        
+            $content_type_name = DB::table('content_types')->where('id', $request->content_type_id)->select('type')->first();
 
             if (!$model) {
                 DB::table('gpt_log')->insert([
@@ -425,7 +428,7 @@ class GPTChatBot extends Controller
                 'messages' => [
                     [
                         'role' => 'system',
-                        'content' => "You are a content generator. Create a detailed and professional description for the content name provided. Give the word not more than {$maxTokens} tokens."
+                        'content' => "You are a content generator. Create a detailed and professional description for the content name provided for the content type {$content_type_name->type}. Give the word not more than {$maxTokens} tokens. Give answers related to the name of the content that has been given only. Directly give the description without sentences like in 'Here is a professional description for the content name'."
                     ],
                     ['role' => 'user', 'content' => $contentName],
                 ],
@@ -529,13 +532,15 @@ class GPTChatBot extends Controller
     }
     public function generateDescriptionGroq(Request $request)
     {
+        $model = DB::table('gpt_table')->where('status', 1)->where('id', 2)->first();
+        $contentName = $request->input('content_name');
         try {
             $request->validate([
                 'content_name' => 'required|string|max:240',
+                'content_type_id' => 'required|exists:content_types,id',
             ]);
 
-            $contentName = $request->input('content_name');
-            $model = DB::table('gpt_table')->where('status', 1)->where('id', 2)->first();
+            $content_type_name = DB::table('content_types')->where('id', $request->content_type_id)->select('type')->first();
 
             if (!$model) {
                 DB::table('gpt_log')->insert([
@@ -579,7 +584,7 @@ class GPTChatBot extends Controller
                 'messages' => [
                     [
                         'role' => 'system',
-                        'content' => "You are a content generator. Create a detailed and professional description for the content name provided. Give the word not more than {$maxTokens} tokens. Give answers related to the name of the content that has been given only. Directly give the description without sentences like in 'Here is a professional description for the content name'."
+                        'content' => "You are a content generator. Create a detailed and professional description for the content name provided for the content type {$content_type_name->type}. Give the word not more than {$maxTokens} tokens. Give answers related to the name of the content that has been given only. Directly give the description without sentences like in 'Here is a professional description for the content name'."
                     ],
                     ['role' => 'user', 'content' => $contentName],
                 ],
@@ -736,7 +741,7 @@ class GPTChatBot extends Controller
                 'messages' => [
                     [
                         'role' => 'system',
-                        'content' => "You are a content generator. Create a detailed and professional description for the content name provided. Give the word not more than {$maxTokens} tokens. Give answers related to the name of the content that has been given only. Directly give the description without sentences like in 'Here is a professional description for the content name'."
+                        'content' => "You are a content generator. Create a detailed and professional description for the content name provided for the content type Micro Learning Resource. Give the word not more than {$maxTokens} tokens. Give answers related to the name of the content that has been given only. Directly give the description without sentences like in 'Here is a professional description for the content name'."
                     ],
                     ['role' => 'user', 'content' => $contentName],
                 ],
@@ -892,7 +897,7 @@ class GPTChatBot extends Controller
                 'messages' => [
                     [
                         'role' => 'system',
-                        'content' => "You are a content generator. Create a detailed and professional description for the content name provided. Give the word not more than {$maxTokens} tokens."
+                        'content' => "You are a content generator. Create a detailed and professional description for the content name provided for the content type Micro Learning Resource. Give the word not more than {$maxTokens} tokens. Give answers related to the name of the content that has been given only. Directly give the description without sentences like in 'Here is a professional description for the content name'."
                     ],
                     ['role' => 'user', 'content' => $contentName],
                 ],
