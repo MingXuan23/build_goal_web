@@ -177,6 +177,7 @@ class MicrolearningController extends Controller
         {
             // Convert slug back to content name with spaces
             $name = str_replace('-', ' ', $name);
+            // dd($name);
             $microLearningSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 2)->value('type'));
             // Fetch the content type ID for 'MicroLearning' (or similar)
             $contentTypeId = DB::table('content_types')

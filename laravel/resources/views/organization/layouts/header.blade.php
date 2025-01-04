@@ -61,6 +61,13 @@
                 </a>
 
             </div>
+            <div class="header-element header-fullscreen">
+                <!-- Start::header-link -->
+                <a href="/" href="javascript:void(0);" class="header-link">
+                    <i class="bx bxs-home header-link-icon"></i>
+                </a>
+                <!-- End::header-link -->
+            </div>
             {{-- @php
                 // Data peran
                 $rolesMap = [
@@ -159,8 +166,7 @@
                     $selectedRole = 1;
                 } elseif (str_contains($currentUrl, '/content-creator') && in_array(3, $userRoles)) {
                     $selectedRole = 3;
-                }
-                elseif (str_contains($currentUrl, '/mobile-user') && in_array(5, $userRoles)) {
+                } elseif (str_contains($currentUrl, '/mobile-user') && in_array(5, $userRoles)) {
                     $selectedRole = 5;
                 }
             @endphp
@@ -306,7 +312,8 @@
                                 class="rounded-circle">
                         </div>
                         <div class="d-sm-block d-none">
-                            <p class="fw-bold mb-0 lh-1">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</p>
+                            <p class="fw-bold mb-0 lh-1">
+                                {{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</p>
                             <span class="op-7 fw-semibold d-block fs-11">Organization</span>
                         </div>
                     </div>
