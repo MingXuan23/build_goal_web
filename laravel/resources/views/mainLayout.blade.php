@@ -29,6 +29,11 @@
 
     <!-- SwiperJS Css -->
     <link rel="stylesheet" href="{{ asset('assets/libs/swiper/swiper-bundle.min.css') }}">
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script> --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.0/ScrollTrigger.min.js"></script>
+
+
 
     <!-- Color Picker Css -->
     <link rel="stylesheet" href="{{ asset('assets/libs/flatpickr/flatpickr.min.css') }}">
@@ -168,7 +173,7 @@
                         <ul class="main-menu">
                             <!-- Start::slide -->
                             <li class="slide">
-                                <a class="side-menu__item" href="/#home">
+                                <a class="side-menu__item" href="/">
                                     <span class="side-menu__label text-primary fw-bold">Home</span>
                                 </a>
                             </li>
@@ -221,7 +226,7 @@
                                         {{-- Admin --}}
                                         <div class="side-menu__item">
                                             <span
-                                            class="side-menu__label me-2 fw-bold text-primary">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
+                                                class="side-menu__label me-2 fw-bold text-primary">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
                                             <a href="/admin/dashboard" class="btn btn-primary px-3 py-2">
                                                 Admin Dashboard
                                             </a>
@@ -230,7 +235,7 @@
                                         {{-- Organization --}}
                                         <div class="side-menu__item">
                                             <span
-                                            class="side-menu__label me-2 fw-bold">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
+                                                class="side-menu__label me-2 fw-bold">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
                                             <a href="/organization/dashboard" class="btn btn-primary px-3 py-2">
                                                 Organization Dashboard
                                             </a>
@@ -239,7 +244,7 @@
                                         {{-- Content Creator --}}
                                         <div class="side-menu__item">
                                             <span
-                                            class="side-menu__label me-2 fw-bold">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
+                                                class="side-menu__label me-2 fw-bold">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
                                             <a href="/content-creator/dashboard" class="btn btn-primary px-3 py-2">
                                                 Content Creator Dashboard
                                             </a>

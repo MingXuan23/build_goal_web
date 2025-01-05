@@ -36,9 +36,13 @@
                             </div>
                         </div>
                         <div class="col-xxl-5 col-xl-5 col-lg-5 col-md-4 mt-2">
-                            <div class="text-end ">
-                                <img src="/assets/images/landing-page/logo-depan-3.png" alt="" style="width: 410px;">
+                            <div class="col-xxl-5 col-xl-5 col-lg-5 col-md-4 mt-2">
+                                <div class="text-end">
+                                    <img id="animated-image" src="/assets/images/landing-page/logo-depan-3.png"
+                                        alt="" style="width: 410px;">
+                                </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -109,18 +113,6 @@
                                     </p>
                                 </div>
                             </div>
-
-                            {{-- <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 mb-3">
-                                <div class="p-3 text-center rounded-2 bg-white border">
-                                    <span class="mb-3 avatar avatar-lg avatar-rounded bg-primary-transparent">
-                                        <i class='fs-24 bx bx-edit'></i>
-                                    </span>
-                                    <h3 class="fw-semibold mb-0 text-dark">500+</h3>
-                                    <p class="mb-1 fs-14 op-7 text-muted ">
-                                        Content Edits Made Today
-                                    </p>
-                                </div>
-                            </div> --}}
 
                             <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 mb-3">
                                 <div class="p-3 text-center rounded-2 bg-white border">
@@ -218,12 +210,188 @@
         <!-- End:: Section-11 -->
 
         <div class="text-center landing-main-footer py-3 bg-light">
-            <span class="text-dark  mb-0">All
+            <span class="text-dark fw-bold mb-0">All
                 rights
-                reserved Copyright © <span id="year">2024</span> xBug - Protected with Advanced Security
+                reserved Copyright © <span id="year">2025</span> xBug - Protected with Advanced Security
             </span>
 
         </div>
 
     </div>
+    <script>
+        window.onload = function() {
+            // Animasi untuk elemen utama ketika halaman dimuat
+
+
+            gsap.from(".text-primary", {
+                duration: 1.5,
+                opacity: 0,
+                y: 50,
+                ease: "power4.out",
+                delay: 0.5
+            });
+
+            gsap.from(".landing-section-heading", {
+                opacity: 0,
+                y: -30,
+                duration: 1,
+                ease: "power3.out",
+            });
+
+            // Animasi untuk h3 (judul utama)
+            gsap.from("h3", {
+                opacity: 0,
+                y: 30,
+                duration: 1.2,
+                delay: 0.3, // Delay sedikit setelah heading pertama muncul
+                ease: "power3.out",
+            });
+
+            // Animasi untuk paragraf dengan deskripsi (div .col-xl-7)
+            gsap.from(".col-xl-7 p", {
+                opacity: 0,
+                y: 30,
+                duration: 1.4,
+                delay: 0.6, // Delay lebih lama setelah judul utama
+                ease: "power3.out",
+            });
+
+            // gsap.from(".landing-banner h1", {
+            //     duration: 1.5,
+            //     opacity: 0,
+            //     y: 50,
+            //     ease: "power4.out",
+            //     delay: 0.7
+            // });
+
+            // gsap.from(".landing-banner .fs-16", {
+            //     duration: 1.5,
+            //     opacity: 0,
+            //     y: 50,
+            //     ease: "power4.out",
+            //     delay: 1.2
+            // });
+
+            gsap.from("#animated-image", {
+                duration: 1.5,
+                opacity: 0,
+                scale: 0.5,
+                ease: "power4.out",
+                delay: 1.7
+            });
+
+            // // Animasi untuk setiap blok statistik
+            // gsap.from(".statistics .card", {
+            //     duration: 1.5,
+            //     opacity: 0,
+            //     y: 50,
+            //     stagger: 0.2, // Stagger untuk animasi berurutan
+            //     ease: "power4.out",
+            //     delay: 2.2
+            // });
+
+            // Animasi untuk bahagian tentang
+            gsap.from(".about-section h3", {
+                duration: 1.5,
+                opacity: 0,
+                y: 50,
+                ease: "power4.out",
+                delay: 2.7
+            });
+
+            gsap.from(".about-section p", {
+                duration: 1.5,
+                opacity: 0,
+                y: 50,
+                ease: "power4.out",
+                delay: 3.1
+            });
+
+            gsap.from(".about-section .d-flex", {
+                duration: 1.5,
+                opacity: 0,
+                y: 50,
+                stagger: 0.3,
+                ease: "power4.out",
+                delay: 3.6
+            });
+
+            gsap.from("#about p.fs-15", {
+                duration: 1.5,
+                opacity: 0,
+                y: 50,
+                ease: "power4.out",
+                scrollTrigger: {
+                    trigger: "#about p.fs-15",
+                    start: "top 80%",
+                    toggleActions: "play none none none",
+                }
+            });
+
+            gsap.from(".landing-banner .d-flex", {
+                duration: 1.5,
+                opacity: 0,
+                y: 50,
+                ease: "power4.out",
+                scrollTrigger: {
+                    trigger: ".landing-banner .d-flex",
+                    start: "top 80%",
+                    toggleActions: "play none none none",
+                },
+                delay: 1.2
+            });
+
+
+            gsap.from(".text-muted", {
+                opacity: 0, // Mulai dengan opacity 0 (sembunyi)
+                y: 30, // Mulai dari posisi lebih bawah (30px)
+                duration: 1, // Durasi 1 detik untuk transisi yang halus
+                delay: 0.3, // Delay 0.3 detik untuk memberi ruang agar elemen lain muncul dulu
+                ease: "power4.out" // Easing halus saat animasi selesai
+            });
+
+            gsap.from(".customize-image img", {
+                opacity: 0, // Mulai dengan opacity 0 (gambar tersembunyi)
+                x: -100, // Mulai dari posisi 100px ke kiri (slide-in dari kiri)
+                scale: 0.9, // Mulai dengan skala 0.9 (sedikit lebih kecil)
+                duration: 1, // Durasi animasi 1 detik
+                delay: 0.5, // Delay sedikit untuk memberi waktu setelah elemen lain muncul
+                ease: "power4.out" // Easing halus saat animasi selesai
+            });
+        };
+
+
+
+
+        // Intersection Observer untuk mengesan imej dalam viewport
+        const image = document.getElementById('animated-image');
+
+        // Buat instance Intersection Observer
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Apabila imej berada dalam paparan
+                    gsap.to(image, {
+                        duration: 1.5,
+                        opacity: 1,
+                        scale: 1,
+                        ease: "power4.out",
+                    });
+                } else {
+                    // Apabila imej keluar dari paparan
+                    gsap.to(image, {
+                        duration: 1,
+                        opacity: 0,
+                        scale: 0.5,
+                        ease: "power4.out",
+                    });
+                }
+            });
+        }, {
+            threshold: 0.5 // Membolehkan imej muncul apabila sekurang-kurangnya 50% imej berada dalam viewport
+        });
+
+        // Mula memerhati imej
+        observer.observe(image);
+    </script>
 @endsection

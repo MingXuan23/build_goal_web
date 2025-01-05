@@ -589,7 +589,7 @@
                             <span class="mb-0  text-center"><span class="text-muted">All
                                     rights
                                     reserved Copyright © </span><span id="year"
-                                    class="text-muted">2024</span><span class="fw-bold"> xBug</span> <span
+                                    class="text-muted">2025</span><span class="fw-bold"> xBug</span> <span
                                     class="text-muted">Protected with Advanced
                                     Security</span>
                             </span>

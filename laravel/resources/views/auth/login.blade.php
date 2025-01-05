@@ -188,7 +188,7 @@
                             <center>
                                 <span class="text-muted mb-0">All
                                     rights
-                                    reserved Copyright © <span id="year">2024</span> xBug. Protected with
+                                    reserved Copyright © <span id="year">2025</span> xBug. Protected with
                                     Advanced Security
                                 </span>
                             </center>

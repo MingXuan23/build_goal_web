@@ -151,9 +151,9 @@
 
         <!-- End:: Section-11 -->
         <div class="text-center landing-main-footer py-3 bg-light mt-4">
-            <span class="text-dark  mb-0">All
+            <span class="text-dark fw-bold mb-0">All
                 rights
-                reserved Copyright © <span id="year">2024</span> xBug - Protected with Advanced Security
+                reserved Copyright © <span id="year">2025</span> xBug - Protected with Advanced Security
             </span>
         </div>
     </div>

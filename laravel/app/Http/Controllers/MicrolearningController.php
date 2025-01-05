@@ -69,6 +69,7 @@ class MicrolearningController extends Controller
     {
         $countContent = DB::table('contents')
         ->where('reason_phrase', '=', 'APPROVED')
+        ->where('status', '=', 1)
         ->count();
         $courseAndTrainingSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 1)->value('type'));
         $microLearningSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 2)->value('type'));

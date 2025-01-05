@@ -32,7 +32,7 @@
                                             <div class="px-1 py-2 bg-success op-3"></div>
                                             <div class="p-4">
                                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                                    <div class="fs-18 fw-semibold">Premium Package</div>
+                                                    <div class="fs-18 fw-semibold">Basic Package</div>
                                                     <div>
                                                         <span class="badge bg-success-transparent">For Small
                                                             Campaigns</span>
@@ -186,9 +186,46 @@
         </div>
 
         <div class="text-center landing-main-footer py-3 bg-white">
-            <span class="text-dark mb-0">All rights reserved Copyright © <span id="year">2024</span> xBug - Protected
+            <span class="text-dark fw-bold mb-0">All rights reserved Copyright © <span id="year">2025</span> xBug -
+                Protected
                 with Advanced Security</span>
         </div>
 
     </div>
+
+    <script>
+        gsap.from(".text-primary", {
+            duration: 1.5,
+            opacity: 0,
+            y: 50,
+            ease: "power4.out",
+            delay: 0.5
+        });
+
+        gsap.from("h5", {
+            opacity: 0, // Mulai dari transparan
+            y: 30, // Geser sedikit ke bawah
+            duration: 1.2, // Durasi animasi
+            delay: 0.3, // Delay setelah elemen lain muncul
+            ease: "power3.out", // Jenis easing untuk transisi halus
+        });
+
+        // Animasi untuk paragraf p
+        gsap.from("p", {
+            opacity: 0, // Mulai dari transparan
+            y: 20, // Geser sedikit ke bawah
+            duration: 1.2, // Durasi animasi
+            delay: 0.6, // Delay setelah judul muncul
+            ease: "power3.out", // Jenis easing
+        });
+
+        gsap.from(".custom-card", {
+            opacity: 0, // Mulai dengan transparan
+            y: 30, // Pergeseran ke bawah
+            scale: 0.9, // Mulai dengan sedikit lebih kecil
+            duration: 1.8, // Durasi animasi 1 detik
+            delay: 0.3, // Jeda sedikit setelah halaman dimuat
+            ease: "power3.out", // Easing halus
+        });
+    </script>
 @endsection
