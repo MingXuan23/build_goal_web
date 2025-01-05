@@ -19,7 +19,7 @@
             <!-- Page Header Close -->
             <!-- Start::row 1 -->
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-xl-6 col-lg-6 col-md-12">
                     <div class="row">
                         <div class="col-xl-4 col-lg-4 col-md-4">
                             <div class="card custom-card">
@@ -221,7 +221,7 @@
                     </div>
                 </div>
 
-                <div class="col-xl-6 col-lg-6 col-md-6">
+                <div class="col-xl-6 col-lg-6 col-md-12">
                     <div class="card custom-card overflow-hidden">
                         <div class="card-body p-0">
                             <div class="p-2">
@@ -260,8 +260,7 @@
                 </div>
 
                 <!-- Users by Role Chart -->
-                <div class="col-xl-6 col-lg-6 col-md-6">
-
+                <div class="col-xl-6 col-lg-6 col-md-12">
                     <div class="card custom-card overflow-hidden">
                         <div class="card-body p-0">
                             <div class="p-2">

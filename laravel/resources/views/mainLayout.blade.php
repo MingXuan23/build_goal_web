@@ -184,11 +184,11 @@
                                     <span class="side-menu__label">Content</span>
                                 </a>
                             </li>
-                            <li class="slide">
+                            {{-- <li class="slide">
                                 <a href="/jobstreet" class="side-menu__item">
                                     <span class="side-menu__label">Discover</span>
                                 </a>
-                            </li>
+                            </li> --}}
                             <!-- End::slide -->
                             <!-- Start::slide -->
 
@@ -203,29 +203,37 @@
                         <div class="d-lg-flex d-none">
                             <div class="btn-list d-lg-flex d-none mt-lg-2 mt-xl-0 mt-0">
 
-
-
                                 @if (Auth::check())
                                     @php
                                         $roles = json_decode(Auth::user()->role, true); // Decode JSON string to array
                                     @endphp
-                                    <span
-                                        class="mt-2 me-2 fw-bold text-primary">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
                                     @if (in_array(1, $roles))
                                         {{-- Admin --}}
-                                        <a href="/admin/dashboard" class="btn btn-wave btn-primary">
-                                            Admin Dashboard
-                                        </a>
+                                        <div class="side-menu__item">
+                                            <span
+                                            class="side-menu__label me-2 fw-bold">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
+                                            <a href="/admin/dashboard" class="btn btn-primary px-3 py-2">
+                                                Admin Dashboard
+                                            </a>
+                                        </div>
                                     @elseif (in_array(2, $roles))
                                         {{-- Organization --}}
-                                        <a href="/organization/dashboard" class="btn btn-wave btn-primary">
-                                            Organization Dashboard
-                                        </a>
+                                        <div class="side-menu__item">
+                                            <span
+                                            class="side-menu__label me-2 fw-bold">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
+                                            <a href="/organization/dashboard" class="btn btn-primary px-3 py-2">
+                                                Organization Dashboard
+                                            </a>
+                                        </div>
                                     @elseif (in_array(3, $roles))
                                         {{-- Content Creator --}}
-                                        <a href="/creator/dashboard" class="btn btn-wave btn-primary">
-                                            Content Creator Dashboard
-                                        </a>
+                                        <div class="side-menu__item">
+                                            <span
+                                            class="side-menu__label me-2 fw-bold">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
+                                            <a href="/content-creator/dashboard" class="btn btn-primary px-3 py-2">
+                                                Content Creator Dashboard
+                                            </a>
+                                        </div>
                                     @else
                                         <a href="/login" class="btn btn-wave btn-primary">
                                             Sign In
