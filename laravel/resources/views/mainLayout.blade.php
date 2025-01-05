@@ -227,31 +227,34 @@
                                     @if (in_array(1, $roles))
                                         {{-- Admin --}}
                                         <div class="side-menu__item">
-                                            <a href="/admin/dashboard" class="btn btn-primary px-3 py-2">
+                                            <a href="/admin/dashboard" class="btn btn-primary px-3 py-2"
+                                                id="dashboard-btn">
                                                 Admin Dashboard
                                             </a>
                                         </div>
                                     @elseif (in_array(2, $roles))
                                         {{-- Organization --}}
                                         <div class="side-menu__item">
-                                            <a href="/organization/dashboard" class="btn btn-primary px-3 py-2">
+                                            <a href="/organization/dashboard" class="btn btn-primary px-3 py-2"
+                                                id="dashboard-btn">
                                                 Organization Dashboard
                                             </a>
                                         </div>
                                     @elseif (in_array(3, $roles))
                                         {{-- Content Creator --}}
                                         <div class="side-menu__item">
-                                            <a href="/content-creator/dashboard" class="btn btn-primary px-3 py-2">
+                                            <a href="/content-creator/dashboard" class="btn btn-primary px-3 py-2"
+                                                id="dashboard-btn">
                                                 Content Creator Dashboard
                                             </a>
                                         </div>
                                     @else
-                                        <a href="/login" class="btn btn-wave btn-primary">
+                                        <a href="/login" class="btn btn-wave btn-primary" id="dashboard-btn">
                                             Sign In
                                         </a>
                                     @endif
                                 @else
-                                    <a href="/login" class="btn btn-wave btn-primary">
+                                    <a href="/login" class="btn btn-wave btn-primary" id="dashboard-btn">
                                         Sign In
                                     </a>
                                 @endif
@@ -470,6 +473,14 @@
             duration: 0.8,
             stagger: 0.1,
             delay: 1.3
+        });
+
+        gsap.from("#dashboard-btn", {
+            opacity: 0,
+            x: 100,
+            duration: 1,
+            stagger: 0.3,
+            delay: 0.7 // Menggunakan easing smooth untuk animasi
         });
 
         // Animasi untuk tahun (footer copyright)
