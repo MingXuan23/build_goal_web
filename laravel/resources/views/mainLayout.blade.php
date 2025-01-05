@@ -235,7 +235,7 @@
                                         {{-- Organization --}}
                                         <div class="side-menu__item">
                                             <span
-                                                class="side-menu__label me-2 fw-bold">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
+                                                class="side-menu__label me-2 fw-bold text-primary">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
                                             <a href="/organization/dashboard" class="btn btn-primary px-3 py-2">
                                                 Organization Dashboard
                                             </a>
@@ -244,7 +244,7 @@
                                         {{-- Content Creator --}}
                                         <div class="side-menu__item">
                                             <span
-                                                class="side-menu__label me-2 fw-bold">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
+                                                class="side-menu__label me-2 fw-bold text-primary">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
                                             <a href="/content-creator/dashboard" class="btn btn-primary px-3 py-2">
                                                 Content Creator Dashboard
                                             </a>
