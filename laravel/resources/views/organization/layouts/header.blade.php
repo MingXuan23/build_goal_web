@@ -51,10 +51,10 @@
                         </div>
                     @else
                         <div class="d-flex align-items-center justify-content-center">
-                            <div class="bg-success-transparent rounded d-flex align-items-center p-2">
-                                <i class="bi bi-patch-check-fill text-success fs-5 me-2"></i>
+                            <div class="rounded d-flex align-items-center p-2">
+                                <i class="ri-checkbox-circle-line text-success fs-5 me-1"></i>
                                 <!-- Added margin to separate icon and text -->
-                                <span class="fw-bold">e-KYC Verified</span>
+                                <span class="fw-bold text-success">e-KYC Verified</span>
                             </div>
                         </div>
                     @endif

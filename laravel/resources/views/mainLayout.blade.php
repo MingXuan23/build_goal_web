@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" data-nav-layout="horizontal" data-nav-style="menu-click" data-menu-position="fixed"
-    data-theme-mode="color" style="--primary-rgb: 17,28,67;">
+    data-theme-mode="color" style="--primary-rgb: 0,25,84;">
 
 <head>
 
@@ -169,19 +169,29 @@
                             <!-- Start::slide -->
                             <li class="slide">
                                 <a class="side-menu__item" href="/#home">
-                                    <span class="side-menu__label">Home</span>
+                                    <span class="side-menu__label text-primary fw-bold">Home</span>
                                 </a>
                             </li>
                             <!-- End::slide -->
                             <!-- Start::slide -->
                             <li class="slide">
                                 <a href="/#about" class="side-menu__item">
-                                    <span class="side-menu__label">About</span>
+                                    <span class="side-menu__label text-primary fw-bold">About</span>
                                 </a>
                             </li>
                             <li class="slide">
                                 <a href="/view-content" class="side-menu__item">
-                                    <span class="side-menu__label">Content</span>
+                                    <span class="side-menu__label text-primary fw-bold">Content</span>
+                                </a>
+                            </li>
+                            <li class="slide">
+                                <a href="/price" class="side-menu__item">
+                                    <span class="side-menu__label text-primary fw-bold">Price</span>
+                                </a>
+                            </li>
+                            <li class="slide">
+                                <a href="/faq" class="side-menu__item">
+                                    <span class="side-menu__label text-primary fw-bold">Faq's</span>
                                 </a>
                             </li>
                             {{-- <li class="slide">
@@ -211,7 +221,7 @@
                                         {{-- Admin --}}
                                         <div class="side-menu__item">
                                             <span
-                                            class="side-menu__label me-2 fw-bold">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
+                                            class="side-menu__label me-2 fw-bold text-primary">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
                                             <a href="/admin/dashboard" class="btn btn-primary px-3 py-2">
                                                 Admin Dashboard
                                             </a>

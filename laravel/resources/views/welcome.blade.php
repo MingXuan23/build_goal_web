@@ -4,28 +4,46 @@
 
         <!-- Start:: Section-1 -->
         <div class="landing-banner" id="home">
-            <section class="section">
+            <section class="section bg-light text-dark">
                 <div class="container main-banner-container pb-lg-0">
                     <div class="row">
                         <div class="col-xxl-7 col-xl-7 col-lg-7 col-md-8 mt-5">
-                            <div class="py-lg-5">
-                                <p class="landing-banner-heading mb-3">Manage Your Financial Future</span></p>
-                                <div class="fs-16 mb-3 text-fixed-white op-7">We are dedicated to empowering users
-                                    with comprehensive financial management tools, reinforcing our commitment to
-                                    making personal finance accessible and efficient. Your trust fuels our drive to
-                                    continuously enhance and simplify financial processes, providing a secure,
-                                    reliable, and user-friendly experience for all.
+                            <div class="p-0">
+                                <h1 class="text-primary fw-bold">🚀 Manage Your Financial</h1>
+                                <div class="fs-16 mb-3 text-primary op-9 mb-4">
+                                    xBUG – Your Catalyst for Growth & Goals
+                                    xBUG is the synergy of two powerful tools:
+                                    BUild Growth (BUG) × BUild Goal (BUG) = xBUG✔️ <br><br>
+                                    This e<span class="fw-bold text-primary">X</span>cellent combination empowers
+                                    individuals to master
+                                    their finances and enables organizers to create meaningful events. By blending financial
+                                    management with strategic goal-setting, xBUG unlocks e<span
+                                        class="fw-bold text-primary">X</span>ponential possibilities for growth,
+                                    collaboration, and outstanding achievement for both
+                                    individuals and organizations.
+
+                                </div>
+                                <!-- Add App Info Section -->
+                                <div class="d-flex align-items-center mt-4">
+                                    <span class="fs-18 fw-bold text-primary me-3">Download the xBug App</span>
+                                    <!-- Google Play Logo -->
+                                    <a href="https://play.google.com/store/apps/details?id=com.xbug.app"
+                                        class="bg-white rounded" target="_blank">
+                                        <img src="/assets/images/gp.png" alt="Google Play" class="img-fluid"
+                                            style="width: 180px;">
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xxl-5 col-xl-5 col-lg-5 col-md-4">
-                            <div class="text-end landing-main-image landing-heading-img">
-                                <img src="/assets/images/landing-page/3.png" alt="" class="img-fluid">
+                        <div class="col-xxl-5 col-xl-5 col-lg-5 col-md-4 mt-2">
+                            <div class="text-end ">
+                                <img src="/assets/images/landing-page/logo-depan-3.png" alt="" style="width: 410px;">
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
+
         </div>
         <!-- End:: Section-1 -->
 
@@ -33,7 +51,7 @@
         <section class="section section-bg " id="statistics">
             <div class="container text-center position-relative">
                 <p class="fs-12 fw-semibold text-success mb-1"><span class="landing-section-heading">STATISTICS</span></p>
-                <h3 class="fw-semibold mb-2">More than 10+ financial transactions managed daily.</h3>
+                <h3 class="fw-semibold mb-2">More than 10+ financial transactions record managed daily.</h3>
                 <div class="row justify-content-center">
                     <div class="col-xl-7">
                         <p class="text-muted fs-15 mb-5 fw-normal">Empower your financial future with our
@@ -66,6 +84,7 @@
                                     </p>
                                 </div>
                             </div>
+
                             <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 mb-3">
                                 <div class="p-3 text-center rounded-2 bg-white border">
                                     <span class="mb-3 avatar avatar-lg avatar-rounded bg-primary-transparent">
@@ -77,7 +96,45 @@
                                     </p>
                                 </div>
                             </div>
+
+                            <!-- Additional Content Blocks -->
+                            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 mb-3">
+                                <div class="p-3 text-center rounded-2 bg-white border">
+                                    <span class="mb-3 avatar avatar-lg avatar-rounded bg-primary-transparent">
+                                        <i class='fs-24 bx bx-globe'></i>
+                                    </span>
+                                    <h3 class="fw-semibold mb-0 text-dark">200+</h3>
+                                    <p class="mb-1 fs-14 op-7 text-muted ">
+                                        Active Web Content Published
+                                    </p>
+                                </div>
+                            </div>
+
+                            {{-- <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 mb-3">
+                                <div class="p-3 text-center rounded-2 bg-white border">
+                                    <span class="mb-3 avatar avatar-lg avatar-rounded bg-primary-transparent">
+                                        <i class='fs-24 bx bx-edit'></i>
+                                    </span>
+                                    <h3 class="fw-semibold mb-0 text-dark">500+</h3>
+                                    <p class="mb-1 fs-14 op-7 text-muted ">
+                                        Content Edits Made Today
+                                    </p>
+                                </div>
+                            </div> --}}
+
+                            <div class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12 mb-3">
+                                <div class="p-3 text-center rounded-2 bg-white border">
+                                    <span class="mb-3 avatar avatar-lg avatar-rounded bg-primary-transparent">
+                                        <i class='fs-24 bx bx-line-chart'></i>
+                                    </span>
+                                    <h3 class="fw-semibold mb-0 text-dark">120%</h3>
+                                    <p class="mb-1 fs-14 op-7 text-muted ">
+                                        Content Engagement Growth
+                                    </p>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -100,7 +157,7 @@
                 <div class="row justify-content-between align-items-center mx-0">
                     <div class="col-xxl-5 col-xl-5 col-lg-5 customize-image text-center">
                         <div class="text-lg-end">
-                            <img src="/assets/images/landing-page/1.png" alt="" class="img-fluid">
+                            <img src="/assets/images/landing-page/logo-depan-5.png" alt="" class="img-fluid">
                         </div>
                     </div>
                     <div class="col-xxl-6 col-xl-6 col-lg-6 pt-5 pb-0 px-lg-2 px-5 text-start">
@@ -138,11 +195,13 @@
                                         <i class='bx bxs-badge-check text-primary fs-18'></i>
                                     </span>
                                     <div class="ms-2">
-                                        <h6 class="fw-semibold mb-0">DNS Enumeration</h6>
-                                        <p class=" text-muted">Uncover hidden information about your domain with
-                                            our powerful DNS enumeration tool. Understand the intricacies of your
-                                            network infrastructure for enhanced security planning.</p>
+                                        <h6 class="fw-semibold mb-0">Start Promoting Your Content</h6>
+                                        <p class="text-muted">Apply your content to the platform effortlessly. Reach a
+                                            wider
+                                            audience and enhance your brand visibility with our easy-to-use tools designed
+                                            to optimize your campaigns and content management.</p>
                                     </div>
+
                                 </div>
                             </div>
 

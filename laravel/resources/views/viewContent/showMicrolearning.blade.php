@@ -2,7 +2,7 @@
 @section('content')
     <div class="main-content landing-main px-0">
         <div class="landing-banner" id="home">
-            <section class="section pb-0">
+            <section class="section pb-0 bg-light">
                 <div class="container" style="padding: 11px">
                     <div class="row justify-content-center text-center">
                         {{-- <div class="col-xxl-7 col-xl-7 col-lg-8">
@@ -25,8 +25,8 @@
                 </div>
             </section>
         </div>
-        <div class="container d-flex justify-content-center mt-4">
-            <div class="card custom-card"
+        <div class="container d-flex justify-content-center mt-4 ">
+            <div class="card custom-card bg-white-transparent shadow-xl"
                 style="width: 100%; max-width: 600px; border: 2px solidrgb(0, 0, 0); border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);"">
                 <!-- Card Header -->
                 <div class="card-header justify-content-between m-0">

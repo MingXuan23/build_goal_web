@@ -30,6 +30,20 @@ class AuthController extends Controller
     }
     public function viewLogin()
     {
+        if (Auth::check()) {
+            $roles = json_decode(Auth::user()->role, true);
+
+            if (in_array(1, $roles)) {
+                // Admin
+                return redirect('/admin/dashboard');
+            } elseif (in_array(2, $roles)) {
+                // Organization
+                return redirect('/organization/content-management');
+            } elseif (in_array(3, $roles)) {
+                // Content Creator
+                return redirect('/content-creator/content-management');
+            }
+        }
         return view('auth.login');
     }
     public function viewVerifyUserOrganization()
@@ -256,7 +270,7 @@ class AuthController extends Controller
         $verifyResult = $verifyResponse->json();
 
         // dd($verifyResult);
-        
+
         if (!$verifyResult['success']) {
             return back()->with(['error' => 'Please verify that you are not a robot.']);
         }

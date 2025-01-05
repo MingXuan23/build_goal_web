@@ -40,6 +40,14 @@ Route::get('/', function () {
 
     return view('welcome');
 });
+Route::get('/faq', function () {
+
+    return view('faq');
+});
+Route::get('/price', function () {
+
+    return view('price');
+});
 
 Route::get('/jobs', [JobScraperController::class, 'index']);
 Route::get('/jobstreet', [JobScraperController::class, 'indexJobStreet']);

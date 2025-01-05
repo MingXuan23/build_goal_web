@@ -2,19 +2,19 @@
 @section('content')
     <div class="main-content landing-main px-0">
         <div class="landing-banner" id="home">
-            <section class="section pb-0">
+            <section class="section pb-0 bg-light">
                 <div class="container main-banner-container">
                     <div class="row justify-content-center text-center">
                         <div class="col-xxl-7 col-xl-7 col-lg-8">
                             <div class="">
                                 @if ($contentTypeId == 1)
-                                    <h6 class="landing-banner-heading mb-3"><span
-                                            class="text-secondary fw-bold">{{ $countContents_CourseTraining }}+
+                                    <h6 class="landing-banner-heading mb-3 text-primary"><span
+                                            class="text-primary fw-bold ">{{ $countContents_CourseTraining }}+
                                         </span>Contents for Course and Training</h6>
-                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-white">Register &amp; get free
+                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-primary">Register &amp; get free
                                         access to create your content and <br>submit your content with few easy
                                         steps.</p>
-                                    <div class="mb-3 custom-form-group">
+                                    <div class="custom-form-group">
                                         <input type="text" class="form-control form-control-lg shadow-sm"
                                             placeholder="your keyword...." aria-label="Recipient's username">
                                         <div class="custom-form-btn bg-transparent">
@@ -23,13 +23,13 @@
                                         </div>
                                     </div>
                                 @elseif($contentTypeId == 2)
-                                    <h6 class="landing-banner-heading mb-3"><span
-                                            class="text-secondary fw-bold">{{ $countContents_MicroLearning }}+
+                                    <h6 class="landing-banner-heading mb-3 text-primary"><span
+                                            class=" fw-bold text-primary">{{ $countContents_MicroLearning }}+
                                         </span>Contents for MicroLearning Resource</h6>
-                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-white">Register &amp; get free
+                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-primary">Register &amp; get free
                                         access to create your content and <br>submit your content with few easy
                                         steps.</p>
-                                    <div class="mb-3 custom-form-group">
+                                    <div class="custom-form-group">
                                         <input type="text" class="form-control form-control-lg shadow-sm"
                                             placeholder="your keyword...." aria-label="Recipient's username">
                                         <div class="custom-form-btn bg-transparent">
@@ -38,13 +38,13 @@
                                         </div>
                                     </div>
                                 @elseif($contentTypeId == 5)
-                                    <h6 class="landing-banner-heading mb-3"><span
-                                            class="text-secondary fw-bold">{{ $countContents_Event }}+
+                                    <h6 class="landing-banner-heading mb-3 text-primary"><span
+                                            class=" fw-bold text-primary">{{ $countContents_Event }}+
                                         </span>Contents for Event</h6>
-                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-white">Register &amp; get free
+                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-primary">Register &amp; get free
                                         access to create your content and <br>submit your content with few easy
                                         steps.</p>
-                                    <div class="mb-3 custom-form-group">
+                                    <div class="custom-form-group">
                                         <input type="text" class="form-control form-control-lg shadow-sm"
                                             placeholder="your keyword...." aria-label="Recipient's username">
                                         <div class="custom-form-btn bg-transparent">
@@ -53,13 +53,13 @@
                                         </div>
                                     </div>
                                 @elseif($contentTypeId == 4)
-                                    <h6 class="landing-banner-heading mb-3"><span
-                                            class="text-secondary fw-bold">{{ $countContents_JobOffer }}+
+                                    <h6 class="landing-banner-heading mb-3 text-primary"><span
+                                            class="text fw-bold text-primary">{{ $countContents_JobOffer }}+
                                         </span>Contents for Job and Offering</h6>
-                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-white">Register &amp; get free
+                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-primary">Register &amp; get free
                                         access to create your content and <br>submit your content with few easy
                                         steps.</p>
-                                    <div class="mb-3 custom-form-group">
+                                    <div class="custom-form-group">
                                         <input type="text" class="form-control form-control-lg shadow-sm"
                                             placeholder="your keyword...." aria-label="Recipient's username">
                                         <div class="custom-form-btn bg-transparent">
@@ -77,15 +77,15 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-8 col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                    <div class="row g-3 mt-4">
+                    <div class="row g-3 mt-2">
                         @foreach ($contents as $content)
                             @if ($contentTypeId == 2)
-                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <div class="card custom-card" style="width: 100%;">
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <div class="card custom-card d-flex h-100 border border-primary-2" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                                         <!-- Display image or fallback -->
                                         @if ($content->image)
                                             <img src="{{ asset('storage/' . $content->image) }}" class="card-img-top"
-                                                alt="{{ $content->name }}"
+                                                {{-- alt="{{ $content->name }}" --}}
                                                 onerror="console.log('Image failed to load:', this.src);"
                                                 style="height: 180px; object-fit: cover;">
                                         @else
