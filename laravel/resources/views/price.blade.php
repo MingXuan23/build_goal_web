@@ -210,14 +210,14 @@
             ease: "power3.out", // Jenis easing untuk transisi halus
         });
 
-        // Animasi untuk paragraf p
-        gsap.from("p", {
-            opacity: 0, // Mulai dari transparan
-            y: 20, // Geser sedikit ke bawah
-            duration: 1.2, // Durasi animasi
-            delay: 0.6, // Delay setelah judul muncul
-            ease: "power3.out", // Jenis easing
-        });
+        // // Animasi untuk paragraf p
+        // gsap.from("p", {
+        //     opacity: 0, // Mulai dari transparan
+        //     y: 20, // Geser sedikit ke bawah
+        //     duration: 1.2, // Durasi animasi
+        //     delay: 0.6, // Delay setelah judul muncul
+        //     ease: "power3.out", // Jenis easing
+        // });
 
         gsap.from(".custom-card", {
             opacity: 0, // Mulai dengan transparan

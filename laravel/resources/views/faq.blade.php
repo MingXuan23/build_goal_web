@@ -268,14 +268,14 @@
             ease: "power3.out", // Easing halus
         });
 
-        // Animasi untuk paragraf p
-        gsap.from("p", {
-            opacity: 0, // Mulai dengan transparan
-            y: 20, // Geser sedikit dari bawah
-            duration: 1, // Durasi animasi 1 detik
-            delay: 0.5, // Delay sedikit setelah judul h4 muncul
-            ease: "power3.out", // Easing halus
-        });
+        // // Animasi untuk paragraf p
+        // gsap.from("p", {
+        //     opacity: 0, // Mulai dengan transparan
+        //     y: 20, // Geser sedikit dari bawah
+        //     duration: 1, // Durasi animasi 1 detik
+        //     delay: 0.5, // Delay sedikit setelah judul h4 muncul
+        //     ease: "power3.out", // Easing halus
+        // });
 
         gsap.from(".custom-card", {
             opacity: 0, // Mulai dengan transparan
