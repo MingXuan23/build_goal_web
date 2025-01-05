@@ -1,3 +1,5 @@
+## xBUG WEB v1.0.0
+## xBUG API v1.0.0
 ## Prerequisites
 
 get the docker at here https://docs.docker.com/get-docker/
