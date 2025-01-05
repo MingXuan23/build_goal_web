@@ -231,13 +231,68 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 p-0">
+                        <div class="card p-3">
+                            <div class="card-body p-0">
+                                <!-- Tombol untuk memilih jenis transaksi -->
+                                <div class="d-flex justify-content-between mb-4">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-3">
+                                                    <div class="input-group">
+                                                        <label for="start_date" class="form-label mt-2 me-2">Start
+                                                            Date:</label>
+                                                        <div class="input-group-text text-muted">
+                                                            <i class="ri-calendar-line"></i>
+                                                        </div>
+                                                        <input type="text" class="form-control" id="start_date"
+                                                            placeholder="Choose start date">
+                                                    </div>
+                                                </div>
 
+                                                <div class="me-3">
+                                                    <div class="input-group">
+                                                        <label for="end_date" class="form-label mt-2 me-2">End
+                                                            Date:</label>
+                                                        <div class="input-group-text text-muted">
+                                                            <i class="ri-calendar-line"></i>
+                                                        </div>
+                                                        <input type="text" class="form-control" id="end_date"
+                                                            placeholder="Choose end date">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <button class="btn btn-primary mx-2 mt-1 btn-sm"
+                                                            id="filterBtn">Filter</button>
+                                                        <button class="btn btn-light mx-2 mt-1 btn-sm"
+                                                            id="viewWeekly">Weekly</button>
+                                                        <button class="btn btn-light mx-2 mt-1 btn-sm"
+                                                            id="viewMonthly">Monthly</button>
+                                                        <button class="btn btn-light mx-2 mt-1 btn-sm"
+                                                            id="viewYearly">Yearly</button>
+                                                    </div>
+                                                </div>
 
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Container untuk grafik -->
+                                <div id="chart-container">
+                                    <canvas id="transactionChart" width="185" height="90"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            @endif
-            <!--End::row-1 -->
         </div>
+        @endif
+        <!--End::row-1 -->
+    </div>
     </div>
     {{-- <script>
         document.getElementById('startButton').addEventListener('click', function() {
@@ -245,10 +300,12 @@
         });
     </script> --}}
     @php
-        $encryptedParams =  Auth::user()->icNo;
+        $encryptedParams = Auth::user()->icNo;
     @endphp
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -274,7 +331,7 @@
             } else {
                 const qrResponse = await fetch('/generate-qrcode');
                 const qrData = await qrResponse.json();
-              
+
 
                 document.getElementById('qrcode').innerHTML = '';
 
@@ -297,6 +354,187 @@
             loadingText.classList.add('d-none');
             StartText.classList.remove('d-none');
             loadingGif.classList.add('d-none');
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            let chartInstance = null;
+
+            // Function to load chart data
+            function loadChartData(viewType = 'Daily', startDate = '', endDate = '') {
+                $.ajax({
+                    url: '/organization/dashboard/transaction-data',
+                    method: 'GET',
+                    data: {
+                        view_type: viewType,
+                        start_date: startDate,
+                        end_date: endDate
+                    },
+                    success: function(response) {
+                        // Data dari server
+                        const labels = response.dates; // X-axis dates
+                        const successData = mapTransactionsToDates(labels, response
+                            .successTransactions);
+                        const pendingData = mapTransactionsToDates(labels, response
+                            .pendingTransactions);
+                        const failedData = mapTransactionsToDates(labels, response.failedTransactions);
+
+                        // Prepare data object for Chart.js
+                        const data = {
+                            labels: labels,
+                            datasets: [{
+                                    label: 'Success Transactions',
+                                    data: successData,
+                                    borderColor: 'rgba(54, 162, 235, 1)', // Blue
+                                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                    fill: false,
+                                    borderWidth: 1.5,
+                                },
+                                {
+                                    label: 'Pending Transactions',
+                                    data: pendingData,
+                                    borderColor: 'rgba(255, 205, 86, 1)', // Yellow
+                                    backgroundColor: 'rgba(255, 205, 86, 0.2)',
+                                    fill: false,
+                                    borderWidth: 1.5,
+                                },
+                                {
+                                    label: 'Failed Transactions',
+                                    data: failedData,
+                                    borderColor: 'rgba(255, 99, 132, 1)', // Red
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    fill: false,
+                                    borderWidth: 1.5,
+                                }
+                            ]
+                        };
+
+                        // Prepare config object for Chart.js
+                        const config = {
+                            type: 'line',
+                            data: data,
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Transaction Overview'
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Dates'
+                                        },
+                                        ticks: {
+                                            autoSkip: true,
+                                            maxRotation: 45,
+                                            minRotation: 45
+                                        }
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,
+                                            text: 'Total Transactions'
+                                        },
+                                        beginAtZero: true,
+                                        ticks: {
+                                            stepSize: 1,
+                                            callback: function(value) {
+                                                return Math.round(value);
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                        };
+
+                        // Render or update chart
+                        if (chartInstance) {
+                            chartInstance.data = data;
+                            chartInstance.options = config.options;
+                            chartInstance.update();
+                        } else {
+                            const ctx = document.getElementById('transactionChart').getContext('2d');
+                            chartInstance = new Chart(ctx, config);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error("Error fetching data:", xhr.responseText);
+                    }
+                });
+            }
+
+            // Function to map transactions to all dates (fill missing dates with 0)
+            function mapTransactionsToDates(allDates, transactions) {
+                const mappedData = {};
+                transactions.forEach(transaction => {
+                    mappedData[transaction.date] = transaction.total_transactions;
+                });
+
+                // Return array of values corresponding to all dates
+                return allDates.map(date => mappedData[date] || 0);
+            }
+
+            // Initialize date pickers
+            flatpickr("#start_date", {
+                dateFormat: "Y-m-d",
+                defaultDate: null
+            });
+
+            flatpickr("#end_date", {
+                dateFormat: "Y-m-d",
+                defaultDate: null
+            });
+
+            // Load initial chart data (all transactions, daily)
+            loadChartData('Daily');
+
+            // Function to handle button styling
+            function setActiveButton(buttonId) {
+                // Reset all buttons to secondary
+                $('#viewWeekly, #viewMonthly, #viewYearly').removeClass('btn-primary').addClass('btn-light');
+
+                // Set clicked button to primary
+                if (buttonId) {
+                    $(`#${buttonId}`).removeClass('btn-light').addClass('btn-primary');
+                }
+            }
+
+            // Handle filter button click
+            $('#filterBtn').click(function() {
+                const startDate = $('#start_date').val();
+                const endDate = $('#end_date').val();
+
+                if (!startDate || !endDate) {
+                    alert('Please select both start date and end date.');
+                    return;
+                }
+
+                // Reload chart data with filtered date range (daily view by default)
+                loadChartData('Daily', startDate, endDate);
+                setActiveButton(''); // No active button for filter
+            });
+
+            // Handle view type buttons
+            $('#viewWeekly').click(function() {
+                loadChartData('Weekly');
+                setActiveButton('viewWeekly');
+            });
+
+            $('#viewMonthly').click(function() {
+                loadChartData('Monthly');
+                setActiveButton('viewMonthly');
+            });
+
+            $('#viewYearly').click(function() {
+                loadChartData('Yearly');
+                setActiveButton('viewYearly');
+            });
         });
     </script>
 @endsection

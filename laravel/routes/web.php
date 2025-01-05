@@ -192,6 +192,7 @@ Route::get('payment_template', [TransactionController::class, 'index'])->name('p
 
 Route::prefix('organization')->middleware(['auth', 'role:2'])->group(function () {
     Route::get('/dashboard', [OrganizationRouteController::class, 'showDashboard'])->name('showDashboardOrganization');
+    Route::get('/dashboard/transaction-data', [OrganizationRouteController::class, 'getTransactionDataOrg']);
     Route::get('/profile', [OrganizationRouteController::class, 'showProfile'])->name('showProfileOrganization');
     Route::get('/MicroLearning', [OrganizationRouteController::class, 'showMicroLearningForm'])->name('showMicroLearningForm');
     Route::get('/chatbot', [GPTChatBot::class, 'showChatBot'])->name('showChatBot');

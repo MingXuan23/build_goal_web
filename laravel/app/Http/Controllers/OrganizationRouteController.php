@@ -934,4 +934,79 @@ class OrganizationRouteController extends Controller
             return back()->with('error', 'Failed to update Content Status!');
         }
     }
+
+    public function getTransactionDataOrg(Request $request)
+    {
+        $viewType = $request->input('view_type', 'Daily'); // Default ke daily
+        $startDate = $request->input('start_date', null); // Null jika tidak ada filter
+        $endDate = $request->input('end_date', null); // Null jika tidak ada filter
+
+        // Base query
+        $query = DB::table('transactions')->where('status', '<>', '')->where('user_id', Auth::user()->id); // Base query tanpa filter tanggal
+
+        // Tambahkan filter tanggal jika diberikan
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        // Function to get transactions by status and grouping type
+        $getTransactionsByStatus = function ($status) use ($query, $viewType) {
+            $filteredQuery = clone $query;
+            $filteredQuery->where('status', $status);
+
+            if ($viewType === 'Weekly') {
+                return $filteredQuery->selectRaw('DAYNAME(created_at) as date, COUNT(*) as total_transactions')
+                    ->groupBy('date')
+                    ->orderByRaw("FIELD(date, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')")
+                    ->get();
+            } elseif ($viewType === 'Monthly') {
+                return $filteredQuery->selectRaw('MONTHNAME(created_at) as date, COUNT(*) as total_transactions')
+                    ->groupBy('date')
+                    ->orderByRaw("STR_TO_DATE(date, '%M')") // Mengurutkan berdasarkan bulan
+                    ->get();
+            } elseif ($viewType === 'Yearly') {
+                return $filteredQuery->selectRaw('YEAR(created_at) as date, COUNT(*) as total_transactions')
+                    ->groupBy('date')
+                    ->orderBy('date')
+                    ->get();
+            } else { // Default ke daily
+                return $filteredQuery->selectRaw('DATE(created_at) as date, COUNT(*) as total_transactions')
+                    ->groupBy('date')
+                    ->orderBy('date')
+                    ->get();
+            }
+        };
+
+        // Get data for each status
+        $successTransactions = $getTransactionsByStatus('SUCCESS');
+        $pendingTransactions = $getTransactionsByStatus('PENDING');
+        $failedTransactions = $getTransactionsByStatus('FAILED');
+
+        // Combine all dates for the chart's X-axis
+        $allDates = collect()
+            ->merge($successTransactions->pluck('date'))
+            ->merge($pendingTransactions->pluck('date'))
+            ->merge($failedTransactions->pluck('date'))
+            ->unique()
+            ->sort(function ($a, $b) use ($viewType) {
+                if ($viewType === 'Monthly') {
+                    return strtotime($a) - strtotime($b);
+                } elseif ($viewType === 'Weekly') {
+                    $order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                    return array_search($a, $order) - array_search($b, $order);
+                } elseif ($viewType === 'Yearly') {
+                    return $a - $b;
+                } else { // Daily
+                    return strtotime($a) - strtotime($b);
+                }
+            })
+            ->values();
+
+        return response()->json([
+            'dates' => $allDates, // Combined dates for X-axis
+            'successTransactions' => $successTransactions,
+            'pendingTransactions' => $pendingTransactions,
+            'failedTransactions' => $failedTransactions,
+        ]);
+    }
 }
