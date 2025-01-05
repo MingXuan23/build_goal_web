@@ -707,9 +707,11 @@ class AdminRouteController extends Controller
 
     public function getContentCards($contentId)
     {
-        $cards = DB::table('content_card')
-            ->where('content_id', $contentId)
-            ->where('status', 1)
+        $cards = DB::table('content_card as c')
+        ->join('transactions as t','t.id','c.transaction_id')
+            ->where('c.content_id', $contentId)
+            ->where('c.status', 1)
+            ->where('t.status','Success')
             ->orderBy('created_at')
             ->get();
 

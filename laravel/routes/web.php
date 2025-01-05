@@ -301,3 +301,4 @@ Route::get('/deeplink/{id}', [ContentController::class, 'deeplink'])->name('deep
 //Route::get('/deeplink', [ContentController::class, 'deeplink'])->name('deeplink2');
 Route::get('/guest/{card_id}', [ContentController::class, 'guest'])->name('guest');
 Route::post('/guest/{card_id}/register', [ContentController::class, 'registerGuestContent'])->name('registerGuestContent');
+Route::get('/verify-action', [ContentController::class, 'verifyAction'])->name('content.verify-action');

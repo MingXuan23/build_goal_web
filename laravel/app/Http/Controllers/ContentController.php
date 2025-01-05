@@ -10,6 +10,8 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Mail\ResetPasswordMail;
+use App\Mail\VerifyActionMail;
+
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
@@ -77,6 +79,7 @@ class ContentController extends Controller
         DB::beginTransaction();
         $user = 0;
         try {
+            $enroll_id = DB::table('interaction_type')->where('type','enrolled')->first();
             if (!DB::table('users')->where('email', $request->input('email'),)->exists()) {
                 $user = DB::table('users')->insertGetId([
                     'name' => $validatedData['fullname'],
@@ -90,8 +93,7 @@ class ContentController extends Controller
                     'role' => json_encode([5]),
                     'active' => 1,
                     'email_status' => 'VERIFY',
-                    'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
-                    'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                   
                 ]);
 
                 $user = DB::table('users')->where('email', $request->input('email'))->first();
@@ -101,7 +103,7 @@ class ContentController extends Controller
 
 
                 // dd($content,$card_id);
-                $checkUser = DB::table('user_content')->where('user_id', $user->id)->where('content_id', $content->content_id)->first();
+                $checkUser = DB::table('user_content')->where('user_id', $user->id)->where('content_id', $content->content_id)->where('status',1)->where('interaction_type_id',$enroll_id->id)->first();
                 if ($checkUser) {
                     return back()->with('error', 'You have already registered for this content');
                 }
@@ -112,9 +114,8 @@ class ContentController extends Controller
                     'status' => 1,
                     'content_id' => $content->content_id,
                     'ip_address' => $request->ip(),
-                    'verification_code' => $content->verification_code,
-                    'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
-                    'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                    //'verification_code' => $content->verification_code,
+                  
                 ]);
 
                 $logData = [
@@ -124,8 +125,7 @@ class ContentController extends Controller
                     'name' => $validatedData['fullname'],
                     'status' => 'SUCCESS',
                     'response_data' => 'Verification code has been sent',
-                    'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
-                    'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+                  
                 ];
 
 
@@ -135,6 +135,58 @@ class ContentController extends Controller
 
                 Mail::to($request->input('email'))->send(new ResetPasswordMail($validatedData['fullname'], $password1));
                 return back()->with('success', 'Registration successfull. Your record has been saved and we has been created your account. Please check your email for password xBUG app');
+            }else{
+                $user=DB::table('users')->where('email', $request->input('email'),)->first();
+
+                if (!$user || $user->status !== 'ACTIVE' || $user->active !== 1 || $user->email_status !== 'VERIFY') {
+                    return back()->withError('We detected your account is suspended or not verified. Please check your email to verify your account and continue with xBUG app.');
+                }
+
+                $content = DB::table('content_card')
+                    ->join('contents', 'content_card.content_id', '=', 'contents.id')->where('content_card.card_id', $card_id)->first();
+
+
+                // dd($content,$card_id);
+                $checkUser = DB::table('user_content')->where('user_id', $user->id)->where('content_id', $content->content_id)->where('status',1)->where('interaction_type_id',$enroll_id->id)->first();
+                if ($checkUser) {
+                    return back()->with('error', 'You have already registered for this content');
+                }
+
+                $userDetails = DB::table('user_content')->insertGetId([
+                    'user_id' => $user->id,
+                    'interaction_type_id' =>  3,
+                    'status' => 0 ,
+                    'content_id' => $content->content_id,
+                    'ip_address' => $request->ip(),
+                    'token'=> Str::random(20),
+                    //'verification_code' => $content->verification_code,
+                  
+                ]);
+
+                $userContent = DB::table('user_content')->where('id', $userDetails)->first();
+
+                // Generate the token with a timestamp containing only digits
+                $timestamp = Carbon::parse($userContent->updated_at)->format('YmdHis'); // Convert timestamp to 'YYYYMMDDHHMMSS' format
+                $token = $userContent->token . '-' . $timestamp;
+                $logData = [
+                    'email_type' => 'REGISTER GUEST CONTENT - ACTION',
+                    'recipient_email' => $request->input('email'),
+                    'from_email' => 'admin@xbug.online',
+                    'name' => $validatedData['fullname'],
+                    'status' => 'SUCCESS',
+                    'response_data' => 'Verification code has been sent',
+                  
+                ];
+
+
+
+                DB::table('email_logs')->insert($logData);
+                DB::commit();
+                Mail::to($request->input('email'))->send(new VerifyActionMail($token));
+
+                return back()->with('success', 'We detected you have registered account with us. Please check on your email inbox for further action.');
+                
+
             }
 
             return back()->withError('We detected you have registered account with us. Please check your email for password xBUG app and continue with xBUG app');
@@ -186,14 +238,53 @@ class ContentController extends Controller
                 'name' => $validatedData['fullname'],
                 'status' => 'FAILED',
                 'response_data' => 'ERROR',
-                'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
-                'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+              
             ];
 
             DB::table('email_logs')->insert($logData);
             return back()->withError('Error EDE' . $e->getLine() . ' : ' . $e->getMessage());
         }
     }
+
+    public function verifyAction(Request $request)
+{
+    $token = $request->query('token');
+    if (!$token) {
+        return response()->json('Token is missing.');
+    }
+
+    // Extract token and timestamp
+    $parts = explode('-', $token);
+    if (count($parts) !== 2) {
+        return response()->json('Invalid token format.');
+    }
+
+    $rawToken = $parts[0];
+    $timestamp = $parts[1];
+
+    // Find the user_content record by token
+    $userContent = DB::table('user_content')->where('token', $rawToken)->first();
+
+    if (!$userContent) {
+        return response()->json( 'Token expired.');
+    }
+
+    // Validate timestamp
+    $expectedTimestamp = Carbon::parse($userContent->updated_at)->format('YmdHis');
+    if ($expectedTimestamp !== $timestamp) {
+        return response()->json('Token expired.');
+    }
+
+    // Update the status to 1
+    try {
+        DB::table('user_content')->where('id', $userContent->id)->update(['status' => 1]);
+    } catch (\Exception $e) {
+        return response()->json('Failed to update status.');
+    }
+
+    return response()->json( 'Enrollment into the event was successful.');
+}
+
     public function showPromoteContent($id)
     {
 

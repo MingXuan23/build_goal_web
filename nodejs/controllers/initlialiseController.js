@@ -31,6 +31,30 @@ const createCollection = async (collectionName) => {
 };
 
 
+const deleteAllPointsFromCollection = async (collectionName) => {
+    try {
+        // Make the API call to delete all points
+        const response = await axios.post(
+            `${V_HOST_URL}/collections/${collectionName}/points/delete`,
+            {
+                filter: {} // Empty filter to delete all points
+            },
+            {
+                headers: {
+                    'api-key': API_KEY,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        // Respond with success
+       
+    } catch (error) {
+        console.error('Error deleting points:', error);
+        
+    }
+};
+
 
 const deletePointFromCollection = async (collectionName, id, res) => {
     try {
@@ -242,7 +266,7 @@ const intialise = async (req, res) => {
 
         // Fetch contents from the 'content' table
         var contents = await knex('contents');
-
+        deleteAllPointsFromCollection('content_collection');
         // Use a for...of loop to handle async operations correctly
         for (let content of contents) {
             try {

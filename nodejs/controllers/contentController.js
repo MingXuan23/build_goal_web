@@ -118,8 +118,20 @@ const getContentByVector = async (values, m_id) => {
                 }
             });
         });
-        //console.log(microLearningResponse.data?.result, content_ids)
-        return Array.from(content_ids);
+
+        const contentIdsArray = Array.from(content_ids);
+
+        // Fetch additional random rows from the database
+        const rows = await knex('contents')
+            .whereNotIn('id', contentIdsArray) // Ensure column name matches your table schema
+            .orderByRaw('RAND()') // Use 'RANDOM()' for PostgreSQL
+            .limit(3);
+        
+        // Combine IDs from the API responses and database query
+        const finalContentIds = [...contentIdsArray, ...rows.map(row => row.id)];
+        
+        // Return the final list of content IDs
+        return finalContentIds;
 
     } catch (error) {
         // console.error('Error fetching content:', error);
