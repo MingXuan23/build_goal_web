@@ -2,7 +2,7 @@
     <!-- Start::main-sidebar-header -->
     <div class="main-sidebar-header">
         <a href="" class="header-logo">
-            <h5 class="fw-bold text-light">xBug</h5>
+            <h5 class="fw-bold text-light">xBUG</h5>
         </a>
     </div>
     <!-- End::main-sidebar-header -->

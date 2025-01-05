@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[xBug Stand] - Notification</title>
+    <title>[xBUG Stand] - Notification</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -64,7 +64,7 @@
     <div class="email-container">
         <div class="email-header">
             <img src="https://xbug.online/assets/images/logo.png" alt="LOGO" width="80">
-            <h1>[xBug Stand] - Content Update Notification</h1>
+            <h1>[xBUG Stand] - Content Update Notification</h1>
         </div>
         <div class="email-body">
             <p>Dear <strong>{{ strtoupper($name) }}</strong>,</p>
@@ -77,7 +77,7 @@
             <p>If you have any further questions or need assistance, please do not hesitate to contact our support team
                 at <a href="mailto:help-center@xbug.online">help-center@xbug.online</a>.</p>
             <p>Best regards,</p>
-            <p><strong>[xBug Stand Team]</strong></p>
+            <p><strong>[xBUG Stand Team]</strong></p>
         </div>
         <div class="email-footer">
             <p>This is an automated message. Please do not reply.</p>

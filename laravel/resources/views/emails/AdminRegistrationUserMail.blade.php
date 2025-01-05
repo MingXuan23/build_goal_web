@@ -154,7 +154,7 @@
         <!-- Header -->
         <div class="header">
             <img src="https://xbug.online/assets/images/logo.png" alt="LOGO">
-            <h1>Welcome to xBug</h1>
+            <h1>Welcome to xBUG</h1>
         </div>
 
         <!-- Content -->
@@ -170,7 +170,7 @@
                     <p><strong>Login Type:</strong> WEB [xbug.online]</p>
                 @else
                     <p><strong>Role:</strong> {{ $register_type }}</p>
-                    <p><strong>Login Type:</strong> xBug APP</p>
+                    <p><strong>Login Type:</strong> xBUG APP</p>
                 @endif
             </div>
 
@@ -184,6 +184,6 @@
         <div class="footer">
             <p>If you did not request this account creation, please contact <a
                     href="mailto:help-center@xbug.online">help-center@xbug.online</a>.</p>
-            <p>&copy; 2025 xBug. All rights reserved.</p>
+            <p>&copy; 2025 xBUG. All rights reserved.</p>
         </div>
     </div>

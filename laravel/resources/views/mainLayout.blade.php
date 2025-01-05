@@ -290,7 +290,7 @@
                                 strategically and reach their full potential.
                             </p>
                             <p class="mb-0 op-6 fw-normal">All rights
-                                reserved Copyright © <span id="year">2025</span> xBug - Protected with Advanced
+                                reserved Copyright © <span id="year">2025</span> <span class="fw-bold">xBUG</span> - Protected with Advanced
                                 Security</p>
                         </div>
                     </div>

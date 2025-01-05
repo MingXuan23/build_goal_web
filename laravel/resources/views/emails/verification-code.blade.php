@@ -170,13 +170,13 @@
             If you are having trouble activating your account, please contact us by email at <a href="mailto:help-center@xbug.online">help-center@xbug.online</a>.
 
             <p>Thank you for choosing <strong>xBug.online</strong>!</p>
-            <p>Best Regards,<br>Admin xBug</p>
+            <p>Best Regards,<br>Admin xBUG</p>
         </div>
 
         <!-- Footer -->
         <div class="footer">
             <p>If you did not request this account creation, please contact <a href="mailto:help-center@xbug.online">help-center@xbug.online</a>.</p>
-            <p>&copy; 2025 xBug. All rights reserved.</p>
+            <p>&copy; 2025 xBUG. All rights reserved.</p>
         </div>
     </div>
 

@@ -15,7 +15,7 @@ $headerColor = 'rgba(40, 167, 69, 0.9)'; // Hijau untuk menunjukkan keberhasilan
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[xBug] - Payment Receipt</title>
+    <title>[xBUG] - Payment Receipt</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Reset dan Global Styles */
@@ -225,7 +225,7 @@ $headerColor = 'rgba(40, 167, 69, 0.9)'; // Hijau untuk menunjukkan keberhasilan
         <!-- Footer -->
         <div class="email-footer">
             <p>This is an automated message. Please do not reply.</p>
-            <p>&copy; 2025 xBug. All rights reserved.</p>
+            <p>&copy; 2025 xBUG. All rights reserved.</p>
         </div>
     </div>
 </body>

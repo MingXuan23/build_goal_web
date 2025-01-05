@@ -17,7 +17,7 @@ if ($status == 1) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[xBug] - Content Notification</title>
+    <title>[xBUG] - Content Notification</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Reset dan Global Styles */
@@ -197,7 +197,7 @@ if ($status == 1) {
         <!-- Header -->
         <div class="email-header">
             <img src="https://xbug.online/assets/images/logo.png" alt="xBug Logo">
-            <h1>[xBug] - Content Notification</h1>
+            <h1>[xBUG] - Content Notification</h1>
             <p>Status: 
                 <?php 
                     if ($status == 1) { 
@@ -229,7 +229,7 @@ if ($status == 1) {
         <!-- Footer -->
         <div class="email-footer">
             <p>This is an automated message. Please do not reply.</p>
-            <p>&copy; 2025 xBug. All rights reserved.</p>
+            <p>&copy; 2025 xBUG. All rights reserved.</p>
         </div>
     </div>
 </body>
