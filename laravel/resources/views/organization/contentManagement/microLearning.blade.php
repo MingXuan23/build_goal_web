@@ -72,7 +72,7 @@
                                 autocomplete="off">
                             <ul id="suggestions-list" class="list-group mt-2" style="display:none;"></ul>
                         </div>
-                        <div id="selected-labels" class="mb-3">
+                        <div id="selected-labels" class="mb-3 mt-3">
                             <ul id="selected-labels-list" class="list-group d-flex flex-wrap"
                                 style="display: flex; gap: 10px; list-style: none; padding: 0; flex-direction: initial">
                             </ul>
@@ -80,7 +80,7 @@
                         <p id="error-message" class="text-danger" style="display: none;">Please select at least 5 labels.
                         </p>
                         <!-- Button to Show Add Section Form -->
-                        <button type="button" id="showSectionFormButton" class="btn btn-primary mt-3"
+                        <button type="button" id="showSectionFormButton" class="btn btn-primary"
                             onclick="showSectionForm()">Add Section</button>
                         <!-- Add Section Input Form -->
                         <div id="sectionInput" class="mt-3" style="display: none;">

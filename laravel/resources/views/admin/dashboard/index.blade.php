@@ -81,7 +81,7 @@
                                 <div class="card-body">
                                     <div class="d-flex flex-wrap align-items-top">
                                         <div class="flex-fill">
-                                            <p class="mb-0 text-muted">Total Users GPT</p>
+                                            <p class="mb-0 text-muted">Users GPT</p>
                                         </div>
                                         <div class="ms-2">
                                             <span class="avatar avatar-md bg-info fs-18">

@@ -408,15 +408,41 @@ class GPTChatBot extends Controller
                 ], 500);
             }
             if (Auth::user()->is_gpt == 0) {
+                DB::table('gpt_log')->insert([
+                    'name' => 'CONTENT SUGGESTION API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
+                    'user_id' => auth()->user()->id,
+                    'status' => 0,
+                    'prompt_tokens' => '-',
+                    'completion_tokens' => '-',
+                    'total_tokens' => 'USER NOT GPT',
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBug GPT.',
+                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBUG Ai.',
                 ], 500);
             }
             if (Auth::user()->gpt_status == 0) {
+                DB::table('gpt_log')->insert([
+                    'name' => 'CONTENT SUGGESTION API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
+                    'user_id' => auth()->user()->id,
+                    'status' => 0,
+                    'prompt_tokens' => '-',
+                    'completion_tokens' => '-',
+                    'total_tokens' => 'USER IS BANNED GPT',
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Sorry, Your Account Is Currently Banned For AI Purpose. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
+                    'message' => 'Sorry, Your Account Is Currently Banned For xBUG Ai Purpose. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
                 ], 500);
             }
             $maxTokens = $model->max_token;
@@ -562,15 +588,41 @@ class GPTChatBot extends Controller
                 ], 500);
             }
             if (Auth::user()->is_gpt == 0) {
+                DB::table('gpt_log')->insert([
+                    'name' => 'CONTENT SUGGESTION API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
+                    'user_id' => auth()->user()->id,
+                    'status' => 0,
+                    'prompt_tokens' => '-',
+                    'completion_tokens' => '-',
+                    'total_tokens' => 'USER NOT GPT',
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBug GPT.',
+                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBUG Ai.',
                 ], 500);
             }
             if (Auth::user()->gpt_status == 0) {
+                DB::table('gpt_log')->insert([
+                    'name' => 'CONTENT SUGGESTION API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
+                    'user_id' => auth()->user()->id,
+                    'status' => 0,
+                    'prompt_tokens' => '-',
+                    'completion_tokens' => '-',
+                    'total_tokens' => 'USER IS BANNED GPT',
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Sorry, Your Account Is Currently Banned For AI Purpose. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
+                    'message' => 'Sorry, Your Account Is Currently Banned For xBUG Ai Purpose. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
                 ], 500);
             }
             $maxTokens = $model->max_token;
@@ -701,7 +753,7 @@ class GPTChatBot extends Controller
 
             if (!$model) {
                 DB::table('gpt_log')->insert([
-                    'name' => 'CONTENT SUGGESTION API',
+                    'name' => 'MICRO SUGGESTION API',
                     'model' => 'N/A',
                     'provider' => 'N/A',
                     'user_id' => auth()->user()->id,
@@ -719,15 +771,43 @@ class GPTChatBot extends Controller
                 ], 500);
             }
             if (Auth::user()->is_gpt == 0) {
+
+                DB::table('gpt_log')->insert([
+                    'name' => 'MICRO SUGGESTION API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
+                    'user_id' => auth()->user()->id,
+                    'status' => 0,
+                    'prompt_tokens' => '-',
+                    'completion_tokens' => '-',
+                    'total_tokens' => 'USER NOT GPT',
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBug GPT.',
+                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBUG Ai.',
                 ], 500);
             }
             if (Auth::user()->gpt_status == 0) {
+                DB::table('gpt_log')->insert([
+                    'name' => 'MICRO SUGGESTION API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
+                    'user_id' => auth()->user()->id,
+                    'status' => 0,
+                    'prompt_tokens' => '-',
+                    'completion_tokens' => '-',
+                    'total_tokens' => 'USER IS BANNED GPT',
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Sorry, Your Account Is Currently Banned For AI Purpose. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
+                    'message' => 'Sorry, Your Account Is Currently Banned For xBUG Ai Purpose. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
                 ], 500);
             }
             $maxTokens = $model->max_token;
@@ -753,7 +833,7 @@ class GPTChatBot extends Controller
                 $reply = $data['choices'][0]['message']['content'] ?? 'No response from AI';
                 $cleanDescription = preg_replace('/\*\*/', '', $reply);
                 DB::table('gpt_log')->insert([
-                    'name' => 'CONTENT SUGGESTION API',
+                    'name' => 'MICRO SUGGESTION API',
                     'model' => $model->model_name,
                     'provider' => $model->provider,
                     'user_id' => auth()->user()->id,
@@ -772,7 +852,7 @@ class GPTChatBot extends Controller
             }
 
             DB::table('gpt_log')->insert([
-                'name' => 'CONTENT SUGGESTION API',
+                'name' => 'MICRO SUGGESTION API',
                 'model' => $model->model_name,
                 'provider' => $model->provider,
                 'user_id' => auth()->user()->id,
@@ -792,7 +872,7 @@ class GPTChatBot extends Controller
             ], 500);
         } catch (ValidationException $e) {
             DB::table('gpt_log')->insert([
-                'name' => 'CONTENT SUGGESTION API',
+                'name' => 'MICRO SUGGESTION API',
                 'model' => $model->model_name,
                 'provider' => $model->provider,
                 'user_id' => auth()->user()->id,
@@ -810,7 +890,7 @@ class GPTChatBot extends Controller
             ], 422);
         } catch (RequestException $e) {
             DB::table('gpt_log')->insert([
-                'name' => 'CONTENT SUGGESTION API',
+                'name' => 'MICRO SUGGESTION API',
                 'model' => $model->model_name,
                 'provider' => $model->provider,
                 'user_id' => auth()->user()->id,
@@ -828,7 +908,7 @@ class GPTChatBot extends Controller
             ], 500);
         } catch (Exception $e) {
             DB::table('gpt_log')->insert([
-                'name' => 'CONTENT SUGGESTION API',
+                'name' => 'MICRO SUGGESTION API',
                 'model' => $model->model_name,
                 'provider' => $model->provider,
                 'user_id' => auth()->user()->id,
@@ -877,15 +957,41 @@ class GPTChatBot extends Controller
                 ], 500);
             }
             if (Auth::user()->is_gpt == 0) {
+                DB::table('gpt_log')->insert([
+                    'name' => 'MICRO SUGGESTION API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
+                    'user_id' => auth()->user()->id,
+                    'status' => 0,
+                    'prompt_tokens' => '-',
+                    'completion_tokens' => '-',
+                    'total_tokens' => 'USER NOT GPT',
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBug GPT.',
+                    'message' => 'Sorry, The Suggestion Feature is available for Premium Users only. Please Upgrade Your Account To Premium User First at xBUG Ai.',
                 ], 500);
             }
             if (Auth::user()->gpt_status == 0) {
+                DB::table('gpt_log')->insert([
+                    'name' => 'MICRO SUGGESTION API',
+                    'model' => $model->model_name,
+                    'provider' => $model->provider,
+                    'user_id' => auth()->user()->id,
+                    'status' => 0,
+                    'prompt_tokens' => '-',
+                    'completion_tokens' => '-',
+                    'total_tokens' => 'USER IS BANNED GPT',
+                    'request' => $contentName,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Sorry, Your Account Is Currently Banned For AI Purpose. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
+                    'message' => 'Sorry, Your Account Is Currently Banned For xBUG Ai Purpose. Please Contact Us By Email [help-center@xbug.online] Inform Us or To Get Support.',
                 ], 500);
             }
             $maxTokens = $model->max_token;

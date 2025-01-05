@@ -2,7 +2,7 @@
     <!-- Start::main-sidebar-header -->
     <div class="main-sidebar-header">
         <a href="" class="header-logo">
-            <h5 class="fw-bold text-light">xBug</h5>
+            <h5 class="fw-bold text-light">xBUG</h5>
         </a>
     </div>
     <!-- End::main-sidebar-header -->
@@ -107,11 +107,11 @@
                         </li>
                     </ul>
                 </li>
-                <li class="slide__category mt-4"><span class="category-name">xBug GPT (Premium)</span></li>
+                <li class="slide__category mt-4"><span class="category-name">xBUG Ai (Premium)</span></li>
                 <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
                         <img src="../../assets/images/gpt.png" alt="" width="28px" height="28px">
-                        <span class="side-menu__label mx-2">xBug GPT</span>
+                        <span class="side-menu__label mx-2">xBUG Ai</span>
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>
                     <ul class="slide-menu child1">
