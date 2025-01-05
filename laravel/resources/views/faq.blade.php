@@ -41,16 +41,15 @@
                                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#collapsecustomicon2One" aria-expanded="true"
                                                     aria-controls="collapsecustomicon2One">
-                                                    Where can I subscribe to your newsletter?
+                                                    What does XBUG do?
                                                 </button>
                                             </h2>
                                             <div id="collapsecustomicon2One" class="accordion-collapse collapse show"
                                                 aria-labelledby="headingcustomicon2One" data-bs-parent="#accordionFAQ1">
                                                 <div class="accordion-body">
-                                                    <strong>This is the first item's accordion body.</strong> It is shown by
-                                                    default, until the collapse plugin adds the appropriate classes that we
-                                                    use to style each element
-                                                    <code>.accordion-body</code>, though the transition does limit overflow.
+                                                    <strong>XBUG is a service that serves as a financial advisor or planner that could help
+                                                    you generate more income to achieve your dream lifestyle.</strong>
+                                                    <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>
                                         </div>
@@ -59,16 +58,14 @@
                                                 <button class="accordion-button collapsed" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#collapsecustomicon2Two"
                                                     aria-expanded="false" aria-controls="collapsecustomicon2Two">
-                                                    Where can in edit my address?
+                                                    Who is XBUG for?
                                                 </button>
                                             </h2>
                                             <div id="collapsecustomicon2Two" class="accordion-collapse collapse"
                                                 aria-labelledby="headingcustomicon2Two" data-bs-parent="#accordionFAQ1">
                                                 <div class="accordion-body">
-                                                    <strong>This is the first item's accordion body.</strong> It is shown by
-                                                    default, until the collapse plugin adds the appropriate classes that we
-                                                    use to style each element
-                                                    <code>.accordion-body</code>, though the transition does limit overflow.
+                                                    <strong>XBUG is ideal for individuals, freelancers, small businesses, and anyone looking to stay on top of their finances.</strong>
+                                                    <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>
                                         </div>
@@ -77,16 +74,16 @@
                                                 <button class="accordion-button collapsed" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#collapsecustomicon2Three"
                                                     aria-expanded="false" aria-controls="collapsecustomicon2Three">
-                                                    What are your opening hours?
+                                                    Can I use XBUG with 0 financial knowledge?
                                                 </button>
                                             </h2>
                                             <div id="collapsecustomicon2Three" class="accordion-collapse collapse"
                                                 aria-labelledby="headingcustomicon2Three" data-bs-parent="#accordionFAQ1">
                                                 <div class="accordion-body">
-                                                    <strong>This is the first item's accordion body.</strong> It is shown by
-                                                    default, until the collapse plugin adds the appropriate classes that we
-                                                    use to style each element
-                                                    <code>.accordion-body</code>, though the transition does limit overflow.
+                                                    <strong>Of course! Even for novices, XBUG is made to be simple and easy to use. 
+                                                        It helps you easily understand and manage your finances by breaking down difficult financial topics into understandable, actionable insights.
+                                                        XBUG helps you every step of the way, whether you're creating a budget, keeping track of your spending, or making financial plans.</strong>
+                                                    <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>
                                         </div>
@@ -95,16 +92,14 @@
                                                 <button class="accordion-button collapsed" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#collapsecustomicon2Four"
                                                     aria-expanded="false" aria-controls="collapsecustomicon2Four">
-                                                    Do I have the right to return an item?
+                                                    Is XBUG Secure?
                                                 </button>
                                             </h2>
                                             <div id="collapsecustomicon2Four" class="accordion-collapse collapse"
                                                 aria-labelledby="headingcustomicon2Four" data-bs-parent="#accordionFAQ1">
                                                 <div class="accordion-body">
-                                                    <strong>This is the first item's accordion body.</strong> It is shown by
-                                                    default, until the collapse plugin adds the appropriate classes that we
-                                                    use to style each element
-                                                    <code>.accordion-body</code>, though the transition does limit overflow.
+                                                    <strong>Yes!</strong> XBUG uses advanced encryption protocols to ensure your data is safe and secure.
+                                                    <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>
                                         </div>
@@ -126,16 +121,14 @@
                                                 <button class="accordion-button collapsed" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#collapsecustomicon3One"
                                                     aria-expanded="false" aria-controls="collapsecustomicon3One">
-                                                    What is the order procedure?
+                                                    Does Xbug store my bank credentials?
                                                 </button>
                                             </h2>
                                             <div id="collapsecustomicon3One" class="accordion-collapse collapse"
                                                 aria-labelledby="headingcustomicon3One" data-bs-parent="#accordionFAQ3">
                                                 <div class="accordion-body">
-                                                    <strong>This is the first item's accordion body.</strong> It is shown by
-                                                    default, until the collapse plugin adds the appropriate classes that we
-                                                    use to style each element
-                                                    <code>.accordion-body</code>, though the transition does limit overflow.
+                                                    <strong>No, XBUG connects to your financial institutions via secure APIs and doesn't save your private login credentials.
+                                                    <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>
                                         </div>
@@ -144,16 +137,14 @@
                                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#collapsecustomicon3Two" aria-expanded="true"
                                                     aria-controls="collapsecustomicon3Two">
-                                                    How and when do I receive the invoices?
+                                                    How do I sign up an account?
                                                 </button>
                                             </h2>
                                             <div id="collapsecustomicon3Two" class="accordion-collapse collapse show"
                                                 aria-labelledby="headingcustomicon3Two" data-bs-parent="#accordionFAQ3">
                                                 <div class="accordion-body">
-                                                    <strong>This is the first item's accordion body.</strong> It is shown by
-                                                    default, until the collapse plugin adds the appropriate classes that we
-                                                    use to style each element
-                                                    <code>.accordion-body</code>, though the transition does limit overflow.
+                                                    <strong>Simply click the <a href="/login">sign in</a> button to log in to your account or click <a href="/verify-user-organization">here</a> to register.</strong>
+                                                    <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>
                                         </div>
@@ -162,16 +153,14 @@
                                                 <button class="accordion-button collapsed" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#collapsecustomicon3Three"
                                                     aria-expanded="false" aria-controls="collapsecustomicon3Three">
-                                                    Which method of ordering is best for me?
+                                                    As an Organization, how do I monitor my contents?
                                                 </button>
                                             </h2>
                                             <div id="collapsecustomicon3Three" class="accordion-collapse collapse"
                                                 aria-labelledby="headingcustomicon3Three" data-bs-parent="#accordionFAQ3">
                                                 <div class="accordion-body">
-                                                    <strong>This is the first item's accordion body.</strong> It is shown by
-                                                    default, until the collapse plugin adds the appropriate classes that we
-                                                    use to style each element
-                                                    <code>.accordion-body</code>, though the transition does limit overflow.
+                                                    <strong>XBUG provides a simple yet functional service that allows you to monitor your contents through real time data.</strong>
+                                                    <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>
                                         </div>
@@ -180,16 +169,14 @@
                                                 <button class="accordion-button collapsed" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#collapsecustomicon3Four"
                                                     aria-expanded="false" aria-controls="collapsecustomicon3Four">
-                                                    What does an order cost?
+                                                    How do I reset my password?
                                                 </button>
                                             </h2>
                                             <div id="collapsecustomicon3Four" class="accordion-collapse collapse"
                                                 aria-labelledby="headingcustomicon3Four" data-bs-parent="#accordionFAQ3">
                                                 <div class="accordion-body">
-                                                    <strong>This is the first item's accordion body.</strong> It is shown by
-                                                    default, until the collapse plugin adds the appropriate classes that we
-                                                    use to style each element
-                                                    <code>.accordion-body</code>, though the transition does limit overflow.
+                                                    <strong>Having trouble logging in? Reset your password <a href="/reset-password">here</a>.
+                                                    <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>
                                         </div>
