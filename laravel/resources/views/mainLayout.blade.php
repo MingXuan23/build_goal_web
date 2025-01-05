@@ -222,11 +222,11 @@
                                     @php
                                         $roles = json_decode(Auth::user()->role, true); // Decode JSON string to array
                                     @endphp
+                                    <span
+                                        class="side-menu__label mt-3 fw-bold text-primary">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
                                     @if (in_array(1, $roles))
                                         {{-- Admin --}}
                                         <div class="side-menu__item">
-                                            <span
-                                                class="side-menu__label me-2 fw-bold text-primary">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
                                             <a href="/admin/dashboard" class="btn btn-primary px-3 py-2">
                                                 Admin Dashboard
                                             </a>
@@ -234,8 +234,6 @@
                                     @elseif (in_array(2, $roles))
                                         {{-- Organization --}}
                                         <div class="side-menu__item">
-                                            <span
-                                                class="side-menu__label me-2 fw-bold text-primary">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
                                             <a href="/organization/dashboard" class="btn btn-primary px-3 py-2">
                                                 Organization Dashboard
                                             </a>
@@ -243,8 +241,6 @@
                                     @elseif (in_array(3, $roles))
                                         {{-- Content Creator --}}
                                         <div class="side-menu__item">
-                                            <span
-                                                class="side-menu__label me-2 fw-bold text-primary">{{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}</span>
                                             <a href="/content-creator/dashboard" class="btn btn-primary px-3 py-2">
                                                 Content Creator Dashboard
                                             </a>
@@ -284,13 +280,14 @@
                             <p class="fw-semibold mb-3"><a href="index.html"><img
                                         src="{{ asset('assets/images/logo.png') }}" alt=""
                                         style="width: 50px;"></a></p>
-                            <p class="mb-2 op-6 fw-normal">
+                            <p class="mb-2 op-6 fw-normal text-dark">
                                 With xBUG, you have the tools to manage finances effectively while setting and
                                 achieving goals. This platform empowers both individuals and organizations to grow
                                 strategically and reach their full potential.
                             </p>
-                            <p class="mb-0 op-6 fw-normal">All rights
-                                reserved Copyright © <span id="year">2025</span> <span class="fw-bold">xBUG</span> - Protected with Advanced
+                            <p class="mb-0 op-6 fw-normal text-dark">All rights
+                                reserved Copyright © <span id="year">2025</span> <span
+                                    class="fw-bold">xBUG</span> - Protected with Advanced
                                 Security</p>
                         </div>
                     </div>
@@ -299,16 +296,20 @@
                             <h6 class="fw-semibold mb-3 text-fixed-dark">PAGES</h6>
                             <ul class="list-unstyled op-6 fw-normal landing-footer-list">
                                 <li>
-                                    <a href="{{route('showContentDetail','Course-and-Training')}}" class="text-fixed-dark">Course and Training</a>
+                                    <a href="{{ route('showContentDetail', 'Course-and-Training') }}"
+                                        class="text-fixed-dark">Course and Training</a>
                                 </li>
                                 <li>
-                                    <a href="{{route('showContentDetail','Event')}}" class="text-fixed-dark">Event</a>
+                                    <a href="{{ route('showContentDetail', 'Event') }}"
+                                        class="text-fixed-dark">Event</a>
                                 </li>
                                 <li>
-                                    <a href="{{route('showContentDetail','Job-Offering')}}" class="text-fixed-dark">Job Offering</a>
+                                    <a href="{{ route('showContentDetail', 'Job-Offering') }}"
+                                        class="text-fixed-dark">Job Offering</a>
                                 </li>
                                 <li>
-                                    <a href="{{route('showContentDetail','MicroLearning-Resource')}}" class="text-fixed-dark">MicroLearning Resource</a>
+                                    <a href="{{ route('showContentDetail', 'MicroLearning-Resource') }}"
+                                        class="text-fixed-dark">MicroLearning Resource</a>
                                 </li>
                             </ul>
                         </div>
@@ -318,22 +319,23 @@
                             <h6 class="fw-semibold text-fixed-dark">INFO</h6>
                             <ul class="list-unstyled op-6 fw-normal landing-footer-list">
                                 <li>
-                                    <a href="{{route('home')}}" class="text-fixed-dark">Home</a>
+                                    <a href="{{ route('home') }}" class="text-fixed-dark">Home</a>
                                 </li>
                                 <li>
-                                    <a href="{{route('viewLogin')}}" class="text-fixed-dark">Login</a>
+                                    <a href="{{ route('viewLogin') }}" class="text-fixed-dark">Login</a>
                                 </li>
                                 <li>
-                                    <a href="{{route('viewVerifyUserOrganization')}}" class="text-fixed-dark">Register</a>
+                                    <a href="{{ route('viewVerifyUserOrganization') }}"
+                                        class="text-fixed-dark">Register</a>
                                 </li>
                                 <li>
-                                    <a href="{{route('home')}}/#about" class="text-fixed-dark">About</a>
+                                    <a href="{{ route('home') }}/#about" class="text-fixed-dark">About</a>
                                 </li>
                                 <li>
-                                    <a href="{{route('price')}}" class="text-fixed-dark">Price</a>
+                                    <a href="{{ route('price') }}" class="text-fixed-dark">Price</a>
                                 </li>
                                 <li>
-                                    <a href="{{route('faq')}}" class="text-fixed-dark">Faq's</a>
+                                    <a href="{{ route('faq') }}" class="text-fixed-dark">Faq's</a>
                                 </li>
                             </ul>
                         </div>
