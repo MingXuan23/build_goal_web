@@ -41,15 +41,15 @@
                                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#collapsecustomicon2One" aria-expanded="true"
                                                     aria-controls="collapsecustomicon2One">
-                                                    What does XBUG do?
+                                                    What does xBUG do?
                                                 </button>
                                             </h2>
                                             <div id="collapsecustomicon2One" class="accordion-collapse collapse show"
                                                 aria-labelledby="headingcustomicon2One" data-bs-parent="#accordionFAQ1">
                                                 <div class="accordion-body">
-                                                    <strong>XBUG is a service that serves as a financial advisor or planner
+                                                    xBUG is a service that serves as a financial advisor or planner
                                                         that could help
-                                                        you generate more income to achieve your dream lifestyle.</strong>
+                                                        you generate more income to achieve your dream lifestyle.
                                                     <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>
@@ -59,14 +59,14 @@
                                                 <button class="accordion-button collapsed" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#collapsecustomicon2Two"
                                                     aria-expanded="false" aria-controls="collapsecustomicon2Two">
-                                                    Who is XBUG for?
+                                                    Who is xBUG for?
                                                 </button>
                                             </h2>
                                             <div id="collapsecustomicon2Two" class="accordion-collapse collapse"
                                                 aria-labelledby="headingcustomicon2Two" data-bs-parent="#accordionFAQ1">
                                                 <div class="accordion-body">
-                                                    <strong>XBUG is ideal for individuals, freelancers, small businesses,
-                                                        and anyone looking to stay on top of their finances.</strong>
+                                                    xBUG is ideal for individuals, freelancers, small businesses,
+                                                        and anyone looking to stay on top of their finances.
                                                     <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>
@@ -76,20 +76,20 @@
                                                 <button class="accordion-button collapsed" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#collapsecustomicon2Three"
                                                     aria-expanded="false" aria-controls="collapsecustomicon2Three">
-                                                    Can I use XBUG with 0 financial knowledge?
+                                                    Can I use xBUG with 0 financial knowledge?
                                                 </button>
                                             </h2>
                                             <div id="collapsecustomicon2Three" class="accordion-collapse collapse"
                                                 aria-labelledby="headingcustomicon2Three" data-bs-parent="#accordionFAQ1">
                                                 <div class="accordion-body">
-                                                    <strong>Of course! Even for novices, XBUG is made to be simple and easy
+                                                    Of course! Even for novices, XBUG is made to be simple and easy
                                                         to use.
                                                         It helps you easily understand and manage your finances by breaking
                                                         down difficult financial topics into understandable, actionable
                                                         insights.
                                                         XBUG helps you every step of the way, whether you're creating a
                                                         budget, keeping track of your spending, or making financial
-                                                        plans.</strong>
+                                                        plans.
                                                     <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>
@@ -99,7 +99,7 @@
                                                 <button class="accordion-button collapsed" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#collapsecustomicon2Four"
                                                     aria-expanded="false" aria-controls="collapsecustomicon2Four">
-                                                    Is XBUG Secure?
+                                                    Is xBUG Secure?
                                                 </button>
                                             </h2>
                                             <div id="collapsecustomicon2Four" class="accordion-collapse collapse"
@@ -129,13 +129,13 @@
                                                 <button class="accordion-button collapsed" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#collapsecustomicon3One"
                                                     aria-expanded="false" aria-controls="collapsecustomicon3One">
-                                                    Does Xbug store my bank credentials?
+                                                    Does xBUG store my bank credentials?
                                                 </button>
                                             </h2>
                                             <div id="collapsecustomicon3One" class="accordion-collapse collapse"
                                                 aria-labelledby="headingcustomicon3One" data-bs-parent="#accordionFAQ3">
                                                 <div class="accordion-body">
-                                                    <strong>No, XBUG connects to your financial institutions via secure APIs
+                                                    No, xBUG connects to your financial institutions via secure APIs
                                                         and doesn't save your private login credentials.
                                                         <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
@@ -152,9 +152,9 @@
                                             <div id="collapsecustomicon3Two" class="accordion-collapse collapse show"
                                                 aria-labelledby="headingcustomicon3Two" data-bs-parent="#accordionFAQ3">
                                                 <div class="accordion-body">
-                                                    <strong>Simply click the <a href="/login">sign in</a> button to log in
+                                                    Simply click the <a href="/login">sign in</a> button to log in
                                                         to your account or click <a
-                                                            href="/verify-user-organization">here</a> to register.</strong>
+                                                            href="/verify-user-organization">here</a> to register.
                                                     <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>
@@ -170,8 +170,8 @@
                                             <div id="collapsecustomicon3Three" class="accordion-collapse collapse"
                                                 aria-labelledby="headingcustomicon3Three" data-bs-parent="#accordionFAQ3">
                                                 <div class="accordion-body">
-                                                    <strong>XBUG provides a simple yet functional service that allows you to
-                                                        monitor your contents through real time data.</strong>
+                                                    xBUG provides a simple yet functional service that allows you to
+                                                        monitor your contents through real time data.
                                                     <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>
@@ -187,7 +187,7 @@
                                             <div id="collapsecustomicon3Four" class="accordion-collapse collapse"
                                                 aria-labelledby="headingcustomicon3Four" data-bs-parent="#accordionFAQ3">
                                                 <div class="accordion-body">
-                                                    <strong>Having trouble logging in? Reset your password <a
+                                                   Having trouble logging in? Reset your password <a
                                                             href="/reset-password">here</a>.
                                                         <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
@@ -197,7 +197,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-12">
+                        {{-- <div class="col-xl-12">
                             <div class="card custom-card">
                                 <div class="card-header">
                                     <div class="card-title">
@@ -230,17 +230,17 @@
                                     <button class="btn btn-primary btn-wave float-end">Send</button>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <div class="text-center landing-main-footer py-3 bg-white">
+        {{-- <div class="text-center landing-main-footer py-3 bg-white">
             <span class="text-dark mb-0">All rights reserved Copyright © <span id="year">2025</span> xBug - Protected
                 with Advanced Security</span>
-        </div>
+        </div> --}}
 
     </div>
 

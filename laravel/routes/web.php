@@ -39,15 +39,15 @@ use App\Http\Controllers\TransactionController; // Ensure you import the control
 Route::get('/', function () {
 
     return view('welcome');
-});
+})->name('home');
 Route::get('/faq', function () {
 
     return view('faq');
-});
+})->name('faq');
 Route::get('/price', function () {
 
     return view('price');
-});
+})->name('price');
 
 Route::get('/jobs', [JobScraperController::class, 'index']);
 Route::get('/jobstreet', [JobScraperController::class, 'indexJobStreet']);

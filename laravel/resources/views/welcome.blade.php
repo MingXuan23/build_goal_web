@@ -8,7 +8,7 @@
                 <div class="container main-banner-container pb-lg-0">
                     <div class="row">
                         <div class="col-xxl-7 col-xl-7 col-lg-7 col-md-8 mt-5">
-                            <div class="p-0">
+                            <div class="p-0 mt-3">
                                 <h1 class="text-primary fw-bold">🚀 Manage Your Financial</h1>
                                 <div class="fs-16 mb-3 text-primary op-9 mb-4">
                                     xBUG – Your Catalyst for Growth & Goals
@@ -36,13 +36,12 @@
                             </div>
                         </div>
                         <div class="col-xxl-5 col-xl-5 col-lg-5 col-md-4 mt-2">
-                            <div class="col-xxl-5 col-xl-5 col-lg-5 col-md-4 mt-2">
+                            <div class="col-xxl-5 col-xl-5 col-lg-5 col-md-4 mt-2 w-100">
                                 <div class="text-end">
                                     <img id="animated-image" src="/assets/images/landing-page/logo-depan-3.png"
-                                        alt="" style="width: 410px;">
+                                        alt="" class="img-fluid w-100">
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -209,13 +208,12 @@
 
         <!-- End:: Section-11 -->
 
-        <div class="text-center landing-main-footer py-3 bg-light">
+        {{-- <div class="text-center landing-main-footer py-3 bg-light">
             <span class="text-dark fw-bold mb-0">All
                 rights
                 reserved Copyright © <span id="year">2025</span> xBug - Protected with Advanced Security
             </span>
-
-        </div>
+        </div> --}}
 
     </div>
     <script>
@@ -272,13 +270,13 @@
             //     delay: 1.2
             // });
 
-            gsap.from("#animated-image", {
-                duration: 1.5,
-                opacity: 0,
-                scale: 0.5,
-                ease: "power4.out",
-                delay: 1.7
-            });
+            // gsap.from("#animated-image", {
+            //     duration: 1.5,
+            //     opacity: 0,
+            //     scale: 0.5,
+            //     ease: "power4.out",
+            //     delay: 1.7
+            // });
 
             // // Animasi untuk setiap blok statistik
             // gsap.from(".statistics .card", {
@@ -372,7 +370,7 @@
                 if (entry.isIntersecting) {
                     // Apabila imej berada dalam paparan
                     gsap.to(image, {
-                        duration: 1.5,
+                        duration: 1.8,
                         opacity: 1,
                         scale: 1,
                         ease: "power4.out",
@@ -380,7 +378,7 @@
                 } else {
                     // Apabila imej keluar dari paparan
                     gsap.to(image, {
-                        duration: 1,
+                        duration: 1.3,
                         opacity: 0,
                         scale: 0.5,
                         ease: "power4.out",

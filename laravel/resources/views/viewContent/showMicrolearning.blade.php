@@ -75,59 +75,59 @@
 
 
         <!-- <div class="modal fade" id="viewContent" tabindex="-1"
-                  aria-labelledby="viewContent" data-bs-keyboard="false"
-                  aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                     <div class="modal-content">
-                        <div class="modal-header">
-                           <h6 class="modal-title" id="staticBackdropLabel1">How to be a backend Software Engineer
-                           </h6>
-                           <button type="button" class="btn-close" data-bs-dismiss="modal"
-                              aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                           <iframe src="https://en.wikipedia.org/wiki/Abdul_Rashid_Hassan" width="100%" height="500px" frameborder="0" title="About Page"></iframe>
+                      aria-labelledby="viewContent" data-bs-keyboard="false"
+                      aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                         <div class="modal-content">
+                            <div class="modal-header">
+                               <h6 class="modal-title" id="staticBackdropLabel1">How to be a backend Software Engineer
+                               </h6>
+                               <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                  aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                               <iframe src="https://en.wikipedia.org/wiki/Abdul_Rashid_Hassan" width="100%" height="500px" frameborder="0" title="About Page"></iframe>
 
-                           <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                              Libero
-                              ipsum quasi, error quibusdam debitis maiores hic eum? Vitae
-                              nisi
-                              ipsa maiores fugiat deleniti quis reiciendis veritatis.
-                           </p>
-                           <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ea
-                              voluptatibus, ipsam quo est rerum modi quos expedita facere,
-                              ex
-                              tempore fuga similique ipsa blanditiis et accusamus
-                              temporibus
-                              commodi voluptas! Nobis veniam illo architecto expedita quam
-                              ratione quaerat omnis. In, recusandae eos! Pariatur,
-                              deleniti
-                              quis ad nemo ipsam officia temporibus, doloribus fuga
-                              asperiores
-                              ratione distinctio velit alias hic modi praesentium aperiam
-                              officiis eaque, accusamus aut. Accusantium assumenda,
-                              commodi
-                              nulla provident asperiores fugit inventore iste amet aut
-                              placeat
-                              consequatur reprehenderit. Ratione tenetur eligendi, quis
-                              aperiam dolores magni iusto distinctio voluptatibus minus a
-                              unde
-                              at! Consequatur voluptatum in eaque obcaecati, impedit
-                              accusantium ea soluta, excepturi, quasi quia commodi
-                              blanditiis?
-                              Qui blanditiis iusto corrupti necessitatibus dolorem fugiat
-                              consequuntur quod quo veniam? Labore dignissimos reiciendis
-                              accusamus recusandae est consequuntur iure.
-                           </p>
-                           <p>Lorem ipsum dolor sit amet.</p>
-                        </div>
-                        <div class="modal-footer">
-                           <button type="button" class="btn btn-danger"
-                              data-bs-dismiss="modal">Close</button>
-                        </div>
-                     </div>
-                  </div>
-               </div> -->
+                               <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                  Libero
+                                  ipsum quasi, error quibusdam debitis maiores hic eum? Vitae
+                                  nisi
+                                  ipsa maiores fugiat deleniti quis reiciendis veritatis.
+                               </p>
+                               <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ea
+                                  voluptatibus, ipsam quo est rerum modi quos expedita facere,
+                                  ex
+                                  tempore fuga similique ipsa blanditiis et accusamus
+                                  temporibus
+                                  commodi voluptas! Nobis veniam illo architecto expedita quam
+                                  ratione quaerat omnis. In, recusandae eos! Pariatur,
+                                  deleniti
+                                  quis ad nemo ipsam officia temporibus, doloribus fuga
+                                  asperiores
+                                  ratione distinctio velit alias hic modi praesentium aperiam
+                                  officiis eaque, accusamus aut. Accusantium assumenda,
+                                  commodi
+                                  nulla provident asperiores fugit inventore iste amet aut
+                                  placeat
+                                  consequatur reprehenderit. Ratione tenetur eligendi, quis
+                                  aperiam dolores magni iusto distinctio voluptatibus minus a
+                                  unde
+                                  at! Consequatur voluptatum in eaque obcaecati, impedit
+                                  accusantium ea soluta, excepturi, quasi quia commodi
+                                  blanditiis?
+                                  Qui blanditiis iusto corrupti necessitatibus dolorem fugiat
+                                  consequuntur quod quo veniam? Labore dignissimos reiciendis
+                                  accusamus recusandae est consequuntur iure.
+                               </p>
+                               <p>Lorem ipsum dolor sit amet.</p>
+                            </div>
+                            <div class="modal-footer">
+                               <button type="button" class="btn btn-danger"
+                                  data-bs-dismiss="modal">Close</button>
+                            </div>
+                         </div>
+                      </div>
+                   </div> -->
 
 
         <!-- Modal for Read More -->
@@ -150,12 +150,12 @@
 
 
         <!-- End:: Section-11 -->
-        <div class="text-center landing-main-footer py-3 bg-light mt-4">
+        {{-- <div class="text-center landing-main-footer py-3 bg-light mt-4">
             <span class="text-dark fw-bold mb-0">All
                 rights
                 reserved Copyright © <span id="year">2025</span> xBug - Protected with Advanced Security
             </span>
-        </div>
+        </div> --}}
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -192,6 +192,21 @@
             // Display the formatted content
             const contentHtml = formatContent(formattedContent);
             document.getElementById("formattedContent").innerHTML = contentHtml;
+        });
+        gsap.from(".text-primary", {
+            duration: 1.5,
+            opacity: 0,
+            y: 50,
+            ease: "power4.out",
+            delay: 0.5
+        });
+        gsap.from(".custom-card", {
+            opacity: 0, // Mulai dengan transparan
+            y: 30, // Pergeseran ke bawah
+            scale: 0.9, // Mulai dengan sedikit lebih kecil
+            duration: 1.8, // Durasi animasi 1 detik
+            delay: 0.3, // Jeda sedikit setelah halaman dimuat
+            ease: "power3.out", // Easing halus
         });
     </script>
 @endsection

@@ -11,9 +11,11 @@
                                     <h6 class="landing-banner-heading mb-3 text-primary"><span
                                             class="text-primary fw-bold ">{{ $countContents_CourseTraining }}+
                                         </span>Contents for Course and Training</h6>
-                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-primary">Register &amp; get free
+                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-primary" id="animate-text">Register &amp;
+                                        get free
                                         access to create your content and <br>submit your content with few easy
-                                        steps.</p>
+                                        steps. Browse Content Top
+                                        Categories</p>
                                     <div class="custom-form-group">
                                         <input type="text" class="form-control form-control-lg shadow-sm"
                                             placeholder="your keyword...." aria-label="Recipient's username">
@@ -26,9 +28,11 @@
                                     <h6 class="landing-banner-heading mb-3 text-primary"><span
                                             class=" fw-bold text-primary">{{ $countContents_MicroLearning }}+
                                         </span>Contents for MicroLearning Resource</h6>
-                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-primary">Register &amp; get free
+                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-primary" id="animate-text">Register &amp;
+                                        get free
                                         access to create your content and <br>submit your content with few easy
-                                        steps.</p>
+                                        steps. Browse Content Top
+                                        Categories</p>
                                     <div class="custom-form-group">
                                         <input type="text" class="form-control form-control-lg shadow-sm"
                                             placeholder="your keyword...." aria-label="Recipient's username">
@@ -41,9 +45,11 @@
                                     <h6 class="landing-banner-heading mb-3 text-primary"><span
                                             class=" fw-bold text-primary">{{ $countContents_Event }}+
                                         </span>Contents for Event</h6>
-                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-primary">Register &amp; get free
+                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-primary" id="animate-text">Register &amp;
+                                        get free
                                         access to create your content and <br>submit your content with few easy
-                                        steps.</p>
+                                        steps. Browse Content Top
+                                        Categories</p>
                                     <div class="custom-form-group">
                                         <input type="text" class="form-control form-control-lg shadow-sm"
                                             placeholder="your keyword...." aria-label="Recipient's username">
@@ -56,9 +62,11 @@
                                     <h6 class="landing-banner-heading mb-3 text-primary"><span
                                             class="text fw-bold text-primary">{{ $countContents_JobOffer }}+
                                         </span>Contents for Job and Offering</h6>
-                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-primary">Register &amp; get free
+                                    <p class="fs-18 mb-5 op-8 fw-normal text-fixed-primary" id="animate-text">Register &amp;
+                                        get free
                                         access to create your content and <br>submit your content with few easy
-                                        steps.</p>
+                                        steps. Browse Content Top
+                                        Categories</p>
                                     <div class="custom-form-group">
                                         <input type="text" class="form-control form-control-lg shadow-sm"
                                             placeholder="your keyword...." aria-label="Recipient's username">
@@ -81,7 +89,8 @@
                         @foreach ($contents as $content)
                             @if ($contentTypeId == 2)
                                 <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <div class="card custom-card d-flex h-100 border border-primary-2" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                    <div class="card custom-card d-flex h-100 border border-primary-2"
+                                        style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                                         <!-- Display image or fallback -->
                                         @if ($content->image)
                                             <img src="{{ asset('storage/' . $content->image) }}" class="card-img-top"
@@ -96,25 +105,27 @@
                                         @endif
 
                                         <div class="card-body">
+                                            <span class="card-text text-muted mb-2">Last updated
+                                                {{ \Carbon\Carbon::parse($content->created_at)->diffForHumans() }}</span>
                                             <h6 class="card-title fw-semibold">{{ $content->name }}</h6>
                                             <p class="card-text text-muted">{{ $content->content_type_name }}</p>
+                                         
+
+                                        </div>
+                                        <div class="card-footer text-end">
                                             <a href="{{ url('/view-content/' . $microLearningSlug . '/' . str_replace(' ', '~', $content->name)) }}"
                                                 class="btn btn-primary">
                                                 Read More
                                             </a>
-
-                                        </div>
-                                        <div class="card-footer">
-                                            <span class="card-text">Last updated
-                                                {{ \Carbon\Carbon::parse($content->created_at)->diffForHumans() }}</span>
                                         </div>
                                     </div>
                                 </div>
                             @else
-                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <div class="card custom-card" style="width: 100%;">
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <div class="card custom-card d-flex h-100 border border-primary-2"
+                                        style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                                         <!-- Display image or fallback -->
-                                        @if ($content->image)
+                                        @if (!$content->image)
                                             <img src="{{ asset('storage/' . $content->image) }}" class="card-img-top"
                                                 alt="{{ $content->name }}"
                                                 onerror="console.log('Image failed to load:', this.src);"
@@ -127,27 +138,28 @@
                                         @endif
 
                                         <div class="card-body">
+                                            <span class="card-text text-muted mb-2">Last updated
+                                                {{ \Carbon\Carbon::parse($content->created_at)->diffForHumans() }}</span>
                                             <h6 class="card-title fw-semibold">{{ $content->name }}</h6>
                                             <p class="card-text text-muted">{{ $content->content_type_name }}</p>
                                             <!-- <a href="javascript:void(0);"
-                                                   class="btn btn-primary"
-                                                   data-bs-toggle="modal"
-                                                   data-bs-target="#contentModal"
-                                                   onclick="showContentPreview('{{ $content->content }}', '{{ $content->name }}', '{{ $content->desc }},''{{ $content->enrollment_price }}','{{ $content->participant_limit }}','{{ $content->place }}','{{ $content->link }}')">
-                                                   Read More
-                                                </a> -->
-                                            <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#contentModal"
-                                                onclick="showContentPreview({{ json_encode($content->content ?? '') }}, {{ json_encode($content->name) }}, {{ json_encode($content->desc) }}, {{ json_encode($content->enrollment_price) }}, {{ json_encode($content->participant_limit) }}, {{ json_encode($content->place) }}, {{ json_encode($content->link) }})">
-                                                Read More
-                                            </a>
+                                                               class="btn btn-primary"
+                                                               data-bs-toggle="modal"
+                                                               data-bs-target="#contentModal"
+                                                               onclick="showContentPreview('{{ $content->content }}', '{{ $content->name }}', '{{ $content->desc }},''{{ $content->enrollment_price }}','{{ $content->participant_limit }}','{{ $content->place }}','{{ $content->link }}')">
+                                                               Read More
+                                                            </a> -->
+                                           
 
 
 
                                         </div>
-                                        <div class="card-footer">
-                                            <span class="card-text">Last updated
-                                                {{ \Carbon\Carbon::parse($content->created_at)->diffForHumans() }}</span>
+                                        <div class="card-footer text-end">
+                                            <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#contentModal"
+                                            onclick="showContentPreview({{ json_encode($content->content ?? '') }}, {{ json_encode($content->name) }}, {{ json_encode($content->desc) }}, {{ json_encode($content->enrollment_price) }}, {{ json_encode($content->participant_limit) }}, {{ json_encode($content->place) }}, {{ json_encode($content->link) }})">
+                                            Read More
+                                        </a>
                                         </div>
                                     </div>
                                 </div>
@@ -160,59 +172,59 @@
 
 
         <!-- <div class="modal fade" id="viewContent" tabindex="-1"
-               aria-labelledby="viewContent" data-bs-keyboard="false"
-               aria-hidden="true">
-               <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                  <div class="modal-content">
-                     <div class="modal-header">
-                        <h6 class="modal-title" id="staticBackdropLabel1">How to be a backend Software Engineer
-                        </h6>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                           aria-label="Close"></button>
-                     </div>
-                     <div class="modal-body">
-                        <iframe src="https://en.wikipedia.org/wiki/Abdul_Rashid_Hassan" width="100%" height="500px" frameborder="0" title="About Page"></iframe>
+                           aria-labelledby="viewContent" data-bs-keyboard="false"
+                           aria-hidden="true">
+                           <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                              <div class="modal-content">
+                                 <div class="modal-header">
+                                    <h6 class="modal-title" id="staticBackdropLabel1">How to be a backend Software Engineer
+                                    </h6>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                       aria-label="Close"></button>
+                                 </div>
+                                 <div class="modal-body">
+                                    <iframe src="https://en.wikipedia.org/wiki/Abdul_Rashid_Hassan" width="100%" height="500px" frameborder="0" title="About Page"></iframe>
 
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                           Libero
-                           ipsum quasi, error quibusdam debitis maiores hic eum? Vitae
-                           nisi
-                           ipsa maiores fugiat deleniti quis reiciendis veritatis.
-                        </p>
-                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ea
-                           voluptatibus, ipsam quo est rerum modi quos expedita facere,
-                           ex
-                           tempore fuga similique ipsa blanditiis et accusamus
-                           temporibus
-                           commodi voluptas! Nobis veniam illo architecto expedita quam
-                           ratione quaerat omnis. In, recusandae eos! Pariatur,
-                           deleniti
-                           quis ad nemo ipsam officia temporibus, doloribus fuga
-                           asperiores
-                           ratione distinctio velit alias hic modi praesentium aperiam
-                           officiis eaque, accusamus aut. Accusantium assumenda,
-                           commodi
-                           nulla provident asperiores fugit inventore iste amet aut
-                           placeat
-                           consequatur reprehenderit. Ratione tenetur eligendi, quis
-                           aperiam dolores magni iusto distinctio voluptatibus minus a
-                           unde
-                           at! Consequatur voluptatum in eaque obcaecati, impedit
-                           accusantium ea soluta, excepturi, quasi quia commodi
-                           blanditiis?
-                           Qui blanditiis iusto corrupti necessitatibus dolorem fugiat
-                           consequuntur quod quo veniam? Labore dignissimos reiciendis
-                           accusamus recusandae est consequuntur iure.
-                        </p>
-                        <p>Lorem ipsum dolor sit amet.</p>
-                     </div>
-                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger"
-                           data-bs-dismiss="modal">Close</button>
-                     </div>
-                  </div>
-               </div>
-            </div> -->
+                                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                       Libero
+                                       ipsum quasi, error quibusdam debitis maiores hic eum? Vitae
+                                       nisi
+                                       ipsa maiores fugiat deleniti quis reiciendis veritatis.
+                                    </p>
+                                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ea
+                                       voluptatibus, ipsam quo est rerum modi quos expedita facere,
+                                       ex
+                                       tempore fuga similique ipsa blanditiis et accusamus
+                                       temporibus
+                                       commodi voluptas! Nobis veniam illo architecto expedita quam
+                                       ratione quaerat omnis. In, recusandae eos! Pariatur,
+                                       deleniti
+                                       quis ad nemo ipsam officia temporibus, doloribus fuga
+                                       asperiores
+                                       ratione distinctio velit alias hic modi praesentium aperiam
+                                       officiis eaque, accusamus aut. Accusantium assumenda,
+                                       commodi
+                                       nulla provident asperiores fugit inventore iste amet aut
+                                       placeat
+                                       consequatur reprehenderit. Ratione tenetur eligendi, quis
+                                       aperiam dolores magni iusto distinctio voluptatibus minus a
+                                       unde
+                                       at! Consequatur voluptatum in eaque obcaecati, impedit
+                                       accusantium ea soluta, excepturi, quasi quia commodi
+                                       blanditiis?
+                                       Qui blanditiis iusto corrupti necessitatibus dolorem fugiat
+                                       consequuntur quod quo veniam? Labore dignissimos reiciendis
+                                       accusamus recusandae est consequuntur iure.
+                                    </p>
+                                    <p>Lorem ipsum dolor sit amet.</p>
+                                 </div>
+                                 <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger"
+                                       data-bs-dismiss="modal">Close</button>
+                                 </div>
+                              </div>
+                           </div>
+                        </div> -->
 
         <!-- Modal for Read More -->
         <!-- Modal for Read More -->
@@ -236,12 +248,12 @@
 
 
         <!-- End:: Section-11 -->
-        <div class="text-center landing-main-footer py-3 bg-light">
+        {{-- <div class="text-center landing-main-footer py-3 bg-light">
             <span class="text-dark fw-bold mb-0">All
                 rights
                 reserved Copyright © <span id="year">2025</span> xBug - Protected with Advanced Security
             </span>
-        </div>
+        </div> --}}
     </div>
     <script>
         // function showContentPreview(formattedContent, title, description, price, participant_limit, place, link) {
@@ -321,5 +333,28 @@
             // Masukkan konten ke dalam modal
             document.getElementById('modalContent').innerHTML = contentHtml;
         }
+    </script>
+    <script>
+        gsap.from(".text-primary", {
+            duration: 1.5,
+            opacity: 0,
+            y: 50,
+            ease: "power4.out",
+            delay: 0.5
+        });
+        gsap.from("#animate-text", {
+            duration: 1.5, // Animation duration
+            x: -100, // Slide in from left (x axis)
+            opacity: 0, // Start from fully transparent
+            ease: "power2.out", // Easing function for smooth animation
+        });
+        gsap.from(".custom-card", {
+            opacity: 0, // Mulai dengan transparan
+            y: 30, // Pergeseran ke bawah
+            scale: 0.9, // Mulai dengan sedikit lebih kecil
+            duration: 1.8, // Durasi animasi 1 detik
+            delay: 0.3, // Jeda sedikit setelah halaman dimuat
+            ease: "power3.out", // Easing halus
+        });
     </script>
 @endsection

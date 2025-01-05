@@ -185,11 +185,11 @@
             <!-- End:: row-1 -->
         </div>
 
-        <div class="text-center landing-main-footer py-3 bg-white">
+        {{-- <div class="text-center landing-main-footer py-3 bg-white">
             <span class="text-dark fw-bold mb-0">All rights reserved Copyright © <span id="year">2025</span> xBug -
                 Protected
                 with Advanced Security</span>
-        </div>
+        </div> --}}
 
     </div>
 
