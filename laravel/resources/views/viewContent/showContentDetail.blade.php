@@ -297,7 +297,7 @@
            <h4 class="text-center fw-bold">${title}</h4>
            <p><em>${description}</em></p>
            <hr>
-           <p><strong>Price:</strong> ${price ? `RM${price}` : 'N/A'}</p>
+           <p><strong>Price:</strong> ${price && price != 0 ? `RM${price}` : 'Free'}</p>
            <p><strong>Participant Limit:</strong> ${participant_limit || 'Unlimited'}</p>
            <p><strong>Place:</strong> ${place || 'N/A'}</p>
            <hr>
