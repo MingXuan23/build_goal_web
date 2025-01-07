@@ -323,12 +323,26 @@
 
             // Tambahkan link eksternal jika disediakan
             if (link) {
-                contentHtml += `
-        <hr>
-        <p><strong>Interested? Click this button to learn more </strong><p>
-        <p class="text-end"><a href="${link}" target="_blank" class="btn btn-primary">Learn More</a></p></div>
-    `;
-            }
+        const youtubeMatch = link.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+        if (youtubeMatch) {
+            const videoId = youtubeMatch[1]; // Extract the YouTube video ID
+            contentHtml += `
+            <hr>
+            <div class="text-center">
+                <iframe width="100%" height="315" 
+                        src="https://www.youtube.com/embed/${videoId}" 
+                        frameborder="0" allowfullscreen>
+                </iframe>
+            </div>
+        `;
+        } else {
+            contentHtml += `
+            <hr>
+            <p><strong>Interested? Click this button to learn more </strong><p>
+            <p class="text-end"><a href="${link}" target="_blank" class="btn btn-primary">Learn More</a></p>
+        `;
+        }
+    }
 
             // Masukkan konten ke dalam modal
             document.getElementById('modalContent').innerHTML = contentHtml;
