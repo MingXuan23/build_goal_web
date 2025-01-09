@@ -59,7 +59,7 @@
 
                                         <tr>
                                             <th>No.</th>
-                                            <th>Ic No</th>
+                                            {{-- <th>Ic No</th> --}}
                                             <th>Name</th>
                                             <th>Role</th>
                                             <th>Account Status</th>
@@ -398,11 +398,11 @@
                         name: 'DT_RowIndex',
                         searchable: false
                     },
-                    {
-                        data: 'icNo',
-                        name: 'icno',
-                        // visible:false
-                    },
+                    // {
+                    //     data: 'icNo',
+                    //     name: 'icno',
+                    //     // visible:false
+                    // },
                     {
                         data: 'name',
                         name: 'name',

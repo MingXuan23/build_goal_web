@@ -182,10 +182,10 @@
                         </li>
                     </ul>
                 </li>
-                <li class="slide__category mt-4"><span class="category-name">xBUG Ai</span></li>
+                <li class="slide__category"><span class="category-name">xBUG Ai</span></li>
                 <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
-                        <img src="../../assets/images/gpt.png" alt="" width="28px" height="28px">
+                        <img src="../../assets/images/gpt.png" alt="" width="24px" height="24px">
                         <span class="side-menu__label mx-2">xBUG Ai</span>
                         <i class="fe fe-chevron-right side-menu__angle"></i>
                     </a>

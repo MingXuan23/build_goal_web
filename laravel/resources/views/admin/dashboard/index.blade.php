@@ -201,9 +201,9 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">Registration Statistics</h5>
                             <div>
-                                <button id="weekBtn" class="btn btn-primary">Weekly</button>
-                                <button id="monthBtn" class="btn btn-secondary">Monthly</button>
-                                <button id="yearBtn" class="btn btn-secondary">Yearly</button>
+                                <button id="weekBtn" class="btn btn-sm btn-primary">Weekly</button>
+                                <button id="monthBtn" class="btn btn-sm btn-secondary">Monthly</button>
+                                <button id="yearBtn" class="btn btn-sm btn-secondary">Yearly</button>
                             </div>
                         </div>
 
@@ -312,13 +312,13 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <button class="btn btn-primary px-4 mx-2"
+                                                    <button class="btn btn-primary px-4 mx-2 btn-sm"
                                                         id="filterBtn">Filter</button>
-                                                    <button class="btn btn-secondary mx-2 mt-1"
+                                                    <button class="btn btn-secondary mx-2 btn-sm mt-1"
                                                         id="viewWeekly">Weekly</button>
-                                                    <button class="btn btn-secondary mx-2 mt-1"
+                                                    <button class="btn btn-secondary mx-2 btn-sm mt-1"
                                                         id="viewMonthly">Monthly</button>
-                                                    <button class="btn btn-secondary mx-2 mt-1"
+                                                    <button class="btn btn-secondary mx-2 btn-sm mt-1"
                                                         id="viewYearly">Yearly</button>
                                                 </div>
                                             </div>

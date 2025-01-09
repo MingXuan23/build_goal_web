@@ -125,7 +125,7 @@
                                     <div class="card custom-card d-flex h-100 border border-primary-2"
                                         style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                                         <!-- Display image or fallback -->
-                                        @if (!$content->image)
+                                        @if ($content->image)
                                             <img src="{{ asset('storage/' . $content->image) }}" class="card-img-top"
                                                 alt="{{ $content->name }}"
                                                 onerror="console.log('Image failed to load:', this.src);"

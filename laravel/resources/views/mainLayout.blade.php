@@ -161,7 +161,7 @@
                         <div class="landing-logo-container">
                             <div class="horizontal-logo">
                                 <a href="index.html" class="header-logo">
-                                    <img src="{{ asset('assets/images/logo.png') }}" width="55" height="50"
+                                    <img src="{{ asset('assets/images/logo.png') }}" width="48" height="50"
                                         alt="logo"></img>
                                 </a>
                             </div>
@@ -282,7 +282,7 @@
                         <div class="px-4">
                             <p class="fw-semibold mb-3"><a href="index.html"><img
                                         src="{{ asset('assets/images/logo.png') }}" alt=""
-                                        style="width: 50px;"></a></p>
+                                        style="width: 40px;"></a></p>
                             <p class="mb-2 op-6 fw-normal text-dark">
                                 With xBUG, you have the tools to manage finances effectively while setting and
                                 achieving goals. This platform empowers both individuals and organizations to grow
