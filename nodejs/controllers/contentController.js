@@ -75,7 +75,7 @@ const getContentByVector = async (values, m_id) => {
     // Define the filters
     const filters = [
         createPaidFilter(3),
-        createCommonFilter(10),
+        createCommonFilter(7),
     ];
 
     const microLearningFilter = [createLearningFilter(5)];
@@ -125,7 +125,7 @@ const getContentByVector = async (values, m_id) => {
         const rows = await knex('contents')
             .whereNotIn('id', contentIdsArray) // Ensure column name matches your table schema
             .orderByRaw('RAND()') // Use 'RANDOM()' for PostgreSQL
-            .limit(3);
+            .limit(5);
         
         // Combine IDs from the API responses and database query
         const finalContentIds = [...contentIdsArray, ...rows.map(row => row.id)];
@@ -311,7 +311,7 @@ const getContentEnrollment = async (req, res) => {
 
         var result = await knex('user_content')
             .join('contents', 'user_content.content_id', '=', 'contents.id')
-            .select('user_content.created_at as enrolled_at', 'contents.link', 'contents.name', 'contents.desc', 'contents.id') // Select all fields from both tables
+            .select('user_content.created_at as enrolled_at', 'contents.link', 'contents.name', 'contents.desc', 'contents.id','user_content.updated_at') // Select all fields from both tables
             .where({
                 'user_content.user_id': user.id,
                 'user_content.interaction_type_id': 3,
@@ -339,7 +339,8 @@ const getClickedContent = async (req, res) => {
                 'contents.link',
                 'contents.name',
                 'contents.desc',
-                'contents.id'
+                'contents.id',
+                'user_content.updated_at'
             )
             .where({
                 'user_content.user_id': user.id,
