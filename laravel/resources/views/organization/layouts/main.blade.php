@@ -10,8 +10,7 @@
     <title> xBug </title>
     <meta name="Description" content="xBug">
     <meta name="Author" content="xBug Inc">
-    <meta name="keywords"
-        content="xBug, xBug Content, xbug">
+    <meta name="keywords" content="xBug, xBug Content, xbug">
     <!-- Favicon -->
     <link rel="icon" href="../../assets/images/logo.ico" type="image/x-icon">
     <!-- Choices JS -->
@@ -43,8 +42,15 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.bootstrap5.min.css">
 
+
+    <!-- Intro.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+
+    <!-- Intro.js JavaScript -->
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+
     @yield('styles')
-    
+
 </head>
 
 <body>
@@ -213,6 +219,72 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tutorialSidebarDone = localStorage.getItem('tutorialSidebarDone');
+
+            if (!tutorialSidebarDone) {
+                if (isMobile()) {
+                    openSidebar().then(() => {
+                        startIntro();
+                    });
+                } else {
+                    startIntro();
+                }
+            }
+
+            function startIntro() {
+                introJs()
+                    .setOptions({
+                        showProgress: true,
+                        showBullets: true,
+                        exitOnOverlayClick: false,
+                        tooltipPosition: 'auto',
+                        highlightClass: 'introjs-highlight'
+                    })
+                    .onbeforechange(function(targetElement) {
+                        const step = parseInt(targetElement.getAttribute('data-step'), 10);
+                        if (step === 9) {
+                            closeSidebar();
+                            // Optional: Add a slight delay if sidebar has a transition
+                            //setTimeout(() => {}, 900); // Adjust time as needed
+                        }
+                    })
+                    .oncomplete(function() {
+                        localStorage.setItem('tutorialSidebarDone', true);
+                        // Optional: Ensure sidebar remains closed after tutorial
+                        if (isMobile()) {
+                            closeSidebar();
+                        }
+                    })
+                    .onexit(function() {
+                        localStorage.setItem('tutorialSidebarDone', true);
+                        // Optional: Ensure sidebar remains closed if tutorial is skipped
+                        if (isMobile()) {
+                            closeSidebar();
+                        }
+                    })
+                    .start();
+            }
+
+            function isMobile() {
+                return window.matchMedia("(max-width: 767px)").matches;
+            }
+
+            function openSidebar() {
+                document.documentElement.setAttribute('data-toggled', 'open');
+                return new Promise((resolve) => {
+                    // Adjust the timeout duration based on your sidebar's transition time
+                    setTimeout(resolve, 500);
+                });
+            }
+
+            function closeSidebar() {
+                document.documentElement.setAttribute('data-toggled', 'close');
+            }
+        });
+    </script>
 
 
 

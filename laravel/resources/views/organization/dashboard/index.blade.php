@@ -2,7 +2,7 @@
 @section('container')
     <!-- Start::app-content -->
     <div class="main-content app-content">
-        <div class="container">
+        <div class="container" data-intro="This is your main dashboard, here you can see all the important information about your organization" data-step="18">
             <!-- Page Header -->
             <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
                 <h1 class="page-title fw-semibold fs-18 mb-0">Organization Main Dashboard</h1>
