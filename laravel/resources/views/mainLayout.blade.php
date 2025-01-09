@@ -31,7 +31,8 @@
     <link rel="stylesheet" href="{{ asset('assets/libs/swiper/swiper-bundle.min.css') }}">
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.0/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.0/ScrollTrigger.min.js"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.0/ScrollTrigger.min.js"></script> --}}
+    {{-- <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script> --}}
 
 
 
@@ -490,6 +491,8 @@
             duration: 1,
             delay: 1.5
         });
+
+
     </script>
 </body>
 

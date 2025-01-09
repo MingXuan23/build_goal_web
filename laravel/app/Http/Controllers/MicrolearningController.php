@@ -175,6 +175,7 @@ class MicrolearningController extends Controller
                 ->where('content_types.id', '=', $contentTypeId)  // Use content type ID to fetch contents
                 ->where('c.reason_phrase', '=', 'APPROVED')  // Filter only approved contents
                 ->where('c.status', '=', 1)
+                ->orderBy('c.created_at', 'desc')
                 ->get();
 
             // Return the view with the fetched content

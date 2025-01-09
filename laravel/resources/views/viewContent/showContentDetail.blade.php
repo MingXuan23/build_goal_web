@@ -109,7 +109,7 @@
                                                 {{ \Carbon\Carbon::parse($content->created_at)->diffForHumans() }}</span>
                                             <h6 class="card-title fw-semibold">{{ $content->name }}</h6>
                                             <p class="card-text text-muted">{{ $content->content_type_name }}</p>
-                                         
+
 
                                         </div>
                                         <div class="card-footer text-end">
@@ -143,23 +143,23 @@
                                             <h6 class="card-title fw-semibold">{{ $content->name }}</h6>
                                             <p class="card-text text-muted">{{ $content->content_type_name }}</p>
                                             <!-- <a href="javascript:void(0);"
-                                                               class="btn btn-primary"
-                                                               data-bs-toggle="modal"
-                                                               data-bs-target="#contentModal"
-                                                               onclick="showContentPreview('{{ $content->content }}', '{{ $content->name }}', '{{ $content->desc }},''{{ $content->enrollment_price }}','{{ $content->participant_limit }}','{{ $content->place }}','{{ $content->link }}')">
-                                                               Read More
-                                                            </a> -->
-                                           
+                                                                   class="btn btn-primary"
+                                                                   data-bs-toggle="modal"
+                                                                   data-bs-target="#contentModal"
+                                                                   onclick="showContentPreview('{{ $content->content }}', '{{ $content->name }}', '{{ $content->desc }},''{{ $content->enrollment_price }}','{{ $content->participant_limit }}','{{ $content->place }}','{{ $content->link }}')">
+                                                                   Read More
+                                                                </a> -->
+
 
 
 
                                         </div>
                                         <div class="card-footer text-end">
                                             <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#contentModal"
-                                            onclick="showContentPreview({{ json_encode($content->content ?? '') }}, {{ json_encode($content->name) }}, {{ json_encode($content->desc) }}, {{ json_encode($content->enrollment_price) }}, {{ json_encode($content->participant_limit) }}, {{ json_encode($content->place) }}, {{ json_encode($content->link) }})">
-                                            Read More
-                                        </a>
+                                                data-bs-target="#contentModal"
+                                                onclick="showContentPreview({{ json_encode($content->content ?? '') }}, {{ json_encode($content->name) }}, {{ json_encode($content->desc) }}, {{ json_encode($content->enrollment_price) }}, {{ json_encode($content->participant_limit) }}, {{ json_encode($content->place) }}, {{ json_encode($content->link) }})">
+                                                Read More
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -172,59 +172,59 @@
 
 
         <!-- <div class="modal fade" id="viewContent" tabindex="-1"
-                           aria-labelledby="viewContent" data-bs-keyboard="false"
-                           aria-hidden="true">
-                           <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                              <div class="modal-content">
-                                 <div class="modal-header">
-                                    <h6 class="modal-title" id="staticBackdropLabel1">How to be a backend Software Engineer
-                                    </h6>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                       aria-label="Close"></button>
-                                 </div>
-                                 <div class="modal-body">
-                                    <iframe src="https://en.wikipedia.org/wiki/Abdul_Rashid_Hassan" width="100%" height="500px" frameborder="0" title="About Page"></iframe>
+                               aria-labelledby="viewContent" data-bs-keyboard="false"
+                               aria-hidden="true">
+                               <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                  <div class="modal-content">
+                                     <div class="modal-header">
+                                        <h6 class="modal-title" id="staticBackdropLabel1">How to be a backend Software Engineer
+                                        </h6>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                           aria-label="Close"></button>
+                                     </div>
+                                     <div class="modal-body">
+                                        <iframe src="https://en.wikipedia.org/wiki/Abdul_Rashid_Hassan" width="100%" height="500px" frameborder="0" title="About Page"></iframe>
 
-                                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                                       Libero
-                                       ipsum quasi, error quibusdam debitis maiores hic eum? Vitae
-                                       nisi
-                                       ipsa maiores fugiat deleniti quis reiciendis veritatis.
-                                    </p>
-                                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ea
-                                       voluptatibus, ipsam quo est rerum modi quos expedita facere,
-                                       ex
-                                       tempore fuga similique ipsa blanditiis et accusamus
-                                       temporibus
-                                       commodi voluptas! Nobis veniam illo architecto expedita quam
-                                       ratione quaerat omnis. In, recusandae eos! Pariatur,
-                                       deleniti
-                                       quis ad nemo ipsam officia temporibus, doloribus fuga
-                                       asperiores
-                                       ratione distinctio velit alias hic modi praesentium aperiam
-                                       officiis eaque, accusamus aut. Accusantium assumenda,
-                                       commodi
-                                       nulla provident asperiores fugit inventore iste amet aut
-                                       placeat
-                                       consequatur reprehenderit. Ratione tenetur eligendi, quis
-                                       aperiam dolores magni iusto distinctio voluptatibus minus a
-                                       unde
-                                       at! Consequatur voluptatum in eaque obcaecati, impedit
-                                       accusantium ea soluta, excepturi, quasi quia commodi
-                                       blanditiis?
-                                       Qui blanditiis iusto corrupti necessitatibus dolorem fugiat
-                                       consequuntur quod quo veniam? Labore dignissimos reiciendis
-                                       accusamus recusandae est consequuntur iure.
-                                    </p>
-                                    <p>Lorem ipsum dolor sit amet.</p>
-                                 </div>
-                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger"
-                                       data-bs-dismiss="modal">Close</button>
-                                 </div>
-                              </div>
-                           </div>
-                        </div> -->
+                                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                           Libero
+                                           ipsum quasi, error quibusdam debitis maiores hic eum? Vitae
+                                           nisi
+                                           ipsa maiores fugiat deleniti quis reiciendis veritatis.
+                                        </p>
+                                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ea
+                                           voluptatibus, ipsam quo est rerum modi quos expedita facere,
+                                           ex
+                                           tempore fuga similique ipsa blanditiis et accusamus
+                                           temporibus
+                                           commodi voluptas! Nobis veniam illo architecto expedita quam
+                                           ratione quaerat omnis. In, recusandae eos! Pariatur,
+                                           deleniti
+                                           quis ad nemo ipsam officia temporibus, doloribus fuga
+                                           asperiores
+                                           ratione distinctio velit alias hic modi praesentium aperiam
+                                           officiis eaque, accusamus aut. Accusantium assumenda,
+                                           commodi
+                                           nulla provident asperiores fugit inventore iste amet aut
+                                           placeat
+                                           consequatur reprehenderit. Ratione tenetur eligendi, quis
+                                           aperiam dolores magni iusto distinctio voluptatibus minus a
+                                           unde
+                                           at! Consequatur voluptatum in eaque obcaecati, impedit
+                                           accusantium ea soluta, excepturi, quasi quia commodi
+                                           blanditiis?
+                                           Qui blanditiis iusto corrupti necessitatibus dolorem fugiat
+                                           consequuntur quod quo veniam? Labore dignissimos reiciendis
+                                           accusamus recusandae est consequuntur iure.
+                                        </p>
+                                        <p>Lorem ipsum dolor sit amet.</p>
+                                     </div>
+                                     <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger"
+                                           data-bs-dismiss="modal">Close</button>
+                                     </div>
+                                  </div>
+                               </div>
+                            </div> -->
 
         <!-- Modal for Read More -->
         <!-- Modal for Read More -->
@@ -323,10 +323,11 @@
 
             // Tambahkan link eksternal jika disediakan
             if (link) {
-        const youtubeMatch = link.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
-        if (youtubeMatch) {
-            const videoId = youtubeMatch[1]; // Extract the YouTube video ID
-            contentHtml += `
+                const youtubeMatch = link.match(
+                /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+                if (youtubeMatch) {
+                    const videoId = youtubeMatch[1]; // Extract the YouTube video ID
+                    contentHtml += `
             <hr>
             <div class="text-center">
                 <iframe width="100%" height="315" 
@@ -335,14 +336,14 @@
                 </iframe>
             </div>
         `;
-        } else {
-            contentHtml += `
+                } else {
+                    contentHtml += `
             <hr>
             <p><strong>Interested? Click this button to learn more </strong><p>
             <p class="text-end"><a href="${link}" target="_blank" class="btn btn-primary">Learn More</a></p>
         `;
-        }
-    }
+                }
+            }
 
             // Masukkan konten ke dalam modal
             document.getElementById('modalContent').innerHTML = contentHtml;
@@ -362,13 +363,63 @@
             opacity: 0, // Start from fully transparent
             ease: "power2.out", // Easing function for smooth animation
         });
-        gsap.from(".custom-card", {
-            opacity: 0, // Mulai dengan transparan
-            y: 30, // Pergeseran ke bawah
-            scale: 0.9, // Mulai dengan sedikit lebih kecil
-            duration: 1.8, // Durasi animasi 1 detik
-            delay: 0.3, // Jeda sedikit setelah halaman dimuat
-            ease: "power3.out", // Easing halus
+        // Ensure the DOM is fully loaded before executing the script
+        document.addEventListener('DOMContentLoaded', function() {
+            // Select all elements with the class 'custom-card'
+            const cards = document.querySelectorAll('.custom-card');
+
+            // Initialize the IntersectionObserver
+            const observer = new IntersectionObserver((entries, observerInstance) => {
+                entries.forEach(entry => {
+                    const card = entry.target;
+                    const cardImage = card.querySelector('.card-img-top');
+
+                    if (entry.isIntersecting) {
+                        // If the card is in the viewport
+
+                        // Show the image (in case it was previously hidden)
+                        if (cardImage) {
+                            cardImage.style.display = 'block';
+                        }
+
+                        // Animate the card using GSAP
+                        gsap.fromTo(card, {
+                            opacity: 0,
+                            y: 30,
+                            scale: 0.9
+                        }, {
+                            opacity: 1,
+                            y: 0,
+                            scale: 1,
+                            duration: 1,
+                            ease: "power3.out",
+                            overwrite: 'auto' // Ensures animations don't stack
+                        });
+
+                    } else {
+                        // If the card is out of the viewport
+
+                        // Hide the image
+                        if (cardImage) {
+                            cardImage.style.display = 'none';
+                        }
+
+                        // Optional: Reset GSAP animations to allow re-animation upon re-entry
+                        gsap.set(card, {
+                            opacity: 0,
+                            y: 30,
+                            scale: 0.9
+                        });
+                    }
+                });
+            }, {
+                threshold: 0.1 // Adjust this value based on when you want the animation to trigger
+            });
+
+            // Observe each card
+            cards.forEach(card => {
+                observer.observe(card);
+            });
         });
     </script>
 @endsection

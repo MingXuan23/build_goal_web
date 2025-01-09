@@ -219,13 +219,59 @@
         //     ease: "power3.out", // Jenis easing
         // });
 
-        gsap.from(".custom-card", {
-            opacity: 0, // Mulai dengan transparan
-            y: 30, // Pergeseran ke bawah
-            scale: 0.9, // Mulai dengan sedikit lebih kecil
-            duration: 1.8, // Durasi animasi 1 detik
-            delay: 0.3, // Jeda sedikit setelah halaman dimuat
-            ease: "power3.out", // Easing halus
+        // Mendaftarkan ScrollTrigger dengan GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Menginisialisasi animasi untuk setiap kartu dengan kelas 'custom-card'
+        gsap.utils.toArray('.custom-card').forEach(card => {
+            const image = card.querySelector(
+            'img, .card-img-top'); // Menargetkan elemen gambar atau div pengganti gambar
+
+            // Mengatur animasi masuk dengan ScrollTrigger
+            gsap.from(card, {
+                opacity: 0, // Mulai dengan transparan
+                y: 30, // Pergeseran ke bawah
+                scale: 0.9, // Mulai dengan sedikit lebih kecil
+                duration: 1.8, // Durasi animasi
+                ease: "power3.out", // Easing halus
+                scrollTrigger: {
+                    trigger: card, // Elemen yang memicu animasi
+                    start: "top 80%", // Memulai animasi saat bagian atas kartu mencapai 80% dari viewport
+                    toggleActions: "play none none reset", // Aksi saat memasuki dan meninggalkan viewport
+                    onEnter: () => {
+                        // Menampilkan gambar saat kartu masuk viewport
+                        gsap.to(image, {
+                            opacity: 1,
+                            duration: 0.5,
+                            ease: "power1.out"
+                        });
+                    },
+                    onLeave: () => {
+                        // Menyembunyikan gambar saat kartu keluar viewport
+                        gsap.to(image, {
+                            opacity: 0,
+                            duration: 0.5,
+                            ease: "power1.out"
+                        });
+                    },
+                    onEnterBack: () => {
+                        // Menampilkan gambar saat kartu kembali masuk viewport dari bawah
+                        gsap.to(image, {
+                            opacity: 1,
+                            duration: 0.5,
+                            ease: "power1.out"
+                        });
+                    },
+                    onLeaveBack: () => {
+                        // Menyembunyikan gambar saat kartu kembali keluar viewport ke atas
+                        gsap.to(image, {
+                            opacity: 0,
+                            duration: 0.5,
+                            ease: "power1.out"
+                        });
+                    },
+                }
+            });
         });
     </script>
 @endsection
