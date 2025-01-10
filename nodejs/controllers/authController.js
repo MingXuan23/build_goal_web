@@ -1254,6 +1254,158 @@ const forgetPassword = async (req, res) => {
   }
 };
 
+
+const getLeafStatus = async (req, res) => {
+  try {
+    const user = req.user;
+
+
+    // Check if user_leaf exists, create if not
+    let user_leaf = await knex('user_leaf')
+      .where('user_id', user.id)
+      .where('status', 1)
+      .first();
+
+
+  
+    if (user_leaf == null) {
+      return res.status(403).json({ 'message': "No data" });
+
+    }
+
+    var leaffdata = await getLeafData(user_leaf.id);
+
+    return res.status(200).json({ 'message': "Success", 'data': leaffdata })
+  } catch (e) {
+    return res.status(500).json({ 'message': e })
+  }
+
+
+
+}
+
+const getLeafData = async (user_leaf_id) => {
+  const today = new Date().toISOString().split('T')[0]; // Format today as YYYY-MM-DD
+
+  // Fetch user_leaf record
+  const user_leaf = await knex('user_leaf')
+    .where('status', 1)
+    .where('id', user_leaf_id)
+    .first();
+
+  if (!user_leaf) {
+    var no_enter = -1
+    var percent2 = -1
+    return { no_enter, percent2 };
+  }
+
+  // Fetch today's leaf detail
+  const leaf_detail_today = await knex('leaf_detail')
+    .where('status', 1)
+    .where('user_leaf_id', user_leaf_id)
+    .whereRaw('DATE(created_at) = ?', [today])
+    .first();
+
+  // Calculate percentage
+  const moreLeafCount = await knex('user_leaf')
+    .where('status', 1)
+    .where('total_leaf', '>', user_leaf.total_leaf)
+    .count('* as count')
+    .then(result => (result[0] ? result[0].count : 0));
+
+  const userCount = await knex('users')
+    .count('* as count')
+    .then(result => (result[0] ? result[0].count : 0));
+
+    
+    const percent = parseFloat(
+      Math.min(
+        Math.max(((userCount - moreLeafCount) / userCount) * 100, 0.01),
+        99.99
+      ).toFixed(2)
+    );
+ 
+  console.log(moreLeafCount, userCount, percent)
+
+  if (!leaf_detail_today) {
+    var no_enter = -1
+    return { no_enter, percent };
+  }
+
+  // Calculate rank
+  const rank = await knex('leaf_detail')
+    .whereRaw('DATE(created_at) = ?', [today])
+    .where('created_at', '<', leaf_detail_today.created_at)
+    .count('* as count')
+    .then(result => (result[0] ? result[0].count +1 : 1));
+
+
+  return { rank, percent };
+};
+
+const addNewLeaf = async (req, res) => {
+  try {
+    const { detail } = req.body;
+    const user = req.user;
+    const today = new Date().toISOString().split('T')[0]; // Format today as YYYY-MM-DD
+
+    // Check if user_leaf exists, create if not
+    let user_leaf = await knex('user_leaf')
+      .where('user_id', user.id)
+      .where('status', 1)
+      .first();
+
+    if (!user_leaf) {
+      await knex('user_leaf').insert({ user_id: user.id });
+      user_leaf = await knex('user_leaf')
+        .where('user_id', user.id)
+        .where('status', 1)
+        .first();
+    }
+
+    // Check if a leaf detail already exists for today
+    const leafDetailExists = await knex('leaf_detail')
+      .where('user_leaf_id', user_leaf.id)
+      .whereRaw('DATE(created_at) = ?', [today])
+      .first();
+
+    if (!leafDetailExists) {
+      // Insert new leaf detail
+      await knex('leaf_detail').insert({
+        user_leaf_id: user_leaf.id,
+        detail: JSON.stringify(detail),
+      });
+
+      // Update total_leaf count
+      const count = await knex('leaf_detail')
+        .where('user_leaf_id', user_leaf.id)
+        .where('status', 1)
+        .count('* as count')
+        .then((res) => parseInt(res[0].count ?? 0));
+
+      await knex('user_leaf')
+        .where('id', user_leaf.id)
+        .update({ total_leaf: count });
+
+      const leafdata = await getLeafData(user_leaf.id);
+      console.log(leafdata);
+      return res.status(201).json({ success: true, data: leafdata });
+    }else{
+      const leafdata = await getLeafData(user_leaf.id);
+      return res.status(200).json({ success: true, data: leafdata });
+    }
+
+    
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+      error,
+    });
+  }
+};
+
 const changePassword = async (req, res) => {
   try {
     const validatedData = changePasswordSchema.parse(req.body);
@@ -1299,4 +1451,6 @@ module.exports = {
   updateProfile,
   getProfile,
   updateUserPrivacy,
+  addNewLeaf,
+  getLeafStatus
 };
