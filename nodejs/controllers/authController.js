@@ -1294,9 +1294,12 @@ const getLeafData = async (user_leaf_id) => {
     .first();
 
   if (!user_leaf) {
-    var no_enter = -1
-    var percent2 = -1
-    return { no_enter, percent2 };
+    return {
+      rank: -1, // Indicating no rank
+      percent: -1, // Indicating no percentage
+      last_date: null, // No last update date
+      total_leaf: 0, // No leaves recorded
+    };
   }
 
   // Fetch today's leaf detail
@@ -1311,25 +1314,27 @@ const getLeafData = async (user_leaf_id) => {
     .where('status', 1)
     .where('total_leaf', '>', user_leaf.total_leaf)
     .count('* as count')
-    .then(result => (result[0] ? result[0].count : 0));
+    .then((result) => (result[0] ? result[0].count : 0));
 
   const userCount = await knex('users')
     .count('* as count')
-    .then(result => (result[0] ? result[0].count : 0));
+    .then((result) => (result[0] ? result[0].count : 0));
 
-    
-    const percent = parseFloat(
-      Math.min(
-        Math.max(((userCount - moreLeafCount) / userCount) * 100, 0.01),
-        99.99
-      ).toFixed(2)
-    );
- 
-  console.log(moreLeafCount, userCount, percent)
+  const percent = parseFloat(
+    Math.min(
+      Math.max(((userCount - moreLeafCount) / userCount) * 100, 0.01),
+      99.99
+    ).toFixed(2)
+  );
 
   if (!leaf_detail_today) {
-    var no_enter = -1
-    return { no_enter, percent };
+    // If no leaf detail for today, return available data
+    return {
+      rank: -1, // Indicating no rank
+      percent, // Calculated percentage
+      last_date: user_leaf.updated_at, // Last update date from user_leaf
+      total_leaf: user_leaf.total_leaf, // Total leaves from user_leaf
+    };
   }
 
   // Calculate rank
@@ -1337,11 +1342,17 @@ const getLeafData = async (user_leaf_id) => {
     .whereRaw('DATE(created_at) = ?', [today])
     .where('created_at', '<', leaf_detail_today.created_at)
     .count('* as count')
-    .then(result => (result[0] ? result[0].count +1 : 1));
+    .then((result) => (result[0] ? result[0].count + 1 : 1));
 
-
-  return { rank, percent };
+  // Return all required data
+  return {
+    rank, // Calculated rank
+    percent, // Calculated percentage
+    last_date: user_leaf.updated_at, // Last update date from user_leaf
+    total_leaf: user_leaf.total_leaf, // Total leaves from user_leaf
+  };
 };
+
 
 const addNewLeaf = async (req, res) => {
   try {
