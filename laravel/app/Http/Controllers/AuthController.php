@@ -582,7 +582,7 @@ class AuthController extends Controller
                 'from_email' => 'admin@xbug.online',
                 'name' => $user->name,
                 'status' => 'SUCCESS',
-                'response_data' => 'Reset password send',
+                'response_data' => 'RESET PASSWORD SEND',
                 'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                 'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
             ];
