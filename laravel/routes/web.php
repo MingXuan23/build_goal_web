@@ -295,6 +295,7 @@ Route::get('/view-content/{slug}', [MicrolearningController::class, 'showContent
 // Route::get('/view-content/{slug}/{id}', [MicrolearningController::class, 'showContentDetail'])->name('showContentDetail');
 Route::get('/view-content/{slug}/{name}', [MicrolearningController::class, 'showMicrolearningDetail'])->name('showMicrolearningDetail');
 
+Route::get('/view-content-link/{id}/{name}', [MicrolearningController::class, 'viewContentLink'])->name('viewContentLink');
 
 
 

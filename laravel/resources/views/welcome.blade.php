@@ -27,7 +27,7 @@
                                 <div class="d-flex align-items-center mt-4">
                                     <span class="fs-18 fw-bold text-primary me-3">Download the xBug App</span>
                                     <!-- Google Play Logo -->
-                                    <a href="https://play.google.com/store/apps/details?id=com.xbug.app"
+                                    <a href="https://play.google.com/store/apps/details?id=com.bug.build_growth_mobile"
                                         class="bg-white rounded" target="_blank">
                                         <img src="/assets/images/gp.png" alt="Google Play" class="img-fluid"
                                             style="width: 180px;">

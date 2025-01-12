@@ -240,6 +240,68 @@ class MicrolearningController extends Controller
             ],compact('microLearningSlug'));
         }
 
+        public function viewContentLink(Request $request, $id, $name)
+        {
+            // Convert slug back to content name with spaces
+            $originalName = str_replace('~', ' ', $name); // Replace hyphen with space
+
+            // Optional: Decode URL-encoded characters (if necessary)
+            $originalName = urldecode($originalName);
+            
+           
+            // Fetch the content type ID for 'MicroLearning' (or similar)
+            // $contentTypeId = DB::table('content_types')
+            //     ->select('id')
+            //     ->where('type', '=', str_replace('-', ' ', $slug))
+            //     ->first();
+
+            // if (!$contentTypeId) {
+            //     abort(404, 'Content Type not found');
+            // }
+
+            // $contentTypeId = $contentTypeId->id;
+
+            // Fetch the content by name and type
+          
+            $contents = DB::table('contents as c')
+                ->join('content_types', 'c.content_type_id', '=', 'content_types.id')
+                ->select(
+                    'c.id',
+                    'c.name',
+                    'c.image',
+                    'c.status',
+                    'content_types.type as content_type_name',
+                    'c.created_at',
+                    'c.reason_phrase',
+                    'c.content',
+                    'c.desc',
+                    'c.content_type_id',
+                    'c.link'
+                )
+               
+                ->whereRaw('LOWER(c.name) = ?', [strtolower($originalName)]) // Case-insensitive match
+                ->where('c.reason_phrase', '=', 'APPROVED')
+                ->where('c.status', '=', 1)
+                ->where('c.id',$id)
+                ->first();
+
+            if (!$contents) {
+                abort(404, 'Content not found');
+            }
+            $slug =  DB::table('content_types')
+               
+                ->where('id', '=',$contents->content_type_id )
+                ->first();
+
+            $slug_name = str_replace( ' ','-', $slug->type);
+            //dd($contents);
+
+            return view('viewContent.showContentLink', [
+                'contents' => $contents
+                
+            ],compact('slug_name'));
+        }
+
 
     
 

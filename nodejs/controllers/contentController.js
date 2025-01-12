@@ -128,7 +128,7 @@ const getContentByVector = async (values, m_id) => {
             .limit(5);
         
         // Combine IDs from the API responses and database query
-        const finalContentIds = [...contentIdsArray, ...rows.map(row => row.id)];
+        const finalContentIds = [ ...rows.map(row => row.id),...contentIdsArray,];
         
         // Return the final list of content IDs
         return finalContentIds;
@@ -151,8 +151,11 @@ const getContents = async (req, res) => {
 
         const contentList = await knex('contents').whereIn('id', content_ids);
 
-
-        contentList.forEach((content) => content.link = content.link || 'https://xbug.online/');
+      
+        const learning_appurl = 'https://xbug.online/view-content-link/';
+        contentList.forEach((content) => {
+            content.link = learning_appurl + content.id + '/' + content.name.replace(/ /g, '~');
+        });
 
         var values =  typeof user_vector.values === 'string' ? JSON.parse(user_vector.values || '{}') : user_vector.values;
         //console.log(values,user_vector.values)
