@@ -27,7 +27,7 @@
                 @if ($contents->image)
                     <img src="{{ asset('storage/' . $contents->image) }}" class="card-img-top"
                         alt="{{ $contents->name }}" onerror="console.log('Image failed to load:', this.src);"
-                        style="height: 180px; object-fit: cover;">
+                        style="object-fit: cover;">
                 @else
                     <div class="d-flex align-items-center justify-content-center card-img-top bg-primary text-white mb-3"
                         style="height: 200px; font-size: 48px; font-weight: bold;">
