@@ -323,6 +323,7 @@ const fetchVectorContent = async (req, res, next) => {
         if (!user_vector) {
 
             const rows = await knex('contents')
+                .whereNotNull('category_weight')
                 .orderByRaw('RAND()') // Use 'RANDOM()' for PostgreSQL
                 .limit(7);
 
