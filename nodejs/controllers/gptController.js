@@ -12,6 +12,14 @@ const HOST_URL = process.env.GPT_HOST;// Replace with your actual host URL
 const model = process.env.GPT_MODEL;
 const node_env = process.env.NODE_ENV;
 
+const getFinancialAdvice = async (req, res) =>{
+  try{
+    var list = await knex('financial_advice').where('status',1);
+    return res.status(200).json({advise_list: list})
+  }catch(error){
+    return res.status(500)
+  }
+}
 const fastResponse = async (req, res, next) => {
   const { prompt, estimate_word, information, tone, chat_history, contentList } = req.body;
   const user = req.user;
@@ -223,4 +231,4 @@ const pullModel = async (req, res) => {
 };
 
 
-module.exports = { fastResponse, slowResponse, loadModel, pullModel };
+module.exports = { fastResponse, slowResponse, loadModel, pullModel,getFinancialAdvice };
