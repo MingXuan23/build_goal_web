@@ -322,42 +322,28 @@ const fetchVectorContent = async (req, res, next) => {
 
         if (!user_vector) {
 
+            const rows = await knex('contents')
+                .orderByRaw('RAND()') // Use 'RANDOM()' for PostgreSQL
+                .limit(7);
 
-            var random_vector = Array(8)
-                .fill(0)
-                .map(() => parseFloat((Math.random() * (0.8 - 0.3) + 0.3).toFixed(2))); // Limit to 2 decimal places
-
-            const response = await axios.post(`${HOST_URL}/collections/content_collection/points/search`, {
-                vector: random_vector,
-                limit: 20
-            },
-                {
-                    headers: {
-                        'api-key': API_KEY,
-                        'Content-Type': 'application/json'
-                    }
-                });
             let contents = [];
 
-            if (response.data?.result) {
-                for (const item of response.data.result) {
+            for (const item of rows) {
+                const content = await knex('contents')
+                    .select('id', 'name', 'desc', 'link', 'image')
+                    .where({ id: item.id, status: 1 })
+                    .first();
 
-                    if (contents.length >= 7) break; // Stop if we already have 5 contents
-                    if (item.id) {
-                        const content = await knex('contents')
-                            .select('id', 'name', 'desc', 'link', 'image')
-                            .where({ id: item.id, status: 1 })
-                            .first();
-                        if (content) {
-                            // Use fallback image if content.image is null
-                            // content.image = content.image || 'https://xbug.online/assets/images/landing-page/3.png';
-                            // Use fallback link if content.link is null
-                            content.link = content.link || 'https://xbug.online/';
-                            contents.push(content);
-                        }
-                    }
+                if (content) {
+                    // Use fallback image if content.image is null
+                    content.image = content.image || 'https://xbug.online/assets/images/landing-page/3.png';
+                    // Use fallback link if content.link is null
+                    content.link = content.link || 'https://xbug.online/';
+                    contents.push(content);
                 }
             }
+
+
 
             return res.status(201).json(contents);
 
