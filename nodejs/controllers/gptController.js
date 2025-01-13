@@ -14,7 +14,7 @@ const node_env = process.env.NODE_ENV;
 
 const getFinancialAdvice = async (req, res) =>{
   try{
-    var list = await knex('financial_advice').where('status',1);
+    var list = await knex('financial_advice').select('name','desc').where('status',1);
     return res.status(200).json({advise_list: list})
   }catch(error){
     return res.status(500)
