@@ -17,6 +17,8 @@
     <script src="../../assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
     <!-- Main Theme Js -->
     <script src="../../assets/js/main.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Bootstrap Css -->
     <link id="style" href="../../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Style Css -->
@@ -41,6 +43,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.bootstrap5.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 
 
     <!-- Intro.js CSS -->

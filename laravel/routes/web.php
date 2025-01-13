@@ -14,9 +14,10 @@ use App\Http\Controllers\GPTChatBot;
 use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MicrolearningController;
+use App\Http\Controllers\SmartContractContentController;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\TransactionController; // Ensure you import the controller at the top
 
 
@@ -122,25 +123,25 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::get('/gpt-model', [GPTChatBot::class, 'showModelGpt'])->name('showModelGpt');
     Route::post('/update-gpt-model/{id}', [GPTChatBot::class, 'updateGptModel'])->name('updateGptModel');
     Route::get('/gpt-log', [GPTChatBot::class, 'showGptLog'])->name('showGptLog');
-    
+
     Route::get('/chatbot', [GPTChatBot::class, 'showChatBotAdmin'])->name('showChatBotAdmin');
     Route::get('/gpt-model', [GPTChatBot::class, 'showGptModel'])->name('showGptModel');
 
     Route::get('/email-notification-logs', [emailController::class, 'showNotificationLogs'])->name('showNotificationLogs');
     Route::post('/chatbot/send', [GPTChatBot::class, 'sendMessageAdmin'])->name('sendMessageAdmin');
     Route::post('/chatbot-analysis/send', [GPTChatBot::class, 'sendMessageAdminAnalysis'])->name('sendMessageAdminAnalysis');
-    
+
     Route::get('/email', [emailController::class, 'showEmail'])->name('showEmail');
     Route::post('/send-email', [emailController::class, 'sendEmail'])->name('sendEmail');
     Route::post('/send-email-to-all', [emailController::class, 'sendEmailToAll'])->name('sendEmailToAll');
     Route::get('/package', [AdminRouteController::class, 'showPackage'])->name('showPackage');
     Route::get('/email-status', [AdminRouteController::class, 'emailStatus'])->name('emailStatus');
     Route::post('/email-status/{id}', [AdminRouteController::class, 'emailStatusUpdate'])->name('emailStatusUpdate');
-    
-    
+
+
     Route::get('/card-logs', [EkycController::class, 'showCardLogs'])->name('showCardLogs');
     Route::get('/face-logs', [EkycController::class, 'showFaceLogs'])->name('showFaceLogs');
-    
+
     Route::post('/update-gpt-model-status/{id}', [GPTChatBot::class, 'updateGptModelStatus'])->name('updateGptModelStatus');
     Route::post('/approve-content/{id}', [ContentController::class, 'approveContent'])->name('approveContent');
     Route::post('/reject-content/{id}', [ContentController::class, 'rejectContent'])->name('rejectContent');
@@ -204,6 +205,7 @@ Route::prefix('organization')->middleware(['auth', 'role:2'])->group(function ()
     Route::get('/content-user-enrolled', [OrganizationRouteController::class, 'showContentUserEnrolledOrganization'])->name('showContentUserEnrolledOrganization');
     Route::get('/content-detail/{content_id}/{interaction_type}', [OrganizationRouteController::class, 'getContentDetailOrganization'])->name('getContentDetailOrganization');
 
+
     Route::get('/transaction-history-promote-content', [OrganizationRouteController::class, 'showTransactionHistoryPromoteContentOrg'])->name('showTransactionHistoryPromoteContentOrg');
     Route::get('/transaction-history-xbug-card', [OrganizationRouteController::class, 'showTransactionHistoryXbugCardOrg'])->name('showTransactionHistoryXbugCardOrg');
     Route::get('/transaction-history-xbug-ai', [OrganizationRouteController::class, 'showTransactionHistoryXbugAiOrg'])->name('showTransactionHistoryXbugAiOrg');
@@ -212,7 +214,7 @@ Route::prefix('organization')->middleware(['auth', 'role:2'])->group(function ()
     Route::post('/generate-description-micro', [GPTChatBot::class, 'generateDescriptionMicro'])->name('generateDescriptionMicro');
     Route::post('/generate-description-micro-1', [GPTChatBot::class, 'generateDescriptionGroq'])->name('generateDescriptionGroq');
     Route::post('/generate-description-micro-2', [GPTChatBot::class, 'generateDescriptionGroqMicro'])->name('generateDescriptionGroqMicro');
-    
+
     // Route::middleware(['ekycCheck'])->group(function () {
     Route::get('/content-management', [OrganizationRouteController::class, 'showContent'])->name('showContent');
     Route::get('/apply-content', [OrganizationRouteController::class, 'showAddContent'])->name('showAddContent');
@@ -260,22 +262,18 @@ Route::prefix('content-creator')->middleware(['auth', 'role:3'])->group(function
 
 Route::post('/payment', [ContentController::class, 'promoteContentPayment'])->name('promote-content.payment');
 Route::prefix('promote-content')->middleware(['auth', 'role:1|2|3'])->group(function () {
-  
-    Route::get('/receipt/{t_id}', [ContentController::class, 'promoteContentReceipt'])->name('promote-content.receipt');
 
-    
+    Route::get('/receipt/{t_id}', [ContentController::class, 'promoteContentReceipt'])->name('promote-content.receipt');
 });
 
 Route::prefix('xbug-stand')->middleware(['auth', 'role:1|2|3'])->group(function () {
     Route::get('/receipt/{t_id}', [ContentController::class, 'xbugStandReceipt'])->name('xbug-stand.receipt');
-
 });
 
 Route::post('/apply-chatbot', [GPTChatBot::class, 'applyChatBot'])->name('applyChatBot');
 Route::prefix('gpt-payment')->middleware(['auth', 'role:1|2|3'])->group(function () {
-  
-    Route::get('/receipt/{id}', [GPTChatBot::class, 'xbugGptReceipt'])->name('xbugGptReceipt');
 
+    Route::get('/receipt/{id}', [GPTChatBot::class, 'xbugGptReceipt'])->name('xbugGptReceipt');
 });
 
 
@@ -304,3 +302,7 @@ Route::get('/deeplink/{id}', [ContentController::class, 'deeplink'])->name('deep
 Route::get('/guest/{card_id}', [ContentController::class, 'guest'])->name('guest');
 Route::post('/guest/{card_id}/register', [ContentController::class, 'registerGuestContent'])->name('registerGuestContent');
 Route::get('/verify-action', [ContentController::class, 'verifyAction'])->name('content.verify-action');
+// Route::get('/test-smartcontract-log', function () {
+//     Log::channel('smartcontract')->info('This is a test log entry for smartcontract channel.');
+//     return 'Test log entry created.';
+// });

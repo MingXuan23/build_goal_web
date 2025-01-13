@@ -81,6 +81,22 @@
                         </li>
                     </ul>
                 </li>
+
+                {{-- <li class="slide has-sub"
+                    data-intro="This menu displays content-related activities, such as content that users have viewed or enrolled in."
+                    data-step="5">
+                    <a href="javascript:void(0);" class="side-menu__item ">
+                        <i class='bx bxs-wallet-alt side-menu__icon'></i>
+                        <span class="side-menu__label">Smart Contract</span>
+                        <i class="fe fe-chevron-right side-menu__angle"></i>
+                    </a>
+                    <!-- Child Menu Activity -->
+                    <ul class="slide-menu child1">
+                        <li class="slide">
+                            <a href="{{route('showContentBlockchainOrg')}}" class="side-menu__item">Deploy Smart Contract</a>
+                        </li>
+                    </ul>
+                </li> --}}
                 <!-- End::Content Activity Menu -->
 
                 <!-- Start::Transaction History Menu -->
@@ -108,6 +124,9 @@
                 <!-- End::Transaction History Menu -->
 
                 <!-- Start::Notifications Menu -->
+                <li class="slide__category mt-1">
+                    <span class="category-name">System</span>
+                </li>
                 <li class="slide has-sub"
                     data-intro="Menu to display your latest notifications."
                     data-step="7">
@@ -126,7 +145,7 @@
                 <!-- End::Notifications Menu -->
 
                 <!-- Start::xBUG Ai Menu -->
-                <li class="slide__category mt-4">
+                <li class="slide__category">
                     <span class="category-name">xBUG Ai (Premium)</span>
                 </li>
                 <li class="slide has-sub"

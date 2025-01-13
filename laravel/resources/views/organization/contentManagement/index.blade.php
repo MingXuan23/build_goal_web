@@ -54,7 +54,7 @@
                 <div class="col-xl-12">
                     <div class="card custom-card">
                         <div class="card-header">
-                            <div class="card-title">Approved Content</div>
+                            <div class="card-title">List of Content</div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">

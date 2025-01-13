@@ -91,13 +91,68 @@
                 <div class="main-header-dropdown dropdown-menu dropdown-menu-end" data-popper-placement="none">
                     <div class="p-3 d-flex">
                         <div class="d-flex align-items-center justify-content-between">
-                            <p class="mb-0 fs-17 fw-semibold">Your Role</p>
+                            <p class="mb-0 fs-17 fw-semibold">App</p>
                         </div>
                     </div>
                     <div>
                         <hr class="dropdown-divider">
                     </div>
-
+                    <ul class="list-unstyled mb-0" id="header-notification-scroll">
+                        <li class="dropdown-item">
+                            <div class="d-flex align-items-center">
+                                <div class="pe-2">
+                                    <span class="avatar avatar-md text-success avatar-rounded">
+                                        <i class="bx bxs-user-circle fs-34"></i>
+                                    </span>
+                                </div>
+                                <div class="flex-grow-1 d-flex align-items-center justify-content-between p-2">
+                                    <div>
+                                        <span class="mb-0 fw-semibold p-2">
+                                            <a
+                                                href="{{ env('XBUG_URL') .'/'.'organization/dashboard' }}">xBUG WEB</a>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <a  href="{{ env('XBUG_URL') .'/'.'organization/dashboard' }}"
+                                            class="min-w-fit-content text-muted me-1 dropdown-item-close1">
+                                            <i class="bx bx-right-arrow-alt fs-22"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="dropdown-item">
+                            <div class="d-flex align-items-center">
+                                <div class="pe-2">
+                                    <span class="avatar avatar-md text-dark avatar-rounded">
+                                        <i class="bx bxs-user-circle fs-34"></i>
+                                    </span>
+                                </div>
+                                <div class="flex-grow-1 d-flex align-items-center justify-content-between p-2">
+                                    <div>
+                                        <span class="mb-0 fw-semibold p-2">
+                                            <a
+                                                href="{{env('XBUG_BLOCKCHAIN_URL')}}/protected/dashboard">xBUG Blockchain WEB</a>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <a  href="/protected/dashboard"
+                                            class="min-w-fit-content text-muted me-1 dropdown-item-close1">
+                                            <i class="bx bx-right-arrow-alt fs-22"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="p-3 mt-2 d-flex">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <p class="mb-0 fs-17 fw-semibold">Role</p>
+                        </div>
+                    </div>
+                    <div>
+                        <hr class="dropdown-divider">
+                    </div>
                     <ul class="list-unstyled mb-0" id="header-notification-scroll">
                         @foreach ($userRoles as $role)
                             @php

@@ -126,6 +126,12 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+        
+        'smartcontract' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/laravel.smartcontract.log'),
+            'level' => 'debug', // Adjust the log level as needed (e.g., 'error', 'info')
+        ],
     ],
 
 ];
