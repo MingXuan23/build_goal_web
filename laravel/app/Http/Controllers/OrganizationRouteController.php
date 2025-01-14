@@ -80,7 +80,6 @@ class OrganizationRouteController extends Controller
                 'u.ekyc_signature',
                 'u.is_gpt',
                 'u.gpt_status',
-                'u.is_smart_contract',
                 'u.is_smart_contract_status',
                 'o.name',
                 'o.desc',
@@ -195,7 +194,7 @@ class OrganizationRouteController extends Controller
                     $button =
                         '<div class="d-flex">
                         <span class=" text-success p-2 me-1 fw-bold">
-                             <i class="bi bi-circle-fill"></i> APPROVED <span class="fw-bold text-'.$color.'">['. $status  .']</span>
+                             <i class="bi bi-circle-fill"></i> APPROVED <span class="fw-bold text-' . $color . '">[' . $status  . ']</span>
                         </span>
                     </div>';
                 } elseif ($row->reason_phrase == 'PENDING') {
@@ -310,7 +309,7 @@ class OrganizationRouteController extends Controller
 
 
 
-            $table->rawColumns(['status', 'action', 'card','action_update']);
+            $table->rawColumns(['status', 'action', 'card', 'action_update']);
             return $table->make(true);
         }
 
@@ -1009,6 +1008,46 @@ class OrganizationRouteController extends Controller
             'successTransactions' => $successTransactions,
             'pendingTransactions' => $pendingTransactions,
             'failedTransactions' => $failedTransactions,
+        ]);
+    }
+
+    public function redirectSmartContractOrg(Request $request)
+    {
+        // Ambil data user (contoh)
+        $user = Auth::user();
+
+        // Validasi 1: Premium Feature (is_gpt)
+        if ($user->is_gpt === 0) {
+            $errorMessage = "[NOTICE] This feature is available exclusively for premium account holders. "
+                . "Please upgrade to a premium account to access this functionality. "
+                . "For more details, contact us at [help-center@xbug.online].";
+
+            return view('organization.contentBlockchain.index', [
+                'errorMessage' => $errorMessage,
+                'xBugBlockchainUrl' => null,
+                'redirect'     => false,
+            ]);
+        }
+
+        // Validasi 2: Eligible for Smart Contract (is_smart_contract)
+
+        // Validasi 3: Status Tidak Diblokir (is_smart_contract_status)
+        if ($user->is_smart_contract_status === 0) {
+            $errorMessage = "[NOTICE] Access to xBug Smart Contract has been restricted for your account. "
+                . "For assistance, please contact us at [help-center@xbug.online].";
+
+            return view('organization.contentBlockchain.index', [
+                'errorMessage' => $errorMessage,
+                'xBugBlockchainUrl' => null,
+                'redirect'     => false,
+            ]);
+        }
+
+        // Jika semua lolos validasi:
+        return view('organization.contentBlockchain.index', [
+            'errorMessage'      => null,
+            'redirect'          => true,
+            'xBugBlockchainUrl' => env('XBUG_BLOCKCHAIN_URL'),
         ]);
     }
 }

@@ -109,12 +109,12 @@
                                     <div>
                                         <span class="mb-0 fw-semibold p-2">
                                             <a
-                                                href="{{ env('XBUG_URL') .'/'.'organization/dashboard' }}">xBUG WEB</a>
+                                                href="/organization/dashboard">xBUG WEB</a>
                                         </span>
                                     </div>
                                     <div>
-                                        <a  href="{{ env('XBUG_URL') .'/'.'organization/dashboard' }}"
-                                            class="min-w-fit-content text-muted me-1 dropdown-item-close1">
+                                        <a  href="/organization/dashboard"
+                                            class="min-w-fit-content text-muted me-1 dropdown-item-close1" >
                                             <i class="bx bx-right-arrow-alt fs-22"></i>
                                         </a>
                                     </div>
@@ -132,16 +132,30 @@
                                     <div>
                                         <span class="mb-0 fw-semibold p-2">
                                             <a
-                                                href="{{env('XBUG_BLOCKCHAIN_URL')}}/protected/dashboard">xBUG Blockchain WEB</a>
+                                                href="{{route('redirectSmartContractOrg')}}">xBUG Blockchain WEB</a>
                                         </span>
                                     </div>
                                     <div>
-                                        <a  href="/protected/dashboard"
+                                        <a  href="{{route('redirectSmartContractOrg')}}"
                                             class="min-w-fit-content text-muted me-1 dropdown-item-close1">
                                             <i class="bx bx-right-arrow-alt fs-22"></i>
                                         </a>
                                     </div>
                                 </div>
+                                {{-- <div class="flex-grow-1 d-flex align-items-center justify-content-between p-2">
+                                    <div>
+                                        <span class="mb-0 fw-semibold p-2">
+                                            <a
+                                                href="{{env('XBUG_BLOCKCHAIN_URL')}}/protected/dashboard" target="_blank">xBUG Blockchain WEB</a>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <a  href="{{env('XBUG_BLOCKCHAIN_URL')}}/protected/dashboard" target="_blank"
+                                            class="min-w-fit-content text-muted me-1 dropdown-item-close1">
+                                            <i class="bx bx-right-arrow-alt fs-22"></i>
+                                        </a>
+                                    </div>
+                                </div> --}}
                             </div>
                         </li>
                     </ul>

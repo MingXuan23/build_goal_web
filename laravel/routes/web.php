@@ -230,6 +230,8 @@ Route::prefix('organization')->middleware(['auth', 'role:2'])->group(function ()
     // Route::get('/promote-content', function () use ($states_list) {
     //     return view('organization.contentManagement.promoteContent', compact('states_list'));
     // });
+    Route::get('/smart-contract-redirect', [OrganizationRouteController::class, 'redirectSmartContractOrg'])->name('redirectSmartContractOrg');
+
 
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('organization.logout');
 });
