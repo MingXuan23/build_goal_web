@@ -147,13 +147,16 @@
                                         <span class="mb-3 h6 fw-normal">Select Roles You Want to Send: </span>
                                         <div class="form-check mb-3 form-check-lg d-flex">
                                             @foreach ($roles as $role)
-                                                <input class="form-check-input" type="checkbox" name="roles[]"
-                                                    value="{{ $role->id }}"
-                                                    id="{{ $role->role }}-{{ $role->id }}">
-                                                <label class="form-check-label me-5"
-                                                    for="{{ $role->role }}-{{ $role->id }}">
-                                                    {{ ucfirst(str_replace('_', ' ', $role->role)) }}
-                                                </label>
+                                                @if ($role->id ===3)
+                                                @else
+                                                    <input class="form-check-input" type="checkbox" name="roles[]"
+                                                        value="{{ $role->id }}"
+                                                        id="{{ $role->role }}-{{ $role->id }}">
+                                                    <label class="form-check-label me-5"
+                                                        for="{{ $role->role }}-{{ $role->id }}">
+                                                        {{ ucfirst(str_replace('_', ' ', $role->role)) }}
+                                                    </label>
+                                                @endif
                                             @endforeach
                                         </div>
                                     </div>
@@ -323,6 +326,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('showEmail') }}",
+                pageLength: 50,
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',

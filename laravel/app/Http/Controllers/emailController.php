@@ -49,6 +49,7 @@ class emailController extends Controller
                 'u.ekyc_signature',
                 'u.is_gpt',
                 'u.gpt_status',
+                'is_smart_contract_status',
             )
             ->orderby('u.created_at', 'asc')
             ->get();
@@ -287,5 +288,51 @@ class emailController extends Controller
 
             return back()->with('error', 'Failed to send email to all users: ' . $e->getMessage());
         }
+    }
+
+    public function showNotificationBlockchainAdmin(Request $request)
+    {
+        $logs = DB::table('email_logs')
+            ->select([
+                'id',
+                'email_type',
+                'recipient_email',
+                'from_email',
+                'name',
+                'status',
+                'response_data',
+                'created_at'
+            ])
+            ->whereIn('email_type', ['SMART CONTRACT'])
+            ->orderBy('id', 'desc')
+            ->get();
+        if ($request->ajax()) {
+
+            $table = DataTables::of($logs)->addIndexColumn();
+            $table->addColumn('status', function ($row) {
+                $statusClass = $row->status === 'SUCCESS' ? 'success' : 'danger';
+                return '<span class="badge bg-' . $statusClass . ' p-2">' . $row->status . '</span>';
+            });
+            $table->addColumn('action', function ($row) {
+                $button = '<div class="d-flex justify-content-center align-items-center">
+                                <button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2"
+                                        data-bs-toggle="modal" data-bs-target="#modalView-' . $row->id . '">
+                                        <i class="ri-eye-line fw-bold"></i>
+                                    </button>
+                            </div>
+                    ';
+                return $button;
+            });
+
+
+            $table->rawColumns(['status', 'action']);
+
+            return $table->make(true);
+        }
+
+
+        return view('admin.email.blockchain-log', [
+            'datas' => $logs
+        ]);
     }
 }

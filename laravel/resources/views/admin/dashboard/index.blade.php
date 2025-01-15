@@ -136,8 +136,9 @@
                             <div class="card custom-card">
                                 <div class="card-body p-0">
                                     <div class="row g-0">
+                                        <p class=" text-primary m-3">Contents</p>
                                         <div class="col-xl-3 border-end border-inline-end-dashed">
-                                            <div class="d-flex flex-wrap align-items-top p-4">
+                                            <div class="d-flex flex-wrap align-items-top p-1 mb-3 m-0 ms-4">
                                                 <div class="me-3 lh-1">
                                                     <span class="avatar avatar-md avatar-rounded bg-primary shadow-sm">
                                                         <i class="ti ti-files fs-18"></i>
@@ -145,12 +146,12 @@
                                                 </div>
                                                 <div class="flex-fill mt-1">
                                                     <h5 class="fw-semibold mb-1">{{ $totalContents }}</h5>
-                                                    <p class="text-muted mb-0 fs-12">Total Contents</p>
+                                                    <p class="text-muted mb-0 fs-12">Total</p>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-xl-3 border-end border-inline-end-dashed">
-                                            <div class="d-flex flex-wrap align-items-top p-4">
+                                            <div class="d-flex flex-wrap align-items-top p-1 mb-3 ms-4">
                                                 <div class="me-3 lh-1">
                                                     <span class="avatar avatar-md avatar-rounded bg-success shadow-sm">
                                                         <i class="ti ti-file-check fs-18"></i>
@@ -158,12 +159,12 @@
                                                 </div>
                                                 <div class="flex-fill mt-1">
                                                     <h5 class="fw-semibold mb-1">{{ $approvedCount }}</h5>
-                                                    <p class="text-muted mb-0 fs-12">Approved Contents</p>
+                                                    <p class="text-muted mb-0 fs-12">Approved</p>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-xl-3 border-end border-inline-end-dashed">
-                                            <div class="d-flex flex-wrap align-items-top p-4">
+                                            <div class="d-flex flex-wrap align-items-top p-1 mb-3 ms-4">
                                                 <div class="me-3 lh-1">
                                                     <span class="avatar avatar-md avatar-rounded bg-warning shadow-sm">
                                                         <i class="ti ti-file fs-18"></i>
@@ -171,12 +172,12 @@
                                                 </div>
                                                 <div class="flex-fill mt-1">
                                                     <h5 class="fw-semibold mb-1">{{ $pendingCount }}</h5>
-                                                    <p class="text-muted mb-0 fs-12">Pending Contents</p>
+                                                    <p class="text-muted mb-0 fs-12">Pending</p>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-xl-3">
-                                            <div class="d-flex flex-wrap align-items-top p-4">
+                                            <div class="d-flex flex-wrap align-items-top p-1 mb-3 ms-4">
                                                 <div class="me-3 lh-1">
                                                     <span class="avatar avatar-md avatar-rounded bg-danger shadow-sm ">
                                                         <i class="ti ti-file-dislike fs-18"></i>
@@ -184,7 +185,73 @@
                                                 </div>
                                                 <div class="flex-fill mt-1">
                                                     <h5 class="fw-semibold mb-1">{{ $rejectedCount }}</h5>
-                                                    <p class="text-muted mb-0 fs-12">Rejected Contents</p>
+                                                    <p class="text-muted mb-0 fs-12">Rejected</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card custom-card">
+                                <div class="card-body p-0">
+                                    <div class="row g-0">
+                                        <p class=" text-primary m-3">Blockchain Smart Contract</p>
+                                        <div class="col-xl-3 border-end border-inline-end-dashed">
+                                            <div class="d-flex flex-wrap align-items-top p-1 mb-3 ms-4">
+                                                <div class="me-3 lh-1">
+                                                    <span class="avatar avatar-md avatar-rounded bg-primary shadow-sm">
+                                                        <i class="ti ti-files fs-18"></i>
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill mt-1">
+                                                    <h5 class="fw-semibold mb-1">{{ $totalContents }}</h5>
+                                                    <p class="text-muted mb-0 fs-12">Can Deploy</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-3 border-end border-inline-end-dashed">
+                                            <div class="d-flex flex-wrap align-items-top p-1 mb-3 ms-4">
+                                                <div class="me-3 lh-1">
+                                                    <span class="avatar avatar-md avatar-rounded bg-light shadow-sm">
+                                                        <i class="ti ti-file-check fs-18 text-dark"></i>
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill mt-1">
+                                                    <h5 class="fw-semibold mb-1">{{ $totalSC }}</h5>
+                                                    <p class="text-muted mb-0 fs-12">Requested</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-3 border-end border-inline-end-dashed">
+                                            <div class="d-flex flex-wrap align-items-top p-1 mb-3 ms-4">
+                                                <div class="me-3 lh-1">
+                                                    <span class="avatar avatar-md avatar-rounded bg-success shadow-sm">
+                                                        <i class="ti ti-file fs-18"></i>
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill mt-1">
+                                                    <h5 class="fw-semibold mb-1">{{ $approvedCountSC }}</h5>
+                                                    <p class="text-muted mb-0 fs-12">Success Deployed</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-3">
+                                            <div class="d-flex flex-wrap align-items-top p-1 mb-3 ms-4">
+                                                <div class="me-3 lh-1">
+                                                    <span class="avatar avatar-md avatar-rounded bg-danger shadow-sm ">
+                                                        <i class="ti ti-file-dislike fs-18"></i>
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill mt-1">
+                                                    <h5 class="fw-semibold mb-1">{{ $rejectedCountSC }}</h5>
+                                                    <p class="text-muted mb-0 fs-12">Fail Deployed</p>
                                                 </div>
                                             </div>
                                         </div>

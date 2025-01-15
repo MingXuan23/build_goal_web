@@ -364,6 +364,16 @@ class AdminRouteController extends Controller
         $rejectedCount = $contentCounts->where('reason_phrase', 'REJECTED')->first()->count ?? 0;
         $pendingCount = $contentCounts->where('reason_phrase', 'PENDING')->first()->count ?? 0;
 
+        $smart_contract = DB::table('smart_contract')
+            ->select('status_contract', DB::raw('COUNT(*) as count'))
+            ->groupBy('status_contract')
+            ->get();
+        $totalSC = DB::table('smart_contract')->count();
+        $approvedCountSC = $smart_contract->where('status_contract', 1)->first()->count ?? 0;
+        $rejectedCountSC = $smart_contract->where('status_contract', 0)->first()->count ?? 0;
+
+
+
 
         return view('admin.dashboard.index', compact(
             'userCounts',
@@ -383,6 +393,9 @@ class AdminRouteController extends Controller
             'totalGpt',
             'totalGptBlock',
             'totalUserHaveOneRole',
+            'totalSC',
+            'approvedCountSC',
+            'rejectedCountSC'
         ));
     }
     public function showProfile(Request $request)

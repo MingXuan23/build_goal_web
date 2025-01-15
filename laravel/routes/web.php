@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminRouteController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BlockchainController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\ContentCreatorRouteController;
@@ -107,6 +108,9 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::get('/content-user-enrolled', [AdminRouteController::class, 'showContentUserEnrolled'])->name('showContentUserEnrolled');
     Route::get('/content-detail/{content_id}/{interaction_type}', [AdminRouteController::class, 'getContentDetail'])->name('content.detail');
     Route::get('/transaction/{id}', [AdminRouteController::class, 'showReceipt'])->name('showReceipt');
+    Route::get('/view-content-blockchain', [BlockchainController::class, 'showContentBlockchainAdmin'])->name('showContentBlockchainAdmin');
+    Route::get('/smart-contract/{id}/logs', [BlockchainController::class, 'getLogs'])->name('smartContract.getLogs');
+    Route::get('/blockchain-notification-log', [emailController::class, 'showNotificationBlockchainAdmin'])->name('showNotificationBlockchainAdmin');
 
     Route::get('/transaction-history-promote-content', [AdminRouteController::class, 'showTransactionHistoryPromoteContent'])->name('showTransactionHistoryPromoteContent');
     Route::get('/transaction-history-xbug-card', [AdminRouteController::class, 'showTransactionHistoryXbugCard'])->name('showTransactionHistoryXbugCard');

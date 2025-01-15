@@ -78,7 +78,7 @@
             @endphp
 
             <div class="header-element"
-                 data-intro="Manage your roles and access different dashboards here."
+                 data-intro="Manage your roles and access different xBug APP here."
                  data-step="15">
                 <!-- Start::header-link|dropdown-toggle -->
                 <a href="javascript:void(0);" class="header-link dropdown-toggle" data-bs-toggle="dropdown"
