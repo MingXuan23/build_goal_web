@@ -14,7 +14,7 @@
     <meta name="keywords" content="xBug, xBug Content, xbug">
 
     <!-- Favicon -->
-    
+
 
     <!-- Main Theme Js -->
     <script src="assets/js/authentication-main.js"></script>
@@ -82,7 +82,9 @@
     <div class="container">
         <div class="row justify-content-center align-items-center authentication authentication-basic h-100">
             <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-8 col-sm-10 col-12">
-
+                <div class=" d-flex justify-content-center">
+                    <h4 class="fw-bold text-primary mb-4">xBug - An Integrated System</h4>
+                </div>
                 @if (session()->has('success'))
                     <div class="alert alert-success alert-dismissible d-flex align-items-center" role="alert">
                         <i class="bi bi-check-circle-fill fs-4"></i>
