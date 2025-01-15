@@ -11,8 +11,7 @@
     <title> xBug | Register </title>
     <meta name="Description" content="xBug">
     <meta name="Author" content="xBug Inc">
-    <meta name="keywords"
-        content="xBug, xBug Content, xbug">
+    <meta name="keywords" content="xBug, xBug Content, xbug">
 
     <!-- Favicon -->
     <link rel="icon" href="../assets/images/logo.ico" type="image/x-icon">
@@ -29,6 +28,7 @@
     <!-- Icons Css -->
     <link href="../assets/css/icons.min.css" rel="stylesheet">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 
     <style>
 
@@ -57,7 +57,8 @@
                     <div class="card-body">
 
                         <div class="p-3">
-                            <a href="/login" class="text-decoration-underline fw-bold "><i class="bi bi-arrow-left fw-bold"></i> Back</a>
+                            <a href="/login" class="text-decoration-underline fw-bold "><i
+                                    class="bi bi-arrow-left fw-bold"></i> Back</a>
                             <p class="h5 fw-bold mb-2 mt-2">Sign Up for Organization</p>
                             <p class="mb-4 text-muted op-7 fw-normal ">Welcome & Join us by creating a free account
                                 !</p>
@@ -80,7 +81,7 @@
                                                     <input type="number"
                                                         class="form-control @error('icno') is-invalid @enderror"
                                                         id="floatingInputprimary" placeholder="name@example.com"
-                                                        name="icno" value="{{ $noPengenalan}}" readonly>
+                                                        name="icno" value="{{ $noPengenalan }}" readonly>
                                                     <label for="floatingInputprimary">Ic Number</label>
                                                     @error('icno')
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
@@ -92,7 +93,7 @@
                                                     <input type="text"
                                                         class="form-control @error('fullname') is-invalid @enderror"
                                                         id="floatingInputprimary" placeholder="name@example.com"
-                                                        name="fullname" value="{{$name}}" readonly>
+                                                        name="fullname" value="{{ $name }}" readonly>
                                                     <label for="floatingInputprimary">Full Name</label>
                                                     @error('fullname')
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
@@ -104,18 +105,14 @@
                                                     <span class="input-group-text">+60</span>
                                                     <input type="number"
                                                         class="form-control @error('phoneno') is-invalid @enderror p-3"
-                                                        id="floatingInputprimary"
-                                                        placeholder="Phone Number"
-                                                        name="phoneno"
-                                                        value="{{ old('phoneno') }}"
-                                                        maxlength="12" 
-                                                        oninput="validateInput(this)"
-                                                    >
-                                                   
+                                                        id="floatingInputprimary" placeholder="Phone Number"
+                                                        name="phoneno" value="{{ old('phoneno') }}" maxlength="12"
+                                                        oninput="validateInput(this)">
+
                                                 </div>
                                                 @error('phoneno')
-                                                <span class="mb-1 text-danger">{{ $message }}</span>
-                                            @enderror
+                                                    <span class="mb-1 text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
 
                                             <div class="col-xl-12">
@@ -169,7 +166,8 @@
                                                         class="form-control @error('email') is-invalid @enderror"
                                                         id="floatingInputprimary" placeholder="name@example.com"
                                                         name="email" value="{{ old('email') }}">
-                                                    <label for="floatingInputprimary">Organization Email Address</label>
+                                                    <label for="floatingInputprimary">Organization Email
+                                                        Address</label>
                                                     @error('email')
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
                                                     @enderror
@@ -189,13 +187,14 @@
                                             </div>
                                             <div class="col-xl-12">
                                                 <div class="form-floating">
-                                                    <select class="form-select @error('ostate') is-invalid @enderror" 
-                                                            id="floatingSelect" 
-                                                            aria-label="Floating label select example" 
-                                                            name="ostate">
+                                                    <select class="form-select @error('ostate') is-invalid @enderror"
+                                                        id="floatingSelect" aria-label="Floating label select example"
+                                                        name="ostate">
                                                         <option selected>- Select State -</option>
-                                                        @foreach($states as $state)
-                                                            <option value="{{ $state->name }}" @selected(old('ostate') == $state->name)>{{ $state->name }}</option>
+                                                        @foreach ($states as $state)
+                                                            <option value="{{ $state->name }}"
+                                                                @selected(old('ostate') == $state->name)>{{ $state->name }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                     <label for="floatingSelect">State</label>
@@ -203,7 +202,7 @@
                                                         <span class="mb-1 text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
-                                                
+
                                             </div>
                                             <div class="col-xl-12">
                                                 <div class="form-floating">
@@ -212,7 +211,9 @@
                                                         name="otype">
                                                         <option selected>- Select -</option>
                                                         @foreach ($organization_types as $ot)
-                                                            <option value="{{ $ot->id }}" @selected(old('otype') == $ot->id)>{{ $ot->type }}</option>
+                                                            <option value="{{ $ot->id }}"
+                                                                @selected(old('otype') == $ot->id)>{{ $ot->type }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                     <label for="floatingSelect">Organization Type</label>
@@ -225,9 +226,13 @@
                                     </div>
                                     <center>
                                         <div class="col-md-12 col-sm-12 col-xl-12 d-grid mt-3">
-                                            <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"
+                                            {{-- <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"
                                                 style="transform:scale(0.60);-webkit-transform:scale(0.90);transform-origin:0 0;-webkit-transform-origin:0 0;">
-                                            </div>
+                                            </div> --}}
+                                            <div class="cf-turnstile"
+                                                data-sitekey="{{ env('CLOUDFLARE_RECAPTCHA_SITE_KEY') }}"
+                                                data-theme="light"></div>
+
                                         </div>
                                     </center>
 

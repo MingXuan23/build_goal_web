@@ -29,6 +29,7 @@
     <!-- Icons Css -->
     <link href="../assets/css/icons.min.css" rel="stylesheet">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 
 
 </head>
@@ -496,6 +497,9 @@
     <div class="container-lg">
         <div class="row justify-content-center align-items-center authentication authentication-basic h-100">
             <div class="col-md-4">
+                <div class=" d-flex justify-content-center">
+                    <h4 class="fw-bold text-primary mb-4">xBug - An Integrated System</h4>
+                </div>
                 @if (session()->has('success'))
                     <div class="alert alert-success alert-dismissible d-flex align-items-center" role="alert">
                         <i class="bi bi-check-circle-fill fs-4"></i>
@@ -521,9 +525,9 @@
                         aria-label="Close"></button>
                 </div>
                 @endif
-                <div class=" d-flex justify-content-center">
+                {{-- <div class=" d-flex justify-content-center">
                     <h4 class="fw-bold text-primary mb-4">xBug</h4>
-                </div>
+                </div> --}}
                 <div class="card custom-card">
                     <div class="card-body p-5">
                         <p class="h5 fw-semibold mb-2 text-center">Reset Your Password</p>
@@ -554,9 +558,10 @@
                                 </div>
                                 <center>
                                     <div class="col-md-12 col-sm-12 col-xl-12 d-grid mt-3">
-                                        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"
+                                        {{-- <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"
                                             style="transform:scale(0.60);-webkit-transform:scale(0.90);transform-origin:0 0;-webkit-transform-origin:0 0;">
-                                        </div>
+                                        </div> --}}
+                                        <div class="cf-turnstile" data-sitekey="{{ env('CLOUDFLARE_RECAPTCHA_SITE_KEY') }}" data-theme="light"></div>
                                     </div>
                                 </center>
                                 <div class="col-xl-12 d-grid mt-2">

@@ -69,6 +69,10 @@
     <link rel="stylesheet" href="assets/libs/prismjs/themes/prism-coy.min.css">
 
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.1/css/bootstrap.min.css"
+        integrity="sha512-siwe/oXMhSjGCwLn+scraPOWrJxHlUgMBMZXdPe2Tnk3I0x3ESCoLz7WZ5NTH6SZrywMY+PB1cjyqJ5jAluCOg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 
 
 </head>
@@ -165,9 +169,10 @@
 
                                     <center>
                                         <div class="col-md-12 col-sm-12 col-xl-12  d-grid">
-                                            <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"
+                                            {{-- <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"
                                                 style="transform:scale(0.60);-webkit-transform:scale(0.90);transform-origin:0 0;-webkit-transform-origin:0 0;">
-                                            </div>
+                                            </div> --}}
+                                            <div class="cf-turnstile" data-sitekey="{{ env('CLOUDFLARE_RECAPTCHA_SITE_KEY') }}" data-theme="light"></div>
 
                                         </div>
                                     </center>

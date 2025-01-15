@@ -93,16 +93,152 @@ class AuthController extends Controller
             'states' => $state
         ]);
     }
+    // public function createOrganizationRegister(Request $request)
+    // {
+    //     // dd($request->all());
+    //     $validatedData = $request->validate([
+    //         'icno' => 'required|digits:12|unique:users',
+    //         'fullname' => 'required',
+    //         'email' => [
+    //             'required',
+    //             'email',
+    //             // Rule::unique('organization', 'email'),
+    //             Rule::unique('users', 'email'),
+    //         ],
+    //         'phoneno' => 'required',
+    //         'password' => 'required|min:5',
+    //         'cpassword' => 'required|min:5|same:password',
+    //         'oname' => 'required',
+    //         'oaddress' => 'required',
+    //         'ostate' => 'required|exists:states,name',
+    //         'otype' => 'required|exists:organization_type,id',
+    //     ], [
+    //         'otype.in' => 'The selected organization type is invalid. Please choose a valid organization type.',
+    //         'ostate.in' => 'The selected state is invalid. Please choose a valid state.',
+    //     ], [
+    //         'icno' => 'IC Number',
+    //         'fullname' => 'Full Name',
+    //         'oemail' => 'Email',
+    //         'phoneno' => 'Phone Number',
+    //         'password' => 'Password',
+    //         'cpassword' => 'Confirm Passowrd',
+    //         'oname' => 'Organization Name',
+    //         'oaddress' => 'Organization Address',
+    //         'ostate' => 'Organization state',
+    //         'otype' => 'Organization Type',
+    //     ]);
+
+    //     $response = $request->input('g-recaptcha-response');
+    //     $secretKey = env('RECAPTCHA_SECRET_KEY');
+
+    //     $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+    //         'secret' => $secretKey,
+    //         'response' => $response,
+    //     ]);
+
+    //     $verifyResult = $verifyResponse->json();
+
+    //     // dd($verifyResult);
+
+    //     if (!$verifyResult['success']) {
+    //         return back()->with(['error' => 'Please verify that you are not a robot.']);
+    //     }
+
+    //     $validatedData['password'] = bcrypt(($validatedData['password']));
+    //     $validatedData['phoneno'] = '+60' . $validatedData['phoneno'];
+
+
+    //     DB::beginTransaction();
+    //     try {
+    //         // Insert ke tabel users
+    //         $verificationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+    //         $user = DB::table('users')->insertGetId([
+    //             'name' => $validatedData['fullname'],
+    //             'password' => $validatedData['password'],
+    //             'telno' => $validatedData['phoneno'],
+    //             'icNo' => $validatedData['icno'],
+    //             'address' => $validatedData['oaddress'],
+    //             'state' => $validatedData['ostate'],
+    //             'email' => $validatedData['email'],
+    //             'status' => 'ACTIVE',
+    //             'role' => json_encode([2]),
+    //             'active' => 1,
+    //             'email_status' => 'NOT VERIFY',
+    //             'verification_code' => $verificationCode,
+    //             'created_at' => now(),
+    //             'updated_at' => now(),
+    //         ]);
+
+
+    //         $validatedData['otype'] = (int) $validatedData['otype'];
+    //         $org_type = DB::table('organization_type')
+    //             ->where('id', $validatedData['otype'])
+    //             ->select('type')
+    //             ->first();
+
+    //         $organization = DB::table('organization')->insertGetId([
+    //             'name' => $validatedData['oname'],
+    //             'address' => $validatedData['oaddress'],
+    //             'state' => $validatedData['ostate'],
+    //             'email' => $validatedData['email'],
+    //             'org_type' => $org_type->type,
+    //             'created_at' => now(),
+    //             'updated_at' => now()
+    //         ]);
+
+    //         DB::table('organization_user')->insert([
+    //             'user_id' => $user,
+    //             'organization_id' => $organization,
+    //             'role_id' => 2,
+    //             'status' => 1,
+    //             'created_at' => now(),
+    //             'updated_at' => now()
+    //         ]);
+    //         Session::put('user_id', $user);
+
+
+    //         $logData = [
+    //             'email_type' => 'REGISTER ORGANIZATION',
+    //             'recipient_email' => $validatedData['email'],
+    //             'from_email' => 'admin@xbug.online',
+    //             'name' => $validatedData['fullname'],
+    //             'status' => 'SUCCESS',
+    //             'response_data' => 'Verification code send',
+    //             'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+    //             'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+    //         ];
+
+    //         DB::table('email_logs')->insert($logData);
+    //         DB::commit();
+    //         Mail::to($validatedData['email'])->send(new VerificationCodeMail($validatedData['fullname'], $verificationCode));
+
+    //         return redirect(route('viewVerify'))->with('success', 'Registration successfull. Please check your Inbox or Spam email to get verification code to active your account');
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         $logData = [
+    //             'email_type' => 'REGISTER ORGANIZATION',
+    //             'recipient_email' => $validatedData['email'],
+    //             'from_email' => 'admin@xbug.online',
+    //             'name' => $validatedData['fullname'],
+    //             'status' => 'FAILED',
+    //             'response_data' => 'ERROR',
+    //             'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+    //             'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+    //         ];
+
+    //         DB::table('email_logs')->insert($logData);
+    //         return back()->withError('Error EDE' . $e->getLine() . ' : ' . $e->getMessage());
+    //     }
+    // }
     public function createOrganizationRegister(Request $request)
     {
-        // dd($request->all());
+        // Validate input
         $validatedData = $request->validate([
             'icno' => 'required|digits:12|unique:users',
             'fullname' => 'required',
             'email' => [
                 'required',
                 'email',
-                // Rule::unique('organization', 'email'),
                 Rule::unique('users', 'email'),
             ],
             'phoneno' => 'required',
@@ -121,36 +257,40 @@ class AuthController extends Controller
             'oemail' => 'Email',
             'phoneno' => 'Phone Number',
             'password' => 'Password',
-            'cpassword' => 'Confirm Passowrd',
+            'cpassword' => 'Confirm Password',
             'oname' => 'Organization Name',
             'oaddress' => 'Organization Address',
             'ostate' => 'Organization state',
             'otype' => 'Organization Type',
         ]);
 
-        $response = $request->input('g-recaptcha-response');
-        $secretKey = env('RECAPTCHA_SECRET_KEY');
+        // Get the Turnstile response from the form
+        $response = $request->input('cf-turnstile-response');
+        $secretKey = env('CLOUDFLARE_TURNSTILE_SECRET_KEY'); // Add your Turnstile secret key to the .env file
 
-        $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+        // Get the user's IP address (optional)
+        $ip = $request->ip();
+
+        // Call the Cloudflare Turnstile siteverify API
+        $verifyResponse = Http::asJson()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
             'secret' => $secretKey,
             'response' => $response,
+            'remoteip' => $ip,
         ]);
 
         $verifyResult = $verifyResponse->json();
 
-        // dd($verifyResult);
-
+        // Check if Turnstile verification was successful
         if (!$verifyResult['success']) {
             return back()->with(['error' => 'Please verify that you are not a robot.']);
         }
 
-        $validatedData['password'] = bcrypt(($validatedData['password']));
+        $validatedData['password'] = bcrypt($validatedData['password']);
         $validatedData['phoneno'] = '+60' . $validatedData['phoneno'];
-
 
         DB::beginTransaction();
         try {
-            // Insert ke tabel users
+            // Insert into the users table
             $verificationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
             $user = DB::table('users')->insertGetId([
                 'name' => $validatedData['fullname'],
@@ -169,67 +309,75 @@ class AuthController extends Controller
                 'updated_at' => now(),
             ]);
 
-
             $validatedData['otype'] = (int) $validatedData['otype'];
-            $org_type = DB::table('organization_type')
+            $orgType = DB::table('organization_type')
                 ->where('id', $validatedData['otype'])
                 ->select('type')
                 ->first();
 
+            // Insert into the organization table
             $organization = DB::table('organization')->insertGetId([
                 'name' => $validatedData['oname'],
                 'address' => $validatedData['oaddress'],
                 'state' => $validatedData['ostate'],
                 'email' => $validatedData['email'],
-                'org_type' => $org_type->type,
+                'org_type' => $orgType->type,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ]);
 
+            // Insert into the organization_user table
             DB::table('organization_user')->insert([
                 'user_id' => $user,
                 'organization_id' => $organization,
                 'role_id' => 2,
                 'status' => 1,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ]);
+
             Session::put('user_id', $user);
 
-
+            // Log email sending
             $logData = [
                 'email_type' => 'REGISTER ORGANIZATION',
                 'recipient_email' => $validatedData['email'],
                 'from_email' => 'admin@xbug.online',
                 'name' => $validatedData['fullname'],
                 'status' => 'SUCCESS',
-                'response_data' => 'Verification code send',
+                'response_data' => 'Verification code sent',
                 'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                 'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
             ];
 
             DB::table('email_logs')->insert($logData);
             DB::commit();
+
+            // Send verification email
             Mail::to($validatedData['email'])->send(new VerificationCodeMail($validatedData['fullname'], $verificationCode));
 
-            return redirect(route('viewVerify'))->with('success', 'Registration successfull. Please check your Inbox or Spam email to get verification code to active your account');
+            return redirect(route('viewVerify'))->with('success', 'Registration successful. Please check your Inbox or Spam folder for the verification code to activate your account.');
         } catch (\Exception $e) {
             DB::rollBack();
+
+            // Log email sending failure
             $logData = [
                 'email_type' => 'REGISTER ORGANIZATION',
                 'recipient_email' => $validatedData['email'],
                 'from_email' => 'admin@xbug.online',
                 'name' => $validatedData['fullname'],
                 'status' => 'FAILED',
-                'response_data' => 'ERROR',
+                'response_data' => 'ERROR: ' . $e->getMessage(),
                 'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                 'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
             ];
 
             DB::table('email_logs')->insert($logData);
-            return back()->withError('Error EDE' . $e->getLine() . ' : ' . $e->getMessage());
+
+            return back()->withError('An error occurred: ' . $e->getMessage());
         }
     }
+
     public function createContentCreatorRegister(Request $request)
     {
         $validatedData = $request->validate([
@@ -351,29 +499,115 @@ class AuthController extends Controller
             return back()->withError('Error EDE' . $e->getLine() . ' : ' . $e->getMessage());
         }
     }
+    // public function login(Request $request)
+    // {
+    //     // dd($request->all());
+    //     $validatedData =  $request->validate([
+    //         'email' => 'required',
+    //         'password' => 'required|min:5',
+    //     ]);
+
+    //     $response = $request->input('g-recaptcha-response');
+    //     $secretKey = env('RECAPTCHA_SECRET_KEY');
+
+    //     $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+    //         'secret' => $secretKey,
+    //         'response' => $response,
+    //     ]);
+
+    //     $verifyResult = $verifyResponse->json();
+
+
+    //     if (!$verifyResult['success']) {
+    //         return back()->with(['error' => 'Please verify that you are not a robot.']);
+    //     }
+
+    //     $user = \App\Models\User::where('email', $validatedData['email'])->first();
+
+    //     // Check if the user exists
+    //     if (!$user) {
+    //         return back()->with('error', 'Invalid credentials. Please make sure your email and password is correct');
+    //     }
+
+    //     // Replace $2b$ with $2y$ in the stored password hash for compatibility
+    //     $userPasswordHash = str_replace('$2b$', '$2y$', $user->password);
+    //     $userPasswordHash = str_replace('$2a$', '$2y$', $userPasswordHash);
+
+    //     // Verify the password using Hash::check
+    //     if (Hash::check($validatedData['password'], $userPasswordHash)) {
+    //         Auth::login($user);
+
+    //         // Check if the user's email is not verified
+    //         if ($user->email_status === "NOT VERIFY") {
+    //             Session::put('user_id', $user->id);
+    //             $maskedEmail = $this->maskEmail($user->email);
+    //             return back()->with(
+    //                 'error',
+    //                 'Your account is not verified by email. <a class="fw-bold text-danger" href="' . route('resendVerify') . '">Click here</a> to get the verification code via email ' . $maskedEmail
+    //             );
+    //         }
+    //         if ($user->email_status === null) {
+    //             return back()->with(
+    //                 'error',
+    //                 'Your account is not verified by email and dont have email registered with us. contact us at [help-center@xbug.online] if this is a mistake.'
+    //             );
+    //         }
+
+    //         // Check if the user is blocked
+    //         if ($user->active !== 1) {
+    //             return back()->with('error', 'Your account is blocked. Please contact us at [help-center@xbug.online] if this is a mistake.');
+    //         }
+
+    //         // Store user roles in the session
+    //         Session::put('user_roles', json_encode($user->role));
+
+    //         // Redirect based on user roles
+    //         $roles = json_decode($user->role, true);
+
+    //         if (in_array(1, $roles)) {
+    //             return redirect('/admin/dashboard');
+    //         } elseif (in_array(2, $roles)) {
+    //             return redirect('/organization/dashboard');
+    //         } elseif (in_array(3, $roles)) {
+    //             return redirect('/content-creator/dashboard');
+    //         } elseif (in_array(5, $roles)) {
+    //             return back()->with('error', ' <span class="fw-bold">Your account is not for Web User. Please contact us at [help-center@xbug.online] to add you for new role for web</span>');
+    //         }
+    //     } else {
+    //         return back()->with('error', 'Invalid credentials. Please make sure your email and password is correct');
+    //     }
+    // }
+
     public function login(Request $request)
     {
-        // dd($request->all());
-        $validatedData =  $request->validate([
+        // Validate input
+        $validatedData = $request->validate([
             'email' => 'required',
             'password' => 'required|min:5',
         ]);
 
-        $response = $request->input('g-recaptcha-response');
-        $secretKey = env('RECAPTCHA_SECRET_KEY');
+        // Get the Turnstile response from the form
+        $response = $request->input('cf-turnstile-response');
+        $secretKey = env('CLOUDFLARE_TURNSTILE_SECRET_KEY'); // Add your Turnstile secret key to the .env file
 
-        $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+        // Get the user's IP address (optional)
+        $ip = $request->ip();
+
+        // Call the Cloudflare Turnstile siteverify API
+        $verifyResponse = Http::asJson()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
             'secret' => $secretKey,
             'response' => $response,
+            'remoteip' => $ip,
         ]);
 
         $verifyResult = $verifyResponse->json();
 
-
+        // Check if Turnstile verification was successful
         if (!$verifyResult['success']) {
             return back()->with(['error' => 'Please verify that you are not a robot.']);
         }
 
+        // Find the user by email
         $user = \App\Models\User::where('email', $validatedData['email'])->first();
 
         // Check if the user exists
@@ -382,8 +616,7 @@ class AuthController extends Controller
         }
 
         // Replace $2b$ with $2y$ in the stored password hash for compatibility
-        $userPasswordHash = str_replace('$2b$', '$2y$', $user->password);
-        $userPasswordHash = str_replace('$2a$', '$2y$', $userPasswordHash);
+        $userPasswordHash = str_replace(['$2b$', '$2a$'], '$2y$', $user->password);
 
         // Verify the password using Hash::check
         if (Hash::check($validatedData['password'], $userPasswordHash)) {
@@ -401,7 +634,7 @@ class AuthController extends Controller
             if ($user->email_status === null) {
                 return back()->with(
                     'error',
-                    'Your account is not verified by email and dont have email registered with us. contact us at [help-center@xbug.online] if this is a mistake.'
+                    'Your account is not verified by email and doesn\'t have an email registered with us. Contact us at [help-center@xbug.online] if this is a mistake.'
                 );
             }
 
@@ -423,12 +656,13 @@ class AuthController extends Controller
             } elseif (in_array(3, $roles)) {
                 return redirect('/content-creator/dashboard');
             } elseif (in_array(5, $roles)) {
-                return back()->with('error', ' <span class="fw-bold">Your account is not for Web User. Please contact us at [help-center@xbug.online] to add you for new role for web</span>');
+                return back()->with('error', ' <span class="fw-bold">Your account is not for Web User. Please contact us at [help-center@xbug.online] to add you for a new role for web</span>');
             }
         } else {
             return back()->with('error', 'Invalid credentials. Please make sure your email and password is correct');
         }
     }
+
     public function logout(Request $request)
     {
         Auth::logout();
@@ -537,32 +771,110 @@ class AuthController extends Controller
             return back()->with('error', 'Invalid verification code. Please make sure yuor verifciation code is valid');
         }
     }
+    // public function resetPassword(Request $request)
+    // {
+    //     // dd($request->all());
+    //     $validator = $request->validate([
+    //         'emailResetPassword' => 'required|email|exists:users,email',
+    //     ], [
+    //         'emailResetPassword.required' => 'Please fill the email address.',
+    //         'emailResetPassword.email' => 'Please enter a valid email address.',
+    //         'emailResetPassword.exists' => 'This email does not exist in our records.',
+    //     ], []);
+
+    //     $response = $request->input('g-recaptcha-response');
+    //     $secretKey = env('RECAPTCHA_SECRET_KEY');
+
+    //     $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+    //         'secret' => $secretKey,
+    //         'response' => $response,
+    //     ]);
+
+    //     $verifyResult = $verifyResponse->json();
+
+
+    //     if (!$verifyResult['success']) {
+    //         return back()->with(['error' => 'Please verify that you are not a robot.']);
+    //     }
+
+    //     DB::beginTransaction();
+    //     try {
+    //         $user = DB::table('users')->where('email', $validator['emailResetPassword'])->first();
+
+    //         if (!$user) {
+    //             return back()->with('error', 'This email does not exist in our records. Please make sure your email address is valid');
+    //         }
+    //         Session::put('user_email', $validator['emailResetPassword']);
+    //         $password = Str::random(6);
+    //         DB::table('users')->where('email', $validator['emailResetPassword'])->update([
+    //             'password' => bcrypt($password)
+    //         ]);
+
+    //         $logData = [
+    //             'email_type' => 'RESET PASSWORD CODE EMAIL',
+    //             'recipient_email' => $user->email,
+    //             'from_email' => 'admin@xbug.online',
+    //             'name' => $user->name,
+    //             'status' => 'SUCCESS',
+    //             'response_data' => 'RESET PASSWORD SEND',
+    //             'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+    //             'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+    //         ];
+
+    //         DB::table('email_logs')->insert($logData);
+    //         DB::commit();
+    //         Mail::to($user->email)->send(new ResetPasswordMail($user->name, $password));
+    //         return back()->with('success', 'Password reset successfully. A new password has been sent to your email. Use it to login. You can change later when you login into your account. If You dont recieve a email, click resend email');
+    //     } catch (Exception $e) {
+    //         DB::rollBack();
+    //         $logData = [
+    //             'email_type' => 'RESET PASSWORD CODE EMAIL',
+    //             'recipient_email' => $user->email,
+    //             'from_email' => 'admin@xbug.online',
+    //             'name' => $user->name,
+    //             'status' => 'FAILED',
+    //             'response_data' => 'ERROR',
+    //             'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+    //             'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
+    //         ];
+
+    //         DB::table('email_logs')->insert($logData);
+    //         return back()->withError('Error EDE' . $e->getLine() . ' : ' . $e->getMessage());
+    //     }
+    // }
     public function resetPassword(Request $request)
     {
-        // dd($request->all());
+        // Validate input
         $validator = $request->validate([
             'emailResetPassword' => 'required|email|exists:users,email',
         ], [
             'emailResetPassword.required' => 'Please fill the email address.',
             'emailResetPassword.email' => 'Please enter a valid email address.',
             'emailResetPassword.exists' => 'This email does not exist in our records.',
-        ], []);
+        ]);
 
-        $response = $request->input('g-recaptcha-response');
-        $secretKey = env('RECAPTCHA_SECRET_KEY');
+        // Get the Turnstile response from the form
+        $response = $request->input('cf-turnstile-response');
+        $secretKey = env('CLOUDFLARE_TURNSTILE_SECRET_KEY'); // Add your Turnstile secret key to the .env file
 
-        $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+        // Get the user's IP address (optional)
+        $ip = $request->ip();
+
+        // Call the Cloudflare Turnstile siteverify API
+        $verifyResponse = Http::asJson()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
             'secret' => $secretKey,
             'response' => $response,
+            'remoteip' => $ip,
         ]);
 
         $verifyResult = $verifyResponse->json();
 
-
+        // Check if Turnstile verification was successful
         if (!$verifyResult['success']) {
             return back()->with(['error' => 'Please verify that you are not a robot.']);
         }
 
+        // Begin transaction
         DB::beginTransaction();
         try {
             $user = DB::table('users')->where('email', $validator['emailResetPassword'])->first();
@@ -570,44 +882,57 @@ class AuthController extends Controller
             if (!$user) {
                 return back()->with('error', 'This email does not exist in our records. Please make sure your email address is valid');
             }
+
+            // Generate a random password and update the user record
             Session::put('user_email', $validator['emailResetPassword']);
             $password = Str::random(6);
             DB::table('users')->where('email', $validator['emailResetPassword'])->update([
-                'password' => bcrypt($password)
+                'password' => bcrypt($password),
             ]);
 
+            // Log the email sending process
             $logData = [
                 'email_type' => 'RESET PASSWORD CODE EMAIL',
                 'recipient_email' => $user->email,
                 'from_email' => 'admin@xbug.online',
                 'name' => $user->name,
                 'status' => 'SUCCESS',
-                'response_data' => 'RESET PASSWORD SEND',
+                'response_data' => 'RESET PASSWORD SENT',
                 'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                 'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
             ];
 
             DB::table('email_logs')->insert($logData);
+
+            // Commit transaction
             DB::commit();
+
+            // Send the reset password email
             Mail::to($user->email)->send(new ResetPasswordMail($user->name, $password));
-            return back()->with('success', 'Password reset successfully. A new password has been sent to your email. Use it to login. You can change later when you login into your account. If You dont recieve a email, click resend email');
+
+            return back()->with('success', 'Password reset successfully. A new password has been sent to your email. Use it to login. You can change later when you login into your account. If you don\'t receive an email, click resend email.');
         } catch (Exception $e) {
+            // Rollback transaction in case of error
             DB::rollBack();
+
+            // Log the failed email process
             $logData = [
                 'email_type' => 'RESET PASSWORD CODE EMAIL',
-                'recipient_email' => $user->email,
+                'recipient_email' => $user->email ?? 'unknown',
                 'from_email' => 'admin@xbug.online',
-                'name' => $user->name,
+                'name' => $user->name ?? 'unknown',
                 'status' => 'FAILED',
-                'response_data' => 'ERROR',
+                'response_data' => 'ERROR: ' . $e->getMessage(),
                 'created_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
                 'updated_at' => Carbon::now('Asia/Kuala_Lumpur')->toDateTimeString(),
             ];
 
             DB::table('email_logs')->insert($logData);
-            return back()->withError('Error EDE' . $e->getLine() . ' : ' . $e->getMessage());
+
+            return back()->withError('An error occurred: ' . $e->getMessage());
         }
     }
+
     public function resendResetPassword(Request $request)
     {
 
@@ -702,65 +1027,131 @@ class AuthController extends Controller
             return back()->with('error', 'Please dont change the url! Your action will recorded');
         }
     }
+    // public function verifyUserOrganization(Request $request)
+    // {
+
+    //     $validatedData = $request->validate([
+    //         'icNo' => 'required|digits:12',
+    //     ], [], [
+    //         'icNo' => 'Identity Number',
+    //     ]);
+
+    //     $response = $request->input('g-recaptcha-response');
+    //     $secretKey = env('RECAPTCHA_SECRET_KEY');
+
+    //     $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+    //         'secret' => $secretKey,
+    //         'response' => $response,
+    //     ]);
+
+    //     $verifyResult = $verifyResponse->json();
+
+
+    //     if (!$verifyResult['success']) {
+    //         return back()->with(['error' => 'Please verify that you are not a robot.']);
+    //     }
+
+    //     $noPengenalan = $validatedData['icNo'];
+
+    //     $user = DB::table('users')->where('icNo', $noPengenalan)->first();
+
+    //     if ($user) {
+    //         return back()->with('error', 'Your Identity Number is already registered. Please contact us at [help-center@xbug.online] for further assistance.');
+    //     }
+
+    //     $apiUrl = env('EKYC_VERIFY_USER_API');
+    //     // dd($apiUrl);
+
+    //     try {
+
+    //         $response = Http::post($apiUrl, [
+    //             'noPengenalan' => $noPengenalan,
+    //         ]);
+    //         if ($response->successful()) {
+    //             $apiData = $response->json();
+    //             $combinedData = $noPengenalan . '|' . $apiData['name'];
+    //             $encryptedData = Crypt::encrypt($combinedData);
+    //             return redirect()->route('viewOrganizationRegisterUser', ['data' => $encryptedData]);
+    //         } else {
+    //             $apiData = $response->json();
+    //             if ($apiData['error'] === 'TOO MANY REQUESTS, PLEASE TRY AGAIN LATER AFTER 10 MINUTES.') {
+    //                 return back()->with('error', $apiData['error']);
+    //             } else {
+    //                 return back()->with('error', 'Your Identity Number is not valid. Please contact us at [help-center@xbug.online] for further assistance.');
+    //             }
+    //         }
+    //     } catch (\Exception $e) {
+
+    //         return back()->with('error', 'Something went wrong. Please try again or contact us at [help-center@xbug.online]' . $e->getMessage());
+    //     }
+    // }
     public function verifyUserOrganization(Request $request)
     {
-        // dd($request->all());
-
+        // Validate the input
         $validatedData = $request->validate([
             'icNo' => 'required|digits:12',
         ], [], [
             'icNo' => 'Identity Number',
         ]);
 
-        $response = $request->input('g-recaptcha-response');
-        $secretKey = env('RECAPTCHA_SECRET_KEY');
+        // Get the Turnstile response from the form
+        $response = $request->input('cf-turnstile-response');
+        $secretKey = env('CLOUDFLARE_TURNSTILE_SECRET_KEY'); // Add your Turnstile secret key to the .env file
 
-        $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+        // Get the user's IP address (optional)
+        $ip = $request->ip();
+
+        // Call the Cloudflare Turnstile siteverify API
+        $verifyResponse = Http::asJson()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
             'secret' => $secretKey,
             'response' => $response,
+            'remoteip' => $ip,
         ]);
 
         $verifyResult = $verifyResponse->json();
 
-
+        // Check if Turnstile verification was successful
         if (!$verifyResult['success']) {
             return back()->with(['error' => 'Please verify that you are not a robot.']);
         }
 
+        // Get the Identity Number
         $noPengenalan = $validatedData['icNo'];
 
+        // Check if the Identity Number is already registered
         $user = DB::table('users')->where('icNo', $noPengenalan)->first();
 
         if ($user) {
             return back()->with('error', 'Your Identity Number is already registered. Please contact us at [help-center@xbug.online] for further assistance.');
         }
 
+        // Call the external eKYC API
         $apiUrl = env('EKYC_VERIFY_USER_API');
-        // dd($apiUrl);
 
         try {
-
             $response = Http::post($apiUrl, [
                 'noPengenalan' => $noPengenalan,
             ]);
+
             if ($response->successful()) {
                 $apiData = $response->json();
                 $combinedData = $noPengenalan . '|' . $apiData['name'];
                 $encryptedData = Crypt::encrypt($combinedData);
+
                 return redirect()->route('viewOrganizationRegisterUser', ['data' => $encryptedData]);
             } else {
                 $apiData = $response->json();
-                if ($apiData['error'] === 'TOO MANY REQUESTS, PLEASE TRY AGAIN LATER AFTER 10 MINUTES.') {
+                if (isset($apiData['error']) && $apiData['error'] === 'TOO MANY REQUESTS, PLEASE TRY AGAIN LATER AFTER 10 MINUTES.') {
                     return back()->with('error', $apiData['error']);
                 } else {
                     return back()->with('error', 'Your Identity Number is not valid. Please contact us at [help-center@xbug.online] for further assistance.');
                 }
             }
         } catch (\Exception $e) {
-
-            return back()->with('error', 'Something went wrong. Please try again or contact us at [help-center@xbug.online]' . $e->getMessage());
+            return back()->with('error', 'Something went wrong. Please try again or contact us at [help-center@xbug.online]. Error: ' . $e->getMessage());
         }
     }
+
     public function verifyUserContentCretor(Request $request)
     {
         // dd($request->all());

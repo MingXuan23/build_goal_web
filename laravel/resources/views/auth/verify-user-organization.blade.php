@@ -29,6 +29,7 @@
     <!-- Icons Css -->
     <link href="../assets/css/icons.min.css" rel="stylesheet">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 
 
 </head>
@@ -555,10 +556,13 @@
                                         </label>
                                     </div>
                                     <center>
-                                        <div class="col-md-12 col-sm-12 col-xl-12 d-grid mt-3">
-                                            <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"
+                                        <div class="col-md-12 d-grid mt-3">
+                                            {{-- <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"
                                                 style="transform:scale(0.60);-webkit-transform:scale(0.90);transform-origin:0 0;-webkit-transform-origin:0 0;">
-                                            </div>
+                                            </div> --}}
+
+                                            <div class="cf-turnstile" data-sitekey="{{ env('CLOUDFLARE_RECAPTCHA_SITE_KEY') }}" data-theme="light" style="display: block; margin: 0 auto;"></div>
+
 
                                         </div>
                                     </center>
