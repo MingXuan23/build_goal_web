@@ -735,7 +735,6 @@ class AdminRouteController extends Controller
 
     public function saveContentCards(Request $request)
     {
-        dd($request->all());
         $contentId = $request->input('content_id');
 
 
