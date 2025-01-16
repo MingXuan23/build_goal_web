@@ -549,7 +549,7 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
         body {
             Margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
+            background-color: #f0f2f5;
         }
 
         table {
@@ -568,7 +568,8 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
 
         /* Gaya untuk header */
         .email-header {
-            background-color: #007bff; /* Biru tua */
+            background-color: #4f46e5;
+            /* Biru tua */
             padding: 30px 20px;
             text-align: center;
             color: #ffffff;
@@ -606,7 +607,8 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
             font-weight: 600;
             text-align: center;
             margin-bottom: 20px;
-            color: #007bff; /* Biru tua */
+            color: #4f46e5;
+            /* Biru tua */
         }
 
         .email-body p {
@@ -616,21 +618,23 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Gaya untuk reset password section */
-        .reset-password {
+        /* Gaya untuk new password section */
+        .new-password {
             text-align: center;
             background-color: #e0e7ff;
             padding: 15px;
-            border-left: 4px solid #007bff; /* Biru tua */
+            border-left: 4px solid #4f46e5;
+            /* Biru tua */
             border-radius: 8px;
             margin: 20px 0;
             font-family: 'Poppins', sans-serif;
         }
 
-        .reset-password span {
+        .new-password span {
             font-size: 20px;
             font-weight: 700;
-            color: #007bff; /* Biru tua */
+            color: #4f46e5;
+            /* Biru tua */
         }
 
         /* Gaya untuk tombol CTA */
@@ -639,7 +643,8 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
             width: 100%;
             text-align: center;
             padding: 14px 0;
-            background-color: #007bff; /* Biru tua */
+            background-color: #4f46e5;
+            /* Biru tua */
             color: #ffffff;
             text-decoration: none;
             border-radius: 8px;
@@ -650,7 +655,8 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
         }
 
         .cta-button:hover {
-            background-color: #0056b3; /* Biru lebih gelap */
+            background-color: #4338ca;
+            /* Biru lebih gelap */
             transform: translateY(-2px);
         }
 
@@ -668,7 +674,8 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
         }
 
         .email-footer a {
-            color: #007bff; /* Biru tua */
+            color: #4f46e5;
+            /* Biru tua */
             text-decoration: none;
             font-weight: 500;
         }
@@ -693,7 +700,7 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
             }
 
             .email-body p,
-            .reset-password span,
+            .new-password span,
             .email-footer p {
                 font-size: 14px;
             }
@@ -724,13 +731,15 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
                     <tr>
                         <td class="email-body">
                             <p>Hi <strong>${userName}</strong>,</p>
-                            <p>We’ve received your forget password request. Please click the button below to validate the action:</p>
+                            <p>We’ve received your forget password request. Please click the button below to validate
+                                the action:</p>
 
                             <!-- Call to Action Button -->
                             <a href="${link}" class="cta-button">Reset Password</a>
 
                             <!-- Clickable link text for copying -->
-                            <p>If you are unable to click the button, copy and paste the link below into your browser:</p>
+                            <p>If you are unable to click the button, copy and paste the link below into your browser:
+                            </p>
                             <p>
                                 <a href="${link}" style="color: #007bff; text-decoration: none;">${link}</a>
                             </p>
@@ -744,7 +753,8 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
                     <!-- Footer -->
                     <tr>
                         <td class="email-footer">
-                            <p>If you have any questions or need assistance, feel free to contact us at <a href="mailto:help-center@xbug.online">help-center@xbug.online</a>.</p>
+                            <p>If you have any questions or need assistance, feel free to contact us at <a
+                                    href="mailto:help-center@xbug.online">help-center@xbug.online</a>.</p>
                             <p>&copy; 2025 xBug. All rights reserved.</p>
                         </td>
                     </tr>
@@ -755,7 +765,6 @@ const sendForgetPasswordRequestEmail = async (userEmail, userName, link) => {
 </body>
 
 </html>
-
     `,
   };
 
@@ -1254,43 +1263,35 @@ const forgetPassword = async (req, res) => {
   }
 };
 
-
 const getLeafStatus = async (req, res) => {
   try {
     const user = req.user;
 
-
     // Check if user_leaf exists, create if not
-    let user_leaf = await knex('user_leaf')
-      .where('user_id', user.id)
-      .where('status', 1)
+    let user_leaf = await knex("user_leaf")
+      .where("user_id", user.id)
+      .where("status", 1)
       .first();
 
-
-  
     if (user_leaf == null) {
-      return res.status(403).json({ 'message': "No data" });
-
+      return res.status(403).json({ message: "No data" });
     }
 
     var leaffdata = await getLeafData(user_leaf.id);
 
-    return res.status(200).json({ 'message': "Success", 'data': leaffdata })
+    return res.status(200).json({ message: "Success", data: leaffdata });
   } catch (e) {
-    return res.status(500).json({ 'message': e })
+    return res.status(500).json({ message: e });
   }
-
-
-
-}
+};
 
 const getLeafData = async (user_leaf_id) => {
-  const today = new Date().toISOString().split('T')[0]; // Format today as YYYY-MM-DD
+  const today = new Date().toISOString().split("T")[0]; // Format today as YYYY-MM-DD
 
   // Fetch user_leaf record
-  const user_leaf = await knex('user_leaf')
-    .where('status', 1)
-    .where('id', user_leaf_id)
+  const user_leaf = await knex("user_leaf")
+    .where("status", 1)
+    .where("id", user_leaf_id)
     .first();
 
   if (!user_leaf) {
@@ -1303,21 +1304,21 @@ const getLeafData = async (user_leaf_id) => {
   }
 
   // Fetch today's leaf detail
-  const leaf_detail_today = await knex('leaf_detail')
-    .where('status', 1)
-    .where('user_leaf_id', user_leaf_id)
-    .whereRaw('DATE(created_at) = ?', [today])
+  const leaf_detail_today = await knex("leaf_detail")
+    .where("status", 1)
+    .where("user_leaf_id", user_leaf_id)
+    .whereRaw("DATE(created_at) = ?", [today])
     .first();
 
   // Calculate percentage
-  const moreLeafCount = await knex('user_leaf')
-    .where('status', 1)
-    .where('total_leaf', '>', user_leaf.total_leaf)
-    .count('* as count')
+  const moreLeafCount = await knex("user_leaf")
+    .where("status", 1)
+    .where("total_leaf", ">", user_leaf.total_leaf)
+    .count("* as count")
     .then((result) => (result[0] ? result[0].count : 0));
 
-  const userCount = await knex('users')
-    .count('* as count')
+  const userCount = await knex("users")
+    .count("* as count")
     .then((result) => (result[0] ? result[0].count : 0));
 
   const percent = parseFloat(
@@ -1338,10 +1339,10 @@ const getLeafData = async (user_leaf_id) => {
   }
 
   // Calculate rank
-  const rank = await knex('leaf_detail')
-    .whereRaw('DATE(created_at) = ?', [today])
-    .where('created_at', '<', leaf_detail_today.created_at)
-    .count('* as count')
+  const rank = await knex("leaf_detail")
+    .whereRaw("DATE(created_at) = ?", [today])
+    .where("created_at", "<", leaf_detail_today.created_at)
+    .count("* as count")
     .then((result) => (result[0] ? result[0].count + 1 : 1));
 
   // Return all required data
@@ -1353,60 +1354,57 @@ const getLeafData = async (user_leaf_id) => {
   };
 };
 
-
 const addNewLeaf = async (req, res) => {
   try {
     const { detail } = req.body;
     const user = req.user;
-    const today = new Date().toISOString().split('T')[0]; // Format today as YYYY-MM-DD
+    const today = new Date().toISOString().split("T")[0]; // Format today as YYYY-MM-DD
 
     // Check if user_leaf exists, create if not
-    let user_leaf = await knex('user_leaf')
-      .where('user_id', user.id)
-      .where('status', 1)
+    let user_leaf = await knex("user_leaf")
+      .where("user_id", user.id)
+      .where("status", 1)
       .first();
 
     if (!user_leaf) {
-      await knex('user_leaf').insert({ user_id: user.id });
-      user_leaf = await knex('user_leaf')
-        .where('user_id', user.id)
-        .where('status', 1)
+      await knex("user_leaf").insert({ user_id: user.id });
+      user_leaf = await knex("user_leaf")
+        .where("user_id", user.id)
+        .where("status", 1)
         .first();
     }
 
     // Check if a leaf detail already exists for today
-    const leafDetailExists = await knex('leaf_detail')
-      .where('user_leaf_id', user_leaf.id)
-      .whereRaw('DATE(created_at) = ?', [today])
+    const leafDetailExists = await knex("leaf_detail")
+      .where("user_leaf_id", user_leaf.id)
+      .whereRaw("DATE(created_at) = ?", [today])
       .first();
 
     if (!leafDetailExists) {
       // Insert new leaf detail
-      await knex('leaf_detail').insert({
+      await knex("leaf_detail").insert({
         user_leaf_id: user_leaf.id,
         detail: JSON.stringify(detail),
       });
 
       // Update total_leaf count
-      const count = await knex('leaf_detail')
-        .where('user_leaf_id', user_leaf.id)
-        .where('status', 1)
-        .count('* as count')
+      const count = await knex("leaf_detail")
+        .where("user_leaf_id", user_leaf.id)
+        .where("status", 1)
+        .count("* as count")
         .then((res) => parseInt(res[0].count ?? 0));
 
-      await knex('user_leaf')
-        .where('id', user_leaf.id)
+      await knex("user_leaf")
+        .where("id", user_leaf.id)
         .update({ total_leaf: count });
 
       const leafdata = await getLeafData(user_leaf.id);
       console.log(leafdata);
       return res.status(201).json({ success: true, data: leafdata });
-    }else{
+    } else {
       const leafdata = await getLeafData(user_leaf.id);
       return res.status(200).json({ success: true, data: leafdata });
     }
-
-    
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -1463,5 +1461,5 @@ module.exports = {
   getProfile,
   updateUserPrivacy,
   addNewLeaf,
-  getLeafStatus
+  getLeafStatus,
 };
