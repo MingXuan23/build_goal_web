@@ -354,16 +354,6 @@
                 ],
             });
 
-            // Flag to track AJAX request status
-            var isRequestInProgress = false;
-
-            // Polling: Reload DataTable every 117 seconds
-            setInterval(function() {
-                if (!isRequestInProgress) {
-                    table.ajax.reload(null, false); // false to retain pagination
-                }
-            }, 15000); // 117000 milliseconds = 117 seconds
-
             // Handle "View Logs" button click
             $(document).on('click', '.view-logs-btn', function() {
                 var smartContractId = $(this).data('id');

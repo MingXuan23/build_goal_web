@@ -212,7 +212,7 @@ class BlockchainController extends Controller
     }
     public function getLogs($id)
     {
-        sleep(3);
+        // sleep(3);
         // Validate that $id is an integer
         if (!is_numeric($id)) {
             return response()->json(['error' => 'Invalid smart contract ID.'], 400);

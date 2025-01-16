@@ -132,11 +132,11 @@
                                     <div>
                                         <span class="mb-0 fw-semibold p-2">
                                             <a
-                                                href="{{route('redirectSmartContractOrg')}}">xBUG Blockchain WEB</a>
+                                                href="{{env('XBUG_BLOCKCHAIN_URL')}}/smart-contract-redirect">xBUG Blockchain WEB</a>
                                         </span>
                                     </div>
                                     <div>
-                                        <a  href="{{route('redirectSmartContractOrg')}}"
+                                        <a  href="{{env('XBUG_BLOCKCHAIN_URL')}}/smart-contract-redirect"
                                             class="min-w-fit-content text-muted me-1 dropdown-item-close1">
                                             <i class="bx bx-right-arrow-alt fs-22"></i>
                                         </a>
