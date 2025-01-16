@@ -727,7 +727,7 @@ class AdminRouteController extends Controller
             ->where('c.content_id', $contentId)
             ->where('c.status', 1)
             ->where('t.status','Success')
-            ->orderBy('created_at')
+            ->orderBy('t.created_at')
             ->get();
 
         return response()->json(['cards' => $cards]);
@@ -735,7 +735,7 @@ class AdminRouteController extends Controller
 
     public function saveContentCards(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
         $contentId = $request->input('content_id');
 
 
@@ -752,6 +752,7 @@ class AdminRouteController extends Controller
             ->where('status', 1)
             ->whereNotNull('transaction_id')
             ->first()->transaction_id;
+            
 
         // Track the IDs of cards that are included in the request
         $updatedCardIds = [];
