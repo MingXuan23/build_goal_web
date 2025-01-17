@@ -723,6 +723,7 @@ class AdminRouteController extends Controller
     public function getContentCards($contentId)
     {
         $cards = DB::table('content_card as c')
+        ->select('c.id',"c.*",'t.created_at')
         ->join('transactions as t','t.id','c.transaction_id')
             ->where('c.content_id', $contentId)
             ->where('c.status', 1)
@@ -760,7 +761,7 @@ class AdminRouteController extends Controller
             $updatedCardIds[] = $card['id'] ?? null; // Track card IDs from the request
             $existCardId = DB::table('content_card')->where('card_id', $card['card_id'])->where('id', '<>', $card['id'])->where('status', 1)->exists();
             $existCode = DB::table('content_card')->where('verification_code', $card['verification_code'])->where('id', '<>', $card['id'])->where('status', 1)->exists();
-
+            //dd($existCode);
             if ($existCardId && $card['card_id'] != null) {
                 return response()->json(['error' => "The card ID {$card['card_id']} already exists."], 400); // Send error message with 400 status
             } else if ($existCode && $card['card_id'] != null) {

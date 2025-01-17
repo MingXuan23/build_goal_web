@@ -74,7 +74,7 @@
                         <table class="table text-nowrap" id="contentCardsTable">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th style="width:100px">ID</th>
                                     <th>Start Date</th>
                                     <th>Start Time</th>
                                     <th>End Date</th>
@@ -82,6 +82,8 @@
                                     <th>Card ID</th>
                                     <th>Tracking Id</th>
                                     <th>Verification Code</th>
+                                  
+                                    <th>Link</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -102,6 +104,46 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+
+function copyToClipboard(button) {
+    // Get the link content from the button's attribute
+    const cardId = button.getAttribute('link-content');
+
+    // Define the route template with a placeholder
+    const routeTemplate = "{{ route('deeplink', ':id')}}";
+
+    // Replace the placeholder with the actual card ID
+    const url = routeTemplate.replace(':id', cardId);
+
+    console.log(routeTemplate, url);
+    // Create a temporary input element to copy the URL
+    const tempInput = document.createElement('input'); // Use a valid HTML input element
+    tempInput.value = url;
+    document.body.appendChild(tempInput);
+
+    // Select the content and copy to clipboard
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999); // For mobile devices
+    navigator.clipboard.writeText(tempInput.value).then(() => {
+        // Provide feedback to the user using SweetAlert2
+        Swal.fire({
+            icon: 'success',
+            title: 'Link Copied Successfully',
+            customClass: {
+                title: 'custom-title',
+                content: 'custom-content'
+            }
+        });
+    }).catch(err => {
+        // Handle errors if any
+        console.error('Failed to copy: ', err);
+    });
+
+    // Remove the temporary input element
+    document.body.removeChild(tempInput);
+}
+
+
         $(document).ready(function() {
             var table = $('.data-table').DataTable({
                 processing: true,
@@ -258,6 +300,16 @@
                     <input type="text" class="form-control verification-code" value="${card.verification_code || ''}">
                 </td>
                 <td>
+                    <button 
+                        class="btn btn-sm btn-primary" 
+                        readonly 
+                        link-content="${card.card_id || ''}" 
+                        onclick="copyToClipboard(this)"
+                    >
+                        Copy
+                    </button>
+                </td>
+                <td>
                     <button class="btn btn-danger btn-sm delete-card">Delete</button>
                 </td>
             </tr>`;
@@ -272,6 +324,7 @@
                 $(this).closest('tr').remove();
             });
 
+           
             $('#saveContentCards').click(function() {
                 var contentId = $('#contentCardsModal').data('content-id');
                 console.log(contentId);
