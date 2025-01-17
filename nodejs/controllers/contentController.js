@@ -73,17 +73,27 @@ const getContentByVector = async (values, m_id) => {
     });
 
     // Define the filters
-    const filters = [
+    const paidfilters = [
         createPaidFilter(3),
-        createCommonFilter(7),
+        
     ];
+
+    const filters = [
+        createCommonFilter(7),
+    ]
 
     const microLearningFilter = [createLearningFilter(5)];
     //console.log(filters,microLearningFilter);
 
     try {
         // Send both regular filters and micro-learning filters concurrently
-        const [regularResponse, microLearningResponse] = await Promise.all([
+        const [paidResponse, regularResponse, microLearningResponse] = await Promise.all([
+            axios.post(`${HOST_URL}/collections/content_collection/points/search/batch`, { searches: paidfilters }, {
+                headers: {
+                    'api-key': API_KEY,
+                    'Content-Type': 'application/json'
+                }
+            }),
             axios.post(`${HOST_URL}/collections/content_collection/points/search/batch`, { searches: filters }, {
                 headers: {
                     'api-key': API_KEY,
@@ -99,6 +109,15 @@ const getContentByVector = async (values, m_id) => {
         ]);
 
         let content_ids = new Set();
+
+        paidResponse.data?.result?.forEach((list) => {
+            list.forEach((item) => {
+                if (item.id) {
+
+                    content_ids.add(item.id);
+                }
+            });
+        });
 
         // Process regular filter results
         regularResponse.data?.result?.forEach((list) => {
@@ -119,6 +138,8 @@ const getContentByVector = async (values, m_id) => {
             });
         });
 
+       
+
         const contentIdsArray = Array.from(content_ids);
 
         // Fetch additional random rows from the database
@@ -128,7 +149,7 @@ const getContentByVector = async (values, m_id) => {
             .limit(5);
         
         // Combine IDs from the API responses and database query
-        const finalContentIds = [ ...rows.map(row => row.id),...contentIdsArray,];
+        const finalContentIds = [ ...contentIdsArray,...rows.map(row => row.id)];
         
         // Return the final list of content IDs
         return finalContentIds;
@@ -253,7 +274,8 @@ const saveContentEnrollment = async (req, res) => {
             .select('link')
             .where('id', card.content_id)
             .first();
-        
+            const learning_appurl = 'https://xbug.online/view-content-link/';
+            content.link = learning_appurl + content.id + '/' + content.name.replace(/ /g, '~');
             // If the record already exists, handle accordingly (e.g., return a response or message)
             return res.status(200).json({ message: 'Enrollment already exists', link:content.link });
         }
@@ -296,6 +318,9 @@ const saveContentEnrollment = async (req, res) => {
         .select('link')
         .where('id', card.content_id)
         .first();
+
+        const learning_appurl2 = 'https://xbug.online/view-content-link/';
+        content.link = learning_appurl2 + content.id + '/' + content.name.replace(/ /g, '~');
     
 
         return res.status(201).json({ message: 'Enrollment inserted successfully', url:content.link  });
@@ -318,7 +343,8 @@ const getContentEnrollment = async (req, res) => {
             .where({
                 'user_content.user_id': user.id,
                 'user_content.interaction_type_id': 3,
-            });
+            }).orderBy('user_content.updated_at','desc')
+            .limit(30);
 
 
         return res.status(200).json({ 'history': result });
@@ -351,6 +377,11 @@ const getClickedContent = async (req, res) => {
             })
             .orderBy('user_content.updated_at', 'desc') // Explicitly specify the sort direction
             .limit(30);
+
+            const learning_appurl = 'https://xbug.online/view-content-link/';
+            result.forEach((content) => {
+                content.link = learning_appurl + content.id + '/' + content.name.replace(/ /g, '~');
+            });
 
 
         return res.status(200).json({ 'clicked_list': result });

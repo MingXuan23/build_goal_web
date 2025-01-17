@@ -125,6 +125,7 @@ const addPointToCollection = async (collectionName, id) => {
             id: parseInt(id), // Replace with your desired ID
             payload: {
                 state: [user.state]
+                
             },
             vector: user.values // Replace with your actual vector data
         };
@@ -158,7 +159,7 @@ const addPointToCollection = async (collectionName, id) => {
             id: parseInt(id), // Replace with your desired ID
             payload: {
                 state: (typeof content.state === 'string' ? JSON.parse(content.state || '{}') : content.state),
-
+                name: content.name,
                 reach_score: reach_score,
                 type: content.content_type_id
             },
