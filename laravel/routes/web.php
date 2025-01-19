@@ -108,8 +108,14 @@ Route::prefix('admin')->middleware(['auth', 'role:1'])->group(function () {
     Route::get('/content-user-enrolled', [AdminRouteController::class, 'showContentUserEnrolled'])->name('showContentUserEnrolled');
     Route::get('/content-detail/{content_id}/{interaction_type}', [AdminRouteController::class, 'getContentDetail'])->name('content.detail');
     Route::get('/transaction/{id}', [AdminRouteController::class, 'showReceipt'])->name('showReceipt');
+
+    Route::post('/smart-contract/save-deployed', [BlockchainController::class, 'saveDeployedData'])
+     ->name('saveDeployedData');
     Route::get('/view-content-blockchain', [BlockchainController::class, 'showContentBlockchainAdmin'])->name('showContentBlockchainAdmin');
+    Route::post('/deploy-smart-contract/{id}', [BlockchainController::class, 'deploySmartContract'])->name('deploySmartContract');
+    Route::get('/view-content-blockchain-logs', [BlockchainController::class, 'showContentBlockchainlogsAdmin'])->name('showContentBlockchainlogsAdmin');
     Route::get('/smart-contract/{id}/logs', [BlockchainController::class, 'getLogs'])->name('smartContract.getLogs');
+
     Route::get('/blockchain-notification-log', [emailController::class, 'showNotificationBlockchainAdmin'])->name('showNotificationBlockchainAdmin');
 
     Route::get('/transaction-history-promote-content', [AdminRouteController::class, 'showTransactionHistoryPromoteContent'])->name('showTransactionHistoryPromoteContent');

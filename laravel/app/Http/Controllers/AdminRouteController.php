@@ -603,7 +603,7 @@ class AdminRouteController extends Controller
                 'response_data',
                 'created_at'
             ])
-            ->whereNotIn('email_type', ['NOTIFICATION USER', 'NOTIFICATION TO ALL USERS']) // Mengecualikan 'NOTIFICATION USER' dan 'NOTIFICATION TO ALL USERS'
+            ->whereNotIn('email_type', ['NOTIFICATION USER', 'NOTIFICATION TO ALL USERS','SMART CONTRACT']) // Mengecualikan 'NOTIFICATION USER' dan 'NOTIFICATION TO ALL USERS'
             ->orderBy('id', 'desc') // Mengurutkan berdasarkan id secara menurun
             ->get();
 

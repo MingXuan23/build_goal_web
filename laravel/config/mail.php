@@ -72,6 +72,18 @@ return [
                 'name' => env('MAIL_FROM_NAME_3'),
             ],
         ],
+        'smtp4' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST_4'),
+            'port' => env('MAIL_PORT_4'),
+            'username' => env('MAIL_USERNAME_4'),
+            'password' => env('MAIL_PASSWORD_4'),
+            'encryption' => env('MAIL_ENCRYPTION_4'),
+            'from' => [
+                'address' => env('MAIL_FROM_ADDRESS_4'),
+                'name' => env('MAIL_FROM_NAME_4'),
+            ],
+        ],
 
         'ses' => [
             'transport' => 'ses',
