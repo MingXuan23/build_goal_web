@@ -91,7 +91,7 @@ class UserProfileController extends Controller
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
-                'current_password' => 'required',
+                'current_password' => ['required', 'current_password'],
                 'password' => 'required|min:5',
                 'cpassword' => 'required|min:5|same:password',
             ], [], [
@@ -99,6 +99,7 @@ class UserProfileController extends Controller
                 'password' => 'Password',
                 'cpassword' => 'Confirm Password',
             ]);
+            
 
             if (!Hash::check($request->current_password, Auth::user()->password)) {
                 return back()->withErrors(['current_password' => 'The current password is incorrect.'])->withInput()->withFragment('change-password');
@@ -530,7 +531,7 @@ class UserProfileController extends Controller
         DB::beginTransaction();
         try {
             $validatedData = $request->validate([
-                'current_password' => 'required',
+                'current_password' => ['required', 'current_password'],
                 'password' => 'required|min:5',
                 'cpassword' => 'required|min:5|same:password',
             ], [], [

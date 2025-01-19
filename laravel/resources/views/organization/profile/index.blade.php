@@ -33,6 +33,15 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
+            @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                    <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                        <i class="bi bi-dash-circle-fill fs-4"></i>
+                        <div class="ms-3"> {{ $error }} </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endforeach
+            @endif
             <div class="row">
                 <div class="col-xl-12">
                     <div class="row">
@@ -261,7 +270,7 @@
                                                 </div>
                                                 <div class="modal fade" id="updatePersonalDetailModal" tabindex="-1"
                                                     aria-labelledby="exampleModalSmLabel" aria-hidden="true">
-                                                    <div class="modal-dialog modal-sm">
+                                                    <div class="modal-dialog modal-md">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h6 class="modal-title" id="exampleModalLabel1">Update
@@ -479,7 +488,7 @@
                                                 </div>
                                                 <div class="modal fade" id="updateOrganizationModal" tabindex="-1"
                                                     aria-labelledby="exampleModalSmLabel" aria-hidden="true">
-                                                    <div class="modal-dialog modal-sm">
+                                                    <div class="modal-dialog modal-md">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h6 class="modal-title" id="exampleModalLabel1">Update
@@ -760,7 +769,7 @@
                                                                             tabindex="-1"
                                                                             aria-labelledby="exampleModalSmLabel"
                                                                             aria-hidden="true">
-                                                                            <div class="modal-dialog modal-sm">
+                                                                            <div class="modal-dialog modal-md">
                                                                                 <div class="modal-content">
                                                                                     <div class="modal-header">
                                                                                         <h6 class="modal-title"
@@ -773,7 +782,7 @@
                                                                                             aria-label="Close"></button>
                                                                                     </div>
                                                                                     <div class="modal-body">
-                                                                                        Are sure to update your information?
+                                                                                        Are sure to update your Password?
                                                                                     </div>
                                                                                     <div class="modal-footer">
                                                                                         <button type="button"

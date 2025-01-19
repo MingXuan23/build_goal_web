@@ -32,6 +32,16 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
+            @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                    <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                        <i class="bi bi-dash-circle-fill fs-4"></i>
+                        <div class="ms-3"> {{ $error }} </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endforeach
+            @endif
+
             <div class="row">
                 <div class="col-xl-12">
                     <div class="row">
@@ -278,7 +288,7 @@
                                                 </div>
                                                 <div class="modal fade" id="updateModal" tabindex="-1"
                                                     aria-labelledby="exampleModalSmLabel" aria-hidden="true">
-                                                    <div class="modal-dialog modal-sm">
+                                                    <div class="modal-dialog modal-md">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h6 class="modal-title" id="exampleModalLabel1">Update
@@ -335,10 +345,10 @@
                                                                                 <div class="form-floating">
                                                                                     <input type="password"
                                                                                         class="form-control @error('current_password') is-invalid @enderror"
-                                                                                        id="floatingPassword"
+                                                                                        id="floatingPassword1"
                                                                                         placeholder="Password"
                                                                                         name="current_password">
-                                                                                    <label for="floatingPassword">Current
+                                                                                    <label for="floatingPassword1">Current
                                                                                         Password</label>
                                                                                     @error('current_password')
                                                                                         <span
@@ -350,11 +360,11 @@
                                                                                 <div class="form-floating">
                                                                                     <input type="password"
                                                                                         class="form-control @error('password') is-invalid @enderror"
-                                                                                        id="floatingPassword"
+                                                                                        id="floatingPassword2"
                                                                                         placeholder="Password"
                                                                                         name="password">
                                                                                     <label
-                                                                                        for="floatingPassword">Password</label>
+                                                                                        for="floatingPassword2">Password</label>
                                                                                     @error('password')
                                                                                         <span
                                                                                             class="mb-1 text-danger">{{ $message }}</span>
@@ -365,10 +375,10 @@
                                                                                 <div class="form-floating">
                                                                                     <input type="password"
                                                                                         class="form-control @error('cpassword') is-invalid @enderror"
-                                                                                        id="floatingPassword"
+                                                                                        id="floatingPassword3"
                                                                                         placeholder="Password"
                                                                                         name="cpassword">
-                                                                                    <label for="floatingPassword">Confirm
+                                                                                    <label for="floatingPassword3">Confirm
                                                                                         Password</label>
                                                                                     @error('cpassword')
                                                                                         <span
@@ -396,7 +406,7 @@
                                                                             tabindex="-1"
                                                                             aria-labelledby="exampleModalSmLabel"
                                                                             aria-hidden="true">
-                                                                            <div class="modal-dialog modal-sm">
+                                                                            <div class="modal-dialog modal-md">
                                                                                 <div class="modal-content">
                                                                                     <div class="modal-header">
                                                                                         <h6 class="modal-title"
