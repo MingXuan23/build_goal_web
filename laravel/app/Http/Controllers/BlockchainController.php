@@ -44,6 +44,7 @@ class BlockchainController extends Controller
                 'smart_contract.status_contract as smart_contract_status_contract',
                 'smart_contract.contract_verified_at as smart_contract_verfied_at',
                 'smart_contract.created_at as smart_contract_created_at',
+                'smart_contract.updated_at as smart_contract_updated_at',
                 'smart_contract.tx_id as smart_contract_tx_id',
                 'organization.name as organization_name'
             )
@@ -299,12 +300,16 @@ class BlockchainController extends Controller
                 ->where('content_id', $validated['content_id'])
                 ->first();
 
+                $userData = DB::table('contents')
+                ->where('id', $validated['content_id'])
+                ->first();
+
             if ($existingSmartContract) {
                 // Jika ada, lakukan update
                 DB::table('smart_contract')
                     ->where('id', $existingSmartContract->id)
                     ->update([
-                        'user_id'         => $existingSmartContract->user_id,
+                        'user_id'         => $userData->user_id,
                         'provider'        => $validated['provider'] ?? 'xBug',
                         'tx_hash'         => $validated['tx_hash'],
                         'block_no'        => $validated['block_no'] ?? '',
@@ -319,12 +324,12 @@ class BlockchainController extends Controller
                 $smartContractId = $existingSmartContract->id;
             } else {
                 // Cek apakah ada data dengan content_id
-                $existingSmartContract = DB::table('smart_contract')
-                    ->where('content_id', $validated['content_id'])
+                $userData = DB::table('contents')
+                    ->where('id', $validated['content_id'])
                     ->first();
                 // Jika tidak ada, lakukan insert dan dapatkan ID
                 $smartContractId = DB::table('smart_contract')->insertGetId([
-                    'user_id'         => $existingSmartContract->user_id,
+                    'user_id'         => $userData->user_id,
                     'content_id'      => $validated['content_id'],
                     'provider'        => $validated['provider'] ?? 'xBug',
                     'tx_hash'         => $validated['tx_hash'],
@@ -363,7 +368,8 @@ class BlockchainController extends Controller
                 $tx_hsh = $validated['tx_hash'];
 
                 $userData = DB::table('users')
-                    ->join('contents', 'users.id', '=', 'contents.user_id')->select('users.name,users.email')->first();
+                    ->where('users.id', '=', $userData->user_id)->first();
+
 
                 $name = $userData->name;
                 $content_name = $validated['content_name'];
