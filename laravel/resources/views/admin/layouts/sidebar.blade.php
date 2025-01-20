@@ -88,7 +88,7 @@
                     </ul>
                 </li>
 
-                <li class="slide__category"><span class="category-name">Blockchain</span></li>
+                {{-- <li class="slide__category"><span class="category-name">Blockchain</span></li>
                 <li class="slide has-sub">
                     <a href="javascript:void(0);" class="side-menu__item ">
                         <i class="bx bxs-book-content side-menu__icon"></i>
@@ -97,10 +97,10 @@
                     </a>
                     <ul class="slide-menu child1">
                         <li class="slide">
-                            <a href="{{route('showContentBlockchainAdmin')}}" class="side-menu__item">View Smart Contract</a>
+                            <a href="{{env('XBUG_BLOCKCHAIN_URL')}}/smart-contract-redirect" class="side-menu__item">Access Samrt Contract</a>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
 
                 <li class="slide__category"><span class="category-name">History</span></li>
                 <li class="slide has-sub">
@@ -148,9 +148,9 @@
                         <li class="slide">
                             <a href="/admin/email-notification-logs" class="side-menu__item">Notification Logs</a>
                         </li>
-                        <li class="slide">
+                        {{-- <li class="slide">
                             <a href="{{route('showNotificationBlockchainAdmin')}}" class="side-menu__item">Blockchain Email Log</a>
-                        </li>
+                        </li> --}}
                         <li class="slide">
                             <a href="/admin/email-logs" class="side-menu__item">email log</a>
                         </li>
