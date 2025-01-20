@@ -58,8 +58,8 @@ Route::get('/get-suggested-location', [JobScraperController::class, 'searchLocat
 
 Route::get('/login', [AuthController::class, 'viewLogin'])->name('viewLogin');
 Route::get('/verify-code', [AuthController::class, 'viewVerify'])->name('viewVerify');
-Route::get('/verify-user-organization', [AuthController::class, 'viewVerifyUserOrganization'])->name('viewVerifyUserOrganization');
-Route::get('/verify-user-content-creator', [AuthController::class, 'viewVerifyUserContentCreator'])->name('viewVerifyUserContentCreator');
+// Route::get('/verify-user-organization111111111111111111111111111111111111111', [AuthController::class, 'viewVerifyUserOrganization'])->name('viewVerifyUserOrganization');
+// Route::get('/verify-user-content-creator111111111111111111111111111111111111111', [AuthController::class, 'viewVerifyUserContentCreator'])->name('viewVerifyUserContentCreator');
 Route::get('/resend-code', [AuthController::class, 'resendVerify'])->name('resendVerify');
 Route::get('/organization-register', [AuthController::class, 'viewOrganizationRegister'])->name('viewOrganizationRegister');
 Route::get('/organization-register-user/{data}', [AuthController::class, 'viewOrganizationRegisterUser'])->name('viewOrganizationRegisterUser');

@@ -221,7 +221,7 @@
                             </p>
 
                             <div class="d-grid gap-2">
-                                <a class="btn btn-outline-primary" href='/verify-user-organization'>
+                                <a class="btn btn-outline-primary" href='{{route('viewOrganizationRegister')}}'>
                                     Register as Organization
                                 </a>
                                 <!-- <a class="btn btn-outline-success" href='/verify-user-content-creator'>
