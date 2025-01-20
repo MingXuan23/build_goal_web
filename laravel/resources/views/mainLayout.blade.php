@@ -329,7 +329,7 @@
                                     <a href="{{ route('viewLogin') }}" class="text-fixed-dark">Login</a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('viewVerifyUserOrganization') }}"
+                                    <a href="{{route('viewOrganizationRegister')}}"
                                         class="text-fixed-dark">Register</a>
                                 </li>
                                 <li>

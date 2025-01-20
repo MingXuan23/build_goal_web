@@ -154,7 +154,7 @@
                                                 <div class="accordion-body">
                                                     Simply click the <a href="/login">sign in</a> button to log in
                                                         to your account or click <a
-                                                            href="/verify-user-organization">here</a> to register.
+                                                            href="{{route('viewOrganizationRegister')}}">here</a> to register.
                                                     <!-- <code>.accordion-body</code>, though the transition does limit overflow. -->
                                                 </div>
                                             </div>

@@ -58,8 +58,8 @@ Route::get('/get-suggested-location', [JobScraperController::class, 'searchLocat
 
 Route::get('/login', [AuthController::class, 'viewLogin'])->name('viewLogin');
 Route::get('/verify-code', [AuthController::class, 'viewVerify'])->name('viewVerify');
-// Route::get('/verify-user-organization111111111111111111111111111111111111111', [AuthController::class, 'viewVerifyUserOrganization'])->name('viewVerifyUserOrganization');
-// Route::get('/verify-user-content-creator111111111111111111111111111111111111111', [AuthController::class, 'viewVerifyUserContentCreator'])->name('viewVerifyUserContentCreator');
+// Route::get('/verify-user-organization', [AuthController::class, 'viewVerifyUserOrganization'])->name('viewVerifyUserOrganization');
+// Route::get('/verify-user-content-creator', [AuthController::class, 'viewVerifyUserContentCreator'])->name('viewVerifyUserContentCreator');
 Route::get('/resend-code', [AuthController::class, 'resendVerify'])->name('resendVerify');
 Route::get('/organization-register', [AuthController::class, 'viewOrganizationRegister'])->name('viewOrganizationRegister');
 Route::get('/organization-register-user/{data}', [AuthController::class, 'viewOrganizationRegisterUser'])->name('viewOrganizationRegisterUser');
@@ -75,8 +75,8 @@ Route::get('/policy', [AuthController::class, 'policy'])->name('policy');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/organization-register', [AuthController::class, 'createOrganizationRegister'])->name('createOrganizationRegister');
 Route::post('/content-creator-register', [AuthController::class, 'createContentCreatorRegister'])->name('createContentCreatorRegister');
-Route::post('/verify-user-organization', [AuthController::class, 'verifyUserOrganization'])->name('verifyUserOrganization');
-Route::post('/verify-user-content-creator', [AuthController::class, 'verifyUserContentCretor'])->name('verifyUserContentCretor');
+// Route::post('/verify-user-organization', [AuthController::class, 'verifyUserOrganization'])->name('verifyUserOrganization');
+// Route::post('/verify-user-content-creator', [AuthController::class, 'verifyUserContentCretor'])->name('verifyUserContentCretor');
 Route::post('/verify-code', [AuthController::class, 'verifyCode'])->name('verifyCode');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('resetPassword');
 Route::get('/resend-email-reset-password', [AuthController::class, 'resendResetPassword'])->name('resendResetPassword');
