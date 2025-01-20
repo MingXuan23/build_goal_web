@@ -271,7 +271,7 @@ const saveContentEnrollment = async (req, res) => {
 
         if (existingRecord) {
             const content = await knex('contents')
-            .select('link')
+            .select('id','link','name')
             .where('id', card.content_id)
             .first();
             const learning_appurl = 'https://xbug.online/view-content-link/';
@@ -315,11 +315,12 @@ const saveContentEnrollment = async (req, res) => {
         });
 
         const content = await knex('contents')
-        .select('link')
+        .select('id','link','name')
         .where('id', card.content_id)
         .first();
 
         const learning_appurl2 = 'https://xbug.online/view-content-link/';
+        
         content.link = learning_appurl2 + content.id + '/' + content.name.replace(/ /g, '~');
     
 
