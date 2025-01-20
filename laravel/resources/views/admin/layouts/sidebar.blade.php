@@ -154,9 +154,9 @@
                         <li class="slide">
                             <a href="/admin/email-logs" class="side-menu__item">email log</a>
                         </li>
-                        <li class="slide">
+                        {{-- <li class="slide">
                             <a href="/admin/gpt-log" class="side-menu__item">GPT Log</a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </li>
                 <li class="slide has-sub">
