@@ -41,54 +41,66 @@
 
                 <!-- Dynamic Content -->
                 <div id="formattedContent" class="content-preview mt-3">
-                    @php
-                        // Split content into sections
-                        $contentSections = explode("\n\n", $contents->content);
-                    @endphp
+    @php
+        // Split content into sections by delimiter ***
+        $contentSections = explode("***", $contents->content);
 
-                    @foreach ($contentSections as $index => $section)
-                        @php
-                            // Check for header pattern ***Header***
-                            preg_match('/\*\*\*(.*?)\*\*\*/', $section, $headerMatch);
-                            $header = $headerMatch[1] ?? null;
-                            $body = preg_replace('/\*\*\*(.*?)\*\*\*/', '', $section);
-                        @endphp
+        // Remove empty sections caused by leading or trailing ***
+        $contentSections = array_filter($contentSections, fn($section) => trim($section) !== '');
+    @endphp
 
-                        @if ($header)
-                            <div class="preview-section">
-                                <h6 class="fw-bold">Step {{ $index + 1 }}: {{ $header }}</h6>
-                                <p>{{ $body }}</p>
-                            </div>
-                        @else
-                            <p>{{ $section }}</p>
-                        @endif
-                    @endforeach
+    @foreach ($contentSections as $index => $section)
+        @php
+            // Trim whitespace from the section
+            $section = trim($section);
 
-                    <!-- Embed Button or Iframe -->
-                    @if ($contents->link)
-                        @php
-                            // Check if the link is a YouTube URL
-                            preg_match('/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/', $contents->link, $youtubeMatch);
-                        @endphp
+            // Check if the section is a header
+            if ($index % 2 === 1) {
+                $header = $section;
+                $body = isset($contentSections[$index + 1]) ? trim($contentSections[$index + 1]) : null;
+            } else {
+                $header = null;
+                $body = $section;
+            }
+        @endphp
 
-                        @if ($youtubeMatch)
-                            <!-- Embed YouTube Iframe -->
-                            <div class="text-center mt-4">
-                                <iframe width="100%" height="315"
-                                    src="https://www.youtube.com/embed/{{ $youtubeMatch[1] }}"
-                                    frameborder="0" allowfullscreen>
-                                </iframe>
-                            </div>
-                        @else
-                            <!-- Display External Link Button -->
-                            <div class="text-center mt-4">
-                                <p><strong>Interested? Click the button below to learn more:</strong></p>
-                                <a href="{{ $contents->link }}" target="_blank" class="btn btn-primary">Learn More</a>
-                            </div>
-                        @endif
-                    @endif
-                </div>
+        @if ($header)
+            <div class="preview-section">
+                <h6 class="fw-bold">Step {{ ($index  + 1)/2 }}: {{ $header }}</h6>
+                @if ($body)
+                    <p>{{ $body }}</p>
+                @endif
             </div>
+        @else
+            <p>{{ $section }}</p>
+        @endif
+    @endforeach
+
+    <!-- Embed Button or Iframe for Link -->
+    @if ($contents->link)
+        @php
+            // Check if the link is a YouTube URL
+            preg_match('/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/', $contents->link, $youtubeMatch);
+        @endphp
+
+        @if ($youtubeMatch)
+            <!-- Embed YouTube Iframe -->
+            <div class="text-center mt-4">
+                <iframe width="100%" height="315"
+                    src="https://www.youtube.com/embed/{{ $youtubeMatch[1] }}"
+                    frameborder="0" allowfullscreen>
+                </iframe>
+            </div>
+        @else
+            <!-- Display External Link Button -->
+            <div class="text-center mt-4">
+                <p><strong>Interested? Click the button below to learn more:</strong></p>
+                <a href="{{ $contents->link }}" target="_blank" class="btn btn-primary">Learn More</a>
+            </div>
+        @endif
+    @endif
+</div>
+
 
             <!-- Card Footer -->
             <div class="card-footer text-center">
