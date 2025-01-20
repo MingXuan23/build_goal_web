@@ -681,10 +681,12 @@ class AdminRouteController extends Controller
     {
         $datas = DB::table('contents as c')
             ->join('content_promotion as cp', 'c.id', '=', 'cp.content_id')
+            //->join('content_card as cc', 'cc.content_id','c.id')
             ->join('transactions as t', 't.id', '=', 'cp.transaction_id')
             ->where('t.status', "Success")
             ->where('c.status', 1)
             ->where('cp.status', 1)
+            ->whereNotNull('cp.number_of_card')
             ->select(
                 'c.id',
                 'c.name',
@@ -697,7 +699,7 @@ class AdminRouteController extends Controller
                 DB::raw('(SELECT COUNT(*) FROM content_card WHERE content_id = c.id AND status = 1 AND verification_code IS NOT NULL) as assigned_cards')
             )
             ->orderBy('t.created_at', 'desc');
-
+        dd($datas->get());
         if ($request->ajax()) {
             return DataTables::of($datas)
                 ->addIndexColumn()
