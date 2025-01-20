@@ -105,11 +105,11 @@
                                     class="side-menu__item">Promote Content</a>
                             </li>
                             <li class="slide">
-                                <a href="/organization/transaction-history-xbug-card" class="side-menu__item">xBug
-                                    Card</a>
+                                <a href="/organization/transaction-history-xbug-card" class="side-menu__item">xBUG
+                                    Stand</a>
                             </li>
                             <li class="slide">
-                                <a href="/organization/transaction-history-xbug-ai" class="side-menu__item">xBug Ai</a>
+                                <a href="/organization/transaction-history-xbug-ai" class="side-menu__item">xBUG Ai</a>
                             </li>
                         </ul>
                     </li>

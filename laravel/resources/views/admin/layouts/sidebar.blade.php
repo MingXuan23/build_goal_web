@@ -115,10 +115,10 @@
                                 Content</a>
                         </li>
                         <li class="slide">
-                            <a href="/admin/transaction-history-xbug-card" class="side-menu__item">xBug Card</a>
+                            <a href="/admin/transaction-history-xbug-card" class="side-menu__item">xBUG Stand</a>
                         </li>
                         <li class="slide">
-                            <a href="/admin/transaction-history-xbug-ai" class="side-menu__item">xBug Ai</a>
+                            <a href="/admin/transaction-history-xbug-ai" class="side-menu__item">xBUG Ai</a>
                         </li>
                     </ul>
                 </li>
@@ -149,13 +149,13 @@
                             <a href="/admin/email-notification-logs" class="side-menu__item">Notification Logs</a>
                         </li>
                         <li class="slide">
+                            <a href="{{route('showNotificationBlockchainAdmin')}}" class="side-menu__item">Blockchain Email Log</a>
+                        </li>
+                        <li class="slide">
                             <a href="/admin/email-logs" class="side-menu__item">email log</a>
                         </li>
                         <li class="slide">
                             <a href="/admin/gpt-log" class="side-menu__item">GPT Log</a>
-                        </li>
-                        <li class="slide">
-                            <a href="{{route('showNotificationBlockchainAdmin')}}" class="side-menu__item">Blockchain Email Log</a>
                         </li>
                     </ul>
                 </li>
