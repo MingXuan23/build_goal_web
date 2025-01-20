@@ -110,6 +110,14 @@
                                             <h6 class="card-title fw-semibold">{{ $content->name }}</h6>
                                             <p class="card-text text-muted">{{ $content->content_type_name }}</p>
 
+                                            @if (($content->tx_hash != null || $content->tx_hash != '') && $content->status_contract == 1)
+                                            <span class="badge bg-success fw-bold">Blockchain
+                                                Verified</span>
+                                            <p class="text-muted d-block mt-2" style="font-size: 11px;">
+                                                This content has been recorded on the Blockchain Network through a smart contract to ensure its authenticity and integrity.
+                                            </p>
+                                  
+                                        @endif
 
                                         </div>
                                         <div class="card-footer text-end">
@@ -142,13 +150,24 @@
                                                 {{ \Carbon\Carbon::parse($content->created_at)->diffForHumans() }}</span>
                                             <h6 class="card-title fw-semibold">{{ $content->name }}</h6>
                                             <p class="card-text text-muted">{{ $content->content_type_name }}</p>
+
+                                            @if (($content->tx_hash != null || $content->tx_hash != '') && $content->status_contract == 1)
+                                                <span class="badge bg-success fw-bold">Blockchain
+                                                    Verified</span>
+                                                <p class="text-muted d-block mt-2" style="font-size: 11px;">
+                                                    This content has been recorded on the Blockchain Network through a smart contract to ensure its authenticity and integrity.
+                                                </p>
+                                      
+                                            @endif
+
+
                                             <!-- <a href="javascript:void(0);"
-                                                                   class="btn btn-primary"
-                                                                   data-bs-toggle="modal"
-                                                                   data-bs-target="#contentModal"
-                                                                   onclick="showContentPreview('{{ $content->content }}', '{{ $content->name }}', '{{ $content->desc }},''{{ $content->enrollment_price }}','{{ $content->participant_limit }}','{{ $content->place }}','{{ $content->link }}')">
-                                                                   Read More
-                                                                </a> -->
+                                                                                   class="btn btn-primary"
+                                                                                   data-bs-toggle="modal"
+                                                                                   data-bs-target="#contentModal"
+                                                                                   onclick="showContentPreview('{{ $content->content }}', '{{ $content->name }}', '{{ $content->desc }},''{{ $content->enrollment_price }}','{{ $content->participant_limit }}','{{ $content->place }}','{{ $content->link }}')">
+                                                                                   Read More
+                                                                                </a> -->
 
 
 
@@ -157,7 +176,7 @@
                                         <div class="card-footer text-end">
                                             <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#contentModal"
-                                                onclick="showContentPreview({{ json_encode($content->content ?? '') }}, {{ json_encode($content->name) }}, {{ json_encode($content->desc) }}, {{ json_encode($content->enrollment_price) }}, {{ json_encode($content->participant_limit) }}, {{ json_encode($content->place) }}, {{ json_encode($content->link) }})">
+                                                onclick="showContentPreview({{ json_encode($content->content ?? '') }}, {{ json_encode($content->name) }}, {{ json_encode($content->desc) }}, {{ json_encode($content->enrollment_price) }}, {{ json_encode($content->participant_limit) }}, {{ json_encode($content->place) }}, {{ json_encode($content->link) }},{{ json_encode($content->updated_at) }},{{ json_encode($content->tx_hash) }},{{ json_encode($content->block_no) }})">
                                                 Read More
                                             </a>
                                         </div>
@@ -172,59 +191,59 @@
 
 
         <!-- <div class="modal fade" id="viewContent" tabindex="-1"
-                               aria-labelledby="viewContent" data-bs-keyboard="false"
-                               aria-hidden="true">
-                               <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                                  <div class="modal-content">
-                                     <div class="modal-header">
-                                        <h6 class="modal-title" id="staticBackdropLabel1">How to be a backend Software Engineer
-                                        </h6>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                           aria-label="Close"></button>
-                                     </div>
-                                     <div class="modal-body">
-                                        <iframe src="https://en.wikipedia.org/wiki/Abdul_Rashid_Hassan" width="100%" height="500px" frameborder="0" title="About Page"></iframe>
+                                               aria-labelledby="viewContent" data-bs-keyboard="false"
+                                               aria-hidden="true">
+                                               <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                                  <div class="modal-content">
+                                                     <div class="modal-header">
+                                                        <h6 class="modal-title" id="staticBackdropLabel1">How to be a backend Software Engineer
+                                                        </h6>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                           aria-label="Close"></button>
+                                                     </div>
+                                                     <div class="modal-body">
+                                                        <iframe src="https://en.wikipedia.org/wiki/Abdul_Rashid_Hassan" width="100%" height="500px" frameborder="0" title="About Page"></iframe>
 
-                                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                                           Libero
-                                           ipsum quasi, error quibusdam debitis maiores hic eum? Vitae
-                                           nisi
-                                           ipsa maiores fugiat deleniti quis reiciendis veritatis.
-                                        </p>
-                                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ea
-                                           voluptatibus, ipsam quo est rerum modi quos expedita facere,
-                                           ex
-                                           tempore fuga similique ipsa blanditiis et accusamus
-                                           temporibus
-                                           commodi voluptas! Nobis veniam illo architecto expedita quam
-                                           ratione quaerat omnis. In, recusandae eos! Pariatur,
-                                           deleniti
-                                           quis ad nemo ipsam officia temporibus, doloribus fuga
-                                           asperiores
-                                           ratione distinctio velit alias hic modi praesentium aperiam
-                                           officiis eaque, accusamus aut. Accusantium assumenda,
-                                           commodi
-                                           nulla provident asperiores fugit inventore iste amet aut
-                                           placeat
-                                           consequatur reprehenderit. Ratione tenetur eligendi, quis
-                                           aperiam dolores magni iusto distinctio voluptatibus minus a
-                                           unde
-                                           at! Consequatur voluptatum in eaque obcaecati, impedit
-                                           accusantium ea soluta, excepturi, quasi quia commodi
-                                           blanditiis?
-                                           Qui blanditiis iusto corrupti necessitatibus dolorem fugiat
-                                           consequuntur quod quo veniam? Labore dignissimos reiciendis
-                                           accusamus recusandae est consequuntur iure.
-                                        </p>
-                                        <p>Lorem ipsum dolor sit amet.</p>
-                                     </div>
-                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger"
-                                           data-bs-dismiss="modal">Close</button>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div> -->
+                                                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                                           Libero
+                                                           ipsum quasi, error quibusdam debitis maiores hic eum? Vitae
+                                                           nisi
+                                                           ipsa maiores fugiat deleniti quis reiciendis veritatis.
+                                                        </p>
+                                                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ea
+                                                           voluptatibus, ipsam quo est rerum modi quos expedita facere,
+                                                           ex
+                                                           tempore fuga similique ipsa blanditiis et accusamus
+                                                           temporibus
+                                                           commodi voluptas! Nobis veniam illo architecto expedita quam
+                                                           ratione quaerat omnis. In, recusandae eos! Pariatur,
+                                                           deleniti
+                                                           quis ad nemo ipsam officia temporibus, doloribus fuga
+                                                           asperiores
+                                                           ratione distinctio velit alias hic modi praesentium aperiam
+                                                           officiis eaque, accusamus aut. Accusantium assumenda,
+                                                           commodi
+                                                           nulla provident asperiores fugit inventore iste amet aut
+                                                           placeat
+                                                           consequatur reprehenderit. Ratione tenetur eligendi, quis
+                                                           aperiam dolores magni iusto distinctio voluptatibus minus a
+                                                           unde
+                                                           at! Consequatur voluptatum in eaque obcaecati, impedit
+                                                           accusantium ea soluta, excepturi, quasi quia commodi
+                                                           blanditiis?
+                                                           Qui blanditiis iusto corrupti necessitatibus dolorem fugiat
+                                                           consequuntur quod quo veniam? Labore dignissimos reiciendis
+                                                           accusamus recusandae est consequuntur iure.
+                                                        </p>
+                                                        <p>Lorem ipsum dolor sit amet.</p>
+                                                     </div>
+                                                     <div class="modal-footer">
+                                                        <button type="button" class="btn btn-danger"
+                                                           data-bs-dismiss="modal">Close</button>
+                                                     </div>
+                                                  </div>
+                                               </div>
+                                            </div> -->
 
         <!-- Modal for Read More -->
         <!-- Modal for Read More -->
@@ -288,20 +307,41 @@
         //    document.getElementById('modalContent').innerHTML = contentHtml;
         // }
 
-        function showContentPreview(formattedContent, title, description, price, participant_limit, place, link) {
+        function showContentPreview(formattedContent, title, description, price, participant_limit, place, link, updatedAt,
+            txHash, blockNo) {
             // Update the modal title
             document.getElementById('contentModalLabel').innerText = 'CONTENT INFORMATION';
 
             // Bangun konten preview
-            let contentHtml = `<div class="p-3">
-           <h4 class="text-center fw-bold">${title}</h4>
-           <p><em>${description}</em></p>
-           <hr>
-           <p><strong>Price:</strong> ${price && price != 0 ? `RM${price}` : 'Free'}</p>
-           <p><strong>Participant Limit:</strong> ${participant_limit || 'Unlimited'}</p>
-           <p><strong>Place:</strong> ${place || 'N/A'}</p>
-           <hr>
-        `;
+            let contentHtml = `
+                <div class="p-3">
+                    <h4 class="text-center fw-bold">${title}</h4>
+                    <p><em>${description}</em></p>
+                    <hr>
+                    <p><strong>Price:</strong> ${price && price != 0 ? `RM${price}` : 'Free'}</p>
+                    <p><strong>Participant Limit:</strong> ${participant_limit || 'Unlimited'}</p>
+                    <p><strong>Place:</strong> ${place || 'N/A'}</p>
+                    <div class="text-start">
+                        ${txHash && blockNo ? `
+                                    <span class="badge bg-success-transparent fw-bold">Blockchain Verified</span>
+                                    <p class="text-muted mt-2" style="font-size: 11px;">
+                                        This content was added to the smart contract on 
+                                        <strong>${updatedAt}</strong>, at block number 
+                                        <a href="https://sepolia.etherscan.io/block/${blockNo}" target="_blank" class="text-primary">
+                                            <strong>${blockNo}</strong>
+                                        </a>, ensuring its authenticity and integrity for this specific content.
+                                    </p>
+                                    <p style="font-size: 11px;">
+                                        <a href="https://sepolia.etherscan.io/tx/${txHash}" target="_blank" class="text-primary">
+                                            <strong>View Blockchain Transaction</strong>
+                                        </a>
+                                    </p>
+                                ` : ''}
+                    </div>
+                    <hr>
+                </div>
+            `;
+
 
             // Format bagian konten
             const contentSections = formattedContent.split('\n\n');
@@ -324,7 +364,7 @@
             // Tambahkan link eksternal jika disediakan
             if (link) {
                 const youtubeMatch = link.match(
-                /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+                    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
                 if (youtubeMatch) {
                     const videoId = youtubeMatch[1]; // Extract the YouTube video ID
                     contentHtml += `

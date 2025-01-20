@@ -157,6 +157,7 @@ class MicrolearningController extends Controller
             // Fetch the contents related to the content type ID
             $contents = DB::table('contents as c')
                 ->join('content_types', 'c.content_type_id', '=', 'content_types.id')
+                ->leftJoin('smart_contract as sc', 'sc.content_id','=','c.id')
                 ->select(
                     'c.id',
                     'c.name',
@@ -170,13 +171,19 @@ class MicrolearningController extends Controller
                     'c.participant_limit',
                     'c.place',
                     'c.link',
-                    'c.status'
+                    'c.status',
+                    'sc.tx_hash',
+                    'sc.block_no',
+                    'sc.status_contract',
+                    'sc.updated_at'
                 )
                 ->where('content_types.id', '=', $contentTypeId)  // Use content type ID to fetch contents
                 ->where('c.reason_phrase', '=', 'APPROVED')  // Filter only approved contents
                 ->where('c.status', '=', 1)
                 ->orderBy('c.created_at', 'desc')
                 ->get();
+
+            // dd($contents);
 
             // Return the view with the fetched content
             return view('viewContent.showContentDetail', [
@@ -211,6 +218,7 @@ class MicrolearningController extends Controller
             // Fetch the content by name and type
             $contents = DB::table('contents as c')
                 ->join('content_types', 'c.content_type_id', '=', 'content_types.id')
+                ->leftJoin('smart_contract as sc', 'sc.content_id','=','c.id')
                 ->select(
                     'c.id',
                     'c.name',
@@ -220,7 +228,11 @@ class MicrolearningController extends Controller
                     'c.created_at',
                     'c.reason_phrase',
                     'c.content',
-                    'c.desc'
+                    'c.desc',
+                    'sc.tx_hash',
+                    'sc.block_no',
+                    'sc.status_contract',
+                    'sc.updated_at'
                 )
                 ->where('content_types.id', '=', $contentTypeId)
                 ->whereRaw('LOWER(c.name) = ?', [strtolower($originalName)]) // Case-insensitive match

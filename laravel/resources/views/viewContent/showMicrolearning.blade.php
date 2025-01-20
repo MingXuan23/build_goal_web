@@ -38,7 +38,7 @@
                 <!-- Card Body -->
                 <div class="card-body">
                     <!-- Display image or fallback -->
-                    @if ($contents->image)
+                    @if (!$contents->image)
                         <img src="{{ asset('storage/' . $contents->image) }}" class="card-img-top"
                             alt="{{ $contents->name }}" onerror="console.log('Image failed to load:', this.src);"
                             style="height: 180px; object-fit: cover;">
@@ -48,7 +48,24 @@
                             {{ strtoupper(substr($contents->name, 0, 1)) }}
                         </div>
                     @endif
-
+                    @if (($contents->tx_hash != null || $contents->tx_hash != '') && $contents->status_contract == 1)
+                    <span class="badge bg-success-transparent fw-bold">Blockchain
+                        Verified</span>
+                    <p class="text-muted d-block mt-2" style="font-size: 11px;">
+                        This content was added to the smart contract on Blockchain Network
+                        <strong>{{ \Carbon\Carbon::parse($contents->updated_at)->format('F d, Y') }}</strong>,
+                        at block number
+                        <a href="https://sepolia.etherscan.io/block/{{ $contents->block_no }}"
+                            target="_blank" class="text-primary">
+                            <strong>1212121</strong>
+                        </a>, ensuring its authenticity and integrity for this specific content.
+                        <a href="https://sepolia.etherscan.io/tx/{{ $contents->tx_hash }}"
+                            target="_blank" class="text-primary">
+                            <strong>View Blockchain Transaction</strong>
+                        </a>
+                    </p>
+              
+                @endif
                     <!-- Content Information -->
                     <p class="text-muted mb-2 mt-2">{{ $contents->content_type_name }}</p>
                     {{-- <p class="text-muted"><em id="descriptionPreview">{{ Str::limit($contents->desc, 100, '...') }}</em></p> --}}
@@ -63,6 +80,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Card Footer -->
                 <div class="card-footer text-center">
