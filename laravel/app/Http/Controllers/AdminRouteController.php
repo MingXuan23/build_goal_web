@@ -699,7 +699,7 @@ class AdminRouteController extends Controller
                 DB::raw('(SELECT COUNT(*) FROM content_card WHERE content_id = c.id AND status = 1 AND verification_code IS NOT NULL) as assigned_cards')
             )
             ->orderBy('t.created_at', 'desc');
-        dd($datas->get());
+        //dd($datas->get());
         if ($request->ajax()) {
             return DataTables::of($datas)
                 ->addIndexColumn()
