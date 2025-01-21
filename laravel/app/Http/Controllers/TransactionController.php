@@ -212,7 +212,7 @@ class TransactionController extends Controller
                 );
 
             $transaction =  Transaction::where('sellerOrderNo', '=', $request->Fpx_SellerOrderNo)->first();
-
+            Auth::loginUsingId($transaction->user_id);
             $parts = explode('_', $request->Fpx_SellerOrderNo);
 
             if ($parts[0] == 'PromoteContent') {
@@ -336,7 +336,7 @@ class TransactionController extends Controller
             $transaction =  Transaction::where('sellerOrderNo', '=', $request->Fpx_SellerOrderNo)->first();
 
             $user = Transaction::where('sellerOrderNo', '=', $request->Fpx_SellerOrderNo)->first();
-
+            Auth::loginUsingId($transaction->user_id);
             $parts = explode('_', $request->Fpx_SellerOrderNo);
 
             if ($parts[0] == 'PromoteContent') {
