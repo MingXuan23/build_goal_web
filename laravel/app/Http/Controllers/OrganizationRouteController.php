@@ -98,6 +98,230 @@ class OrganizationRouteController extends Controller
         ]);
     }
 
+    // public function showContent(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     $stateCitiesJson = file_get_contents(public_path('assets/json/states-cities.json'));
+    //     $stateCities = json_decode($stateCitiesJson, true);
+    //     // $user->id;
+
+    //     $user_data = DB::table('contents as contents')->where('contents.user_id', $user->id)
+    //         ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+    //         ->leftJoin('content_card', 'contents.id', '=', 'content_card.content_id')
+    //         ->leftJoin('transactions', function ($join) {
+    //             $join->on('content_card.transaction_id', '=', 'transactions.id')
+    //                 ->where('transactions.status', 'success');
+    //         })
+    //         ->select(
+    //             'contents.id',
+    //             'contents.name',
+    //             'contents.created_at',
+    //             'contents.link',
+    //             'contents.status',
+    //             'contents.user_id',
+    //             'contents.enrollment_price',
+    //             'contents.place',
+    //             'contents.reason_phrase',
+    //             'contents.reject_reason',
+    //             'contents.participant_limit',
+    //             'contents.content_type_id',
+    //             'content_types.type',
+    //             'content_card.card_id',
+    //             'content_card.verification_code',
+    //             'content_card.tracking_id',
+    //             'content_card.id as content_card_id'
+    //         )
+    //         ->orderBy('contents.created_at', 'desc')
+    //         ->get();
+
+    //     // dd($user_data);
+
+    //     // $isCard = DB::table('content_card')
+    //     // ->join('contents', 'content_card.content_id', '=', 'contents.id')
+    //     // ->join('transactions', 'content_card.transaction_id', '=', 'transactions.id')
+    //     // ->where('contents.user_id', $user->id)
+    //     // ->where('transactions.status', 'success')->get();
+
+    //     // dd($isCard);
+
+    //     $packages = DB::table('package')->where('status', true)->get();
+    //     if ($request->ajax()) {
+    //         $table = DataTables::of($user_data)->addIndexColumn();
+
+    //         $table->addColumn('action', function ($row) {
+    //             if ($row->reason_phrase == 'APPROVED') {
+    //                 $button =
+    //                     '<div class="d-flex">
+    //                     <button class="btn btn-icon btn-sm btn-success-transparent rounded-pill me-2 view-content" 
+    //                             data-id="' . $row->id . '" 
+    //                             data-name="' . htmlspecialchars($row->name, ENT_QUOTES) . '" 
+    //                             data-base-price="100" 
+    //                             data-base-state="2" 
+    //                             data-bs-toggle="modal" 
+    //                             data-bs-target="#dynamicModal">
+    //                         <i class="bi bi-arrow-right-circle-fill"></i>
+    //                     </button>';
+
+
+
+    //                 $button .= '</div>';
+    //             } elseif ($row->reason_phrase == 'PENDING') {
+    //                 $button =
+    //                     '<div class="d-flex justify-content-between">
+    //                         <span class="text-warning p-2 me-1 fw-bold">
+    //                             <i class="bi bi-circle-fill"></i> PENDING
+    //                         </span>
+    //                     </div>';
+    //             } else {
+    //                 $button =
+    //                     '<div class="d-flex">
+    //                         <button class="btn btn-icon btn-sm btn-danger-transparent rounded-pill me-2"
+    //                                 data-bs-toggle="modal" 
+    //                                 data-bs-target="#reject-' . $row->id . '">
+    //                             <i class="ri-eye-line fw-bold"></i>
+    //                         </button>
+    //                     </div>';
+    //             }
+    //             return $button;
+    //         });
+
+
+    //         $table->addColumn('status', function ($row) {
+    //             $status = $row->status == 1 ? ' Active ' : ' Inactive ';
+    //             $color = $row->status == 1 ? 'success' : 'danger';
+    //             if ($row->reason_phrase == 'APPROVED') {
+
+    //                 $button =
+    //                     '<div class="d-flex">
+    //                     <span class=" text-success p-2 me-1 fw-bold">
+    //                          <i class="bi bi-circle-fill"></i> APPROVED <span class="fw-bold text-' . $color . '">[' . $status  . ']</span>
+    //                     </span>
+    //                 </div>';
+    //             } elseif ($row->reason_phrase == 'PENDING') {
+    //                 $button =
+    //                     '<div class="d-flex">
+    //                      <span class=" text-warning p-2 me-1 fw-bold">
+    //                          <i class="bi bi-circle-fill"></i> IN REVIEW
+    //                     </span>
+    //                 </div>';
+    //             } else {
+    //                 $button =
+    //                     '<div class="d-flex">
+    //                       <span class=" text-danger p-2 me-1 fw-bold">
+    //                          <i class="bi bi-circle-fill"></i> REJECTED
+    //                     </span>
+    //                 </div>';
+    //             }
+    //             return $button;
+    //         });
+
+    //         $table->addColumn('action_update', function ($row) {
+    //             if ($row->reason_phrase == 'APPROVED') {
+
+    //                 $button =
+    //                     '<div class="d-flex">
+    //                         <button class="btn btn-icon btn-sm btn-primary-transparent rounded-pill me-2"
+    //                                 data-bs-toggle="modal" 
+    //                                 data-bs-target="#update-' . $row->id . '">
+    //                             <i class="ri-edit-line fw-bold"></i>
+    //                         </button>
+    //                     </div>';
+    //             } else {
+    //                 $button =
+    //                     '<div class="d-flex">
+    //                       <span class=" text-primary p-2 me-1 fw-bold">
+    //                         -
+    //                     </span>
+    //                 </div>';
+    //             }
+    //             return $button;
+    //         });
+
+
+    //         $table->addColumn('card', function ($row) {
+    //             // Definisikan peran yang memenuhi syarat untuk menampilkan tombol Smart Card
+    //             $eligibleContentTypes = [1, 3, 5];
+
+    //             // Mulai membangun HTML dengan div flex
+    //             $html = '<div class="d-flex align-items-center">';
+
+    //             // Kondisi Pertama:
+    //             // - content_type_id adalah 1, 3, atau 5
+    //             // - reason_phrase adalah 'APPROVED'
+    //             // - content_card_id adalah null atau ''
+    //             if (
+    //                 in_array($row->content_type_id, $eligibleContentTypes) &&
+    //                 $row->reason_phrase === 'APPROVED' &&
+    //                 (is_null($row->content_card_id) || $row->content_card_id === '')
+    //             ) {
+    //                 // Tampilkan tombol Smart Card
+    //                 $html .= '
+    //                     <button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2 smart-card-btn" 
+    //                             data-id="' . $row->id . '"
+    //                             data-name="' . htmlspecialchars($row->name, ENT_QUOTES) . '"
+    //                             data-bs-toggle="modal" 
+    //                             data-bs-target="#smartCardModal">
+    //                         <i class="bx bxs-credit-card"></i>
+    //                     </button>
+    //                 ';
+    //             }
+    //             // Kondisi Kedua:
+    //             // - content_type_id adalah 1, 3, atau 5
+    //             // - content_card_id tidak null dan tidak ''
+    //             elseif (
+    //                 in_array($row->content_type_id, $eligibleContentTypes) &&
+    //                 !is_null($row->content_card_id) &&
+    //                 $row->content_card_id !== ''
+    //             ) {
+    //                 // Tampilkan pesan "ORDER PLACED"
+    //                 $html .= '
+    //                 <div class="d-flex flex-column">
+    //                     <span class="text-success p-2 me-1 fw-bold">
+    //                         <i class="bi bi-circle-fill me-1"></i> ORDER PLACED
+    //                     </span>
+    //             ';
+
+    //                 // Tambahkan span untuk tracking_id jika tidak null atau kosong
+    //                 if (!is_null($row->tracking_id) && $row->tracking_id !== '') {
+    //                     $html .= '
+    //                     <span class="text-dark p-2 fw-bold d-flex align-items-center">
+    //                         <i class="bi bi-truck me-1 text-bold fs-5"></i> TRACKING NO: ' . htmlspecialchars($row->tracking_id, ENT_QUOTES) . '
+    //                     </span>
+    //                 ';
+    //                 }
+    //             }
+    //             // Kondisi Ketiga: Semua kondisi lainnya
+    //             else {
+    //                 // Tampilkan pesan "NOT ELIGIBLE"
+    //                 $html .= '
+    //                     <span class="text-danger p-2 me-1 fw-bold">
+    //                         <i class="bi bi-circle-fill me-1"></i> NOT ELIGIBLE
+    //                     </span>
+    //                 ';
+    //             }
+
+    //             // Tutup div flex
+    //             $html .= '</div>';
+
+    //             return $html;
+    //         });
+
+
+
+
+    //         $table->rawColumns(['status', 'action', 'card', 'action_update']);
+    //         return $table->make(true);
+    //     }
+
+    //     $states = DB::table('states')->select('id', 'name')->get();
+    //     return view('organization.contentManagement.index', [
+    //         'content_data' => $user_data,
+    //         'stateCities' => $stateCities,
+    //         'packages' => $packages,
+    //         'states' => $states
+    //     ]);
+    // }
+
     public function showContent(Request $request)
     {
         $user = Auth::user();
@@ -105,9 +329,17 @@ class OrganizationRouteController extends Controller
         $stateCities = json_decode($stateCitiesJson, true);
         // $user->id;
 
-        $user_data = DB::table('contents as contents')->where('contents.user_id', $user->id)
+        $user_data = DB::table('contents as contents')
+            ->where('contents.user_id', $user->id)
             ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
-            ->leftJoin('content_card', 'contents.id', '=', 'content_card.content_id')
+            ->leftJoin('content_card', function ($join) {
+                $join->on('contents.id', '=', 'content_card.content_id')
+                    ->where('content_card.id', function ($query) {
+                        $query->select(DB::raw('MAX(id)'))
+                            ->from('content_card as sub_card')
+                            ->whereColumn('sub_card.content_id', 'content_card.content_id');
+                    });
+            })
             ->leftJoin('transactions', function ($join) {
                 $join->on('content_card.transaction_id', '=', 'transactions.id')
                     ->where('transactions.status', 'success');
@@ -129,10 +361,13 @@ class OrganizationRouteController extends Controller
                 'content_card.card_id',
                 'content_card.verification_code',
                 'content_card.tracking_id',
-                'content_card.id as content_card_id'
+                'content_card.id as content_card_id',
+                'transactions.status as transaction_status',
+                'transactions.id as transaction_id',
             )
             ->orderBy('contents.created_at', 'desc')
             ->get();
+
 
         // dd($user_data);
 
@@ -271,9 +506,10 @@ class OrganizationRouteController extends Controller
                 elseif (
                     in_array($row->content_type_id, $eligibleContentTypes) &&
                     !is_null($row->content_card_id) &&
-                    $row->content_card_id !== ''
+                    $row->content_card_id !== '' && $row->transaction_status === 'Success'
                 ) {
                     // Tampilkan pesan "ORDER PLACED"
+
                     $html .= '
                     <div class="d-flex flex-column">
                         <span class="text-success p-2 me-1 fw-bold">
@@ -291,12 +527,22 @@ class OrganizationRouteController extends Controller
                     }
                 }
                 // Kondisi Ketiga: Semua kondisi lainnya
-                else {
+                else if (!in_array($row->content_type_id, $eligibleContentTypes)) {
                     // Tampilkan pesan "NOT ELIGIBLE"
                     $html .= '
                         <span class="text-danger p-2 me-1 fw-bold">
                             <i class="bi bi-circle-fill me-1"></i> NOT ELIGIBLE
                         </span>
+                    ';
+                } else {
+                    $html .= '
+                        <button class="btn btn-icon btn-sm btn-info-transparent rounded-pill me-2 smart-card-btn" 
+                                data-id="' . $row->id . '"
+                                data-name="' . htmlspecialchars($row->name, ENT_QUOTES) . '"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#smartCardModal">
+                            <i class="bx bxs-credit-card"></i>
+                        </button>
                     ';
                 }
 
@@ -305,9 +551,6 @@ class OrganizationRouteController extends Controller
 
                 return $html;
             });
-
-
-
 
             $table->rawColumns(['status', 'action', 'card', 'action_update']);
             return $table->make(true);
@@ -321,6 +564,7 @@ class OrganizationRouteController extends Controller
             'states' => $states
         ]);
     }
+
 
     public function showAddContent(Request $request)
     {
