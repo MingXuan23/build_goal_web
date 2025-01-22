@@ -44,7 +44,7 @@
                                 <!-- Pagination Links -->
                     <div class="d-flex justify-content-end mt-4">
                         <ul class="pagination pagination-sm">
-                            {{ $results->links() }} <!-- Display pagination links -->
+                        {{ $results->appends(['keyword' => $keyword])->links() }}<!-- Display pagination links -->
                         </ul>
                     </div>
                     @foreach($results as $result)
@@ -95,7 +95,7 @@
                      <!-- Pagination Links -->
                      <div class="d-flex justify-content-end mt-4">
                         <ul class="pagination pagination-sm">
-                            {{ $results->links() }} <!-- Display pagination links -->
+                             {{ $results->appends(['keyword' => $keyword])->links() }} <!-- Display pagination links -->
                         </ul>
                     </div>
                     </div>
