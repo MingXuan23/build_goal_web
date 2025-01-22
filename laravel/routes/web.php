@@ -300,8 +300,10 @@ Route::prefix('gpt-payment')->middleware(['auth', 'role:1|2|3'])->group(function
 // Route::get('/view-microlearning/{id}', [MicrolearningController::class, 'showMicrolearningDetail'])->name('showMicrolearningDetail');
 
 Route::get('/view-content', [MicrolearningController::class, 'showContentHomepage'])->name('showContentHomepage');
+Route::get('/view-content', [MicrolearningController::class, 'showContentHomepage'])->name('search');
 //Route::get('/view-content/{id}', [MicrolearningController::class, 'showContentDetail'])->name('showContentDetail');
 Route::get('/view-content/{slug}', [MicrolearningController::class, 'showContentDetail'])->name('showContentDetail');
+// Route::get('/view-content/{slug}', [MicrolearningController::class, 'showContentDetail'])->name('search');
 // Route::get('/view-content/{slug}/{id}', [MicrolearningController::class, 'showContentDetail'])->name('showContentDetail');
 Route::get('/view-content/{slug}/{name}', [MicrolearningController::class, 'showMicrolearningDetail'])->name('showMicrolearningDetail');
 

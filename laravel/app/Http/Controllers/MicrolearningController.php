@@ -65,8 +65,52 @@ class MicrolearningController extends Controller
 
 
 
-    public function showContentHomepage()
+    public function showContentHomepage(Request $request)
     {
+
+        $keyword = $request->input('keyword');
+        $results = [];
+
+        // Check if a keyword is provided
+        if (!empty($keyword)) {
+            // Perform search if a keyword is present
+            $results = DB::table('contents as c')
+            ->join('content_types', 'c.content_type_id', '=', 'content_types.id')
+                ->leftJoin('smart_contract as sc', 'sc.content_id','=','c.id')
+                ->select(
+                    'c.id',
+                    'c.name',
+                    'c.image',
+                    'content_types.type as content_type_name',
+                    'c.created_at',
+                    'c.reason_phrase',
+                    'c.content',
+                    'c.desc',
+                    'c.enrollment_price',
+                    'c.participant_limit',
+                    'c.place',
+                    'c.link',
+                    'c.status',
+                    'sc.tx_hash',
+                    'sc.block_no',
+                    'sc.status_contract',
+                    'sc.updated_at',
+                    'c.content_type_id' // Ensure content_type_id is selected
+                )
+                ->where(function ($query) use ($keyword) {
+                    $query->where('c.name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('c.desc', 'LIKE', '%' . $keyword . '%');
+                })
+                ->where('c.reason_phrase', '=', 'APPROVED')
+                ->where('c.status', '=', 1)
+                ->get(); // Keep as a collection to leverage collection methods
+        }
+
+
+        // $searchSlug = $results;
+
+        
+
         $countContent = DB::table('contents')
         ->where('reason_phrase', '=', 'APPROVED')
         ->where('status', '=', 1)
@@ -102,62 +146,71 @@ class MicrolearningController extends Controller
         ->where('status', '=', 1)
         ->count();
 
-        return view('viewContent.indexContent', compact('countContent','countContents_CourseTraining','countContents_MicroLearning', 'countContents_Event', 'countContents_JobOffer','courseAndTrainingSlug','microLearningSlug','eventSlug','jobOfferingSlug'));
+        return view('viewContent.indexContent', 
+        compact('countContent','countContents_CourseTraining','countContents_MicroLearning', 
+                'countContents_Event', 'countContents_JobOffer','courseAndTrainingSlug','microLearningSlug',
+                'eventSlug','jobOfferingSlug', 'keyword', 'results'));
     }
 
 
     public function showContentDetail(Request $request, $slug)
     {
-            // Convert slug back to the type (in case you need to restore spaces)
-            $contentType = str_replace('-', ' ', $slug); 
-            $countContent = DB::table('contents')
+        // Convert slug back to the type (in case you need to restore spaces)
+        $contentType = str_replace('-', ' ', $slug);
+
+        // Fetch the content type ID based on the slug (type)
+        $contentTypeObj = DB::table('content_types')
+            ->select('id', 'type')
+            ->where('type', '=', $contentType)
+            ->first();
+
+        // Check if content type is found
+        if (!$contentTypeObj) {
+            abort(404, 'Content Type not found');
+        }
+
+        $contentTypeId = $contentTypeObj->id; // Extract content type ID
+
+        // Count related data
+        $countContent = DB::table('contents')
             ->where('reason_phrase', '=', 'APPROVED')
             ->where('status', '=', 1)
             ->count();
 
-            $countContents_CourseTraining = DB::table('contents')
+        $countContents_CourseTraining = DB::table('contents')
             ->where('content_type_id', '=', 1)
             ->where('reason_phrase', '=', 'APPROVED')
             ->where('status', '=', 1)
             ->count();
 
-            $countContents_MicroLearning = DB::table('contents')
+        $countContents_MicroLearning = DB::table('contents')
             ->where('content_type_id', '=', 2)
             ->where('reason_phrase', '=', 'APPROVED')
             ->where('status', '=', 1)
             ->count();
 
-            $countContents_Event = DB::table('contents')
+        $countContents_Event = DB::table('contents')
             ->where('content_type_id', '=', 5)
             ->where('reason_phrase', '=', 'APPROVED')
             ->where('status', '=', 1)
             ->count();
 
-            $countContents_JobOffer = DB::table('contents')
+        $countContents_JobOffer = DB::table('contents')
             ->where('content_type_id', '=', 4)
             ->where('reason_phrase', '=', 'APPROVED')
             ->where('status', '=', 1)
             ->count();
 
-            $microLearningSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 2)->value('type'));
-            // Fetch the content type ID based on the slug (type)
-            $contentTypeId = DB::table('content_types')
-                ->select('id')
-                ->where('type', '=', $contentType)
-                ->first();
+        $microLearningSlug = str_replace(' ', '-', DB::table('content_types')->where('id', 2)->value('type'));
 
-            // Check if content type is found
-            if (!$contentTypeId) {
-                abort(404, 'Content Type not found');
-            }
+        $keyword = $request->input('keyword');
+        $results = [];
 
-            // Extract the ID from the result
-            $contentTypeId = $contentTypeId->id;
-
-            // Fetch the contents related to the content type ID
-            $contents = DB::table('contents as c')
+        // Search functionality restricted to specific content type
+        if (!empty($keyword)) {
+            $results = DB::table('contents as c')
                 ->join('content_types', 'c.content_type_id', '=', 'content_types.id')
-                ->leftJoin('smart_contract as sc', 'sc.content_id','=','c.id')
+                ->leftJoin('smart_contract as sc', 'sc.content_id', '=', 'c.id')
                 ->select(
                     'c.id',
                     'c.name',
@@ -177,21 +230,53 @@ class MicrolearningController extends Controller
                     'sc.status_contract',
                     'sc.updated_at'
                 )
-                ->where('content_types.id', '=', $contentTypeId)  // Use content type ID to fetch contents
-                ->where('c.reason_phrase', '=', 'APPROVED')  // Filter only approved contents
+                ->where(function ($query) use ($keyword) {
+                    $query->where('c.name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('c.desc', 'LIKE', '%' . $keyword . '%');
+                })
+                ->where('c.content_type_id', '=', $contentTypeId) // Restrict to specific content type
+                ->where('c.reason_phrase', '=', 'APPROVED')
                 ->where('c.status', '=', 1)
                 ->orderBy('c.created_at', 'desc')
                 ->get();
-
-            // dd($contents);
-
-            // Return the view with the fetched content
-            return view('viewContent.showContentDetail', [
-                'contents' => $contents,
-                'contentTypeId' => $contentTypeId
-                
-            ], compact('countContent','microLearningSlug','countContents_CourseTraining','countContents_MicroLearning','countContents_Event','countContents_JobOffer'));
         }
+
+        // Fetch contents related to the content type
+        $contents = DB::table('contents as c')
+            ->join('content_types', 'c.content_type_id', '=', 'content_types.id')
+            ->leftJoin('smart_contract as sc', 'sc.content_id', '=', 'c.id')
+            ->select(
+                'c.id',
+                'c.name',
+                'c.image',
+                'content_types.type as content_type_name',
+                'c.created_at',
+                'c.reason_phrase',
+                'c.content',
+                'c.desc',
+                'c.enrollment_price',
+                'c.participant_limit',
+                'c.place',
+                'c.link',
+                'c.status',
+                'sc.tx_hash',
+                'sc.block_no',
+                'sc.status_contract',
+                'sc.updated_at'
+            )
+            ->where('c.content_type_id', '=', $contentTypeId) // Restrict to specific content type
+            ->where('c.reason_phrase', '=', 'APPROVED')
+            ->where('c.status', '=', 1)
+            ->orderBy('c.created_at', 'desc')
+            ->get();
+
+        // Return the view with data
+        return view('viewContent.showContentDetail', [
+            'contents' => $contents,
+            'contentTypeId' => $contentTypeId
+        ], compact('countContent', 'microLearningSlug', 'countContents_CourseTraining', 'countContents_MicroLearning', 'countContents_Event', 'countContents_JobOffer', 'keyword', 'results', 'contentType'));
+    }
+
 
         public function showMicrolearningDetail(Request $request, $slug, $name)
         {
