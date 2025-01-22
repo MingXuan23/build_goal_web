@@ -449,7 +449,7 @@
                     });
 
                     $.ajax({
-                        url: '{{route('generateDescriptionGroqMicro')}}', // Route ke API Anda
+                        url: '{{route('generateDescriptionMicro')}}', // Route ke API Anda
                         method: 'POST',
                         data: {
                             content_name: contentName,

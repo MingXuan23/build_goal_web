@@ -97,7 +97,7 @@ class TransactionController extends Controller
                 $fpx_sellerOrderNo =  "XBugStand_" . date('YmdHis') . "_" . $organization_id;
                 $fpx_sellerExOrderNo = $fpx_sellerOrderNo;
             } else if (!empty($request->gpt_token)) {
-                $price = 1;
+                $price = 300;
                 $fpx_buyerEmail = $user->email;
                 $fpx_buyerName = $user->name;
                 $telno = $user->telno;

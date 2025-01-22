@@ -446,7 +446,7 @@
                 });
 
                 $.ajax({
-                    url: '{{ route('generateDescriptionGroq') }}',
+                    url: '{{ route('generateDescription') }}',
                     method: 'POST',
                     data: {
                         content_name: contentName,

@@ -108,7 +108,7 @@
                                         <h6 class="mb-3 fw-bold text-muted">Order Summary</h6>
                                         <div class="d-flex justify-content-between">
                                             <h6><strong>Payment For : </strong></h6>
-                                            <h6 class="me-3 fw-bold"><img src="../../assets/images/gpt.png" alt="" width="35">{{ $data['title'] }}</h6>
+                                            <h6 class="me-3 fw-bold"><img src="../../assets/images/gpt.png" alt="" width="35">{{ $data['title'] }} [lifetime]</h6>
                                         </div>
 
                                     </div>
