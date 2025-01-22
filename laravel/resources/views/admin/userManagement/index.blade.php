@@ -791,7 +791,7 @@
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <p class="fw-bold text-muted">Are Sure to Delete Account for {{ $data->name }} with
+                                    <p class="fw-bold text-muted">Are You sure to you want to delete this account {{ $data->name }} with
                                         role {{ $data->role_names }} ? This action can't be undo !</p>
                                 </div>
                                 <div class="modal-footer">

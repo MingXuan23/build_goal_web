@@ -32,12 +32,21 @@
         @if(!empty($keyword))
         <section class="section bg-light m-0" id="search-results">
             <div class="container">
-                <h3 class="text-center">Search Results for "{{ $keyword }}"</h3>
+                <div class="row justify-content-center">
+                    <div class="col-xxl-8 col-xl-12 col-lg-12 col-md-12 col-sm-12
+                    ">
+                    <h4 class="text-center fw-bold">Search Results for "{{ $keyword }}"</h4>
 
                 @if($results->isEmpty())
                     <p class="text-center text-muted">No results found for "{{ $keyword }}".</p>
                 @else
                     <div class="row">
+                                <!-- Pagination Links -->
+                    <div class="d-flex justify-content-end mt-4">
+                        <ul class="pagination pagination-sm">
+                            {{ $results->links() }} <!-- Display pagination links -->
+                        </ul>
+                    </div>
                     @foreach($results as $result)
                         <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                             <div class="card custom-card d-flex h-100 border border-primary-2"
@@ -83,6 +92,12 @@
                             </div>
                         </div>
                     @endforeach
+                     <!-- Pagination Links -->
+                     <div class="d-flex justify-content-end mt-4">
+                        <ul class="pagination pagination-sm">
+                            {{ $results->links() }} <!-- Display pagination links -->
+                        </ul>
+                    </div>
                     </div>
                 @endif
             </div>

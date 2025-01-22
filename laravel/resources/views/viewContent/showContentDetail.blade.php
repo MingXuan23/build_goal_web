@@ -97,62 +97,75 @@
         @if(!empty($keyword))
         <section class="section bg-light m-0" id="search-results">
             <div class="container">
-                <h5 class="text-center fw-bold">Search Results for "{{ $keyword }}"</h5>
+                <div class="row justify-content-center">
+                    <div class="col-xxl-8 col-xl-12 col-lg-12 col-md-12 col-sm-12
+                    ">
+                    <h4 class="text-center fw-bold">Search Results for "{{ $keyword }}"</h4>
 
                 @if($results->isEmpty())
                     <p class="text-center text-muted">No results found for "{{ $keyword }}".</p>
                 @else
                     <div class="row">
-                        @foreach($results as $result)
-                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <div class="card custom-card d-flex h-100 border border-primary-2"
-                                        style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                                        <!-- Display image or fallback -->
-                                        @if ($result->image)
-                                            <img src="{{ asset('storage/' . $result->image) }}" class="card-img-top"
-                                                alt="{{ $result->name }}"
-                                                onerror="console.log('Image failed to load:', this.src);"
-                                                style="height: 180px; object-fit: cover;">
-                                        @else
-                                            <div class="d-flex align-items-center justify-resul$result-center card-img-top bg-primary text-white"
-                                                style="height: 180px; font-size: 48px; font-weight: bold;">
-                                                {{ strtoupper(substr($result->name, 0, 1)) }}
-                                            </div>
-                                        @endif
-
-                                        <div class="card-body">
-                                            <span class="card-text text-muted mb-2">Last updated
-                                                {{ \Carbon\Carbon::parse($result->created_at)->diffForHumans() }}</span>
-                                            <h6 class="card-title fw-semibold">{{ $result->name }}</h6>
-                                            <p class="card-text text-muted">{{ $result->content_type_name }}</p>
-
-                                            @if (($result->tx_hash != null || $result->tx_hash != '') && $result->status_contract == 1)
-                                                <span class="badge bg-success fw-bold">Blockchain
-                                                    Verified</span>
-                                                <p class="text-muted d-block mt-2" style="font-size: 11px;">
-                                                    This result has been recorded on the Blockchain Network through a smart contract to ensure its authenticity and integrity.
-                                                </p>
-                                      
+                                <!-- Pagination Links -->
+                    <div class="d-flex justify-content-end mt-4">
+                        <ul class="pagination pagination-sm">
+                            {{ $results->links() }} <!-- Display pagination links -->
+                        </ul>
+                    </div>
+                            @foreach($results as $result)
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        <div class="card custom-card d-flex h-100 border border-primary-2"
+                                            style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                            <!-- Display image or fallback -->
+                                            @if ($result->image)
+                                                <img src="{{ asset('storage/' . $result->image) }}" class="card-img-top"
+                                                    alt="{{ $result->name }}"
+                                                    onerror="console.log('Image failed to load:', this.src);"
+                                                    style="height: 180px; object-fit: cover;">
+                                            @else
+                                                <div class="d-flex align-items-center justify-resul$result-center card-img-top bg-primary text-white"
+                                                    style="height: 180px; font-size: 48px; font-weight: bold;">
+                                                    {{ strtoupper(substr($result->name, 0, 1)) }}
+                                                </div>
                                             @endif
 
+                                            <div class="card-body">
+                                                <span class="card-text text-muted mb-2">Last updated
+                                                    {{ \Carbon\Carbon::parse($result->created_at)->diffForHumans() }}</span>
+                                                <h6 class="card-title fw-semibold">{{ $result->name }}</h6>
+                                                <p class="card-text text-muted">{{ $result->content_type_name }}</p>
 
+                                                @if (($result->tx_hash != null || $result->tx_hash != '') && $result->status_contract == 1)
+                                                    <span class="badge bg-success fw-bold">Blockchain
+                                                        Verified</span>
+                                                    <p class="text-muted d-block mt-2" style="font-size: 11px;">
+                                                        This result has been recorded on the Blockchain Network through a smart contract to ensure its authenticity and integrity.
+                                                    </p>
+                                        
+                                                @endif
 
-
-
-
-                                        </div>
-                                        <div class="card-footer text-end">
-                                            <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#contentModal"
-                                                onclick="showContentPreview({{ json_encode($result->result ?? '') }}, {{ json_encode($result->name) }}, {{ json_encode($result->desc) }}, {{ json_encode($result->enrollment_price) }}, {{ json_encode($result->participant_limit) }}, {{ json_encode($result->place) }}, {{ json_encode($result->link) }},{{ json_encode($result->updated_at) }},{{ json_encode($result->tx_hash) }},{{ json_encode($result->block_no) }})">
-                                                Read More
-                                            </a>
+                                            </div>
+                                            <div class="card-footer text-end">
+                                                <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#contentModal"
+                                                    onclick="showContentPreview({{ json_encode($result->result ?? '') }}, {{ json_encode($result->name) }}, {{ json_encode($result->desc) }}, {{ json_encode($result->enrollment_price) }}, {{ json_encode($result->participant_limit) }}, {{ json_encode($result->place) }}, {{ json_encode($result->link) }},{{ json_encode($result->updated_at) }},{{ json_encode($result->tx_hash) }},{{ json_encode($result->block_no) }})">
+                                                    Read More
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                        @endforeach
+                            @endforeach
+                        <!-- Pagination Links -->
+                    <div class="d-flex justify-content-end mt-4">
+                        <ul class="pagination pagination-sm">
+                            {{ $results->links() }} <!-- Display pagination links -->
+                        </ul>
+                    </div>
                     </div>
                 @endif
+                </div>
+                </div>
+               
             </div>
         </section>
         @else
@@ -160,6 +173,11 @@
             <div class="row justify-content-center">
                 <div class="col-xxl-8 col-xl-12 col-lg-12 col-md-12 col-sm-12">
                     <div class="row g-3 mt-2">
+                    <div class="d-flex justify-content-end mt-4">
+                        <ul class="pagination pagination-sm ">
+                            {{ $contents->links() }}
+                        </ul>
+                    </div>
                         @foreach ($contents as $content)
                             @if ($contentTypeId == 2)
                                 <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -258,6 +276,13 @@
                                 </div>
                             @endif
                         @endforeach
+                        <!-- Pagination Links -->
+                        <!-- Display pagination links -->
+                    <div class="d-flex justify-content-end mt-4">
+                        <ul class="pagination pagination-sm">
+                            {{ $contents->links() }}
+                        </ul>
+                    </div>
                     </div>
                 </div>
             </div>

@@ -103,7 +103,7 @@ class MicrolearningController extends Controller
                 })
                 ->where('c.reason_phrase', '=', 'APPROVED')
                 ->where('c.status', '=', 1)
-                ->get(); // Keep as a collection to leverage collection methods
+                ->paginate(15); // Keep as a collection to leverage collection methods
         }
 
 
@@ -238,8 +238,9 @@ class MicrolearningController extends Controller
                 ->where('c.reason_phrase', '=', 'APPROVED')
                 ->where('c.status', '=', 1)
                 ->orderBy('c.created_at', 'desc')
-                ->get();
+                ->paginate(15);
         }
+        
 
         // Fetch contents related to the content type
         $contents = DB::table('contents as c')
@@ -268,7 +269,8 @@ class MicrolearningController extends Controller
             ->where('c.reason_phrase', '=', 'APPROVED')
             ->where('c.status', '=', 1)
             ->orderBy('c.created_at', 'desc')
-            ->get();
+            ->paginate(15);
+            
 
         // Return the view with data
         return view('viewContent.showContentDetail', [
