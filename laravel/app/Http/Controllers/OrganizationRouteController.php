@@ -629,27 +629,105 @@ class OrganizationRouteController extends Controller
 
     public function showContentUserClickedViewedOrganization(Request $request)
     {
+        
+    
+
         $dataContentActive = DB::table('content_promotion')
-            ->leftJoin('user_content', 'content_promotion.content_id', '=', 'user_content.content_id')
-            ->join('transactions', 'content_promotion.transaction_id', '=', 'transactions.id')
-            ->join('users', 'transactions.user_id', '=', 'users.id')
-            ->join('contents', 'content_promotion.content_id', '=', 'contents.id')
-            ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
-            ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id')
-            ->where('transactions.status', "Success")
-            ->where('contents.user_id', Auth::user()->id)
-            ->whereNotNull('content_promotion.views')
-            ->whereNotNull('content_promotion.clicks')
-            ->select(
-                'contents.id as content_id',
-                'contents.name as content_name',
-                'content_types.type as content_type_name',
-                'users.name as user_name',
-                DB::raw('MAX(transactions.updated_at) as transaction_updated_at'), // Ambil data terakhir untuk transaksi
-                DB::raw('COUNT(content_promotion.id) as total_promotions') // Contoh agregasi (opsional)
-            )
-            ->groupBy('contents.id', 'contents.name', 'content_types.type', 'users.name') // Grouping berdasarkan content.id dan kolom lainnya
-            ->get();
+    ->leftJoin('user_content', 'content_promotion.content_id', '=', 'user_content.content_id')
+    ->join('transactions', 'content_promotion.transaction_id', '=', 'transactions.id')
+    ->join('users', 'transactions.user_id', '=', 'users.id')
+    ->join('contents', 'content_promotion.content_id', '=', 'contents.id')
+    ->join('content_types', 'contents.content_type_id', '=', 'content_types.id')
+    ->join('users as contentOwner', 'contents.user_id', '=', 'contentOwner.id')
+    ->where('transactions.status', "Success")
+    ->where('contents.user_id', Auth::user()->id)
+    ->whereNotNull('content_promotion.views')
+    ->whereNotNull('content_promotion.clicks')
+    ->select(
+        'contents.id as content_id',
+        'contents.name as content_name',
+        'content_types.type as content_type_name',
+        'users.name as user_name',
+        DB::raw('MAX(transactions.updated_at) as transaction_updated_at'), // Latest transaction date
+        DB::raw('COUNT(content_promotion.id) as total_promotions'),
+       // DB::raw('SUM(content_promotion.estimate_reach) as target_reach') // Optional aggregation
+    )
+    ->groupBy('contents.id', 'contents.name', 'content_types.type', 'users.name') // Group by necessary columns
+    ->get();
+
+    $contentIds = $dataContentActive->pluck('content_id');
+
+// Use the whereIn clause to filter content_id based on the list
+$list = DB::table('content_promotion')
+    ->whereNotNull('views')
+    ->whereNotNull('clicks')
+    ->where('status', 1)
+    ->whereIn('content_id', $contentIds)  // Filter by content IDs from $dataContentActive
+    ->where('completed', 0)
+    ->get();
+
+    
+
+    if (!$list->isEmpty()) {
+        DB::transaction(function () use ($list) {
+            foreach ($list as $item) {
+                // Calculate total interactions after the creation of this promotion
+                $total_click = DB::table('user_content')
+                    ->where('updated_at', '>', $item->created_at)
+                    ->where('content_id', $item->content_id)
+                    ->where('interaction_type_id', 2)
+                    ->count();
+
+                $total_view = DB::table('user_content')
+                    ->where('updated_at', '>', $item->created_at)
+                    ->where('content_id',  $item->content_id)
+                    ->where('interaction_type_id', 1)
+                    ->count();
+
+                $total_enroll = DB::table('user_content')
+                    ->where('updated_at', '>', $item->created_at)
+                    ->where('content_id',  $item->content_id)
+                    ->where('interaction_type_id', 3)
+                    ->count();
+
+                $reach = $total_view + $total_click * 2 + $total_enroll * 4;
+
+                // Update the promotion if the reach exceeds or matches the estimate
+                if ($reach >= $item->estimate_reach) {
+                    DB::table('content_promotion')
+                        ->where('id', $item->id)
+                        ->where('status', 1)
+                        ->where('content_id',  $item->content_id)
+                        ->update(['completed' => 1]);
+                }
+            }
+        });
+    }
+
+    // Add a total_reach column to the `$dataContentActive` result, considering the `updated_at` condition
+    foreach ($dataContentActive as $content) {
+        $content->total_reach = DB::table('user_content')
+            ->where('content_id', $content->content_id)
+            ->where('updated_at', '>', function ($query) use ($content) {
+                $query->select(DB::raw('min(created_at)'))
+                    ->from('content_promotion')
+                    ->where('content_id', $content->content_id);
+            })
+            ->sum(DB::raw('CASE 
+                WHEN interaction_type_id = 1 THEN 1 
+                WHEN interaction_type_id = 2 THEN 2 
+                WHEN interaction_type_id = 3 THEN 4 
+                ELSE 0 
+            END'));
+
+        $content->target_reach = DB::table('content_promotion')
+        ->where('status',1)
+        ->whereNotNull('views')
+        ->whereNotNull('clicks')
+        ->where('content_id',$content->content_id)
+        ->sum('estimate_reach');
+
+    }
 
 
         // dd($dataContentActive);

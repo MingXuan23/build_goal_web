@@ -901,6 +901,50 @@ class ContentController extends Controller
             ->where('content_id', $content->id)
             ->delete();
 
+        $list =DB::table('content_promotion')
+
+        ->whereNotNull('views')
+        ->whereNotNull('clicks')
+        ->where('status', 1)
+        ->where('content_id', $content->id)
+        ->where('completed', 0)
+        ->get();
+        //dd($list,$content->id);
+        if (!$list->isEmpty()) {
+            DB::transaction(function () use ($list, $content) {
+                foreach ($list as $item) {
+                    $total_click = DB::table('user_content')
+                        ->where('updated_at', '>', $item->created_at)
+                        ->where('content_id', $content->id)
+                        ->where('interaction_type_id', 2)
+                        ->count();
+            
+                    $total_view = DB::table('user_content')
+                        ->where('updated_at', '>', $item->created_at)
+                        ->where('content_id', $content->id)
+                        ->where('interaction_type_id', 1)
+                        ->count();
+            
+                    $total_enroll = DB::table('user_content')
+                        ->where('updated_at', '>', $item->created_at)
+                        ->where('content_id', $content->id)
+                        ->where('interaction_type_id', 3)
+                        ->count();
+            
+                    $reach = $total_view + $total_click * 2 + $total_enroll * 4;
+                    //dd($reach);
+                    if ($reach >= $item->estimate_reach) {
+                        DB::table('content_promotion')
+                            ->where('id', $item->id)
+                            ->where('status', 1)
+                            ->where('content_id', $content->id)
+                            ->update(['completed' => 1]);
+                    }
+                }
+            });
+        }
+    
+
         $exist = DB::table('content_promotion')
 
             ->whereNotNull('views')

@@ -97,6 +97,9 @@
                                 <th>Content Name</th>
                                 <th>Content Type</th>
                                 <th>Payment Time</th>
+                                <th>Total Reach</th>
+                                <th>Target Reach</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -127,6 +130,9 @@
                         <td>${item.content_name}</td>
                         <td>${item.content_type_name}</td>
                         <td>${item.transaction_updated_at}</td>
+                        <td>${item.total_reach}</td>
+                        <td>${item.target_reach}</td>
+
                     </tr>
                 `;
             });
