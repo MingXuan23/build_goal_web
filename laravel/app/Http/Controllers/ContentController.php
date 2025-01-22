@@ -79,7 +79,7 @@ class ContentController extends Controller
         DB::beginTransaction();
         $user = 0;
         try {
-            $enroll_id = DB::table('interaction_type')->where('type','enrolled')->first();
+            $enroll_id = DB::table('interaction_type')->where('type', 'enrolled')->first();
             if (!DB::table('users')->where('email', $request->input('email'),)->exists()) {
                 $user = DB::table('users')->insertGetId([
                     'name' => $validatedData['fullname'],
@@ -93,7 +93,7 @@ class ContentController extends Controller
                     'role' => json_encode([5]),
                     'active' => 1,
                     'email_status' => 'VERIFY',
-                   
+
                 ]);
 
                 $user = DB::table('users')->where('email', $request->input('email'))->first();
@@ -103,7 +103,7 @@ class ContentController extends Controller
 
 
                 // dd($content,$card_id);
-                $checkUser = DB::table('user_content')->where('user_id', $user->id)->where('content_id', $content->content_id)->where('status',1)->where('interaction_type_id',$enroll_id->id)->first();
+                $checkUser = DB::table('user_content')->where('user_id', $user->id)->where('content_id', $content->content_id)->where('status', 1)->where('interaction_type_id', $enroll_id->id)->first();
                 if ($checkUser) {
                     return back()->with('error', 'You have already registered for this content');
                 }
@@ -115,7 +115,7 @@ class ContentController extends Controller
                     'content_id' => $content->content_id,
                     'ip_address' => $request->ip(),
                     //'verification_code' => $content->verification_code,
-                  
+
                 ]);
 
                 $logData = [
@@ -125,7 +125,7 @@ class ContentController extends Controller
                     'name' => $validatedData['fullname'],
                     'status' => 'SUCCESS',
                     'response_data' => 'Verification code has been sent',
-                  
+
                 ];
 
 
@@ -135,8 +135,8 @@ class ContentController extends Controller
 
                 Mail::to($request->input('email'))->send(new ResetPasswordMail($validatedData['fullname'], $password1));
                 return back()->with('success', 'Registration successfull. Your record has been saved and we has been created your account. Please check your email for password xBUG app');
-            }else{
-                $user=DB::table('users')->where('email', $request->input('email'),)->first();
+            } else {
+                $user = DB::table('users')->where('email', $request->input('email'),)->first();
 
                 if (!$user || $user->status !== 'ACTIVE' || $user->active !== 1 || $user->email_status !== 'VERIFY') {
                     return back()->withError('We detected your account is suspended or not verified. Please check your email to verify your account and continue with xBUG app.');
@@ -147,7 +147,7 @@ class ContentController extends Controller
 
 
                 // dd($content,$card_id);
-                $checkUser = DB::table('user_content')->where('user_id', $user->id)->where('content_id', $content->content_id)->where('status',1)->where('interaction_type_id',$enroll_id->id)->first();
+                $checkUser = DB::table('user_content')->where('user_id', $user->id)->where('content_id', $content->content_id)->where('status', 1)->where('interaction_type_id', $enroll_id->id)->first();
                 if ($checkUser) {
                     return back()->with('error', 'You have already registered for this content');
                 }
@@ -155,12 +155,12 @@ class ContentController extends Controller
                 $userDetails = DB::table('user_content')->insertGetId([
                     'user_id' => $user->id,
                     'interaction_type_id' =>  3,
-                    'status' => 0 ,
+                    'status' => 0,
                     'content_id' => $content->content_id,
                     'ip_address' => $request->ip(),
-                    'token'=> Str::random(20),
+                    'token' => Str::random(20),
                     //'verification_code' => $content->verification_code,
-                  
+
                 ]);
 
                 $userContent = DB::table('user_content')->where('id', $userDetails)->first();
@@ -175,7 +175,7 @@ class ContentController extends Controller
                     'name' => $validatedData['fullname'],
                     'status' => 'SUCCESS',
                     'response_data' => 'Verification code has been sent',
-                  
+
                 ];
 
 
@@ -185,8 +185,6 @@ class ContentController extends Controller
                 Mail::to($request->input('email'))->send(new VerifyActionMail($token));
 
                 return back()->with('success', 'We detected you have registered account with us. Please check on your email inbox for further action.');
-                
-
             }
 
             return back()->withError('We detected you have registered account with us. Please check your email for password xBUG app and continue with xBUG app');
@@ -238,7 +236,7 @@ class ContentController extends Controller
                 'name' => $validatedData['fullname'],
                 'status' => 'FAILED',
                 'response_data' => 'ERROR',
-              
+
             ];
 
             DB::table('email_logs')->insert($logData);
@@ -247,43 +245,99 @@ class ContentController extends Controller
     }
 
     public function verifyAction(Request $request)
-{
-    $token = $request->query('token');
-    if (!$token) {
-        return response()->json('Token is missing.');
+    {
+        $token = $request->query('token');
+        if (!$token) {
+            return view('verify')->with([
+                'message' => 'Token is missing.',
+                'status' => 'error'
+            ]);
+        }
+
+        // Extract token and timestamp
+        $parts = explode('-', $token);
+        if (count($parts) !== 2) {
+            return view('verify')->with([
+                'message' => 'Invalid token format.',
+                'status' => 'error'
+            ]);
+        }
+
+        $rawToken = $parts[0];
+        $timestamp = $parts[1];
+
+        // Find the user_content record by token
+        $userContent = DB::table('user_content')->where('token', $rawToken)->first();
+
+        if (!$userContent) {
+            return view('verify')->with([
+                'message' => 'Token expired.',
+                'status' => 'error'
+            ]);
+        }
+
+        // Validate timestamp
+        $expectedTimestamp = Carbon::parse($userContent->updated_at)->format('YmdHis');
+        if ($expectedTimestamp !== $timestamp) {
+            return view('verify')->with([
+                'message' => 'Token expired.',
+                'status' => 'error'
+            ]);
+        }
+
+        // Update the status to 1
+        try {
+            DB::table('user_content')->where('id', $userContent->id)->update(['status' => 1]);
+        } catch (\Exception $e) {
+            return view('verify')->with([
+                'message' => 'Failed to update status.',
+                'status' => 'error'
+            ]);
+        }
+
+        return view('verify')->with([
+            'message' => 'Enrollment into the event was successful.',
+            'status' => 'success'
+        ]);
     }
+    // public function verifyAction(Request $request)
+    // {
+    //     $token = $request->query('token');
+    //     if (!$token) {
+    //         return response()->json('Token is missing.');
+    //     }
 
-    // Extract token and timestamp
-    $parts = explode('-', $token);
-    if (count($parts) !== 2) {
-        return response()->json('Invalid token format.');
-    }
+    //     // Extract token and timestamp
+    //     $parts = explode('-', $token);
+    //     if (count($parts) !== 2) {
+    //         return response()->json('Invalid token format.');
+    //     }
 
-    $rawToken = $parts[0];
-    $timestamp = $parts[1];
+    //     $rawToken = $parts[0];
+    //     $timestamp = $parts[1];
 
-    // Find the user_content record by token
-    $userContent = DB::table('user_content')->where('token', $rawToken)->first();
+    //     // Find the user_content record by token
+    //     $userContent = DB::table('user_content')->where('token', $rawToken)->first();
 
-    if (!$userContent) {
-        return response()->json( 'Token expired.');
-    }
+    //     if (!$userContent) {
+    //         return response()->json('Token expired.');
+    //     }
 
-    // Validate timestamp
-    $expectedTimestamp = Carbon::parse($userContent->updated_at)->format('YmdHis');
-    if ($expectedTimestamp !== $timestamp) {
-        return response()->json('Token expired.');
-    }
+    //     // Validate timestamp
+    //     $expectedTimestamp = Carbon::parse($userContent->updated_at)->format('YmdHis');
+    //     if ($expectedTimestamp !== $timestamp) {
+    //         return response()->json('Token expired.');
+    //     }
 
-    // Update the status to 1
-    try {
-        DB::table('user_content')->where('id', $userContent->id)->update(['status' => 1]);
-    } catch (\Exception $e) {
-        return response()->json('Failed to update status.');
-    }
+    //     // Update the status to 1
+    //     try {
+    //         DB::table('user_content')->where('id', $userContent->id)->update(['status' => 1]);
+    //     } catch (\Exception $e) {
+    //         return response()->json('Failed to update status.');
+    //     }
 
-    return response()->json( 'Enrollment into the event was successful.');
-}
+    //     return response()->json('Enrollment into the event was successful.');
+    // }
 
     public function showPromoteContent($id)
     {
@@ -316,7 +370,7 @@ class ContentController extends Controller
             ->where('status', 1)
             ->first();
 
-        
+
 
         // Validate form inputs
         $validated = $request->validate([
@@ -331,10 +385,10 @@ class ContentController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ], [
             'state' => ', Please select at least 1 state',
-        ],[
+        ], [
             'content_name.not_regex' => 'Try not to insert any emojis to the title field.',
             'content_desc.not_regex' => 'Try not to insert any emojis to the description field.',
-        ],[
+        ], [
             'content_type_id' => 'Content Type'
         ]);
 
@@ -437,9 +491,9 @@ class ContentController extends Controller
 
                 if ($email_status && $email_status->status == 1) {
                     $user = DB::table('contents')
-                    ->join('users', 'contents.user_id', '=', 'users.id')
-                    ->where('contents.id', $id)->select('users.name', 'users.email','contents.name as content_name')
-                    ->first();
+                        ->join('users', 'contents.user_id', '=', 'users.id')
+                        ->where('contents.id', $id)->select('users.name', 'users.email', 'contents.name as content_name')
+                        ->first();
                     $status = 2; // Status untuk email
                     $reject_reason = null; // Alasan penolakan kosong
                     $name = $user->name;
@@ -501,9 +555,9 @@ class ContentController extends Controller
 
                 if ($email_status && $email_status->status == 1) {
                     $user = DB::table('contents')
-                    ->join('users', 'contents.user_id', '=', 'users.id')
-                    ->where('contents.id', $id)->select('users.name', 'users.email','contents.name as content_name')
-                    ->first();
+                        ->join('users', 'contents.user_id', '=', 'users.id')
+                        ->where('contents.id', $id)->select('users.name', 'users.email', 'contents.name as content_name')
+                        ->first();
                     $status = 3; // Status for rejection email
                     $reject_reason = $content->reject_reason; // Pass the rejection reason
                     $name = $user->name;
@@ -901,14 +955,14 @@ class ContentController extends Controller
             ->where('content_id', $content->id)
             ->delete();
 
-        $list =DB::table('content_promotion')
+        $list = DB::table('content_promotion')
 
-        ->whereNotNull('views')
-        ->whereNotNull('clicks')
-        ->where('status', 1)
-        ->where('content_id', $content->id)
-        ->where('completed', 0)
-        ->get();
+            ->whereNotNull('views')
+            ->whereNotNull('clicks')
+            ->where('status', 1)
+            ->where('content_id', $content->id)
+            ->where('completed', 0)
+            ->get();
         //dd($list,$content->id);
         if (!$list->isEmpty()) {
             DB::transaction(function () use ($list, $content) {
@@ -918,19 +972,19 @@ class ContentController extends Controller
                         ->where('content_id', $content->id)
                         ->where('interaction_type_id', 2)
                         ->count();
-            
+
                     $total_view = DB::table('user_content')
                         ->where('updated_at', '>', $item->created_at)
                         ->where('content_id', $content->id)
                         ->where('interaction_type_id', 1)
                         ->count();
-            
+
                     $total_enroll = DB::table('user_content')
                         ->where('updated_at', '>', $item->created_at)
                         ->where('content_id', $content->id)
                         ->where('interaction_type_id', 3)
                         ->count();
-            
+
                     $reach = $total_view + $total_click * 2 + $total_enroll * 4;
                     //dd($reach);
                     if ($reach >= $item->estimate_reach) {
@@ -943,7 +997,7 @@ class ContentController extends Controller
                 }
             });
         }
-    
+
 
         $exist = DB::table('content_promotion')
 
@@ -1032,7 +1086,7 @@ class ContentController extends Controller
             return response()->json('Invalid Transaction');
         }
 
-        $content_cards = DB::table('content_card')->where('content_id',$content->id)->whereNotNull('card_id')->whereNotNull('tracking_id')->select('card_id','tracking_id')->get();
+        $content_cards = DB::table('content_card')->where('content_id', $content->id)->whereNotNull('card_id')->whereNotNull('tracking_id')->select('card_id', 'tracking_id')->get();
         $user = Auth::user();
         $userRoles = json_decode($user->role);
         if (!in_array(1, $userRoles) && Auth::id() != $content->user_id) {
@@ -1040,7 +1094,7 @@ class ContentController extends Controller
         }
 
 
-        return view('content.xbug_stand_receipt', compact('cp_id', 'content', 'transaction','content_cards'));
+        return view('content.xbug_stand_receipt', compact('cp_id', 'content', 'transaction', 'content_cards'));
     }
     public function addCard(Request $request, $card_id)
     {
